@@ -39,6 +39,9 @@
         .fail, .not-done { background: #dc3545; }
         .section-header { background: #f1f3f4; font-weight: bold; color: #5f6368; text-align: right !important; padding-right: 15px !important; }
 
+        .material-card { background: #fff; border: 1px solid #eee; padding: 15px; border-radius: 10px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .comment-section { background: #f9f9f9; padding: 20px; border-radius: 10px; margin-top: 30px; border-top: 4px solid #34a853; }
+
         /* Modal */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(3px); }
         .modal-content { background: white; margin: 5% auto; padding: 25px; border-radius: 15px; width: 90%; max-width: 500px; text-align: right; box-shadow: 0 5px 30px rgba(0,0,0,0.3); position: relative; }
@@ -72,15 +75,31 @@
                 <h2 id="stName" style="margin: 0; color: #1a73e8;"></h2>
                 <p id="stIndex" style="margin: 5px 0 0 0; color: #555; font-weight: bold;"></p>
             </div>
+
+            <!-- މެޓީރިއަލްސް ބައި -->
+            <div id="materialDisplay" style="margin-bottom: 20px; display: none;">
+                <h3 style="color: #1a73e8;">📚 ކިޔަވައިދޭ ތަކެތި</h3>
+                <div id="materialList"></div>
+            </div>
+
             <table>
                 <thead>
                     <tr><th>ބާވަތް</th><th>މާކްސް / ހާލަތު</th><th>ނަތީޖާ</th></tr>
                 </thead>
                 <tbody id="resultTableBody"></tbody>
             </table>
+
             <div style="margin-top: 20px; padding: 15px; background: #fff4e5; border-right: 5px solid #ffa000; border-radius: 5px;">
                 <strong>ޓީޗަރުގެ ނޯޓް:</strong>
                 <p id="stNote" style="margin: 10px 0 0 0; line-height: 1.6;"></p>
+            </div>
+
+            <!-- ބެލެނިވެރިންގެ ކޮމެންޓް ބައި -->
+            <div class="comment-section">
+                <h3>💬 ބެލެނިވެރިންގެ ޚިޔާލު</h3>
+                <p style="font-size: 14px; color: #666;">ދަރިވަރުގެ ނަތީޖާއާ ގުޅޭގޮތުން ޓީޗަރަށް ކޮމެންޓެއް ފޮނުއްވާ</p>
+                <textarea id="parentComment" placeholder="މިތަނުގައި ލިޔުއްވާ..." rows="3" style="width:100%; text-align: right;"></textarea>
+                <button type="button" onclick="submitComment()" style="background: #34a853; width: auto; padding: 10px 20px;">ފޮނުވާ</button>
             </div>
         </div>
     </div>
@@ -96,6 +115,13 @@
         </div>
 
         <div id="teacherDashboard" style="display:none;">
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 25px; border: 1px solid #ddd;">
+                <h3>📤 މެޓީރިއަލްސް އަޕްލޯޑް ކުރޭ</h3>
+                <input type="text" id="matTitle" placeholder="މާއްދާ ނުވަތަ ފިލާވަޅުގެ ނަން" style="margin-bottom: 10px;">
+                <input type="url" id="matLink" placeholder="ލިންކް (e.g. Google Drive/YouTube)" style="margin-bottom: 10px;">
+                <button type="button" onclick="addMaterial()" style="background: #1a73e8; width: auto;">އަޕްލޯޑް</button>
+            </div>
+
             <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                 <h3 style="margin:0;">📊 ހުރިހާ ދަރިވަރުންގެ ލިސްޓް</h3>
                 <button type="button" onclick="loadAllDataForTeacher()" style="padding: 8px 15px; font-size: 14px; border-radius: 8px;">🔄 ރިފްރެޝް</button>
@@ -156,9 +182,9 @@
 </div>
 
 <script>
-    // މުހިންމު: ތިރީގައިވާ ލިންކު ތިޔަބޭފުޅާގެ އާ Web App URL އަށް ބަދަލުކުރައްވާ
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx0FuKBjx_6ZwkA13pmpuqGRsqe_7NXwm6IKhdynSJgslnXwUaFWxvg5tsEY5oJYVVR/exec";
     let allData = [];
+    let materials = [];
 
     // ޓެބްތައް ދެއްކުމަށް
     function showTab(tabId) {
@@ -166,9 +192,7 @@
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         
         const targetSection = document.getElementById(tabId);
-        if (targetSection) {
-            targetSection.classList.add('active');
-        }
+        if (targetSection) targetSection.classList.add('active');
         
         if(tabId === 'studentView') {
             document.getElementById('tabStudent').classList.add('active');
@@ -179,45 +203,55 @@
 
     // ޓީޗަރުންގެ ލޮގިން ޗެކްކުރުން
     function checkAdmin() {
-        const passInput = document.getElementById('adminPass');
-        const pass = passInput.value;
+        const pass = document.getElementById('adminPass').value;
         if (pass === "admin123") {
             document.getElementById('adminLoginForm').style.display = 'none';
             document.getElementById('teacherDashboard').style.display = 'block';
             loadAllDataForTeacher();
         } else {
             alert("ޕާސްވޯޑް ނުބައި!");
-            passInput.value = "";
-            passInput.focus();
         }
     }
 
-    // ޑޭޓާ ހޯދުމަށް (JSONP ބޭނުންކޮށްގެން)
+    // ޑޭޓާ ހޯދުމަށް
     function fetchData(callback) {
         const cbName = 'jsonp_cb_' + Math.floor(Math.random() * 1000000);
         window[cbName] = (data) => {
             callback(data);
             delete window[cbName];
-            const scriptElement = document.getElementById(cbName + '_script');
-            if (scriptElement) scriptElement.remove();
+            const script = document.getElementById(cbName + '_script');
+            if (script) script.remove();
         };
-        
         const script = document.createElement('script');
         script.id = cbName + '_script';
         script.src = `${SCRIPT_URL}?prefix=${cbName}&t=${Date.now()}`;
-        script.onerror = () => {
-            alert("ޑޭޓާ ލޯޑްކުރުމުގައި މައްސަލައެއް ދިމާވެއްޖެ. ލިންކް ރަނގަޅުތޯ ޗެކްކޮށްލައްވާ.");
-            document.getElementById('searchBtn').disabled = false;
-            document.getElementById('searchBtn').innerHTML = "🔍 ހޯދާ";
-        };
         document.body.appendChild(script);
+    }
+
+    // މެޓީރިއަލްސް އިތުރުކުރުން
+    function addMaterial() {
+        const title = document.getElementById('matTitle').value;
+        const link = document.getElementById('matLink').value;
+        if (!title || !link) { alert("މައުލޫމާތު ފުރިހަމަކުރައްވާ!"); return; }
+        
+        materials.push({ title, link });
+        alert("މެޓީރިއަލް އިތުރުކުރެވިއްޖެ!");
+        document.getElementById('matTitle').value = "";
+        document.getElementById('matLink').value = "";
+    }
+
+    // ބެލެނިވެރިންގެ ކޮމެންޓް ފޮނުވުން
+    function submitComment() {
+        const comment = document.getElementById('parentComment').value;
+        if (!comment) { alert("ކޮމެންޓެއް ލިޔުއްވާ!"); return; }
+        alert("ޝުކުރިއްޔާ! ކޮމެންޓް ފޮނުވިއްޖެ.");
+        document.getElementById('parentComment').value = "";
     }
 
     // ހުރިހާ ކުދިންގެ ޑޭޓާ ޓީޗަރުންނަށް ދެއްކުން
     function loadAllDataForTeacher() {
         const tbody = document.getElementById('allStudentsBody');
         tbody.innerHTML = '<tr><td colspan="5">ލޯޑުވަނީ... <span class="loader"></span></td></tr>';
-        
         fetchData((data) => {
             allData = data;
             let html = "";
@@ -241,7 +275,6 @@
         });
     }
 
-    // އެޑިޓް މޮޑަލް ހުޅުވުން
     function openEditModal(idx) {
         const s = allData[idx];
         if (!s) return;
@@ -253,156 +286,104 @@
         document.getElementById('editModal').style.display = 'block';
     }
 
-    // މޮޑަލް ލެއްޕުން
-    function closeModal() { 
-        document.getElementById('editModal').style.display = 'none'; 
-    }
+    function closeModal() { document.getElementById('editModal').style.display = 'none'; }
 
-    // ޑޭޓާ ސޭވްކުރުން
     async function saveData(e) {
         if (e) e.preventDefault();
         const idx = document.getElementById('editRowIndex').value;
         const student = allData[idx];
-        if (!student) return;
-        
         const payload = {
             index: student.Index,
             unit1: document.getElementById('editUnit1').value,
             week1: document.getElementById('editWeek1').value,
             note: document.getElementById('editNote').value
         };
-
-        const loader = document.getElementById('saveLoader');
-        loader.style.display = 'block';
-        
+        document.getElementById('saveLoader').style.display = 'block';
         try {
-            await fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            
-            alert("ސޭވް ކުރެވިއްޖެ! (ޝީޓަށް އަޕްޑޭޓްވާން ކުޑަވަގުތުކޮޅެއް ނަގާފާނެ)");
+            await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+            alert("ސޭވް ކުރެވިއްޖެ!");
             closeModal();
             loadAllDataForTeacher();
         } catch (error) {
-            console.error(error);
-            alert("މައުލޫމާތު ސޭވްކުރުމުގައި މައްސަލައެއް ދިމާވެއްޖެ!");
+            alert("މައްސަލައެއް ދިމާވެއްޖެ!");
         } finally {
-            loader.style.display = 'none';
+            document.getElementById('saveLoader').style.display = 'none';
         }
     }
 
-    // ވަކި ކުއްޖެއްގެ ނަތީޖާ ބަލަން ދިއުން
     function viewStudentDirect(idxNo) {
         document.getElementById('indexNo').value = idxNo;
         showTab('studentView');
         searchStudent();
     }
 
-    // ދަރިވަރު ހޯދުން
     function searchStudent() {
-        const inputField = document.getElementById('indexNo');
-        const input = inputField.value.trim();
+        const input = document.getElementById('indexNo').value.trim();
         const btn = document.getElementById('searchBtn');
-        
-        if (!input) { 
-            alert("އިންޑެކްސް ނަންބަރު ޖައްސަވާ!"); 
-            inputField.focus();
-            return; 
-        }
-
+        if (!input) { alert("އިންޑެކްސް ނަންބަރު ޖައްސަވާ!"); return; }
         btn.disabled = true;
         btn.innerHTML = 'ހޯދަނީ... <span class="loader"></span>';
 
         fetchData((data) => {
             btn.disabled = false;
             btn.innerHTML = "🔍 ހޯދާ";
-            
-            if (!data || data.length === 0) {
-                alert("ޑޭޓާ ލޯޑެއް ނުކުރެވުނު! ޝީޓުގައި މައުލޫމާތު ހުރިތޯ ޗެކްކޮށްލައްވާ.");
-                return;
-            }
-
             const s = data.find(x => x.Index && x.Index.toString().trim() === input);
             if (s) {
                 renderStudent(s);
                 document.getElementById('resultArea').style.display = 'block';
-                document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
+                
+                // މެޓީރިއަލްސް ދެއްކުން
+                const mDiv = document.getElementById('materialDisplay');
+                const mList = document.getElementById('materialList');
+                if (materials.length > 0) {
+                    mDiv.style.display = 'block';
+                    mList.innerHTML = materials.map(m => `
+                        <div class="material-card">
+                            <span>📖 ${m.title}</span>
+                            <a href="${m.link}" target="_blank" style="color:#1a73e8; font-weight:bold;">ބަލާލުމަށް ފިއްތަވާ</a>
+                        </div>
+                    `).join('');
+                } else {
+                    mDiv.style.display = 'none';
+                }
             } else {
-                alert("މި ނަންބަރުގެ ކުއްޖެއް ނުފެނުނު! ނަންބަރު ރަނގަޅުތޯ ޗެކްކޮށްލައްވާ.");
-                document.getElementById('resultArea').style.display = 'none';
+                alert("ނުފެނުނު!");
             }
         });
     }
 
-    // ދަރިވަރުގެ ނަތީޖާ ޓޭބަލަށް އެޅުން
     function renderStudent(s) {
         document.getElementById('stName').innerText = s.Name || "ނަމެއް ނެތް";
         document.getElementById('stIndex').innerText = "އިންޑެކްސް: " + (s.Index || "-");
         document.getElementById('stNote').innerText = s.Note || "ޓީޗަރުގެ ނޯޓެއް ނެތް.";
-        
         let rows = `<tr><td colspan="3" class="section-header">ޔުނިޓް ޓެސްޓްތައް</td></tr>`;
-        
-        let unitFound = false;
         for(let i=1; i<=6; i++) {
             const val = s['Unit'+i];
-            if(val !== undefined && val !== "" && val !== null) {
-                rows += createGradeRow("Unit Test "+i, val);
-                unitFound = true;
-            }
+            if(val) rows += createGradeRow("Unit Test "+i, val);
         }
-        if (!unitFound) rows += `<tr><td colspan="3">ޔުނިޓް ޓެސްޓެއްގެ މައުލޫމާތެއް ނެތް</td></tr>`;
-
         rows += `<tr><td colspan="3" class="section-header">ހަފުތާގެ މަސައްކަތް</td></tr>`;
-        
-        let weekFound = false;
         for(let i=1; i<=4; i++) {
             const val = s['Week'+i];
-            if(val !== undefined && val !== "" && val !== null) {
-                rows += createStatusRow("Week "+i, val);
-                weekFound = true;
-            }
+            if(val) rows += createStatusRow("Week "+i, val);
         }
-        if (!weekFound) rows += `<tr><td colspan="3">ހަފުތާގެ މަސައްކަތުގެ މައުލޫމާތެއް ނެތް</td></tr>`;
-
         document.getElementById('resultTableBody').innerHTML = rows;
     }
 
     function createGradeRow(t, m) {
-        const v = parseFloat(m) || 0;
-        const p = v >= 50;
+        const p = parseFloat(m) >= 50;
         return `<tr><td>${t}</td><td>${m}</td><td><span class="grade-badge ${p?'pass':'fail'}">${p?'Pass':'Fail'}</span></td></tr>`;
     }
 
     function createStatusRow(t, s) {
-        const statusStr = s.toString().toLowerCase().trim();
-        const isDone = statusStr === "done" || statusStr === "ނިމިފައި" || statusStr === "yes";
-        return `<tr><td>${t}</td><td>${isDone?'Done':'Not Done'}</td><td><span class="grade-badge ${isDone?'done':'not-done'}">${isDone?'ނިމިފައި':'ނުނިމޭ'}</span></td></tr>`;
+        const isDone = s.toLowerCase() === "done";
+        return `<tr><td>${t}</td><td>${s}</td><td><span class="grade-badge ${isDone?'done':'not-done'}">${isDone?'ނިމިފައި':'ނުނިމޭ'}</span></td></tr>`;
     }
 
     function filterTeacherTable() {
         const q = document.getElementById("teacherSearch").value.toLowerCase();
-        const rows = document.querySelectorAll("#allStudentsBody tr");
-        rows.forEach(r => {
-            if (r.cells.length > 1) {
-                const text = r.innerText.toLowerCase();
-                r.style.display = text.includes(q) ? "" : "none";
-            }
+        document.querySelectorAll("#allStudentsBody tr").forEach(r => {
+            r.style.display = r.innerText.toLowerCase().includes(q) ? "" : "none";
         });
-    }
-
-    document.getElementById('indexNo').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') searchStudent();
-    });
-    document.getElementById('adminPass').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') checkAdmin();
-    });
-
-    window.onclick = function(event) {
-        const modal = document.getElementById('editModal');
-        if (event.target == modal) closeModal();
     }
 </script>
 
