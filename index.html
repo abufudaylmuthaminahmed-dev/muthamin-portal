@@ -275,7 +275,7 @@
             <div class="table-container">
                 <table>
                     <thead>
-                        <tr><th>އިންޑެކްސް</th><th>ނަން</th><th>Unit 1</th><th>Week 1</th><th>އަމަލު</th></tr>
+                        <tr><th>އިންޑެކްސް</th><th>ނަން</th><th>Unit 1</th><th>Week 1</th><th>Week 2</th><th>Week 3</th><th>Week 4</th><th>Week 5</th><th>އަމަލު</th></tr>
                     </thead>
                     <tbody id="allStudentsBody"></tbody>
                 </table>
@@ -288,20 +288,37 @@
     <div class="modal-content">
         <h3 id="editTitle">ބަދަލުކުރައްވާ</h3>
         <input type="hidden" id="editRowIndex">
-        <div style="margin-bottom:10px; text-align:right;">
-            <label>Unit 1 Marks:</label>
-            <input type="number" id="editUnit1" placeholder="މާކްސް">
+        <div style="height: 300px; overflow-y: auto; padding: 5px;">
+            <div style="margin-bottom:10px; text-align:right;">
+                <label>Unit 1 Marks:</label>
+                <input type="number" id="editUnit1" placeholder="މާކްސް">
+            </div>
+            <div style="margin-bottom:10px; text-align:right;">
+                <label>Week 1 Status:</label>
+                <select id="editWeek1"><option value="Not Done">Not Done</option><option value="Done">Done</option></select>
+            </div>
+            <div style="margin-bottom:10px; text-align:right;">
+                <label>Week 2 Status:</label>
+                <select id="editWeek2"><option value="Not Done">Not Done</option><option value="Done">Done</option></select>
+            </div>
+            <div style="margin-bottom:10px; text-align:right;">
+                <label>Week 3 Status:</label>
+                <select id="editWeek3"><option value="Not Done">Not Done</option><option value="Done">Done</option></select>
+            </div>
+            <div style="margin-bottom:10px; text-align:right;">
+                <label>Week 4 Status:</label>
+                <select id="editWeek4"><option value="Not Done">Not Done</option><option value="Done">Done</option></select>
+            </div>
+            <div style="margin-bottom:10px; text-align:right;">
+                <label>Week 5 Status:</label>
+                <select id="editWeek5"><option value="Not Done">Not Done</option><option value="Done">Done</option></select>
+            </div>
+            <textarea id="editNote" placeholder="ނޯޓް"></textarea>
         </div>
-        <div style="margin-bottom:10px; text-align:right;">
-            <label>Week 1 Status:</label>
-            <select id="editWeek1">
-                <option value="Not Done">Not Done</option>
-                <option value="Done">Done</option>
-            </select>
+        <div style="margin-top: 15px;">
+            <button onclick="closeModal()" style="background:#6c757d; width: 48%; float: left;">ބާތިލް</button>
+            <button onclick="saveDataMock()" style="background:#28a745; width: 48%; float: right;">ސޭވް</button>
         </div>
-        <textarea id="editNote" placeholder="ނޯޓް"></textarea>
-        <button onclick="closeModal()" style="background:#6c757d; width: 48%; float: left;">ބާތިލް</button>
-        <button onclick="saveDataMock()" style="background:#28a745; width: 48%; float: right;">ސޭވް</button>
         <div style="clear:both;"></div>
     </div>
 </div>
@@ -350,20 +367,26 @@
                 document.getElementById('stNote').innerText = s.Note || "ނޯޓެއް ނެތް";
                 
                 let rows = "";
-                // Unit Tests
+                // Unit Tests (Unit1, Unit2, Unit3)
                 for(let i=1; i<=3; i++) {
-                    if(s['Unit'+i]) {
-                        const m = parseInt(s['Unit'+i]);
+                    const fieldName = 'Unit' + i;
+                    if(s[fieldName] !== undefined && s[fieldName] !== "") {
+                        const m = parseInt(s[fieldName]);
                         rows += `<tr><td>Unit ${i}</td><td>${m}</td><td><span class="grade-badge ${m>=50?'pass':'fail'}">${m>=50?'Pass':'Fail'}</span></td></tr>`;
                     }
                 }
-                // Work Status (Week Status)
-                if(s.Week1) {
-                    const isDone = s.Week1 === 'Done';
-                    rows += `<tr><td>Week 1 Work</td><td>${s.Week1}</td><td><span class="grade-badge ${isDone?'done':'not-done'}">${isDone?'ނިމިއްޖެ':'ނުނިމޭ'}</span></td></tr>`;
+                
+                // Week Status (Week1 through Week 5)
+                for(let i=1; i<=5; i++) {
+                    const fieldName = 'Week' + i;
+                    if(s[fieldName] !== undefined && s[fieldName] !== "") {
+                        const status = s[fieldName];
+                        const isDone = status.toString().toLowerCase() === 'done';
+                        rows += `<tr><td>Week ${i} Work</td><td>${status}</td><td><span class="grade-badge ${isDone?'done':'not-done'}">${isDone?'ނިމިއްޖެ':'ނުނިމޭ'}</span></td></tr>`;
+                    }
                 }
 
-                document.getElementById('resultTableBody').innerHTML = rows || '<tr><td colspan="3">ނަތީޖާއެއް ނެތް</td></tr>';
+                document.getElementById('resultTableBody').innerHTML = rows || '<tr><td colspan="3">މަޢުލޫމާތެއް ނުފެނުނު</td></tr>';
                 document.getElementById('resultArea').style.display = 'block';
                 
                 if (materials.length > 0) {
@@ -387,7 +410,11 @@
                     <td>${s.Index}</td>
                     <td>${s.Name}</td>
                     <td>${s.Unit1 || 0}</td>
-                    <td><span class="grade-badge ${s.Week1 === 'Done' ? 'done' : 'not-done'}">${s.Week1 || 'Not Done'}</span></td>
+                    <td><span class="grade-badge ${s.Week1 && s.Week1.toString().toLowerCase() === 'done' ? 'done' : 'not-done'}">${s.Week1 || 'N/A'}</span></td>
+                    <td><span class="grade-badge ${s.Week2 && s.Week2.toString().toLowerCase() === 'done' ? 'done' : 'not-done'}">${s.Week2 || 'N/A'}</span></td>
+                    <td><span class="grade-badge ${s.Week3 && s.Week3.toString().toLowerCase() === 'done' ? 'done' : 'not-done'}">${s.Week3 || 'N/A'}</span></td>
+                    <td><span class="grade-badge ${s.Week4 && s.Week4.toString().toLowerCase() === 'done' ? 'done' : 'not-done'}">${s.Week4 || 'N/A'}</span></td>
+                    <td><span class="grade-badge ${s.Week5 && s.Week5.toString().toLowerCase() === 'done' ? 'done' : 'not-done'}">${s.Week5 || 'N/A'}</span></td>
                     <td><button onclick="openEditModal(${idx})" style="width:auto; padding:5px 10px;">Edit</button></td>
                 </tr>
             `).join('');
@@ -400,6 +427,10 @@
         document.getElementById('editRowIndex').value = idx;
         document.getElementById('editUnit1').value = s.Unit1 || 0;
         document.getElementById('editWeek1').value = s.Week1 || "Not Done";
+        document.getElementById('editWeek2').value = s.Week2 || "Not Done";
+        document.getElementById('editWeek3').value = s.Week3 || "Not Done";
+        document.getElementById('editWeek4').value = s.Week4 || "Not Done";
+        document.getElementById('editWeek5').value = s.Week5 || "Not Done";
         document.getElementById('editNote').value = s.Note || "";
         document.getElementById('editModal').style.display = 'block';
     }
