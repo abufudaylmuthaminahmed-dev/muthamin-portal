@@ -23,8 +23,9 @@
         input, select, textarea { width: 100%; max-width: 400px; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; text-align: center; outline: none; margin-bottom: 15px; }
         input:focus { border-color: #1a73e8; }
         
-        button { padding: 12px 30px; background: #1a73e8; color: white; border: none; border-radius: 25px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.2s; }
+        button { padding: 12px 30px; background: #1a73e8; color: white; border: none; border-radius: 25px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.2s; position: relative; }
         button:hover { background: #1557b0; transform: translateY(-1px); }
+        button:active { transform: translateY(1px); }
         
         .admin-login { text-align: center; padding: 50px 20px; border: 1px dashed #ccc; border-radius: 15px; margin-top: 20px; }
         
@@ -40,7 +41,7 @@
 
         /* Modal */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(3px); }
-        .modal-content { background: white; margin: 10% auto; padding: 25px; border-radius: 15px; width: 90%; max-width: 500px; text-align: right; box-shadow: 0 5px 30px rgba(0,0,0,0.3); }
+        .modal-content { background: white; margin: 5% auto; padding: 25px; border-radius: 15px; width: 90%; max-width: 500px; text-align: right; box-shadow: 0 5px 30px rgba(0,0,0,0.3); position: relative; }
         
         .loader { border: 3px solid #f3f3f3; border-top: 3px solid #1a73e8; border-radius: 50%; width: 18px; height: 18px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-left: 8px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -159,25 +160,39 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx0FuKBjx_6ZwkA13pmpuqGRsqe_7NXwm6IKhdynSJgslnXwUaFWxvg5tsEY5oJYVVR/exec";
     let allData = [];
 
+    // ޓެބްތައް ދެއްކުމަށް
     function showTab(tabId) {
         document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        if(tabId === 'studentView') document.getElementById('tabStudent').classList.add('active');
-        else document.getElementById('tabTeacher').classList.add('active');
+        
+        const targetSection = document.getElementById(tabId);
+        if (targetSection) {
+            targetSection.classList.add('active');
+        }
+        
+        if(tabId === 'studentView') {
+            document.getElementById('tabStudent').classList.add('active');
+        } else {
+            document.getElementById('tabTeacher').classList.add('active');
+        }
     }
 
+    // ޓީޗަރުންގެ ލޮގިން ޗެކްކުރުން
     function checkAdmin() {
-        const pass = document.getElementById('adminPass').value;
+        const passInput = document.getElementById('adminPass');
+        const pass = passInput.value;
         if (pass === "admin123") {
             document.getElementById('adminLoginForm').style.display = 'none';
             document.getElementById('teacherDashboard').style.display = 'block';
             loadAllDataForTeacher();
         } else {
             alert("ޕާސްވޯޑް ނުބައި!");
+            passInput.value = "";
+            passInput.focus();
         }
     }
 
+    // ޑޭޓާ ހޯދުމަށް (JSONP ބޭނުންކޮށްގެން)
     function fetchData(callback) {
         const cbName = 'jsonp_cb_' + Date.now();
         window[cbName] = (data) => {
@@ -192,6 +207,7 @@
         document.body.appendChild(script);
     }
 
+    // ހުރިހާ ކުދިންގެ ޑޭޓާ ޓީޗަރުންނަށް ދެއްކުން
     function loadAllDataForTeacher() {
         const tbody = document.getElementById('allStudentsBody');
         tbody.innerHTML = '<tr><td colspan="5">ލޯޑުވަނީ... <span class="loader"></span></td></tr>';
@@ -199,38 +215,49 @@
         fetchData((data) => {
             allData = data;
             let html = "";
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5">މައުލޫމާތެއް ނެތް</td></tr>';
+                return;
+            }
             data.forEach((s, idx) => {
                 html += `<tr>
                     <td>${s.Index || '-'}</td>
                     <td>${s.Name || '-'}</td>
-                    <td>${s.Unit1 || '-'}</td>
-                    <td>${s.Week1 || '-'}</td>
+                    <td>${s.Unit1 || '0'}</td>
+                    <td>${s.Week1 || 'Not Done'}</td>
                     <td>
-                        <button onclick="openEditModal(${idx})" style="background:#f39c12; padding:5px 12px; font-size:13px; border-radius:5px;">Edit</button>
-                        <button onclick="viewStudentDirect('${s.Index}')" style="background:#34495e; padding:5px 12px; font-size:13px; border-radius:5px;">View</button>
+                        <button onclick="openEditModal(${idx})" style="background:#f39c12; padding:5px 12px; font-size:13px; border-radius:5px; width:auto; margin:2px;">Edit</button>
+                        <button onclick="viewStudentDirect('${s.Index}')" style="background:#34495e; padding:5px 12px; font-size:13px; border-radius:5px; width:auto; margin:2px;">View</button>
                     </td>
                 </tr>`;
             });
-            tbody.innerHTML = html || '<tr><td colspan="5">މައުލޫމާތެއް ނެތް</td></tr>';
+            tbody.innerHTML = html;
         });
     }
 
+    // އެޑިޓް މޮޑަލް ހުޅުވުން
     function openEditModal(idx) {
         const s = allData[idx];
-        document.getElementById('editTitle').innerText = s.Name + " ގެ މައުލޫމާތު";
+        if (!s) return;
+        document.getElementById('editTitle').innerText = (s.Name || "ދަރިވަރު") + " ގެ މައުލޫމާތު";
         document.getElementById('editRowIndex').value = idx;
-        document.getElementById('editUnit1').value = s.Unit1 || "";
+        document.getElementById('editUnit1').value = s.Unit1 || "0";
         document.getElementById('editWeek1').value = s.Week1 || "Not Done";
         document.getElementById('editNote').value = s.Note || "";
         document.getElementById('editModal').style.display = 'block';
     }
 
-    function closeModal() { document.getElementById('editModal').style.display = 'none'; }
+    // މޮޑަލް ލެއްޕުން
+    function closeModal() { 
+        document.getElementById('editModal').style.display = 'none'; 
+    }
 
+    // ޑޭޓާ ސޭވްކުރުން
     async function saveData(e) {
-        e.preventDefault();
+        if (e) e.preventDefault();
         const idx = document.getElementById('editRowIndex').value;
         const student = allData[idx];
+        if (!student) return;
         
         const payload = {
             index: student.Index,
@@ -239,35 +266,47 @@
             note: document.getElementById('editNote').value
         };
 
-        document.getElementById('saveLoader').style.display = 'block';
+        const loader = document.getElementById('saveLoader');
+        loader.style.display = 'block';
         
         try {
+            // Google Apps Script އަށް POST ރިކުއެސްޓް ފޮނުވުން
             await fetch(SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
+            
             alert("ސޭވް ކުރެވިއްޖެ! (ޝީޓަށް އަޕްޑޭޓްވާން ކުޑަވަގުތުކޮޅެއް ނަގާފާނެ)");
             closeModal();
-            loadAllDataForTeacher();
-        } catch (e) {
-            alert("މައްސަލައެއް ދިމާވެއްޖެ!");
+            loadAllDataForTeacher(); // ލިސްޓް އަޕްޑޭޓްކުރުން
+        } catch (error) {
+            console.error(error);
+            alert("މައުލޫމާތު ސޭވްކުރުމުގައި މައްސަލައެއް ދިމާވެއްޖެ!");
         } finally {
-            document.getElementById('saveLoader').style.display = 'none';
+            loader.style.display = 'none';
         }
     }
 
-    function viewStudentDirect(idx) {
-        document.getElementById('indexNo').value = idx;
+    // ވަކި ކުއްޖެއްގެ ނަތީޖާ ބަލަން ދިއުން
+    function viewStudentDirect(idxNo) {
+        document.getElementById('indexNo').value = idxNo;
         showTab('studentView');
         searchStudent();
     }
 
+    // ދަރިވަރު ހޯދުން
     function searchStudent() {
-        const input = document.getElementById('indexNo').value.trim();
+        const inputField = document.getElementById('indexNo');
+        const input = inputField.value.trim();
         const btn = document.getElementById('searchBtn');
-        if (!input) { alert("އިންޑެކްސް ނަންބަރު ޖައްސަވާ!"); return; }
+        
+        if (!input) { 
+            alert("އިންޑެކްސް ނަންބަރު ޖައްސަވާ!"); 
+            inputField.focus();
+            return; 
+        }
 
         btn.disabled = true;
         btn.innerHTML = 'ހޯދަނީ... <span class="loader"></span>';
@@ -275,28 +314,99 @@
         fetchData((data) => {
             btn.disabled = false;
             btn.innerHTML = "🔍 ހޯދާ";
+            
+            if (!data) {
+                alert("ޑޭޓާ ލޯޑެއް ނުކުރެވުނު!");
+                return;
+            }
+
             const s = data.find(x => x.Index && x.Index.toString().trim() === input);
             if (s) {
                 renderStudent(s);
                 document.getElementById('resultArea').style.display = 'block';
+                document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
             } else {
-                alert("މި ނަންބަރުގެ ކުއްޖެއް ނުފެނުނު!");
+                alert("މި ނަންބަރުގެ ކުއްޖެއް ނުފެނުނު! ނަންބަރު ރަނގަޅުތޯ ޗެކްކޮށްލައްވާ.");
                 document.getElementById('resultArea').style.display = 'none';
             }
         });
     }
 
+    // ދަރިވަރުގެ ނަތީޖާ ޓޭބަލަށް އެޅުން
     function renderStudent(s) {
         document.getElementById('stName').innerText = s.Name || "ނަމެއް ނެތް";
         document.getElementById('stIndex').innerText = "އިންޑެކްސް: " + (s.Index || "-");
-        document.getElementById('stNote').innerText = s.Note || "ނޯޓެއް ނެތް";
+        document.getElementById('stNote').innerText = s.Note || "ޓީޗަރުގެ ނޯޓެއް ނެތް.";
         
         let rows = `<tr><td colspan="3" class="section-header">ޔުނިޓް ޓެސްޓްތައް</td></tr>`;
+        
+        // Unit 1-6 ޗެކްކުރުން
+        let unitFound = false;
         for(let i=1; i<=6; i++) {
-            if(s['Unit'+i] || s['Unit'+i] === 0) rows += createGradeRow("Unit Test "+i, s['Unit'+i]);
+            const val = s['Unit'+i];
+            if(val !== undefined && val !== "") {
+                rows += createGradeRow("Unit Test "+i, val);
+                unitFound = true;
+            }
         }
+        if (!unitFound) rows += `<tr><td colspan="3">ޔުނިޓް ޓެސްޓެއްގެ މައުލޫމާތެއް ނެތް</td></tr>`;
+
         rows += `<tr><td colspan="3" class="section-header">ހަފުތާގެ މަސައްކަތް</td></tr>`;
+        
+        // Week 1-4 ޗެކްކުރުން
+        let weekFound = false;
         for(let i=1; i<=4; i++) {
-            if(s['Week'+i]) rows += createStatusRow("Week "+i, s['Week'+i]);
+            const val = s['Week'+i];
+            if(val !== undefined && val !== "") {
+                rows += createStatusRow("Week "+i, val);
+                weekFound = true;
+            }
         }
+        if (!weekFound) rows += `<tr><td colspan="3">ހަފުތާގެ މަސައްކަތުގެ މައުލޫމާތެއް ނެތް</td></tr>`;
+
         document.getElementById('resultTableBody').innerHTML = rows;
+    }
+
+    // މާކްސް ރޯ ހެދުން
+    function createGradeRow(t, m) {
+        const v = parseFloat(m) || 0;
+        const p = v >= 50;
+        return `<tr><td>${t}</td><td>${m}</td><td><span class="grade-badge ${p?'pass':'fail'}">${p?'Pass':'Fail'}</span></td></tr>`;
+    }
+
+    // ހާލަތު ރޯ ހެދުން
+    function createStatusRow(t, s) {
+        const statusStr = s.toString().toLowerCase().trim();
+        const isDone = statusStr === "done" || statusStr === "ނިމިފައި" || statusStr === "yes";
+        return `<tr><td>${t}</td><td>${isDone?'Done':'Not Done'}</td><td><span class="grade-badge ${isDone?'done':'not-done'}">${isDone?'ނިމިފައި':'ނުނިމޭ'}</span></td></tr>`;
+    }
+
+    // ޓީޗަރުންގެ ޓޭބަލް ފިލްޓަރ ކުރުން
+    function filterTeacherTable() {
+        const q = document.getElementById("teacherSearch").value.toLowerCase();
+        const rows = document.querySelectorAll("#allStudentsBody tr");
+        rows.forEach(r => {
+            if (r.cells.length > 1) { // Header ނޫންކަން ޔަގީންކުރުން
+                const text = r.innerText.toLowerCase();
+                r.style.display = text.includes(q) ? "" : "none";
+            }
+        });
+    }
+
+    // އެންޓަރ ކީ އަށް ސަޕޯޓް ދިނުން
+    document.getElementById('indexNo').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') searchStudent();
+    });
+    document.getElementById('adminPass').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') checkAdmin();
+    });
+
+    // ބޭރުގައި ފިއްތާލުމުން މޮޑަލް ލެއްޕުން
+    window.onclick = function(event) {
+        const modal = document.getElementById('editModal');
+        if (event.target == modal) closeModal();
+    }
+</script>
+
+</body>
+</html>
