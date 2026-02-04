@@ -27,7 +27,7 @@
             padding: 8px; 
             text-align: right; 
             line-height: 1.6;
-            overflow-x: hidden; /* ހުރަހަށް ސްކްރޯލްވުން ހުއްޓުވުމަށް */
+            overflow-x: hidden;
         }
         
         .container { 
@@ -53,7 +53,6 @@
             padding-bottom: 10px; 
         }
         
-        /* Navigation Tabs - Full Width on Mobile */
         .tabs { 
             display: flex; 
             justify-content: space-between; 
@@ -118,7 +117,6 @@
             margin-top: 5px;
         }
         
-        /* Responsive Table Fixes */
         .table-container { 
             width: 100%;
             overflow-x: auto; 
@@ -130,7 +128,7 @@
         table { 
             width: 100%; 
             border-collapse: collapse; 
-            min-width: 320px; /* ފޯނުގެ އެންމެ ކުޑަ ސައިޒަށް */
+            min-width: 320px; 
         }
         th, td { 
             padding: 10px 8px; 
@@ -171,7 +169,6 @@
             border-radius: 20px;
         }
 
-        /* Desktop View Adjustments */
         @media (min-width: 600px) {
             h1 { font-size: 1.8rem; }
             .container { padding: 25px; }
@@ -188,7 +185,6 @@
             border-top: 3px solid #00796b; 
         }
 
-        /* Modal Settings */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); }
         .modal-content { 
             background: white; 
@@ -243,7 +239,7 @@
             <div class="table-container">
                 <table>
                     <thead>
-                        <tr><th>ބާވަތް</th><th>މާކްސް</th><th>ނަތީޖާ</th></tr>
+                        <tr><th>ބާވަތް</th><th>މާކްސް / ޙާލަތު</th><th>ނަތީޖާ</th></tr>
                     </thead>
                     <tbody id="resultTableBody"></tbody>
                 </table>
@@ -279,7 +275,7 @@
             <div class="table-container">
                 <table>
                     <thead>
-                        <tr><th>އިންޑެކްސް</th><th>ނަން</th><th>Unit 1</th><th>އަމަލު</th></tr>
+                        <tr><th>އިންޑެކްސް</th><th>ނަން</th><th>Unit 1</th><th>Week 1</th><th>އަމަލު</th></tr>
                     </thead>
                     <tbody id="allStudentsBody"></tbody>
                 </table>
@@ -292,7 +288,17 @@
     <div class="modal-content">
         <h3 id="editTitle">ބަދަލުކުރައްވާ</h3>
         <input type="hidden" id="editRowIndex">
-        <input type="number" id="editUnit1" placeholder="މާކްސް">
+        <div style="margin-bottom:10px; text-align:right;">
+            <label>Unit 1 Marks:</label>
+            <input type="number" id="editUnit1" placeholder="މާކްސް">
+        </div>
+        <div style="margin-bottom:10px; text-align:right;">
+            <label>Week 1 Status:</label>
+            <select id="editWeek1">
+                <option value="Not Done">Not Done</option>
+                <option value="Done">Done</option>
+            </select>
+        </div>
         <textarea id="editNote" placeholder="ނޯޓް"></textarea>
         <button onclick="closeModal()" style="background:#6c757d; width: 48%; float: left;">ބާތިލް</button>
         <button onclick="saveDataMock()" style="background:#28a745; width: 48%; float: right;">ސޭވް</button>
@@ -344,12 +350,19 @@
                 document.getElementById('stNote').innerText = s.Note || "ނޯޓެއް ނެތް";
                 
                 let rows = "";
+                // Unit Tests
                 for(let i=1; i<=3; i++) {
                     if(s['Unit'+i]) {
                         const m = parseInt(s['Unit'+i]);
                         rows += `<tr><td>Unit ${i}</td><td>${m}</td><td><span class="grade-badge ${m>=50?'pass':'fail'}">${m>=50?'Pass':'Fail'}</span></td></tr>`;
                     }
                 }
+                // Work Status (Week Status)
+                if(s.Week1) {
+                    const isDone = s.Week1 === 'Done';
+                    rows += `<tr><td>Week 1 Work</td><td>${s.Week1}</td><td><span class="grade-badge ${isDone?'done':'not-done'}">${isDone?'ނިމިއްޖެ':'ނުނިމޭ'}</span></td></tr>`;
+                }
+
                 document.getElementById('resultTableBody').innerHTML = rows || '<tr><td colspan="3">ނަތީޖާއެއް ނެތް</td></tr>';
                 document.getElementById('resultArea').style.display = 'block';
                 
@@ -374,6 +387,7 @@
                     <td>${s.Index}</td>
                     <td>${s.Name}</td>
                     <td>${s.Unit1 || 0}</td>
+                    <td><span class="grade-badge ${s.Week1 === 'Done' ? 'done' : 'not-done'}">${s.Week1 || 'Not Done'}</span></td>
                     <td><button onclick="openEditModal(${idx})" style="width:auto; padding:5px 10px;">Edit</button></td>
                 </tr>
             `).join('');
@@ -385,6 +399,7 @@
         document.getElementById('editTitle').innerText = s.Name;
         document.getElementById('editRowIndex').value = idx;
         document.getElementById('editUnit1').value = s.Unit1 || 0;
+        document.getElementById('editWeek1').value = s.Week1 || "Not Done";
         document.getElementById('editNote').value = s.Note || "";
         document.getElementById('editModal').style.display = 'block';
     }
