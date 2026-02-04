@@ -23,9 +23,9 @@
         input, select, textarea { width: 100%; max-width: 400px; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; text-align: center; outline: none; margin-bottom: 15px; }
         input:focus { border-color: #1a73e8; }
         
-        button { padding: 12px 30px; background: #1a73e8; color: white; border: none; border-radius: 25px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.2s; position: relative; }
+        button { padding: 12px 30px; background: #1a73e8; color: white; border: none; border-radius: 25px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.2s; position: relative; z-index: 10; }
         button:hover { background: #1557b0; transform: translateY(-1px); }
-        button:active { transform: translateY(1px); }
+        button:active { background: #0d47a1; transform: translateY(1px); }
         
         .admin-login { text-align: center; padding: 50px 20px; border: 1px dashed #ccc; border-radius: 15px; margin-top: 20px; }
         
@@ -62,9 +62,9 @@
     <div id="studentView" class="view-section active">
         <div class="search-box">
             <h3>ދަރިވަރުގެ ނަތީޖާ ހޯދާ</h3>
-            <input type="text" id="indexNo" placeholder="އިންޑެކްސް ނަންބަރު ޖައްސަވާ">
+            <input type="text" id="indexNo" placeholder="އިންޑެކްސް ނަންބަރު ޖައްސަވާ" autocomplete="off">
             <br>
-            <button id="searchBtn" onclick="searchStudent()">🔍 ހޯދާ</button>
+            <button id="searchBtn" type="button" onclick="searchStudent()">🔍 ހޯދާ</button>
         </div>
 
         <div id="resultArea" style="display:none;">
@@ -92,13 +92,13 @@
             <p style="color: #666;">މި ބަޔަށް ވަނުމަށް ޕާސްވޯޑް ޖައްސަވާ</p>
             <input type="password" id="adminPass" placeholder="ޕާސްވޯޑް ޖައްސަވާ">
             <br>
-            <button onclick="checkAdmin()">ލޮގިން</button>
+            <button type="button" onclick="checkAdmin()">ލޮގިން</button>
         </div>
 
         <div id="teacherDashboard" style="display:none;">
             <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                 <h3 style="margin:0;">📊 ހުރިހާ ދަރިވަރުންގެ ލިސްޓް</h3>
-                <button onclick="loadAllDataForTeacher()" style="padding: 8px 15px; font-size: 14px; border-radius: 8px;">🔄 ރިފްރެޝް</button>
+                <button type="button" onclick="loadAllDataForTeacher()" style="padding: 8px 15px; font-size: 14px; border-radius: 8px;">🔄 ރިފްރެޝް</button>
             </div>
             <input type="text" id="teacherSearch" onkeyup="filterTeacherTable()" placeholder="ނަމުން ނުވަތަ ނަންބަރުން ހޯދާ..." style="max-width: 100%; margin-bottom: 15px;">
             <div style="overflow-x:auto;">
@@ -194,16 +194,22 @@
 
     // ޑޭޓާ ހޯދުމަށް (JSONP ބޭނުންކޮށްގެން)
     function fetchData(callback) {
-        const cbName = 'jsonp_cb_' + Date.now();
+        const cbName = 'jsonp_cb_' + Math.floor(Math.random() * 1000000);
         window[cbName] = (data) => {
             callback(data);
-            const sc = document.getElementById(cbName + '_script');
-            if(sc) sc.remove();
             delete window[cbName];
+            const scriptElement = document.getElementById(cbName + '_script');
+            if (scriptElement) scriptElement.remove();
         };
+        
         const script = document.createElement('script');
         script.id = cbName + '_script';
-        script.src = `${SCRIPT_URL}?prefix=${cbName}`;
+        script.src = `${SCRIPT_URL}?prefix=${cbName}&t=${Date.now()}`;
+        script.onerror = () => {
+            alert("ޑޭޓާ ލޯޑްކުރުމުގައި މައްސަލައެއް ދިމާވެއްޖެ. ލިންކް ރަނގަޅުތޯ ޗެކްކޮށްލައްވާ.");
+            document.getElementById('searchBtn').disabled = false;
+            document.getElementById('searchBtn').innerHTML = "🔍 ހޯދާ";
+        };
         document.body.appendChild(script);
     }
 
@@ -226,8 +232,8 @@
                     <td>${s.Unit1 || '0'}</td>
                     <td>${s.Week1 || 'Not Done'}</td>
                     <td>
-                        <button onclick="openEditModal(${idx})" style="background:#f39c12; padding:5px 12px; font-size:13px; border-radius:5px; width:auto; margin:2px;">Edit</button>
-                        <button onclick="viewStudentDirect('${s.Index}')" style="background:#34495e; padding:5px 12px; font-size:13px; border-radius:5px; width:auto; margin:2px;">View</button>
+                        <button type="button" onclick="openEditModal(${idx})" style="background:#f39c12; padding:5px 12px; font-size:13px; border-radius:5px; width:auto; margin:2px;">Edit</button>
+                        <button type="button" onclick="viewStudentDirect('${s.Index}')" style="background:#34495e; padding:5px 12px; font-size:13px; border-radius:5px; width:auto; margin:2px;">View</button>
                     </td>
                 </tr>`;
             });
@@ -270,7 +276,6 @@
         loader.style.display = 'block';
         
         try {
-            // Google Apps Script އަށް POST ރިކުއެސްޓް ފޮނުވުން
             await fetch(SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors',
@@ -280,7 +285,7 @@
             
             alert("ސޭވް ކުރެވިއްޖެ! (ޝީޓަށް އަޕްޑޭޓްވާން ކުޑަވަގުތުކޮޅެއް ނަގާފާނެ)");
             closeModal();
-            loadAllDataForTeacher(); // ލިސްޓް އަޕްޑޭޓްކުރުން
+            loadAllDataForTeacher();
         } catch (error) {
             console.error(error);
             alert("މައުލޫމާތު ސޭވްކުރުމުގައި މައްސަލައެއް ދިމާވެއްޖެ!");
@@ -315,8 +320,8 @@
             btn.disabled = false;
             btn.innerHTML = "🔍 ހޯދާ";
             
-            if (!data) {
-                alert("ޑޭޓާ ލޯޑެއް ނުކުރެވުނު!");
+            if (!data || data.length === 0) {
+                alert("ޑޭޓާ ލޯޑެއް ނުކުރެވުނު! ޝީޓުގައި މައުލޫމާތު ހުރިތޯ ޗެކްކޮށްލައްވާ.");
                 return;
             }
 
@@ -340,11 +345,10 @@
         
         let rows = `<tr><td colspan="3" class="section-header">ޔުނިޓް ޓެސްޓްތައް</td></tr>`;
         
-        // Unit 1-6 ޗެކްކުރުން
         let unitFound = false;
         for(let i=1; i<=6; i++) {
             const val = s['Unit'+i];
-            if(val !== undefined && val !== "") {
+            if(val !== undefined && val !== "" && val !== null) {
                 rows += createGradeRow("Unit Test "+i, val);
                 unitFound = true;
             }
@@ -353,11 +357,10 @@
 
         rows += `<tr><td colspan="3" class="section-header">ހަފުތާގެ މަސައްކަތް</td></tr>`;
         
-        // Week 1-4 ޗެކްކުރުން
         let weekFound = false;
         for(let i=1; i<=4; i++) {
             const val = s['Week'+i];
-            if(val !== undefined && val !== "") {
+            if(val !== undefined && val !== "" && val !== null) {
                 rows += createStatusRow("Week "+i, val);
                 weekFound = true;
             }
@@ -367,33 +370,29 @@
         document.getElementById('resultTableBody').innerHTML = rows;
     }
 
-    // މާކްސް ރޯ ހެދުން
     function createGradeRow(t, m) {
         const v = parseFloat(m) || 0;
         const p = v >= 50;
         return `<tr><td>${t}</td><td>${m}</td><td><span class="grade-badge ${p?'pass':'fail'}">${p?'Pass':'Fail'}</span></td></tr>`;
     }
 
-    // ހާލަތު ރޯ ހެދުން
     function createStatusRow(t, s) {
         const statusStr = s.toString().toLowerCase().trim();
         const isDone = statusStr === "done" || statusStr === "ނިމިފައި" || statusStr === "yes";
         return `<tr><td>${t}</td><td>${isDone?'Done':'Not Done'}</td><td><span class="grade-badge ${isDone?'done':'not-done'}">${isDone?'ނިމިފައި':'ނުނިމޭ'}</span></td></tr>`;
     }
 
-    // ޓީޗަރުންގެ ޓޭބަލް ފިލްޓަރ ކުރުން
     function filterTeacherTable() {
         const q = document.getElementById("teacherSearch").value.toLowerCase();
         const rows = document.querySelectorAll("#allStudentsBody tr");
         rows.forEach(r => {
-            if (r.cells.length > 1) { // Header ނޫންކަން ޔަގީންކުރުން
+            if (r.cells.length > 1) {
                 const text = r.innerText.toLowerCase();
                 r.style.display = text.includes(q) ? "" : "none";
             }
         });
     }
 
-    // އެންޓަރ ކީ އަށް ސަޕޯޓް ދިނުން
     document.getElementById('indexNo').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') searchStudent();
     });
@@ -401,7 +400,6 @@
         if (e.key === 'Enter') checkAdmin();
     });
 
-    // ބޭރުގައި ފިއްތާލުމުން މޮޑަލް ލެއްޕުން
     window.onclick = function(event) {
         const modal = document.getElementById('editModal');
         if (event.target == modal) closeModal();
