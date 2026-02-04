@@ -2,7 +2,7 @@
 <html lang="dv" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>އިސްލާމް ޕޯޓަލް (މުއުތަމިން ސަރ)</title>
     <style>
         /* ފޮންޓް ސެޓަޕް */
@@ -15,14 +15,19 @@
             src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff');
         }
 
-        * { font-family: "Faruma", "MV Waheed", sans-serif; box-sizing: border-box; }
+        * { 
+            font-family: "Faruma", "MV Waheed", sans-serif; 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent;
+        }
         
         body { 
             background-color: #f0f2f5; 
             margin: 0; 
-            padding: 10px; 
+            padding: 8px; 
             text-align: right; 
             line-height: 1.6;
+            overflow-x: hidden; /* ހުރަހަށް ސްކްރޯލްވުން ހުއްޓުވުމަށް */
         }
         
         .container { 
@@ -30,11 +35,11 @@
             margin: 0 auto; 
             background: white; 
             padding: 15px; 
-            border-radius: 15px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            border-radius: 12px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+            width: 100%;
         }
 
-        /* ހެޑިންތަކަށް MV Waheed ފޮންޓް */
         h1, h2, h3, .tab-btn, th { 
             font-family: "MV Waheed", sans-serif; 
             color: #00796b;
@@ -42,152 +47,168 @@
 
         h1 { 
             text-align: center; 
-            margin-bottom: 20px; 
-            font-size: 1.5rem; 
+            margin-bottom: 15px; 
+            font-size: 1.3rem; 
             border-bottom: 2px solid #e0f2f1; 
             padding-bottom: 10px; 
         }
         
-        /* Navigation Tabs - Optimized for Mobile */
+        /* Navigation Tabs - Full Width on Mobile */
         .tabs { 
             display: flex; 
-            justify-content: stretch; 
-            margin-bottom: 20px; 
+            justify-content: space-between; 
+            margin-bottom: 15px; 
             border-bottom: 2px solid #eee; 
-            gap: 5px; 
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
+            gap: 2px; 
+            width: 100%;
         }
         .tab-btn { 
             flex: 1;
-            padding: 12px 10px; 
+            padding: 12px 5px; 
             cursor: pointer; 
             border: none; 
             background: #f8f9fa; 
-            font-size: 15px; 
+            font-size: 14px; 
             font-weight: bold; 
             color: #666; 
-            transition: 0.3s; 
-            border-radius: 10px 10px 0 0;
-            white-space: nowrap;
-            min-width: 120px;
+            transition: 0.2s; 
+            border-radius: 8px 8px 0 0;
+            text-align: center;
         }
-        .tab-btn.active { color: #00796b; background: white; border-bottom: 3px solid #00796b; }
+        .tab-btn.active { 
+            color: #00796b; 
+            background: white; 
+            border-bottom: 3px solid #00796b; 
+        }
 
-        .view-section { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .view-section { display: none; animation: fadeIn 0.3s ease; }
         .view-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .search-box { 
             background: #e0f2f1; 
-            padding: 20px; 
-            border-radius: 12px; 
+            padding: 15px; 
+            border-radius: 10px; 
             text-align: center; 
             margin-bottom: 20px; 
-            border: 1px solid #b2dfdb; 
         }
         
         input, select, textarea { 
             width: 100%; 
-            padding: 14px; 
+            padding: 12px; 
             border: 2px solid #ddd; 
-            border-radius: 10px; 
+            border-radius: 8px; 
             font-size: 16px; 
             text-align: center; 
             outline: none; 
-            margin-bottom: 12px; 
-            -webkit-appearance: none;
+            margin-bottom: 10px; 
+            display: block;
         }
         
         button { 
             width: 100%;
-            padding: 14px 25px; 
+            padding: 12px; 
             background: #00796b; 
             color: white; 
             border: none; 
-            border-radius: 12px; 
+            border-radius: 10px; 
             cursor: pointer; 
             font-size: 16px; 
             font-weight: bold; 
-            transition: background 0.2s; 
-            display: block;
+            margin-top: 5px;
         }
-        button:active { background: #004d40; transform: scale(0.98); }
         
-        /* Table Responsive Styles */
+        /* Responsive Table Fixes */
         .table-container { 
+            width: 100%;
             overflow-x: auto; 
-            width: 100%; 
             margin-top: 15px; 
-            border-radius: 10px;
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+            border-radius: 8px;
+            -webkit-overflow-scrolling: touch;
         }
         table { 
             width: 100%; 
             border-collapse: collapse; 
-            background: white; 
-            min-width: 450px; 
+            min-width: 320px; /* ފޯނުގެ އެންމެ ކުޑަ ސައިޒަށް */
         }
-        th, td { padding: 12px 10px; border: 1px solid #eee; text-align: center; font-size: 14px; }
-        th { background: #00796b; color: white; white-space: nowrap; }
-        tr:nth-child(even) { background-color: #f1f8f7; }
+        th, td { 
+            padding: 10px 8px; 
+            border-bottom: 1px solid #eee; 
+            text-align: center; 
+            font-size: 14px; 
+        }
+        th { background: #00796b; color: white; }
 
-        .grade-badge { padding: 5px 12px; border-radius: 15px; font-weight: bold; color: white; font-size: 12px; display: inline-block; }
+        .grade-badge { 
+            padding: 3px 8px; 
+            border-radius: 10px; 
+            font-weight: bold; 
+            color: white; 
+            font-size: 11px; 
+        }
         .pass, .done { background: #28a745; }
         .fail, .not-done { background: #dc3545; }
         
         .material-card { 
             background: #fff; 
             border: 1px solid #eee; 
-            padding: 15px; 
-            border-radius: 12px; 
-            margin-top: 12px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 12px; 
+            padding: 12px; 
+            border-radius: 10px; 
+            margin-top: 10px; 
             text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
         }
         
         .material-card a {
-            background: #e0f2f1;
-            padding: 8px 15px;
-            border-radius: 8px;
-            text-decoration: none;
+            display: inline-block;
+            margin-top: 8px;
             color: #00796b;
+            text-decoration: none;
             font-weight: bold;
+            background: #e0f2f1;
+            padding: 5px 15px;
+            border-radius: 20px;
         }
 
+        /* Desktop View Adjustments */
         @media (min-width: 600px) {
             h1 { font-size: 1.8rem; }
             .container { padding: 25px; }
-            .material-card { flex-direction: row; justify-content: space-between; text-align: right; align-items: center; }
-            button, input, select { width: auto; min-width: 200px; }
-            .search-box button { width: auto; margin: 0 auto; }
+            input, button { width: auto; min-width: 250px; }
+            .tabs { justify-content: center; gap: 10px; }
+            .tab-btn { flex: none; width: 150px; }
         }
 
         .comment-section { 
             background: #f1f8f7; 
-            padding: 18px; 
-            border-radius: 12px; 
-            margin-top: 25px; 
-            border-top: 4px solid #00796b; 
+            padding: 15px; 
+            border-radius: 10px; 
+            margin-top: 20px; 
+            border-top: 3px solid #00796b; 
         }
 
-        /* Modal */
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(3px); }
+        /* Modal Settings */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); }
         .modal-content { 
             background: white; 
-            margin: 15% auto; 
+            margin: 10% auto; 
             padding: 20px; 
-            border-radius: 15px; 
+            border-radius: 12px; 
             width: 90%; 
-            max-width: 500px; 
+            max-width: 450px; 
             text-align: right; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
         
-        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #00796b; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
+        .loader { 
+            border: 2px solid #f3f3f3; 
+            border-top: 2px solid #00796b; 
+            border-radius: 50%; 
+            width: 16px; 
+            height: 16px; 
+            animation: spin 1s linear infinite; 
+            display: inline-block; 
+        }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
@@ -203,19 +224,19 @@
 
     <div id="studentView" class="view-section active">
         <div class="search-box">
-            <h3>ދަރިވަރުގެ ނަތީޖާ ހޯދާ</h3>
-            <input type="text" id="indexNo" placeholder="އިންޑެކްސް ނަންބަރު ޖައްސަވާ" autocomplete="off" inputmode="numeric">
-            <button id="searchBtn" type="button" onclick="searchStudent()">🔍 ހޯދާ</button>
+            <h3>ނަތީޖާ ހޯއްދަވާ</h3>
+            <input type="text" id="indexNo" placeholder="އިންޑެކްސް ނަންބަރު" inputmode="numeric">
+            <button id="searchBtn" onclick="searchStudent()">🔍 ހޯދާ</button>
         </div>
 
         <div id="resultArea" style="display:none;">
-            <div style="background: #e0f2f1; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-right: 6px solid #00796b;">
-                <h2 id="stName" style="margin: 0; color: #00796b; font-size: 1.3rem;"></h2>
-                <p id="stIndex" style="margin: 8px 0 0 0; color: #555; font-weight: bold; font-size: 0.9rem;"></p>
+            <div style="background: #e0f2f1; padding: 12px; border-radius: 8px; margin-bottom: 15px; border-right: 5px solid #00796b;">
+                <h2 id="stName" style="margin: 0; font-size: 1.1rem;"></h2>
+                <small id="stIndex" style="color: #666;"></small>
             </div>
 
-            <div id="materialDisplay" style="margin-bottom: 25px; display: none;">
-                <h3>📚 ފިލާވަޅުތަކާއި މެޓީރިއަލްސް</h3>
+            <div id="materialDisplay" style="display: none;">
+                <h3>📚 ފިލާވަޅުތައް</h3>
                 <div id="materialList"></div>
             </div>
 
@@ -228,49 +249,37 @@
                 </table>
             </div>
 
-            <div style="margin-top: 25px; padding: 18px; background: #fff4e5; border-right: 5px solid #ffa000; border-radius: 10px;">
-                <strong>މުދައްރިސުގެ ނޯޓް:</strong>
-                <p id="stNote" style="margin: 10px 0 0 0; line-height: 1.8; font-size: 15px;"></p>
+            <div style="margin-top: 15px; padding: 12px; background: #fff4e5; border-right: 4px solid #ffa000; border-radius: 8px; font-size: 14px;">
+                <strong>ނޯޓް:</strong> <span id="stNote"></span>
             </div>
 
             <div class="comment-section">
                 <h3>💬 ބެލެނިވެރިންގެ ޚިޔާލު</h3>
-                <textarea id="parentComment" placeholder="މިތަނުގައި ލިޔުއްވާ..." rows="3"></textarea>
-                <button type="button" onclick="submitComment()" style="background: #00796b;">ފޮނުވާ</button>
+                <textarea id="parentComment" placeholder="މިތަނުގައި ލިޔުއްވާ..."></textarea>
+                <button onclick="submitComment()">ފޮނުވާ</button>
             </div>
         </div>
     </div>
 
     <div id="teacherView" class="view-section">
-        <div id="adminLoginForm" class="admin-login" style="text-align: center; padding: 40px 15px; border: 2px dashed #00796b; border-radius: 15px; background: #fafafa;">
-            <h3>🔐 މުދައްރިސުންގެ ލޮގިން</h3>
-            <input type="password" id="adminPass" placeholder="ޕާސްވޯޑް ޖައްސަވާ">
-            <button type="button" onclick="checkAdmin()">ލޮގިން</button>
+        <div id="adminLoginForm" style="text-align: center; padding: 20px;">
+            <h3>ލޮގިން</h3>
+            <input type="password" id="adminPass" placeholder="ޕާސްވޯޑް">
+            <button onclick="checkAdmin()">ލޮގިން</button>
         </div>
 
         <div id="teacherDashboard" style="display:none;">
-            <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #ddd;">
-                <h3>📤 ފިލާވަޅުތައް އަޕްލޯޑް ކުރޭ</h3>
-                <input type="text" id="matTitle" placeholder="ފިލާވަޅު ނުވަތަ ޔުނިޓްގެ ނަން">
-                <input type="url" id="matLink" placeholder="ލިންކް (Google Drive / YouTube)">
-                <button type="button" onclick="addMaterial()">އަޕްލޯޑް</button>
-            </div>
-
-            <div style="margin-bottom: 15px;">
-                <h3>📊 ދަރިވަރުންގެ ލިސްޓް</h3>
-                <input type="text" id="teacherSearch" onkeyup="filterTeacherTable()" placeholder="ނަމުން ނުވަތަ ނަންބަރުން ހޯދާ..." style="max-width: 100%;">
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #ddd;">
+                <h3>ފިލާވަޅު އަޕްލޯޑް</h3>
+                <input type="text" id="matTitle" placeholder="ނަން">
+                <input type="url" id="matLink" placeholder="ލިންކް">
+                <button onclick="addMaterial()">އަޕްލޯޑް</button>
             </div>
             
             <div class="table-container">
                 <table>
                     <thead>
-                        <tr>
-                            <th>އިންޑެކްސް</th>
-                            <th>ނަން</th>
-                            <th>Unit 1</th>
-                            <th>Week 1</th>
-                            <th>އަމަލު</th>
-                        </tr>
+                        <tr><th>އިންޑެކްސް</th><th>ނަން</th><th>Unit 1</th><th>އަމަލު</th></tr>
                     </thead>
                     <tbody id="allStudentsBody"></tbody>
                 </table>
@@ -281,27 +290,13 @@
 
 <div id="editModal" class="modal">
     <div class="modal-content">
-        <h2 id="editTitle" style="font-size: 1.2rem; border-bottom: 1px solid #eee; padding-bottom: 10px;">ބަދަލުކުރައްވާ</h2>
-        <form id="editForm" onsubmit="saveData(event)">
-            <input type="hidden" id="editRowIndex">
-            <div style="margin-bottom: 15px;">
-                <label style="display:block; margin-bottom:5px;">Unit 1 Marks:</label>
-                <input type="number" id="editUnit1" placeholder="0">
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label style="display:block; margin-bottom:5px;">Week 1 Status:</label>
-                <select id="editWeek1">
-                    <option value="Not Done">Not Done</option>
-                    <option value="Done">Done</option>
-                </select>
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label style="display:block; margin-bottom:5px;">ޓީޗަރުގެ ނޯޓް:</label>
-                <textarea id="editNote" rows="3" placeholder="ނޯޓެއް ލިޔުއްވާ..."></textarea>
-            </div>
-            <button type="submit" style="background:#28a745; margin-bottom: 10px;">💾 ސޭވް ކުރޭ</button>
-            <button type="button" onclick="closeModal()" style="background:#6c757d;">ބާތިލްކުރޭ</button>
-        </form>
+        <h3 id="editTitle">ބަދަލުކުރައްވާ</h3>
+        <input type="hidden" id="editRowIndex">
+        <input type="number" id="editUnit1" placeholder="މާކްސް">
+        <textarea id="editNote" placeholder="ނޯޓް"></textarea>
+        <button onclick="closeModal()" style="background:#6c757d; width: 48%; float: left;">ބާތިލް</button>
+        <button onclick="saveDataMock()" style="background:#28a745; width: 48%; float: right;">ސޭވް</button>
+        <div style="clear:both;"></div>
     </div>
 </div>
 
@@ -318,8 +313,7 @@
     }
 
     function checkAdmin() {
-        const pass = document.getElementById('adminPass').value;
-        if (pass === "admin123") {
+        if (document.getElementById('adminPass').value === "admin123") {
             document.getElementById('adminLoginForm').style.display = 'none';
             document.getElementById('teacherDashboard').style.display = 'block';
             loadAllDataForTeacher();
@@ -335,35 +329,52 @@
         document.body.appendChild(script);
     }
 
-    function addMaterial() {
-        const title = document.getElementById('matTitle').value;
-        const link = document.getElementById('matLink').value;
-        if (!title || !link) return alert("މައުލޫމާތު ފުރިހަމަކުރައްވާ!");
-        materials.push({ title, link });
-        alert("ފިލާވަޅު އިތުރުކުރެވިއްޖެ!");
-        document.getElementById('matTitle').value = ""; document.getElementById('matLink').value = "";
-    }
-
-    function submitComment() {
-        if (!document.getElementById('parentComment').value) return alert("ޚިޔާލެއް ލިޔުއްވާ!");
-        alert("ޝުކުރިއްޔާ! މުދައްރިސަށް ޚިޔާލު ފޮނުވިއްޖެ!");
-        document.getElementById('parentComment').value = "";
+    function searchStudent() {
+        const input = document.getElementById('indexNo').value.trim();
+        if (!input) return alert("ނަންބަރު ޖައްސަވާ!");
+        const btn = document.getElementById('searchBtn');
+        btn.innerHTML = '<div class="loader"></div> ހޯދަނީ...';
+        
+        fetchData((data) => {
+            btn.innerHTML = "🔍 ހޯދާ";
+            const s = data.find(x => x.Index && x.Index.toString() === input);
+            if (s) {
+                document.getElementById('stName').innerText = s.Name;
+                document.getElementById('stIndex').innerText = "އިންޑެކްސް: " + s.Index;
+                document.getElementById('stNote').innerText = s.Note || "ނޯޓެއް ނެތް";
+                
+                let rows = "";
+                for(let i=1; i<=3; i++) {
+                    if(s['Unit'+i]) {
+                        const m = parseInt(s['Unit'+i]);
+                        rows += `<tr><td>Unit ${i}</td><td>${m}</td><td><span class="grade-badge ${m>=50?'pass':'fail'}">${m>=50?'Pass':'Fail'}</span></td></tr>`;
+                    }
+                }
+                document.getElementById('resultTableBody').innerHTML = rows || '<tr><td colspan="3">ނަތީޖާއެއް ނެތް</td></tr>';
+                document.getElementById('resultArea').style.display = 'block';
+                
+                if (materials.length > 0) {
+                    document.getElementById('materialDisplay').style.display = 'block';
+                    document.getElementById('materialList').innerHTML = materials.map(m => `
+                        <div class="material-card">
+                            <strong>${m.title}</strong><br>
+                            <a href="${m.link}" target="_blank">ބަލާލުމަށް</a>
+                        </div>
+                    `).join('');
+                }
+            } else { alert("ނުފެނުނު!"); }
+        });
     }
 
     function loadAllDataForTeacher() {
-        const tbody = document.getElementById('allStudentsBody');
-        tbody.innerHTML = '<tr><td colspan="5"><div class="loader"></div> ލޯޑުވަނީ...</td></tr>';
         fetchData((data) => {
             allData = data;
-            tbody.innerHTML = data.map((s, idx) => `
+            document.getElementById('allStudentsBody').innerHTML = data.map((s, idx) => `
                 <tr>
-                    <td>${s.Index || '-'}</td>
-                    <td style="text-align:right;">${s.Name || '-'}</td>
-                    <td>${s.Unit1 || '0'}</td>
-                    <td><span class="grade-badge ${s.Week1 === 'Done' ? 'done' : 'not-done'}">${s.Week1 || 'Not Done'}</span></td>
-                    <td>
-                        <button type="button" onclick="openEditModal(${idx})" style="padding:6px 12px; font-size:13px; width:auto; border-radius:6px;">Edit</button>
-                    </td>
+                    <td>${s.Index}</td>
+                    <td>${s.Name}</td>
+                    <td>${s.Unit1 || 0}</td>
+                    <td><button onclick="openEditModal(${idx})" style="width:auto; padding:5px 10px;">Edit</button></td>
                 </tr>
             `).join('');
         });
@@ -373,80 +384,22 @@
         const s = allData[idx];
         document.getElementById('editTitle').innerText = s.Name;
         document.getElementById('editRowIndex').value = idx;
-        document.getElementById('editUnit1').value = s.Unit1 || "0";
-        document.getElementById('editWeek1').value = s.Week1 || "Not Done";
+        document.getElementById('editUnit1').value = s.Unit1 || 0;
         document.getElementById('editNote').value = s.Note || "";
         document.getElementById('editModal').style.display = 'block';
     }
 
     function closeModal() { document.getElementById('editModal').style.display = 'none'; }
-
-    function searchStudent() {
-        const input = document.getElementById('indexNo').value.trim();
-        if (!input) return alert("އިންޑެކްސް ނަންބަރު ޖައްސަވާ!");
-        const btn = document.getElementById('searchBtn');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<div class="loader"></div> ހޯދަނީ...';
-        btn.disabled = true;
-
-        fetchData((data) => {
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-            const s = data.find(x => x.Index && x.Index.toString() === input);
-            if (s) {
-                renderStudent(s);
-                document.getElementById('resultArea').style.display = 'block';
-                const mList = document.getElementById('materialList');
-                if (materials.length > 0) {
-                    document.getElementById('materialDisplay').style.display = 'block';
-                    mList.innerHTML = materials.map(m => `
-                        <div class="material-card">
-                            <span>📖 <strong>${m.title}</strong></span>
-                            <a href="${m.link}" target="_blank">ބަލާލުމަށް އޮބާލާ</a>
-                        </div>
-                    `).join('');
-                } else {
-                    document.getElementById('materialDisplay').style.display = 'none';
-                }
-                // Scroll to results on mobile
-                window.scrollTo({ top: document.getElementById('resultArea').offsetTop - 20, behavior: 'smooth' });
-            } else { 
-                alert("މި ނަންބަރުގެ ދަރިވަރެއް ނުފެނުނު! ނަންބަރު ރަނގަޅުތޯ ބައްލަވާ."); 
-            }
-        });
+    
+    function addMaterial() {
+        const t = document.getElementById('matTitle').value;
+        const l = document.getElementById('matLink').value;
+        if(t && l) { materials.push({title: t, link: l}); alert("އިތުރުކުރެވިއްޖެ!"); }
     }
 
-    function renderStudent(s) {
-        document.getElementById('stName').innerText = s.Name;
-        document.getElementById('stIndex').innerText = "ދަރިވަރުގެ ނަންބަރު: " + s.Index;
-        document.getElementById('stNote').innerText = s.Note || "މިވަގުތު މުދައްރިސުގެ ނޯޓެއް ނެތް.";
-        let rows = "";
-        for(let i=1; i<=6; i++) {
-            if(s['Unit'+i]) {
-                const mark = parseInt(s['Unit'+i]);
-                rows += `
-                <tr>
-                    <td>Unit Test ${i}</td>
-                    <td>${mark}</td>
-                    <td><span class="grade-badge ${mark >= 50 ? 'pass' : 'fail'}">${mark >= 50 ? 'Pass' : 'Fail'}</span></td>
-                </tr>`;
-            }
-        }
-        document.getElementById('resultTableBody').innerHTML = rows || '<tr><td colspan="3">ނަތީޖާއެއް ނެތް</td></tr>';
-    }
-
-    function filterTeacherTable() {
-        const q = document.getElementById("teacherSearch").value.toLowerCase();
-        document.querySelectorAll("#allStudentsBody tr").forEach(r => {
-            r.style.display = r.innerText.toLowerCase().includes(q) ? "" : "none";
-        });
-    }
-
-    // Close modal when clicking outside
-    window.onclick = function(event) {
-        const modal = document.getElementById('editModal');
-        if (event.target == modal) closeModal();
-    }
+    function submitComment() { alert("ފޮނުވިއްޖެ!"); document.getElementById('parentComment').value = ""; }
+    
+    function saveDataMock() { alert("ސޭވް ކުރެވިއްޖެ (Mock)"); closeModal(); }
 </script>
 </body>
 </html>
