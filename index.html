@@ -5,200 +5,298 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ސްކޫލް މެނޭޖްމަންޓް ޕޯޓަލް</title>
     <style>
-        body { font-family: "Faruma", "MV Boli", sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; text-align: right; }
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h1 { color: #1a73e8; text-align: center; }
-        .search-box { background: #f8f9fa; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 25px; }
-        input { width: 70%; padding: 12px; border: 2px solid #ddd; border-radius: 25px; font-size: 16px; text-align: center; outline: none; transition: 0.3s; }
+        * { font-family: "Faruma", sans-serif; box-sizing: border-box; }
+        body { background-color: #f0f2f5; margin: 0; padding: 20px; text-align: right; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #1a73e8; text-align: center; margin-bottom: 20px; }
+        
+        /* Navigation Tabs */
+        .tabs { display: flex; justify-content: center; margin-bottom: 30px; border-bottom: 2px solid #eee; gap: 10px; }
+        .tab-btn { padding: 12px 25px; cursor: pointer; border: none; background: #f8f9fa; font-size: 18px; font-weight: bold; color: #666; transition: 0.3s; border-radius: 10px 10px 0 0; }
+        .tab-btn.active { color: #1a73e8; background: white; border-bottom: 3px solid #1a73e8; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); }
+
+        .view-section { display: none; animation: fadeIn 0.5s; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .search-box { background: #f8f9fa; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 25px; border: 1px solid #eee; }
+        input, select, textarea { width: 100%; max-width: 400px; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; text-align: center; outline: none; margin-bottom: 15px; }
         input:focus { border-color: #1a73e8; }
-        button { padding: 12px 30px; background: #1a73e8; color: white; border: none; border-radius: 25px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 10px; }
-        button:disabled { background: #ccc; }
-        #resultArea { display: none; border-top: 2px solid #eee; margin-top: 20px; padding-top: 20px; }
-        .info-card { background: #e8f0fe; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 25px; }
+        
+        button { padding: 12px 30px; background: #1a73e8; color: white; border: none; border-radius: 25px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.2s; }
+        button:hover { background: #1557b0; transform: translateY(-1px); }
+        
+        .admin-login { text-align: center; padding: 50px 20px; border: 1px dashed #ccc; border-radius: 15px; margin-top: 20px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; border-radius: 8px; overflow: hidden; }
         th, td { padding: 12px; border: 1px solid #dee2e6; text-align: center; }
         th { background: #1a73e8; color: white; }
-        .grade-badge { padding: 5px 12px; border-radius: 15px; font-weight: bold; color: white; font-size: 12px; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+
+        .grade-badge { padding: 5px 12px; border-radius: 15px; font-weight: bold; color: white; font-size: 12px; display: inline-block; }
         .pass, .done { background: #28a745; }
         .fail, .not-done { background: #dc3545; }
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #1a73e8; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-left: 10px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .section-header { background: #f1f3f4; font-weight: bold; color: #5f6368; text-align: right !important; padding-right: 15px !important; }
+
+        /* Modal */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(3px); }
+        .modal-content { background: white; margin: 10% auto; padding: 25px; border-radius: 15px; width: 90%; max-width: 500px; text-align: right; box-shadow: 0 5px 30px rgba(0,0,0,0.3); }
+        
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #1a73e8; border-radius: 50%; width: 18px; height: 18px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-left: 8px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>🏫 ސްކޫލް މެނޭޖްމަންޓް ޕޯޓަލް</h1>
-    
-    <div class="search-box">
-        <h3>ދަރިވަރުގެ ނަތީޖާ ހޯދާ</h3>
-        <input type="text" id="indexNo" placeholder="އިންޑެކްސް ނަންބަރު ޖައްސަވާ (މިސާލު: 1001)">
-        <br>
-        <button id="searchBtn" onclick="searchStudent()">🔍 ހޯދާ</button>
+
+    <!-- ޓެބްތައް -->
+    <div class="tabs">
+        <button class="tab-btn active" id="tabStudent" onclick="showTab('studentView')">🎓 ދަރިވަރުން</button>
+        <button class="tab-btn" id="tabTeacher" onclick="showTab('teacherView')">👨‍🏫 ޓީޗަރުން</button>
     </div>
 
-    <div id="resultArea">
-        <div class="info-card">
-            <h2 id="stName" style="margin: 0;"></h2>
-            <p id="stIndex" style="margin: 5px 0 0 0; color: #555;"></p>
+    <!-- ދަރިވަރުންގެ ބައި -->
+    <div id="studentView" class="view-section active">
+        <div class="search-box">
+            <h3>ދަރިވަރުގެ ނަތީޖާ ހޯދާ</h3>
+            <input type="text" id="indexNo" placeholder="އިންޑެކްސް ނަންބަރު ޖައްސަވާ">
+            <br>
+            <button id="searchBtn" onclick="searchStudent()">🔍 ހޯދާ</button>
         </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>ބާވަތް / ހަފުތާ</th>
-                    <th>މާކްސް / ހާލަތު</th>
-                    <th>ނަތީޖާ</th>
-                </tr>
-            </thead>
-            <tbody id="resultTableBody"></tbody>
-        </table>
+        <div id="resultArea" style="display:none;">
+            <div style="background: #e8f0fe; padding: 20px; border-radius: 10px; margin-bottom: 20px; border-right: 6px solid #1a73e8;">
+                <h2 id="stName" style="margin: 0; color: #1a73e8;"></h2>
+                <p id="stIndex" style="margin: 5px 0 0 0; color: #555; font-weight: bold;"></p>
+            </div>
+            <table>
+                <thead>
+                    <tr><th>ބާވަތް</th><th>މާކްސް / ހާލަތު</th><th>ނަތީޖާ</th></tr>
+                </thead>
+                <tbody id="resultTableBody"></tbody>
+            </table>
+            <div style="margin-top: 20px; padding: 15px; background: #fff4e5; border-right: 5px solid #ffa000; border-radius: 5px;">
+                <strong>ޓީޗަރުގެ ނޯޓް:</strong>
+                <p id="stNote" style="margin: 10px 0 0 0; line-height: 1.6;"></p>
+            </div>
+        </div>
+    </div>
 
-        <div style="margin-top: 20px; padding: 15px; background: #fff4e5; border-right: 5px solid #ffa000; border-radius: 5px;">
-            <strong>ޓީޗަރުގެ ނޯޓް:</strong>
-            <p id="stNote" style="margin: 5px 0 0 0;"></p>
+    <!-- ޓީޗަރުންގެ ބައި -->
+    <div id="teacherView" class="view-section">
+        <div id="adminLoginForm" class="admin-login">
+            <h3>🔐 ޓީޗަރުން ލޮގިން</h3>
+            <p style="color: #666;">މި ބަޔަށް ވަނުމަށް ޕާސްވޯޑް ޖައްސަވާ</p>
+            <input type="password" id="adminPass" placeholder="ޕާސްވޯޑް ޖައްސަވާ">
+            <br>
+            <button onclick="checkAdmin()">ލޮގިން</button>
+        </div>
+
+        <div id="teacherDashboard" style="display:none;">
+            <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="margin:0;">📊 ހުރިހާ ދަރިވަރުންގެ ލިސްޓް</h3>
+                <button onclick="loadAllDataForTeacher()" style="padding: 8px 15px; font-size: 14px; border-radius: 8px;">🔄 ރިފްރެޝް</button>
+            </div>
+            <input type="text" id="teacherSearch" onkeyup="filterTeacherTable()" placeholder="ނަމުން ނުވަތަ ނަންބަރުން ހޯދާ..." style="max-width: 100%; margin-bottom: 15px;">
+            <div style="overflow-x:auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>އިންޑެކްސް</th>
+                            <th>ނަން</th>
+                            <th>Unit 1</th>
+                            <th>Week 1</th>
+                            <th>އަމަލު</th>
+                        </tr>
+                    </thead>
+                    <tbody id="allStudentsBody"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 
+<!-- އެޑިޓް ކުރާ މޮޑަލް -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <h2 id="editTitle" style="color: #1a73e8; border-bottom: 2px solid #eee; padding-bottom: 10px;">މައުލޫމާތު ބަދަލުކުރައްވާ</h2>
+        <form id="editForm" onsubmit="saveData(event)">
+            <input type="hidden" id="editRowIndex">
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                <div>
+                    <label style="font-weight:bold; display:block; margin-bottom:5px;">Unit 1 Marks</label>
+                    <input type="number" id="editUnit1" style="max-width:100%;">
+                </div>
+                <div>
+                    <label style="font-weight:bold; display:block; margin-bottom:5px;">Week 1 Status</label>
+                    <select id="editWeek1" style="max-width:100%;">
+                        <option value="Not Done">Not Done</option>
+                        <option value="Done">Done</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <label style="font-weight:bold; display:block; margin-bottom:5px;">ޓީޗަރުގެ ނޯޓް</label>
+                <textarea id="editNote" rows="4" style="width:100%; border: 2px solid #ddd; border-radius: 8px; padding: 10px; text-align: right; font-size: 16px;"></textarea>
+            </div>
+            
+            <div id="saveLoader" style="display:none; text-align:center; margin:15px 0;">
+                ސޭވްވަނީ... <span class="loader"></span>
+            </div>
+            
+            <button type="submit" style="background:#27ae60; width:100%; margin-top:10px; border-radius: 10px;">💾 ސޭވް ކުރޭ</button>
+            <button type="button" onclick="closeModal()" style="background:#7f8c8d; width:100%; margin-top:10px; border-radius: 10px;">ބާތިލްކުރޭ</button>
+        </form>
+    </div>
+</div>
+
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzVrYR5rRkJE_qmPzEkxwXY1v6-hdPaU9p__5udVcoQiii84ZWz510bRLJGoGlM7a92/exec";
+    // މުހިންމު: ތިރީގައިވާ ލިންކު ތިޔަބޭފުޅާގެ އާ Web App URL އަށް ބަދަލުކުރައްވާ
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx0FuKBjx_6ZwkA13pmpuqGRsqe_7NXwm6IKhdynSJgslnXwUaFWxvg5tsEY5oJYVVR/exec";
+    let allData = [];
+
+    function showTab(tabId) {
+        document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        if(tabId === 'studentView') document.getElementById('tabStudent').classList.add('active');
+        else document.getElementById('tabTeacher').classList.add('active');
+    }
+
+    function checkAdmin() {
+        const pass = document.getElementById('adminPass').value;
+        if (pass === "admin123") {
+            document.getElementById('adminLoginForm').style.display = 'none';
+            document.getElementById('teacherDashboard').style.display = 'block';
+            loadAllDataForTeacher();
+        } else {
+            alert("ޕާސްވޯޑް ނުބައި!");
+        }
+    }
+
+    function fetchData(callback) {
+        const cbName = 'jsonp_cb_' + Date.now();
+        window[cbName] = (data) => {
+            callback(data);
+            const sc = document.getElementById(cbName + '_script');
+            if(sc) sc.remove();
+            delete window[cbName];
+        };
+        const script = document.createElement('script');
+        script.id = cbName + '_script';
+        script.src = `${SCRIPT_URL}?prefix=${cbName}`;
+        document.body.appendChild(script);
+    }
+
+    function loadAllDataForTeacher() {
+        const tbody = document.getElementById('allStudentsBody');
+        tbody.innerHTML = '<tr><td colspan="5">ލޯޑުވަނީ... <span class="loader"></span></td></tr>';
+        
+        fetchData((data) => {
+            allData = data;
+            let html = "";
+            data.forEach((s, idx) => {
+                html += `<tr>
+                    <td>${s.Index || '-'}</td>
+                    <td>${s.Name || '-'}</td>
+                    <td>${s.Unit1 || '-'}</td>
+                    <td>${s.Week1 || '-'}</td>
+                    <td>
+                        <button onclick="openEditModal(${idx})" style="background:#f39c12; padding:5px 12px; font-size:13px; border-radius:5px;">Edit</button>
+                        <button onclick="viewStudentDirect('${s.Index}')" style="background:#34495e; padding:5px 12px; font-size:13px; border-radius:5px;">View</button>
+                    </td>
+                </tr>`;
+            });
+            tbody.innerHTML = html || '<tr><td colspan="5">މައުލޫމާތެއް ނެތް</td></tr>';
+        });
+    }
+
+    function openEditModal(idx) {
+        const s = allData[idx];
+        document.getElementById('editTitle').innerText = s.Name + " ގެ މައުލޫމާތު";
+        document.getElementById('editRowIndex').value = idx;
+        document.getElementById('editUnit1').value = s.Unit1 || "";
+        document.getElementById('editWeek1').value = s.Week1 || "Not Done";
+        document.getElementById('editNote').value = s.Note || "";
+        document.getElementById('editModal').style.display = 'block';
+    }
+
+    function closeModal() { document.getElementById('editModal').style.display = 'none'; }
+
+    async function saveData(e) {
+        e.preventDefault();
+        const idx = document.getElementById('editRowIndex').value;
+        const student = allData[idx];
+        
+        const payload = {
+            index: student.Index,
+            unit1: document.getElementById('editUnit1').value,
+            week1: document.getElementById('editWeek1').value,
+            note: document.getElementById('editNote').value
+        };
+
+        document.getElementById('saveLoader').style.display = 'block';
+        
+        try {
+            await fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            alert("ސޭވް ކުރެވިއްޖެ! (ޝީޓަށް އަޕްޑޭޓްވާން ކުޑަވަގުތުކޮޅެއް ނަގާފާނެ)");
+            closeModal();
+            loadAllDataForTeacher();
+        } catch (e) {
+            alert("މައްސަލައެއް ދިމާވެއްޖެ!");
+        } finally {
+            document.getElementById('saveLoader').style.display = 'none';
+        }
+    }
+
+    function viewStudentDirect(idx) {
+        document.getElementById('indexNo').value = idx;
+        showTab('studentView');
+        searchStudent();
+    }
 
     function searchStudent() {
         const input = document.getElementById('indexNo').value.trim();
         const btn = document.getElementById('searchBtn');
-        const resArea = document.getElementById('resultArea');
-
-        if (!input) {
-            alert("އިންޑެކްސް ނަންބަރު ޖައްސަވާ!");
-            return;
-        }
+        if (!input) { alert("އިންޑެކްސް ނަންބަރު ޖައްސަވާ!"); return; }
 
         btn.disabled = true;
         btn.innerHTML = 'ހޯދަނީ... <span class="loader"></span>';
 
-        const cbName = 'student_data_' + Date.now();
-        window[cbName] = function(data) {
+        fetchData((data) => {
             btn.disabled = false;
             btn.innerHTML = "🔍 ހޯދާ";
-
-            const student = data.find(s => s.Index && s.Index.toString().trim() === input);
-
-            if (student) {
-                renderData(student);
-                resArea.style.display = 'block';
+            const s = data.find(x => x.Index && x.Index.toString().trim() === input);
+            if (s) {
+                renderStudent(s);
+                document.getElementById('resultArea').style.display = 'block';
             } else {
                 alert("މި ނަންބަރުގެ ކުއްޖެއް ނުފެނުނު!");
-                resArea.style.display = 'none';
+                document.getElementById('resultArea').style.display = 'none';
             }
-
-            const oldScript = document.getElementById('temp_script');
-            if(oldScript) oldScript.remove();
-            delete window[cbName];
-        };
-
-        const script = document.createElement('script');
-        script.id = 'temp_script';
-        script.src = `${SCRIPT_URL}?prefix=${cbName}`;
-        script.onerror = () => {
-            btn.disabled = false;
-            btn.innerHTML = "🔍 ހޯދާ";
-            alert("ޑޭޓާ ލިބުމުގައި މައްސަލައެއް ދިމާވެއްޖެ! ލިންކު ރަނގަޅުތޯ ބައްލަވާ.");
-        };
-        document.body.appendChild(script);
+        });
     }
 
-    function renderData(s) {
+    function renderStudent(s) {
         document.getElementById('stName').innerText = s.Name || "ނަމެއް ނެތް";
         document.getElementById('stIndex').innerText = "އިންޑެކްސް: " + (s.Index || "-");
         document.getElementById('stNote').innerText = s.Note || "ނޯޓެއް ނެތް";
-
-        const unitTests = [
-            { title: "Unit Test 1", mark: s.Unit1 },
-            { title: "Unit Test 2", mark: s.Unit2 },
-            { title: "Unit Test 3", mark: s.Unit3 },
-            { title: "Unit Test 4", mark: s.Unit4 },
-            { title: "Unit Test 5", mark: s.Unit5 },
-            { title: "Unit Test 6", mark: s.Unit6 }
-        ];
-
-        const classAssessments = [
-            { title: "Class Assessment 1", mark: s.CA1 },
-            { title: "Class Assessment 2", mark: s.CA2 },
-            { title: "Class Assessment 3", mark: s.CA3 },
-            { title: "Class Assessment 4", mark: s.CA4 }
-        ];
-
-        const weeklyCompletion = [
-            { title: "Week 1 Task", status: s.Week1 },
-            { title: "Week 2 Task", status: s.Week2 },
-            { title: "Week 3 Task", status: s.Week3 },
-            { title: "Week 4 Task", status: s.Week4 }
-        ];
-
-        let rows = "";
-
-        let hasUnits = unitTests.some(u => u.mark !== undefined && u.mark !== "" && u.mark !== null);
-        if (hasUnits) {
-            rows += `<tr><td colspan="3" class="section-header">ޔުނިޓް ޓެސްޓްތައް</td></tr>`;
-            unitTests.forEach(ex => {
-                if (ex.mark !== undefined && ex.mark !== "" && ex.mark !== null) {
-                    rows += createGradeRow(ex.title, ex.mark);
-                }
-            });
-        }
-
-        let hasCAs = classAssessments.some(c => c.mark !== undefined && c.mark !== "" && c.mark !== null);
-        if (hasCAs) {
-            rows += `<tr><td colspan="3" class="section-header">ކްލާސް އެސެސްމެންޓްތައް</td></tr>`;
-            classAssessments.forEach(ex => {
-                if (ex.mark !== undefined && ex.mark !== "" && ex.mark !== null) {
-                    rows += createGradeRow(ex.title, ex.mark);
-                }
-            });
-        }
-
-        let hasWeekly = weeklyCompletion.some(w => w.status !== undefined && w.status !== "" && w.status !== null);
-        if (hasWeekly) {
-            rows += `<tr><td colspan="3" class="section-header">ހަފުތާގެ މަސައްކަތް ނިންމި މިންވަރު</td></tr>`;
-            weeklyCompletion.forEach(w => {
-                if (w.status !== undefined && w.status !== "" && w.status !== null) {
-                    rows += createStatusRow(w.title, w.status);
-                }
-            });
-        }
-
-        document.getElementById('resultTableBody').innerHTML = rows || "<tr><td colspan='3'>މައުލޫމާތެއް ނެތް</td></tr>";
-    }
-
-    function createGradeRow(title, mark) {
-        const val = parseFloat(mark);
-        const isPass = val >= 50;
-        const statusText = isPass ? "Pass" : "Fail";
-        const badgeClass = isPass ? "pass" : "fail";
         
-        return `<tr>
-            <td>${title}</td>
-            <td>${mark}</td>
-            <td><span class="grade-badge ${badgeClass}">${statusText}</span></td>
-        </tr>`;
-    }
-
-    function createStatusRow(title, status) {
-        const s = status.toString().toLowerCase().trim();
-        const isDone = s === "done" || s === "completed" || s === "yes" || s === "ނިމިފައި";
-        const statusDisplay = isDone ? "Done" : "Not Done";
-        const badgeClass = isDone ? "done" : "not-done";
-        const label = isDone ? "ނިމިފައި" : "ނުނިމޭ";
-
-        return `<tr>
-            <td>${title}</td>
-            <td>${statusDisplay}</td>
-            <td><span class="grade-badge ${badgeClass}">${label}</span></td>
-        </tr>`;
-    }
-</script>
-
-</body>
-</html>
+        let rows = `<tr><td colspan="3" class="section-header">ޔުނިޓް ޓެސްޓްތައް</td></tr>`;
+        for(let i=1; i<=6; i++) {
+            if(s['Unit'+i] || s['Unit'+i] === 0) rows += createGradeRow("Unit Test "+i, s['Unit'+i]);
+        }
+        rows += `<tr><td colspan="3" class="section-header">ހަފުތާގެ މަސައްކަތް</td></tr>`;
+        for(let i=1; i<=4; i++) {
+            if(s['Week'+i]) rows += createStatusRow("Week "+i, s['Week'+i]);
+        }
+        document.getElementById('resultTableBody').innerHTML = rows;
