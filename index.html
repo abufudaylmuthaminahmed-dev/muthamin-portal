@@ -299,15 +299,33 @@
             });
         }
 
-        const url = `${API_URL}?action=save&mode=${currentMode}&item=${item}&updates=${encodeURIComponent(JSON.stringify(updates))}`;
+        // Send data using a safer fetch approach with GET params for simple Google Script communication
+        const params = new URLSearchParams({
+            action: 'save',
+            mode: currentMode,
+            item: item,
+            updates: JSON.stringify(updates)
+        });
+
+        const url = `${API_URL}?${params.toString()}`;
         
         try {
-            await fetch(url, { mode: 'no-cors' });
-            alert("ސޭވް ކުރަން ފޮނުވިއްޖެ! ކުޑަވަގުތުކޮޅަކުން ޝީޓަށް ބަދަލު އަންނާނެ.");
-            btn.disabled = false;
-            btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
+            // Using a hidden script element for cross-domain save if fetch fails due to CORS
+            const script = document.createElement('script');
+            script.src = url + '&t=' + Date.now();
+            document.body.appendChild(script);
+            
+            // Give it some time to process
+            setTimeout(() => {
+                alert("ސޭވް ކުރުމުގެ މަސައްކަތް ކުރިއަށް ދަނީ! ޝީޓަށް ބަދަލު އަންނަން ކުޑަ ވަގުތުކޮޅެއް ނަގާފާނެ.");
+                btn.disabled = false;
+                btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
+                script.remove();
+            }, 2000);
+            
         } catch(e) {
-            alert("މައްސަލައެއް ދިމާވެއްޖެ!");
+            console.error("Save error:", e);
+            alert("މައްސަލައެއް ދިމާވެއްޖެ! އަލުން މަސައްކަތް ކޮށްލައްވާ.");
             btn.disabled = false;
             btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
         }
