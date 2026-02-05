@@ -44,6 +44,7 @@
         .grade-B { background: #2196f3; }
         .grade-C { background: #ff9800; }
         .grade-Fail { background: #f44336; }
+        .full-marks-area { display: flex; align-items: center; gap: 15px; background: #e8f5e9; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #c8e6c9; }
         
         #tError { display: none; color: #b71c1c; background: #ffebee; padding: 15px; border-radius: 8px; margin-top: 10px; text-align: center; border: 1px solid #ffcdd2; }
     </style>
@@ -58,6 +59,7 @@
         <button class="tab-btn" onclick="showTab('teacher')">މުދައްރިސުން</button>
     </div>
 
+    <!-- Parent View -->
     <div id="parentView">
         <div class="card">
             <input type="number" id="pIdx" placeholder="ކުއްޖާގެ އިންޑެކްސް ނަންބަރު ޖައްސަވާ">
@@ -66,9 +68,11 @@
         <div id="pRes" style="display:none; text-align:center;"></div>
     </div>
 
+    <!-- Teacher View -->
     <div id="teacherView" style="display:none;">
         <div id="loginArea" class="card">
             <h3 style="text-align:center;">މުދައްރިސުންގެ ބައި</h3>
+            <p style="text-align:center; font-size:12px; color:#666;">ލިސްޓު ލޯޑް ނުވާނަމަ API ލިންކު ޗެކްކޮށްލައްވާ</p>
             <input type="password" id="tPass" placeholder="ޕާސްވޯޑް ޖައްސަވާ">
             <button class="btn" onclick="login()">ލޮގިން</button>
         </div>
@@ -85,8 +89,8 @@
                     <label>އައިޓަމް ހިޔާރުކުރޭ:</label>
                     <select id="itemSelect" onchange="renderTeacherTable()"></select>
                 </div>
-                <div id="fullMarksContainer" style="display:none;">
-                    <label style="font-weight: bold;">ޖުމްލަ މާކްސް:</label>
+                <div id="fullMarksContainer" class="full-marks-area" style="display:none;">
+                    <label style="white-space: nowrap; font-weight: bold;">ޖުމްލަ މާކްސް:</label>
                     <input type="number" id="fullMarks" value="100" style="margin:0; height:45px;" oninput="renderTeacherTable()">
                 </div>
             </div>
@@ -98,7 +102,7 @@
 
             <div id="tError">
                 <p id="errorMsg">ޑޭޓާ ލިބުމުގައި މައްސަލައެއް ޖެހިއްޖެ!</p>
-                <button class="btn" style="width: auto; padding: 10px 20px;" onclick="fetchData()">އަލުން މަސައްކަތް ކުރޭ</button>
+                <button class="btn" style="width: auto; padding: 10px 20px; background:#d32f2f;" onclick="fetchData()">އަލުން މަސައްކަތް ކުރޭ</button>
             </div>
 
             <div class="table-container" id="tContainer" style="display:none;">
@@ -107,7 +111,7 @@
                         <tr>
                             <th style="width: 80px;">Index</th>
                             <th style="text-align:right">ދަރިވަރުގެ ނަން</th>
-                            <th id="valHead">މާކްސް / ހާލަތު</th>
+                            <th id="valHead">މާކްސް</th>
                             <th style="width: 140px;">ނަތީޖާ</th>
                             <th>ނޯޓް</th>
                         </tr>
@@ -172,7 +176,17 @@
         
         const cb = 'p' + Date.now();
         
+        // Timeout handling (15 seconds)
+        const timeoutId = setTimeout(() => {
+            if (db.length === 0) {
+                document.getElementById('tLoading').style.display = 'none';
+                document.getElementById('tError').style.display = 'block';
+                document.getElementById('errorMsg').innerText = "ޑޭޓާ ލޯޑްވުން މާ ލަސްވެއްޖެ! API ލިންކު ނުވަތަ އިންޓަނެޓް ޗެކްކޮށްލައްވާ.";
+            }
+        }, 15000);
+
         window[cb] = (data) => { 
+            clearTimeout(timeoutId);
             db = data; 
             document.getElementById('tLoading').style.display = 'none';
             if (db && db.length > 0) {
@@ -181,13 +195,19 @@
                 setMode(mode); 
             } else {
                 document.getElementById('tError').style.display = 'block';
-                document.getElementById('errorMsg').innerText = "ޑޭޓާ ލިބޭގޮތެއް ނުވި!";
+                document.getElementById('errorMsg').innerText = "ޝީޓުގައި އެއްވެސް ދަރިވަރެއްގެ މަޢުލޫމާތެއް ނެތް!";
             }
             delete window[cb]; 
         };
 
         const s = document.createElement('script');
         s.src = `${API_URL}?prefix=${cb}&t=${Date.now()}`;
+        s.onerror = () => {
+            clearTimeout(timeoutId);
+            document.getElementById('tLoading').style.display = 'none';
+            document.getElementById('tError').style.display = 'block';
+            document.getElementById('errorMsg').innerText = "ކޯޑުގައިވާ API ލިންކަށް ޑޭޓާ ފޮނުވޭގޮތެއް ނުވި. ލިންކު ރަނގަޅުތޯ ބައްލަވާ.";
+        };
         document.body.appendChild(s);
     }
 
@@ -198,12 +218,11 @@
         
         let opt = "";
         if(m=='work') {
-            for(let i=1;i<=5;i++) opt += `<option value="Week${i}">Week ${i}</option>`;
+            for(let i=1;i<=45;i++) opt += `<option value="Week${i}">Week ${i}</option>`;
             document.getElementById('fullMarksContainer').style.display = 'none';
         } else {
             document.getElementById('fullMarksContainer').style.display = 'block';
-            // ޝީޓުގައި ހުރި ނަންތަކާ އެއްގޮތްކުރުން (UnitTest1, UnitTest2...)
-            if(m=='test') for(let i=1;i<=6;i++) opt += `<option value="UnitTest${i}">Unit Test ${i}</option>`;
+            if(m=='test') for(let i=1;i<=10;i++) opt += `<option value="Unit Test ${i}">Unit Test ${i}</option>`;
             if(m=='ca') for(let i=1;i<=4;i++) opt += `<option value="CA${i}">CA ${i}</option>`;
         }
         
@@ -221,7 +240,7 @@
 
         db.forEach(s => {
             let v = s[item] || "";
-            let nKey = "Note" + item;
+            let nKey = "Note " + item;
             let n = s[nKey] || "";
             let grade = mode !== 'work' ? calculateGrade(v, fullMarks) : "";
             let perc = mode !== 'work' ? calculatePercentage(v, fullMarks) : "";
@@ -257,8 +276,7 @@
         const item = document.getElementById('itemSelect').value;
         const fullMarks = document.getElementById('fullMarks').value || 100;
         
-        btn.disabled = true; 
-        btn.innerText = "ސޭވް ވަނީ...";
+        btn.disabled = true; btn.innerText = "ސޭވް ވަނީ...";
         
         const updates = Array.from(document.querySelectorAll('.v-in')).map((el, i) => {
             let val = el.value;
@@ -285,15 +303,15 @@
         // 'updates' ޕެރަމީޓަރު ގޫގުލް ސްކްރިޕްޓުން ބޭނުންކުރާ ނަމަކާ އެއްގޮތްކުރުން
         const params = new URLSearchParams({
             action: 'save',
-            column: item,
+            item: item, // Changed 'column' to 'item' to match Script logic
             mode: mode,
-            data: JSON.stringify(updates),
+            updates: JSON.stringify(updates),
             prefix: cb
         });
         
         script.src = `${API_URL}?${params.toString()}`;
         script.onerror = () => {
-            alert("ސޭވް ކުރުމުގައި މައްސަލައެއް ދިމާވެއްޖެ. ގޫގުލް ސްކްރިޕްޓްގައި 'doGet' ފަންކްޝަން ރަނގަޅުތޯ ބައްލަވާ.");
+            alert("ސޭވް ކުރުމުގައި މައްސަލައެއް ދިމާވެއްޖެ. ޝީޓްގެ ސެޓިންގްސް ޗެކްކޮށްލައްވާ.");
             btn.disabled = false;
             btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
         };
@@ -317,7 +335,6 @@
                 </div>
                 <div class="table-container"><table><thead><tr><th>ފިލާވަޅު / ޓެސްޓް</th><th>ނަތީޖާ</th><th>ގްރޭޑް</th></tr></thead><tbody>`;
                 
-                // ޝީޓުގައި ހުރި ނަންތަކަށް ބަލައިގެން ޑިސްޕްލޭ ކުރުން
                 Object.keys(s).sort().forEach(k => {
                     if(k.startsWith('Week') || k.startsWith('UnitTest') || k.startsWith('CA')) {
                         if(!k.includes('Note') && !k.includes('Grade') && !k.includes('Perc')) {
