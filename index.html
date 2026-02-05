@@ -126,7 +126,7 @@
 
 <script>
     // މުހިންމު: ތިރީގައިވާ URL އަކީ ތިޔަބޭފުޅާގެ Google Script URL އަށް ބަދަލުކުރަންވާނެއެވެ.
-    const API_URL = "https://script.google.com/macros/s/AKfycby6AK0YWoWIqr5accImNwwcK4lVB1Ukz46ib1y6Hwon-n5M1XLIyNiXDF5fUHu6Yi0Q/exec"; 
+    const API_URL = "https://script.google.com/macros/s/AKfycbwtH5H6xdj5-7x1X1xWBbIQrFXsxHN0E4GvFKtS43raYqD6ga7JJLrx-Y5Ja5I2EVO4/exec"; 
     let db = [];
     let mode = 'work';
 
@@ -240,7 +240,7 @@
 
         db.forEach(s => {
             let v = s[item] || "";
-            let nKey = "Note" + item;
+            let nKey = "Note " + item;
             let n = s[nKey] || "";
             let grade = mode !== 'work' ? calculateGrade(v, fullMarks) : "";
             let perc = mode !== 'work' ? calculatePercentage(v, fullMarks) : "";
@@ -281,6 +281,7 @@
         const updates = Array.from(document.querySelectorAll('.v-in')).map((el, i) => {
             let val = el.value;
             let note = document.querySelectorAll('.n-in')[i].value;
+            // ބަދަލުތައް ޖެހި ޖޭސަން އޮބްޖެކްޓް
             return {
                 index: el.dataset.idx,
                 val: val,
@@ -290,32 +291,38 @@
             };
         });
 
-        const cb = 'res' + Date.now();
-        window[cb] = (r) => {
-            alert("ހުރިހާ ބަދަލެއް ކާމިޔާބުކަމާއެކު ސޭވް ކުރެވިއްޖެ!");
-            btn.disabled = false;
-            btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
-            fetchData();
-            delete window[cb];
+        // ޑޭޓާ ޕޭލޯޑް ތައްޔާރުކުރުން
+        const payload = {
+            action: 'save',
+            item: item,
+            mode: mode,
+            updates: JSON.stringify(updates)
         };
 
-        const script = document.createElement('script');
-        // 'updates' ޕެރަމީޓަރު ގޫގުލް ސްކްރިޕްޓުން ބޭނުންކުރާ ނަމަކާ އެއްގޮތްކުރުން
-        const params = new URLSearchParams({
-            action: 'save',
-            item: item, // Changed 'column' to 'item' to match Script logic
-            mode: mode,
-            updates: JSON.stringify(updates),
-            prefix: cb
-        });
-        
-        script.src = `${API_URL}?${params.toString()}`;
-        script.onerror = () => {
-            alert("ސޭވް ކުރުމުގައި މައްސަލައެއް ދިމާވެއްޖެ. ޝީޓްގެ ސެޓިންގްސް ޗެކްކޮށްލައްވާ.");
+        try {
+            // POST މެތަޑް ބޭނުންކޮށްގެން ސޭވްކުރުން
+            await fetch(API_URL, {
+                method: 'POST',
+                mode: 'no-cors', // CORS މައްސަލަ ޙައްލުކުރުމަށް
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+            
+            // ސޭވްވީކަމަށް ބެލުން
+            setTimeout(() => {
+                alert("ހުރިހާ ބަދަލެއް ކާމިޔާބުކަމާއެކު ސޭވް ކުރެވިއްޖެ!");
+                btn.disabled = false;
+                btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
+                fetchData(); // ޑޭޓާ ރިފްރެޝް ކުރުން
+            }, 1500);
+
+        } catch(e) { 
+            alert("ސޭވް ކުރުމުގައި މައްސަލައެއް ޖެހިއްޖެ. އިންޓަނެޓް ޗެކްކޮށްލައްވާ."); 
             btn.disabled = false;
             btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
-        };
-        document.body.appendChild(script);
+        }
     }
 
     function searchStudent() {
@@ -335,7 +342,6 @@
                 </div>
                 <div class="table-container"><table><thead><tr><th>ފިލާވަޅު / ޓެސްޓް</th><th>ނަތީޖާ</th><th>ގްރޭޑް</th></tr></thead><tbody>`;
                 
-                // ޝީޓުގައި ހުރި ނަންތަކަށް ބަލައިގެން ޑިސްޕްލޭ ކުރުން
                 Object.keys(s).sort().forEach(k => {
                     if(k.startsWith('Week') || k.startsWith('UnitTest') || k.startsWith('CA')) {
                         if(!k.includes('Note') && !k.includes('Grade') && !k.includes('Perc')) {
