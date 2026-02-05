@@ -75,10 +75,7 @@
         .status { padding: 4px 10px; border-radius: 20px; font-size: 12px; color: white; font-weight: bold; }
         .status-done { background: #2e7d32; }
         .status-pending { background: #d32f2f; }
-        .status-incomplete { background: #f57c00; }
-
-        .status-select { padding: 5px; border-radius: 5px; border: 1px solid #ddd; width: auto; min-width: 120px; }
-
+        
         .pills { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
         .pill { padding: 8px 15px; background: #eee; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 14px; }
         .pill.active { background: #00796b; color: white; }
@@ -88,9 +85,7 @@
         
         .section-header { margin: 20px 0 10px 0; padding: 8px 12px; background: #00796b; color: white; border-radius: 5px; font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
         
-        .inline-input { width: 80px; padding: 5px; margin: 0; }
-        .inline-note { width: 150px; padding: 5px; margin: 0; font-size: 12px; }
-
+        .inline-input { width: 100%; padding: 5px; margin: 0; }
         .grade-badge { padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 13px; }
         .grade-star { background: #ffd700; color: #000; }
         .grade-a { background: #c8e6c9; color: #2e7d32; }
@@ -123,30 +118,29 @@
                 <p id="dispClass" style="margin:5px 0 0 0; opacity:0.8;"></p>
             </div>
             
-            <div class="section-header">ހަފްތާގެ މަސައްކަތްތައް</div>
+            <div class="section-header">ހަފްތާގެ މަސައްކަތްތައް (Weekly Progress)</div>
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
                             <th>ހަފްތާ</th>
-                            <th>ޙާލަތު</th>
-                            <th>ޓީޗަރުގެ ކޮމެންޓް</th>
+                            <th>ހާލަތު</th>
+                            <th>ނޯޓް</th>
                         </tr>
                     </thead>
                     <tbody id="workTableBody"></tbody>
                 </table>
             </div>
 
-            <div class="section-header">ޔުނިޓް ޓެސްޓްގެ ނަތީޖާ</div>
+            <div class="section-header">ޓެސްޓް ނަތީޖާ (Test Results)</div>
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
                             <th>ޓެސްޓް</th>
                             <th>މާކްސް</th>
-                            <th>އިންސައްތަ</th>
                             <th>ގްރޭޑް</th>
-                            <th>ކޮމެންޓް</th>
+                            <th>ނޯޓް</th>
                         </tr>
                     </thead>
                     <tbody id="testTableBody"></tbody>
@@ -166,7 +160,7 @@
         <div id="teacherPanel" style="display:none;">
             <div class="sub-tabs">
                 <div class="sub-tab active" id="subTabWork" onclick="switchTeacherMode('work')">ހަފްތާގެ މަސައްކަތް</div>
-                <div class="sub-tab" id="subTabTest" onclick="switchTeacherMode('test')">ޔުނިޓް ޓެސްޓް</div>
+                <div class="sub-tab" id="subTabTest" onclick="switchTeacherMode('test')">ޓެސްޓް މާކްސް</div>
             </div>
 
             <div class="card" style="background:#f1f8e9;">
@@ -174,10 +168,6 @@
                     <div style="flex: 1; min-width: 150px;">
                         <label id="bulkItemLabel" style="font-weight: bold; display: block;">ހަފްތާ:</label>
                         <select id="bulkItemSelect" onchange="renderTeacherTable()"></select>
-                    </div>
-                    <div id="totalMarksArea" style="flex: 1; min-width: 120px; display: none;">
-                        <label style="font-weight: bold; display: block;">ޖުމްލަ މާކްސް:</label>
-                        <input type="number" id="totalMarksInput" value="20" oninput="renderTeacherTable()" style="padding: 8px;">
                     </div>
                     <div style="flex: 2; min-width: 200px;">
                         <label style="font-weight: bold; display: block;">ފިލްޓަރު:</label>
@@ -192,8 +182,8 @@
                         <tr id="teacherTableHead">
                             <th>އިންޑެކްސް</th>
                             <th>ނަން</th>
-                            <th>މަސައްކަތް</th>
-                            <th>ކޮމެންޓް</th>
+                            <th id="colHeaderValue">ހާލަތު</th>
+                            <th>ނޯޓް</th>
                         </tr>
                     </thead>
                     <tbody id="teacherTableBody"></tbody>
@@ -211,37 +201,36 @@
     let activeFilter = "All";
     let teacherMode = "work"; 
 
-    function calculateGrade(percentage) {
-        if (percentage >= 90) return { label: "A*", class: "grade-star" };
-        if (percentage >= 80) return { label: "A", class: "grade-a" };
-        if (percentage >= 70) return { label: "B", class: "grade-b" };
-        if (percentage >= 60) return { label: "C", class: "grade-c" };
-        return { label: "ފެއިލް", class: "grade-f" };
+    function calculateGrade(mark) {
+        const m = parseFloat(mark);
+        if (isNaN(m)) return { label: "-", class: "" };
+        if (m >= 18) return { label: "A*", class: "grade-star" };
+        if (m >= 15) return { label: "A", class: "grade-a" };
+        if (m >= 12) return { label: "B", class: "grade-b" };
+        if (m >= 10) return { label: "C", class: "grade-c" };
+        return { label: "F", class: "grade-f" };
     }
 
     function setupSelects() {
         const select = document.getElementById('bulkItemSelect');
-        const totalArea = document.getElementById('totalMarksArea');
         let options = "";
         if(teacherMode === 'work') {
             document.getElementById('bulkItemLabel').innerText = "ހަފްތާ އިޚްތިޔާރު ކުރައްވާ:";
-            totalArea.style.display = 'none';
-            for(let i=1; i<=45; i++) options += `<option value="Week${i}">ހަފްތާ ${i}</option>`;
+            for(let i=1; i<=45; i++) options += `<option value="Week${i}">Week ${i}</option>`;
         } else {
             document.getElementById('bulkItemLabel').innerText = "ޓެސްޓް އިޚްތިޔާރު ކުރައްވާ:";
-            totalArea.style.display = 'block';
-            for(let i=1; i<=10; i++) options += `<option value="Test${i}">ޔުނިޓް ޓެސްޓް ${i}</option>`;
+            for(let i=1; i<=10; i++) options += `<option value="Test${i}">Test ${i}</option>`;
         }
         select.innerHTML = options;
         updateTableHead();
     }
 
     function updateTableHead() {
-        const head = document.getElementById('teacherTableHead');
+        const headValue = document.getElementById('colHeaderValue');
         if (teacherMode === 'work') {
-            head.innerHTML = `<th>އިންޑެކްސް</th><th>ނަން</th><th>މަސައްކަތް</th><th>ކޮމެންޓް</th>`;
+            headValue.innerText = "ހާލަތު";
         } else {
-            head.innerHTML = `<th>އިންޑެކްސް</th><th>ނަން</th><th>މާކްސް</th><th>% / ގްރޭޑް</th><th>ކޮމެންޓް</th>`;
+            headValue.innerText = "މާކްސް";
         }
     }
 
@@ -284,17 +273,13 @@
         };
         const script = document.createElement('script');
         script.id = cb + '_script';
-        script.onerror = () => {
-            alert("ޑޭޓާ ލޯޑް ކުރުމުގައި މައްސަލައެއް ދިމާވެއްޖެ.");
-            delete window[cb];
-        };
         script.src = `${API_URL}?prefix=${cb}&t=${Date.now()}`;
         document.body.appendChild(script);
     }
 
     function loadData() {
         const body = document.getElementById('teacherTableBody');
-        body.innerHTML = '<tr><td colspan="5"><span class="loader"></span> ލޯޑް ވަނީ...</td></tr>';
+        body.innerHTML = '<tr><td colspan="4"><span class="loader"></span> ލޯޑް ވަނީ...</td></tr>';
         fetchData(data => {
             database = data;
             renderFilters();
@@ -318,60 +303,39 @@
         renderTeacherTable();
     }
 
-    function updateLiveCalculation(input, studentIndex) {
-        const total = parseFloat(document.getElementById('totalMarksInput').value) || 100;
-        const obtained = parseFloat(input.value) || 0;
-        const percentage = Math.round((obtained / total) * 100);
-        const grade = calculateGrade(percentage);
-        
-        const displayDiv = document.getElementById(`calc-${studentIndex}`);
-        if(displayDiv) {
-            displayDiv.innerHTML = `${percentage}% <span class="grade-badge ${grade.class}">${grade.label}</span>`;
-        }
-    }
-
     function renderTeacherTable() {
         const body = document.getElementById('teacherTableBody');
         const selectedItem = document.getElementById('bulkItemSelect').value;
-        const totalMarks = parseFloat(document.getElementById('totalMarksInput').value) || 100;
+        const noteKey = teacherMode === 'work' ? selectedItem.replace("Week", "Note") : selectedItem.replace("Test", "TNote");
 
         let filtered = database;
         if(activeFilter !== "All") {
             filtered = database.filter(s => s.Grade.toString() === activeFilter);
         }
 
-        if(filtered.length === 0) {
-            body.innerHTML = `<tr><td colspan="${teacherMode === 'work' ? 4 : 5}">މި ގްރޫޕުގައި ކުއްޖަކު ނެތް</td></tr>`;
-            return;
-        }
-
         body.innerHTML = filtered.map(s => {
-            const currentVal = s[selectedItem] !== undefined ? s[selectedItem] : "";
-            const noteKey = teacherMode === 'work' ? 'Note' + selectedItem.replace('Week','') : 'TNote' + selectedItem.replace('Test','');
+            const currentVal = s[selectedItem] || "";
             const currentNote = s[noteKey] || "";
 
             if(teacherMode === 'work') {
                 return `<tr>
                     <td>${s.Index}</td>
-                    <td style="text-align:right;">${s.Name}<br><small style="color:#888;">G${s.Grade} ${s.Class}</small></td>
+                    <td style="text-align:right;">${s.Name}</td>
                     <td>
-                        <select class="status-select" data-index="${s.Index}" data-type="value">
-                            <option value="" ${currentVal === "" ? 'selected' : ''}>ނުނިމޭ</option>
-                            <option value="ނިމިފައި" ${currentVal === "ނިމިފައި" ? 'selected' : ''}>ނިމިފައި</option>
-                            <option value="ފުރިހަމަ ނުވޭ" ${currentVal === "ފުރިހަމަ ނުވޭ" ? 'selected' : ''}>ފުރިހަމަ ނުވޭ</option>
+                        <select class="inline-input" data-index="${s.Index}" data-type="val">
+                            <option value="">-</option>
+                            <option value="ނިމިފައި" ${currentVal === 'ނިމިފައި' ? 'selected' : ''}>ނިމިފައި</option>
+                            <option value="ފުރިހަމަ ނުވޭ" ${currentVal === 'ފުރިހަމަ ނުވޭ' ? 'selected' : ''}>ފުރިހަމަ ނުވޭ</option>
                         </select>
                     </td>
-                    <td><input type="text" class="inline-note" data-index="${s.Index}" data-type="note" value="${currentNote}" placeholder="ކޮމެންޓެއް..."></td>
+                    <td><input type="text" class="inline-input" data-index="${s.Index}" data-type="note" value="${currentNote}"></td>
                 </tr>`;
             } else {
-                const perc = (currentVal !== "" && !isNaN(currentVal)) ? Math.round((parseFloat(currentVal) / totalMarks) * 100) : 0;
-                const g = calculateGrade(perc);
                 return `<tr>
                     <td>${s.Index}</td>
-                    <td style="text-align:right;">${s.Name}<br><small style="color:#888;">G${s.Grade} ${s.Class}</small></td>
-                    <td><input type="number" class="inline-input" data-index="${s.Index}" data-type="value" value="${currentVal}" oninput="updateLiveCalculation(this, '${s.Index}')" placeholder="0"></td>
-                    <td><div id="calc-${s.Index}">${currentVal !== "" ? `${perc}% <span class="grade-badge ${g.class}">${g.label}</span>` : '-'}</div></td>
-                    <td><input type="text" class="inline-note" data-index="${s.Index}" data-type="note" value="${currentNote}" placeholder="ކޮމެންޓެއް..."></td>
+                    <td style="text-align:right;">${s.Name}</td>
+                    <td><input type="number" class="inline-input" data-index="${s.Index}" data-type="val" value="${currentVal}"></td>
+                    <td><input type="text" class="inline-input" data-index="${s.Index}" data-type="note" value="${currentNote}"></td>
                 </tr>`;
             }
         }).join('');
@@ -382,12 +346,9 @@
         const btn = document.getElementById('searchBtn');
         if(!idx) return;
         btn.innerHTML = '<span class="loader"></span> ހޯދަނީ...';
-        btn.disabled = true;
-
+        
         fetchData(data => {
             btn.innerText = "މަޢުލޫމާތު ބަލާ";
-            btn.disabled = false;
-            database = data;
             const student = data.find(s => s.Index.toString() === idx);
             if(student) displayStudent(student);
             else alert("ދަރިވަރު ނުފެނުނު!");
@@ -399,78 +360,28 @@
         document.getElementById('dispClass').innerText = `ގްރޭޑް: ${s.Grade} ${s.Class}`;
         
         let workHtml = "";
-        let hasWork = false;
         for(let i=1; i<=45; i++) {
-            const status = s['Week' + i];
+            const status = s['Week'+i];
+            const note = s['Note'+i];
             if(status) {
-                workHtml += `<tr><td>ހަފްތާ ${i}</td><td><span class="status ${getStatusClass(status)}">${status}</span></td><td style="font-size:13px; color:#555;">${s['Note' + i] || "-"}</td></tr>`;
-                hasWork = true;
+                const sClass = status === 'ނިމިފައި' ? 'status-done' : 'status-pending';
+                workHtml += `<tr><td>Week ${i}</td><td><span class="status ${sClass}">${status}</span></td><td style="font-size:12px;">${note || '-'}</td></tr>`;
             }
         }
-        document.getElementById('workTableBody').innerHTML = hasWork ? workHtml : '<tr><td colspan="3">މަސައްކަތެއް ރެކޯޑް ކުރެވިފައެއް ނެތް</td></tr>';
+        document.getElementById('workTableBody').innerHTML = workHtml || '<tr><td colspan="3">މަސައްކަތެއް ރެކޯޑް ކުރެވިފައެއް ނެތް</td></tr>';
 
         let testHtml = "";
-        let hasTests = false;
-        const defaultTotal = 20; 
-
         for(let i=1; i<=10; i++) {
-            const mark = s['Test' + i];
-            if(mark !== undefined && mark !== "" && mark !== null) {
-                const perc = Math.round((parseFloat(mark) / defaultTotal) * 100);
-                const g = calculateGrade(perc);
-                testHtml += `<tr>
-                    <td>ޓެސްޓް ${i}</td>
-                    <td style="font-weight:bold;">${mark} / ${defaultTotal}</td>
-                    <td>${perc}%</td>
-                    <td><span class="grade-badge ${g.class}">${g.label}</span></td>
-                    <td style="font-size:13px; color:#555;">${s['TNote' + i] || "-"}</td>
-                </tr>`;
-                hasTests = true;
+            const mark = s['Test'+i];
+            const note = s['TNote'+i];
+            if(mark !== undefined && mark !== "") {
+                const g = calculateGrade(mark);
+                testHtml += `<tr><td>Test ${i}</td><td>${mark}</td><td><span class="grade-badge ${g.class}">${g.label}</span></td><td style="font-size:12px;">${note || '-'}</td></tr>`;
             }
         }
-        document.getElementById('testTableBody').innerHTML = hasTests ? testHtml : '<tr><td colspan="5">ޓެސްޓެއް ރެކޯޑް ކުރެވިފައެއް ނެތް</td></tr>';
+        document.getElementById('testTableBody').innerHTML = testHtml || '<tr><td colspan="4">ޓެސްޓެއް ރެކޯޑް ކުރެވިފައެއް ނެތް</td></tr>';
 
         document.getElementById('studentResults').style.display = 'block';
-    }
-
-    function getStatusClass(s) {
-        if(s === "ނިމިފައި") return "status-done";
-        if(s === "ފުރިހަމަ ނުވޭ") return "status-incomplete";
-        return "status-pending";
-    }
-
-    // Chunk size is reduced to 5 to avoid URL length limit which causes "Script error"
-    async function saveInChunks(updates, selectedItem) {
-        const chunkSize = 5; 
-        const btn = document.getElementById('bulkSaveBtn');
-        
-        for (let i = 0; i < updates.length; i += chunkSize) {
-            const chunk = updates.slice(i, i + chunkSize);
-            const progress = Math.round(((i + chunk.length) / updates.length) * 100);
-            btn.innerHTML = `<span class="loader"></span> ސޭވް ވަނީ (${progress}%)`;
-            
-            await new Promise((resolve, reject) => {
-                const callbackName = 'scb_' + Math.floor(Math.random() * 100000);
-                window[callbackName] = (res) => {
-                    if(res && res.success) resolve();
-                    else reject("Error in chunk");
-                    delete window[callbackName];
-                    const scriptTag = document.getElementById(callbackName + '_script');
-                    if(scriptTag) scriptTag.remove();
-                };
-
-                const script = document.createElement('script');
-                script.id = callbackName + '_script';
-                // Minified data structure to further reduce URL length
-                const data = { b: true, i: selectedItem, t: teacherMode, u: chunk };
-                const payload = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
-                script.src = `${API_URL}?callback=${callbackName}&payload=${payload}&nocache=${Date.now()}`;
-                script.onerror = () => reject("Script error");
-                document.body.appendChild(script);
-                
-                setTimeout(() => { if(window[callbackName]) reject("Timeout"); }, 25000);
-            });
-        }
     }
 
     async function saveBulkData() {
@@ -478,32 +389,55 @@
         const selectedItem = document.getElementById('bulkItemSelect').value;
         const rows = document.querySelectorAll('#teacherTableBody tr');
         
-        const updates = [];
+        btn.disabled = true;
+        btn.innerHTML = '<span class="loader"></span> ސޭވް ވަނީ...';
+
+        const allPromises = [];
+        
         rows.forEach(row => {
-            const valInput = row.querySelector('[data-type="value"]');
-            const noteInput = row.querySelector('[data-type="note"]');
-            if(valInput && (valInput.value !== "" || noteInput.value !== "")) {
-                // Using shorter keys (id, val, n) to save space
-                updates.push({ id: valInput.dataset.index, val: valInput.value, n: noteInput ? noteInput.value : "" });
+            const index = row.querySelector('[data-type="val"]').dataset.index;
+            const val = row.querySelector('[data-type="val"]').value;
+            const note = row.querySelector('[data-type="note"]').value;
+
+            // ހަމައެކަނި ބަދަލުވެފައިވާ ޑޭޓާ ފޮނުވުން
+            const student = database.find(s => s.Index.toString() === index);
+            const noteKey = teacherMode === 'work' ? selectedItem.replace("Week", "Note") : selectedItem.replace("Test", "TNote");
+            
+            if (student[selectedItem] != val || student[noteKey] != note) {
+                const payload = {
+                    index: index,
+                    week: selectedItem,
+                    status: val,
+                    note: note,
+                    mode: teacherMode
+                };
+                
+                allPromises.push(
+                    fetch(API_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        body: JSON.stringify(payload)
+                    })
+                );
             }
         });
 
-        if(updates.length === 0) {
-            alert("ސޭވް ކުރާނެ އެއްވެސް ބަދަލެއް ނެތް.");
+        if (allPromises.length === 0) {
+            alert("ސޭވް ކުރާނެ އައު ބަދަލެއް ނެތް.");
+            btn.disabled = false;
+            btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
             return;
         }
 
-        btn.disabled = true;
         try {
-            await saveInChunks(updates, selectedItem);
-            alert("ކާމިޔާބުކަމާއެކު ހުރިހާ ބަދަލެއް ސޭވް ކުރެވިއްޖެ!");
-            loadData();
+            await Promise.all(allPromises);
+            alert("ކާމިޔާބުކަމާއެކު ސޭވް ކުރެވިއްޖެ! (ޝީޓުގައި އަޕްޑޭޓްވާން ކުޑަވަގުތުކޮޅެއް ނަގާފާނެ)");
+            loadData(); // ޑޭޓާ ރިފްރެޝް ކުރުން
         } catch (e) {
-            alert("ސޭވް ކުރުމުގައި މައްސަލައެއް ދިމާވެއްޖެ. އެއްފަހަރާ ފޮނުވާ ޑޭޓާގެ މިންވަރު މާ ގިނަވީ ކަމަށް ވެދާނެ.");
-            console.error(e);
+            alert("ސޭވް ކުރުމުގައި މައްސަލައެއް ދިމާވެއްޖެ.");
         } finally {
-            btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
             btn.disabled = false;
+            btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
         }
     }
 </script>
