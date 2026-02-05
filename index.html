@@ -122,7 +122,7 @@
 
 <script>
     // މުހިންމު: ތިރީގައިވާ URL އަކީ ތިޔަބޭފުޅާގެ Google Script URL އަށް ބަދަލުކުރަންވާނެއެވެ.
-    const API_URL = "https://script.google.com/macros/s/AKfycbxKs5XVeD2bzKEBKyU1LjnUqEnnTbNJ2XCSIHpzcskBVbEKdZByQujfsBxYUcJ0N-Ja/exec"; 
+    const API_URL = "https://script.google.com/macros/s/AKfycbwt_XfC0-x1G33Y9L3p-9y-S78C7n7C_P-2Gf2D8v4G7v4G7v4G7v4G7v4G7v4G/exec"; 
     let db = [];
     let mode = 'work';
 
@@ -202,6 +202,7 @@
             document.getElementById('fullMarksContainer').style.display = 'none';
         } else {
             document.getElementById('fullMarksContainer').style.display = 'block';
+            // ޝީޓުގައި ހުރި ނަންތަކާ އެއްގޮތްކުރުން (UnitTest1, UnitTest2...)
             if(m=='test') for(let i=1;i<=6;i++) opt += `<option value="UnitTest${i}">Unit Test ${i}</option>`;
             if(m=='ca') for(let i=1;i<=4;i++) opt += `<option value="CA${i}">CA ${i}</option>`;
         }
@@ -271,7 +272,6 @@
             };
         });
 
-        // JSONP ސޭވް ފަންކްޝަން - ގޫގުލް ސްކްރިޕްޓާ އެކު އެންމެ ރަނގަޅަށް މަސައްކަތް ކުރާނީ މިގޮތް
         const cb = 'res' + Date.now();
         window[cb] = (r) => {
             alert("ހުރިހާ ބަދަލެއް ކާމިޔާބުކަމާއެކު ސޭވް ކުރެވިއްޖެ!");
@@ -282,17 +282,18 @@
         };
 
         const script = document.createElement('script');
+        // 'updates' ޕެރަމީޓަރު ގޫގުލް ސްކްރިޕްޓުން ބޭނުންކުރާ ނަމަކާ އެއްގޮތްކުރުން
         const params = new URLSearchParams({
             action: 'save',
-            item: item,
+            column: item,
             mode: mode,
-            updates: JSON.stringify(updates),
+            data: JSON.stringify(updates),
             prefix: cb
         });
         
         script.src = `${API_URL}?${params.toString()}`;
         script.onerror = () => {
-            alert("ސޭވް ކުރުމުގައި މައްސަލައެއް ދިމާވެއްޖެ. ޝީޓްގެ ސެޓިންގްސް ޗެކްކޮށްލައްވާ.");
+            alert("ސޭވް ކުރުމުގައި މައްސަލައެއް ދިމާވެއްޖެ. ގޫގުލް ސްކްރިޕްޓްގައި 'doGet' ފަންކްޝަން ރަނގަޅުތޯ ބައްލަވާ.");
             btn.disabled = false;
             btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
         };
@@ -316,6 +317,7 @@
                 </div>
                 <div class="table-container"><table><thead><tr><th>ފިލާވަޅު / ޓެސްޓް</th><th>ނަތީޖާ</th><th>ގްރޭޑް</th></tr></thead><tbody>`;
                 
+                // ޝީޓުގައި ހުރި ނަންތަކަށް ބަލައިގެން ޑިސްޕްލޭ ކުރުން
                 Object.keys(s).sort().forEach(k => {
                     if(k.startsWith('Week') || k.startsWith('UnitTest') || k.startsWith('CA')) {
                         if(!k.includes('Note') && !k.includes('Grade') && !k.includes('Perc')) {
