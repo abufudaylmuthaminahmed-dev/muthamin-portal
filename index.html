@@ -44,7 +44,8 @@
         .grade-B { background: #2196f3; }
         .grade-C { background: #ff9800; }
         .grade-Fail { background: #f44336; }
-        .full-marks-area { display: flex; align-items: center; gap: 15px; background: #e8f5e9; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #c8e6c9; }
+        
+        #tError { display: none; color: #b71c1c; background: #ffebee; padding: 15px; border-radius: 8px; margin-top: 10px; text-align: center; border: 1px solid #ffcdd2; }
     </style>
 </head>
 <body>
@@ -57,7 +58,6 @@
         <button class="tab-btn" onclick="showTab('teacher')">މުދައްރިސުން</button>
     </div>
 
-    <!-- Parent View -->
     <div id="parentView">
         <div class="card">
             <input type="number" id="pIdx" placeholder="ކުއްޖާގެ އިންޑެކްސް ނަންބަރު ޖައްސަވާ">
@@ -66,7 +66,6 @@
         <div id="pRes" style="display:none; text-align:center;"></div>
     </div>
 
-    <!-- Teacher View -->
     <div id="teacherView" style="display:none;">
         <div id="loginArea" class="card">
             <h3 style="text-align:center;">މުދައްރިސުންގެ ބައި</h3>
@@ -86,9 +85,9 @@
                     <label>އައިޓަމް ހިޔާރުކުރޭ:</label>
                     <select id="itemSelect" onchange="renderTeacherTable()"></select>
                 </div>
-                <div id="fullMarksContainer" class="full-marks-area" style="display:none;">
-                    <label style="white-space: nowrap; font-weight: bold;">ޖުމްލަ މާކްސް:</label>
-                    <input type="number" id="fullMarks" value="100" style="margin:0; height:45px; background:white;" oninput="renderTeacherTable()">
+                <div id="fullMarksContainer" style="display:none;">
+                    <label style="font-weight: bold;">ޖުމްލަ މާކްސް:</label>
+                    <input type="number" id="fullMarks" value="100" style="margin:0; height:45px;" oninput="renderTeacherTable()">
                 </div>
             </div>
 
@@ -97,7 +96,12 @@
                 <p>ލިސްޓު ލޯޑްވަނީ...</p>
             </div>
 
-            <div class="table-container" id="tContainer">
+            <div id="tError">
+                <p id="errorMsg">ޑޭޓާ ލިބުމުގައި މައްސަލައެއް ޖެހިއްޖެ!</p>
+                <button class="btn" style="width: auto; padding: 10px 20px;" onclick="fetchData()">އަލުން މަސައްކަތް ކުރޭ</button>
+            </div>
+
+            <div class="table-container" id="tContainer" style="display:none;">
                 <table>
                     <thead>
                         <tr>
@@ -111,7 +115,7 @@
                     <tbody id="tBody"></tbody>
                 </table>
             </div>
-            <button class="btn" id="sBtn" style="background:#2e7d32; margin-top:20px; border-bottom: 4px solid #1b5e20;" onclick="saveData()">ހުރިހާ ބަދަލެއް ސޭވްކުރޭ</button>
+            <button class="btn" id="sBtn" style="background:#2e7d32; margin-top:20px; display:none;" onclick="saveData()">ހުރިހާ ބަދަލެއް ސޭވްކުރޭ</button>
         </div>
     </div>
 </div>
@@ -162,16 +166,26 @@
 
     function fetchData() {
         document.getElementById('tLoading').style.display = 'block';
+        document.getElementById('tError').style.display = 'none';
         document.getElementById('tContainer').style.display = 'none';
+        document.getElementById('sBtn').style.display = 'none';
         
         const cb = 'p' + Date.now();
+        
         window[cb] = (data) => { 
             db = data; 
             document.getElementById('tLoading').style.display = 'none';
-            document.getElementById('tContainer').style.display = 'block';
-            setMode(mode); 
+            if (db && db.length > 0) {
+                document.getElementById('tContainer').style.display = 'block';
+                document.getElementById('sBtn').style.display = 'block';
+                setMode(mode); 
+            } else {
+                document.getElementById('tError').style.display = 'block';
+                document.getElementById('errorMsg').innerText = "ޑޭޓާ ލިބޭގޮތެއް ނުވި!";
+            }
             delete window[cb]; 
         };
+
         const s = document.createElement('script');
         s.src = `${API_URL}?prefix=${cb}&t=${Date.now()}`;
         document.body.appendChild(s);
@@ -183,13 +197,14 @@
         document.getElementById('m_'+m).classList.add('active');
         
         let opt = "";
+        // ޝީޓުގައި ހުރި ނަންތަކާ އެއްގޮތަށް ބަދަލުކުރުން
         if(m=='work') {
-            for(let i=1;i<=45;i++) opt += `<option value="Week ${i}">Week ${i}</option>`;
+            for(let i=1;i<=45;i++) opt += `<option value="Week${i}">Week ${i}</option>`;
             document.getElementById('fullMarksContainer').style.display = 'none';
         } else {
-            document.getElementById('fullMarksContainer').style.display = 'flex';
-            if(m=='test') for(let i=1;i<=10;i++) opt += `<option value="Unit Test ${i}">Unit Test ${i}</option>`;
-            if(m=='ca') for(let i=1;i<=4;i++) opt += `<option value="CA ${i}">CA ${i}</option>`;
+            document.getElementById('fullMarksContainer').style.display = 'block';
+            if(m=='test') for(let i=1;i<=10;i++) opt += `<option value="UnitTest${i}">Unit Test ${i}</option>`;
+            if(m=='ca') for(let i=1;i<=4;i++) opt += `<option value="CA${i}">CA ${i}</option>`;
         }
         
         document.getElementById('itemSelect').innerHTML = opt;
@@ -197,35 +212,16 @@
         renderTeacherTable();
     }
 
-    function updateRowGrade(el) {
-        if (mode === 'work') return;
-        const idx = el.dataset.idx;
-        const gradeDisplay = document.getElementById(`grade-${idx}`);
-        const fullMarks = document.getElementById('fullMarks').value || 100;
-        const marks = el.value;
-        const grade = calculateGrade(marks, fullMarks);
-        const perc = calculatePercentage(marks, fullMarks);
-        
-        if(grade !== "") {
-            gradeDisplay.innerHTML = `<span style="font-size:12px">${perc}%</span> <span class="grade-badge ${getGradeClass(grade)}">${grade}</span>`;
-        } else {
-            gradeDisplay.innerHTML = "";
-        }
-    }
-
     function renderTeacherTable() {
         const item = document.getElementById('itemSelect').value;
         const fullMarks = document.getElementById('fullMarks').value || 100;
         let html = "";
         
-        if(!db || db.length === 0) {
-            document.getElementById('tBody').innerHTML = "<tr><td colspan='5'>ލިސްޓު ނުފެނުނު. ޑޭޓާ ކަނެކްޝަން ޗެކްކޮށްލައްވާ.</td></tr>";
-            return;
-        }
+        if(!db || db.length === 0) return;
 
         db.forEach(s => {
             let v = s[item] || "";
-            let nKey = "Note " + item;
+            let nKey = "Note" + item;
             let n = s[nKey] || "";
             let grade = mode !== 'work' ? calculateGrade(v, fullMarks) : "";
             let perc = mode !== 'work' ? calculatePercentage(v, fullMarks) : "";
@@ -245,40 +241,40 @@
         document.getElementById('tBody').innerHTML = html;
     }
 
+    function updateRowGrade(el) {
+        if (mode === 'work') return;
+        const idx = el.dataset.idx;
+        const gradeDisplay = document.getElementById(`grade-${idx}`);
+        const fullMarks = document.getElementById('fullMarks').value || 100;
+        const marks = el.value;
+        const grade = calculateGrade(marks, fullMarks);
+        const perc = calculatePercentage(marks, fullMarks);
+        gradeDisplay.innerHTML = grade !== "" ? `<span style="font-size:12px">${perc}%</span> <span class="grade-badge ${getGradeClass(grade)}">${grade}</span>` : "";
+    }
+
     async function saveData() {
         const btn = document.getElementById('sBtn');
         const item = document.getElementById('itemSelect').value;
         const fullMarks = document.getElementById('fullMarks').value || 100;
-        
         btn.disabled = true; btn.innerText = "ސޭވް ވަނީ...";
         
         const updates = Array.from(document.querySelectorAll('.v-in')).map((el, i) => {
             let val = el.value;
-            let grade = mode !== 'work' ? calculateGrade(val, fullMarks) : "";
-            let perc = mode !== 'work' ? calculatePercentage(val, fullMarks) : "";
             return {
                 index: el.dataset.idx,
                 val: val,
-                grade: grade,
-                perc: perc,
+                grade: mode !== 'work' ? calculateGrade(val, fullMarks) : "",
+                perc: mode !== 'work' ? calculatePercentage(val, fullMarks) : "",
                 note: document.querySelectorAll('.n-in')[i].value
             };
         });
 
         try {
-            const p = new URLSearchParams({ 
-                action:'save', 
-                item:item, 
-                mode: mode,
-                updates:JSON.stringify(updates) 
-            });
-            // Google Apps Script requires JSONP or no-cors for simple requests without proper headers
+            const p = new URLSearchParams({ action:'save', item:item, mode: mode, updates:JSON.stringify(updates) });
             await fetch(`${API_URL}?${p.toString()}`, { mode:'no-cors' });
-            alert("ހުރިހާ ބަދަލެއް ކާމިޔާބުކަމާއެކު ސޭވް ކުރެވިއްޖެ!");
+            alert("ސޭވް ކުރެވިއްޖެ!");
             fetchData();
-        } catch(e) { 
-            alert("ސޭވް ކުރުމުގައި މައްސަލައެއް ޖެހިއްޖެ. އަލުން މަސައްކަތް ކޮށްލައްވާ."); 
-        }
+        } catch(e) { alert("މައްސަލައެއް ޖެހިއްޖެ!"); }
         btn.disabled = false; btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
     }
 
@@ -286,75 +282,31 @@
         const idx = document.getElementById('pIdx').value;
         if(!idx) return;
         const res = document.getElementById('pRes');
-        res.innerHTML = '<div class="loader"></div><p>ބަލަނީ...</p>'; res.style.display = 'block';
+        res.innerHTML = '<div class="loader"></div>'; res.style.display = 'block';
 
         const cb = 's'+Date.now();
         window[cb] = (data) => {
             const s = data.find(x => String(x.Index) === String(idx));
             if(s) {
-                let totalMarks = s.Total || '-';
-                let percentage = s.Percentage || '-';
-                let gradeOverall = s.Grade || '-';
-
-                let h = `
-                    <div class="card" style="border-right: 5px solid #00796b;">
-                        <h2 style="margin:0; color:#00796b;">${s.Name}</h2>
-                        <p style="margin:5px 0; color:#555; font-size:18px;">އިންޑެކްސް: <b>${s.Index}</b></p>
-                    </div>
-                    
-                    <div class="summary-card">
-                        <div class="summary-item">
-                            <span style="font-size:12px; color:#555;">ޖުމްލަ މާކްސް</span>
-                            <span class="summary-val">${totalMarks}</span>
-                        </div>
-                        <div class="summary-item" style="border-right: 1px solid #b2dfdb; border-left: 1px solid #b2dfdb;">
-                            <span style="font-size:12px; color:#555;">އިންސައްތަ</span>
-                            <span class="summary-val">${percentage}${percentage !== '-' ? '%' : ''}</span>
-                        </div>
-                        <div class="summary-item">
-                            <span style="font-size:12px; color:#555;">ގްރޭޑް</span>
-                            <span class="summary-val">${gradeOverall}</span>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h4 style="border-bottom:2px solid #00796b; padding-bottom:8px; margin-top:0; text-align:right;">ނަތީޖާތަކުގެ ތަފްޞީލް</h4>
-                        <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th style="text-align:right">ފިލާވަޅު / ޓެސްޓް</th>
-                                    <th>ނަތީޖާ</th>
-                                    <th>ގްރޭޑް</th>
-                                </tr>
-                            </thead>
-                            <tbody>`;
+                let h = `<div class="card" style="border-right: 5px solid #00796b;"><h2>${s.Name}</h2><p>އިންޑެކްސް: ${s.Index}</p></div>
+                <div class="summary-card">
+                    <div><span>ޖުމްލަ</span><br><span class="summary-val">${s.Total || '-'}</span></div>
+                    <div><span>ގްރޭޑް</span><br><span class="summary-val">${s.Grade || '-'}</span></div>
+                </div>
+                <div class="table-container"><table><thead><tr><th>ފިލާވަޅު</th><th>ނަތީޖާ</th><th>ގްރޭޑް</th></tr></thead><tbody>`;
                 
-                // ތަފްޞީލީ ލިސްޓު ހެދުން
-                Object.keys(s).sort().forEach(k => {
-                    if((k.includes('Week') || k.includes('Unit Test') || k.includes('CA')) && 
-                       !k.toLowerCase().includes('note') && !k.toLowerCase().includes('grade') && !k.toLowerCase().includes('perc')) {
-                        let val = s[k] || '-';
-                        let note = s["Note " + k] || "";
-                        let g = s["Grade " + k] || "";
-                        let p = s["Perc " + k] || "";
-                        
-                        h += `<tr>
-                                <td style="text-align:right">
-                                    <b>${k}</b>
-                                    ${note ? `<br><small style="color:#00796b; background:#e8f5e9; padding:2px 5px; border-radius:4px;">${note}</small>` : ''}
-                                </td>
-                                <td><span style="background:#f0f0f0; padding:6px 12px; border-radius:20px; font-weight:bold;">${val}</span></td>
-                                <td>${g ? `<small>${p}%</small> <span class="grade-badge ${getGradeClass(g)}">${g}</span>` : '-'}</td>
-                              </tr>`;
+                Object.keys(s).forEach(k => {
+                    if(k.startsWith('Week') || k.startsWith('UnitTest') || k.startsWith('CA')) {
+                        if(!k.includes('Note') && !k.includes('Grade') && !k.includes('Perc')) {
+                            let val = s[k] || '-';
+                            let g = s["Grade" + k] || "";
+                            h += `<tr><td>${k}</td><td>${val}</td><td>${g ? `<span class="grade-badge ${getGradeClass(g)}">${g}</span>` : '-'}</td></tr>`;
+                        }
                     }
                 });
-                
-                h += `</tbody></table></div></div>`;
+                h += `</tbody></table></div>`;
                 res.innerHTML = h;
-            } else {
-                res.innerHTML = '<div class="card" style="color:red; border:2px solid red;">މި އިންޑެކްސް ނަންބަރުގެ ދަރިވަރަކު ނުފެނުނު!</div>';
-            }
+            } else { res.innerHTML = "ދަރިވަރަކު ނުފެނުނު!"; }
             delete window[cb];
         };
         const sc = document.createElement('script');
