@@ -107,7 +107,7 @@
                         <tr>
                             <th style="width: 80px;">Index</th>
                             <th style="text-align:right">ދަރިވަރުގެ ނަން</th>
-                            <th id="valHead">މާކްސް</th>
+                            <th id="valHead">މާކްސް / ހާލަތު</th>
                             <th style="width: 140px;">ނަތީޖާ</th>
                             <th>ނޯޓް</th>
                         </tr>
@@ -122,7 +122,7 @@
 
 <script>
     // މުހިންމު: ތިރީގައިވާ URL އަކީ ތިޔަބޭފުޅާގެ Google Script URL އަށް ބަދަލުކުރަންވާނެއެވެ.
-    const API_URL = "https://script.google.com/macros/s/AKfycbx-XgXhVS1IIEJk8KmvRy_pN8C2zjE6y3Qc_D4MAhmvpMsbnhXLmV3sBWO974o4SoV-/exec"; 
+    const API_URL = "https://script.google.com/macros/s/AKfycbxKs5XVeD2bzKEBKyU1LjnUqEnnTbNJ2XCSIHpzcskBVbEKdZByQujfsBxYUcJ0N-Ja/exec"; 
     let db = [];
     let mode = 'work';
 
@@ -197,13 +197,12 @@
         document.getElementById('m_'+m).classList.add('active');
         
         let opt = "";
-        // ޝީޓުގައި ހުރި ނަންތަކާ އެއްގޮތަށް ބަދަލުކުރުން
         if(m=='work') {
-            for(let i=1;i<=45;i++) opt += `<option value="Week${i}">Week ${i}</option>`;
+            for(let i=1;i<=5;i++) opt += `<option value="Week${i}">Week ${i}</option>`;
             document.getElementById('fullMarksContainer').style.display = 'none';
         } else {
             document.getElementById('fullMarksContainer').style.display = 'block';
-            if(m=='test') for(let i=1;i<=10;i++) opt += `<option value="UnitTest${i}">Unit Test ${i}</option>`;
+            if(m=='test') for(let i=1;i<=6;i++) opt += `<option value="UnitTest${i}">Unit Test ${i}</option>`;
             if(m=='ca') for(let i=1;i<=4;i++) opt += `<option value="CA${i}">CA ${i}</option>`;
         }
         
@@ -256,26 +255,48 @@
         const btn = document.getElementById('sBtn');
         const item = document.getElementById('itemSelect').value;
         const fullMarks = document.getElementById('fullMarks').value || 100;
-        btn.disabled = true; btn.innerText = "ސޭވް ވަނީ...";
+        
+        btn.disabled = true; 
+        btn.innerText = "ސޭވް ވަނީ...";
         
         const updates = Array.from(document.querySelectorAll('.v-in')).map((el, i) => {
             let val = el.value;
+            let note = document.querySelectorAll('.n-in')[i].value;
             return {
                 index: el.dataset.idx,
                 val: val,
                 grade: mode !== 'work' ? calculateGrade(val, fullMarks) : "",
                 perc: mode !== 'work' ? calculatePercentage(val, fullMarks) : "",
-                note: document.querySelectorAll('.n-in')[i].value
+                note: note
             };
         });
 
-        try {
-            const p = new URLSearchParams({ action:'save', item:item, mode: mode, updates:JSON.stringify(updates) });
-            await fetch(`${API_URL}?${p.toString()}`, { mode:'no-cors' });
-            alert("ސޭވް ކުރެވިއްޖެ!");
+        // JSONP ސޭވް ފަންކްޝަން - ގޫގުލް ސްކްރިޕްޓާ އެކު އެންމެ ރަނގަޅަށް މަސައްކަތް ކުރާނީ މިގޮތް
+        const cb = 'res' + Date.now();
+        window[cb] = (r) => {
+            alert("ހުރިހާ ބަދަލެއް ކާމިޔާބުކަމާއެކު ސޭވް ކުރެވިއްޖެ!");
+            btn.disabled = false;
+            btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
             fetchData();
-        } catch(e) { alert("މައްސަލައެއް ޖެހިއްޖެ!"); }
-        btn.disabled = false; btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
+            delete window[cb];
+        };
+
+        const script = document.createElement('script');
+        const params = new URLSearchParams({
+            action: 'save',
+            item: item,
+            mode: mode,
+            updates: JSON.stringify(updates),
+            prefix: cb
+        });
+        
+        script.src = `${API_URL}?${params.toString()}`;
+        script.onerror = () => {
+            alert("ސޭވް ކުރުމުގައި މައްސަލައެއް ދިމާވެއްޖެ. ޝީޓްގެ ސެޓިންގްސް ޗެކްކޮށްލައްވާ.");
+            btn.disabled = false;
+            btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
+        };
+        document.body.appendChild(script);
     }
 
     function searchStudent() {
@@ -293,14 +314,19 @@
                     <div><span>ޖުމްލަ</span><br><span class="summary-val">${s.Total || '-'}</span></div>
                     <div><span>ގްރޭޑް</span><br><span class="summary-val">${s.Grade || '-'}</span></div>
                 </div>
-                <div class="table-container"><table><thead><tr><th>ފިލާވަޅު</th><th>ނަތީޖާ</th><th>ގްރޭޑް</th></tr></thead><tbody>`;
+                <div class="table-container"><table><thead><tr><th>ފިލާވަޅު / ޓެސްޓް</th><th>ނަތީޖާ</th><th>ގްރޭޑް</th></tr></thead><tbody>`;
                 
-                Object.keys(s).forEach(k => {
+                Object.keys(s).sort().forEach(k => {
                     if(k.startsWith('Week') || k.startsWith('UnitTest') || k.startsWith('CA')) {
                         if(!k.includes('Note') && !k.includes('Grade') && !k.includes('Perc')) {
                             let val = s[k] || '-';
                             let g = s["Grade" + k] || "";
-                            h += `<tr><td>${k}</td><td>${val}</td><td>${g ? `<span class="grade-badge ${getGradeClass(g)}">${g}</span>` : '-'}</td></tr>`;
+                            let note = s["Note" + k] || "";
+                            h += `<tr>
+                                    <td>${k}${note ? `<br><small style="color:#666">${note}</small>` : ''}</td>
+                                    <td><span style="background:#eee; padding:2px 8px; border-radius:4px">${val}</span></td>
+                                    <td>${g ? `<span class="grade-badge ${getGradeClass(g)}">${g}</span>` : '-'}</td>
+                                  </tr>`;
                         }
                     }
                 });
