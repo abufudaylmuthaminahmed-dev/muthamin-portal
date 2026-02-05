@@ -439,9 +439,9 @@
         return "status-pending";
     }
 
-    // Chunk size is reduced to 10 to avoid URL length limit which causes "Script error"
+    // Chunk size is reduced to 5 to avoid URL length limit which causes "Script error"
     async function saveInChunks(updates, selectedItem) {
-        const chunkSize = 10; 
+        const chunkSize = 5; 
         const btn = document.getElementById('bulkSaveBtn');
         
         for (let i = 0; i < updates.length; i += chunkSize) {
@@ -461,15 +461,14 @@
 
                 const script = document.createElement('script');
                 script.id = callbackName + '_script';
-                // Minimal data keys used to shorten payload
-                const data = { bulk: true, item: selectedItem, type: teacherMode, upd: chunk };
+                // Minified data structure to further reduce URL length
+                const data = { b: true, i: selectedItem, t: teacherMode, u: chunk };
                 const payload = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
                 script.src = `${API_URL}?callback=${callbackName}&payload=${payload}&nocache=${Date.now()}`;
                 script.onerror = () => reject("Script error");
                 document.body.appendChild(script);
                 
-                // Increased timeout to 20 seconds
-                setTimeout(() => { if(window[callbackName]) reject("Timeout"); }, 20000);
+                setTimeout(() => { if(window[callbackName]) reject("Timeout"); }, 25000);
             });
         }
     }
@@ -484,7 +483,8 @@
             const valInput = row.querySelector('[data-type="value"]');
             const noteInput = row.querySelector('[data-type="note"]');
             if(valInput && (valInput.value !== "" || noteInput.value !== "")) {
-                updates.push({ i: valInput.dataset.index, v: valInput.value, n: noteInput ? noteInput.value : "" });
+                // Using shorter keys (id, val, n) to save space
+                updates.push({ id: valInput.dataset.index, val: valInput.value, n: noteInput ? noteInput.value : "" });
             }
         });
 
