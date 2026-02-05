@@ -128,6 +128,7 @@
 </div>
 
 <script>
+    // Updated Script URL
     const API_URL = "https://script.google.com/macros/s/AKfycbx0FuKBjx_6ZwkA13pmpuqGRsqe_7NXwm6IKhdynSJgslnXwUaFWxvg5tsEY5oJYVVR/exec";
     
     let database = [];
@@ -158,6 +159,7 @@
         const body = document.getElementById('teacherTableBody');
         body.innerHTML = '<tr><td colspan="4"><span class="loader"></span> ލޯޑް ވަނީ...</td></tr>';
         
+        // Use JSONP to fetch data to avoid CORS
         const callback = 'jsonp_' + Date.now();
         window[callback] = (data) => {
             database = data;
@@ -190,7 +192,6 @@
     function renderFilters() {
         if(!database.length) return;
         
-        // Grade Filter
         const grades = [...new Set(database.map(s => s.Grade))].filter(Boolean).sort((a,b)=>a-b);
         let gHtml = `<div class="pill ${selectedGrade === 'All' ? 'active' : ''}" onclick="filterGrade('All')">All</div>`;
         grades.forEach(g => {
@@ -198,7 +199,6 @@
         });
         document.getElementById('gradeFilter').innerHTML = gHtml;
 
-        // Class Filter
         const classSection = document.getElementById('classFilterSection');
         if(selectedGrade === 'All') {
             classSection.style.display = 'none';
@@ -206,7 +206,6 @@
         } else {
             classSection.style.display = 'block';
             const classes = [...new Set(database.filter(s => s.Grade && s.Grade.toString() === selectedGrade.toString()).map(s => s.Class))].filter(Boolean).sort();
-            
             let cHtml = `<div class="pill ${selectedClass === 'All' ? 'active' : ''}" onclick="filterClass('All')">ހުރިހާ ކްލާހެއް</div>`;
             classes.forEach(c => {
                 cHtml += `<div class="pill ${selectedClass == c ? 'active' : ''}" onclick="filterClass('${c}')">${c}</div>`;
@@ -216,7 +215,6 @@
     }
 
     function filterGrade(g) { 
-        if(selectedGrade === g) return;
         selectedGrade = g; 
         selectedClass = 'All'; 
         renderFilters();
@@ -224,7 +222,6 @@
     }
 
     function filterClass(c) {
-        if(selectedClass === c) return;
         selectedClass = c;
         renderFilters();
         renderTeacherTable();
@@ -233,21 +230,14 @@
     function renderTeacherTable() {
         const item = document.getElementById('itemSelect').value;
         const body = document.getElementById('teacherTableBody');
-        
         if(!database.length) return;
 
         let filtered = database;
         if(selectedGrade !== 'All') filtered = filtered.filter(s => s.Grade && s.Grade.toString() === selectedGrade.toString());
         if(selectedClass !== 'All') filtered = filtered.filter(s => s.Class && s.Class.toString() === selectedClass.toString());
 
-        if(filtered.length === 0) {
-            body.innerHTML = '<tr><td colspan="4">ލިސްޓުގައި އެއްވެސް ކުއްޖަކު ނެތް</td></tr>';
-            return;
-        }
-
         let rowsHtml = '';
-        for(let i=0; i < filtered.length; i++) {
-            const s = filtered[i];
+        filtered.forEach(s => {
             let num = item.replace(/[a-zA-Z]/g, '');
             let currentVal = s[item] || "";
             let noteKey = currentMode === 'work' ? 'Note'+num : (currentMode === 'test' ? 'TNote'+num : 'CANote'+num);
@@ -263,11 +253,11 @@
                 <td>${valField}</td>
                 <td><input type="text" data-idx="${s.Index}" class="note-in" value="${currentNote}"></td>
             </tr>`;
-        }
-        body.innerHTML = rowsHtml;
+        });
+        body.innerHTML = rowsHtml || '<tr><td colspan="4">ނަތީޖާއެއް ނުފެނުނު</td></tr>';
     }
 
-    async function saveData() {
+    function saveData() {
         const btn = document.getElementById('saveBtn');
         const item = document.getElementById('itemSelect').value;
         
@@ -284,35 +274,33 @@
             });
         });
 
-        // Use a form-style submission which is often more reliable for Google Scripts
-        const formData = new URLSearchParams();
-        formData.append('action', 'save');
-        formData.append('mode', currentMode);
-        formData.append('item', item);
-        formData.append('updates', JSON.stringify(updates));
+        // Use fetch with POST method to ensure data is handled correctly
+        // Note: Google Apps Script requires a special approach for POST
+        const payload = {
+            action: 'save',
+            mode: currentMode,
+            item: item,
+            updates: JSON.stringify(updates)
+        };
 
-        try {
-            // We use img or script tag as a fallback for the "no-response" issue often found in cross-origin apps script
-            const tempScript = document.createElement('script');
-            const saveUrl = `${API_URL}?${formData.toString()}&t=${Date.now()}`;
-            
-            tempScript.src = saveUrl;
-            document.body.appendChild(tempScript);
-
-            // Give visual feedback after a short delay
-            setTimeout(() => {
-                alert("ބަދަލުތައް ފޮނުވިއްޖެ! ޝީޓް އަޕްޑޭޓް ވާން 10-20 ސިކުންތު ނަގާފާނެ. ޝީޓްގައި ބަދަލު ނުފެންނަނަމަ އަލުން ސޭވް ކޮށްލައްވާ.");
-                btn.disabled = false;
-                btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
-                tempScript.remove();
-            }, 2000);
-
-        } catch(e) {
-            console.error("Save Error:", e);
+        // Fallback to GET params if POST is blocked or fails
+        const queryString = new URLSearchParams(payload).toString();
+        
+        fetch(`${API_URL}?${queryString}`, {
+            method: 'GET',
+            mode: 'no-cors' // Google Script usually responds with a redirect that CORS blocks
+        })
+        .then(() => {
+            alert("ސޭވް ކުރުމުގެ މަސައްކަތް ކުރިއަށް ދަނީ. ޝީޓަށް ބަދަލު އަންނަން ކުޑަ ވަގުތުކޮޅެއް ނަގާފާނެ.");
+        })
+        .catch(err => {
+            console.error("Save error:", err);
             alert("ސޭވް ކުރުމުގައި މައްސަލައެއް ދިމާވެއްޖެ.");
+        })
+        .finally(() => {
             btn.disabled = false;
             btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
-        }
+        });
     }
 
     function searchStudent() {
