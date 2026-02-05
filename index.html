@@ -31,7 +31,7 @@
         }
         
         .container { 
-            max-width: 1000px; 
+            max-width: 1100px; 
             margin: 0 auto; 
             background: white; 
             padding: 15px; 
@@ -53,13 +53,13 @@
             padding-bottom: 10px; 
         }
         
+        /* Main Tabs */
         .tabs { 
             display: flex; 
             justify-content: space-between; 
             margin-bottom: 15px; 
             border-bottom: 2px solid #eee; 
             gap: 2px; 
-            width: 100%;
         }
         .tab-btn { 
             flex: 1;
@@ -78,6 +78,29 @@
             color: #00796b; 
             background: white; 
             border-bottom: 3px solid #00796b; 
+        }
+
+        /* Sub Tabs for Teacher Dashboard */
+        .sub-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+        .sub-tab-btn {
+            padding: 8px 15px;
+            background: #e0f2f1;
+            border: 1px solid #b2dfdb;
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 13px;
+        }
+        .sub-tab-btn.active {
+            background: #00796b;
+            color: white;
         }
 
         .view-section { display: none; animation: fadeIn 0.3s ease; }
@@ -101,7 +124,6 @@
             text-align: center; 
             outline: none; 
             margin-bottom: 10px; 
-            display: block;
         }
         
         button { 
@@ -128,15 +150,15 @@
         table { 
             width: 100%; 
             border-collapse: collapse; 
-            min-width: 320px; 
+            min-width: 800px; 
         }
         th, td { 
             padding: 10px 8px; 
             border-bottom: 1px solid #eee; 
             text-align: center; 
-            font-size: 14px; 
+            font-size: 13px; 
         }
-        th { background: #00796b; color: white; }
+        th { background: #00796b; color: white; position: sticky; top: 0; }
 
         .grade-badge { 
             padding: 3px 8px; 
@@ -148,54 +170,6 @@
         .pass, .done { background: #28a745; }
         .fail, .not-done { background: #dc3545; }
         
-        .material-card { 
-            background: #fff; 
-            border: 1px solid #eee; 
-            padding: 12px; 
-            border-radius: 10px; 
-            margin-top: 10px; 
-            text-align: center;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-        }
-        
-        .material-card a {
-            display: inline-block;
-            margin-top: 8px;
-            color: #00796b;
-            text-decoration: none;
-            font-weight: bold;
-            background: #e0f2f1;
-            padding: 5px 15px;
-            border-radius: 20px;
-        }
-
-        @media (min-width: 600px) {
-            h1 { font-size: 1.8rem; }
-            .container { padding: 25px; }
-            input, button { width: auto; min-width: 250px; }
-            .tabs { justify-content: center; gap: 10px; }
-            .tab-btn { flex: none; width: 150px; }
-        }
-
-        .comment-section { 
-            background: #f1f8f7; 
-            padding: 15px; 
-            border-radius: 10px; 
-            margin-top: 20px; 
-            border-top: 3px solid #00796b; 
-        }
-
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); }
-        .modal-content { 
-            background: white; 
-            margin: 10% auto; 
-            padding: 20px; 
-            border-radius: 12px; 
-            width: 90%; 
-            max-width: 450px; 
-            text-align: right; 
-        }
-        
         .loader { 
             border: 2px solid #f3f3f3; 
             border-top: 2px solid #00796b; 
@@ -206,6 +180,28 @@
             display: inline-block; 
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: #f1f8f7;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #b2dfdb;
+        }
+
+        @media (min-width: 600px) {
+            h1 { font-size: 1.8rem; }
+            .container { padding: 25px; }
+            input, button { width: auto; min-width: 200px; }
+            .tabs { justify-content: center; gap: 10px; }
+            .tab-btn { flex: none; width: 150px; }
+        }
     </style>
 </head>
 <body>
@@ -218,6 +214,7 @@
         <button class="tab-btn" id="tabTeacher" onclick="showTab('teacherView')">👨‍🏫 މުދައްރިސުން</button>
     </div>
 
+    <!-- Student View -->
     <div id="studentView" class="view-section active">
         <div class="search-box">
             <h3>ނަތީޖާ ހޯއްދަވާ</h3>
@@ -228,12 +225,7 @@
         <div id="resultArea" style="display:none;">
             <div style="background: #e0f2f1; padding: 12px; border-radius: 8px; margin-bottom: 15px; border-right: 5px solid #00796b;">
                 <h2 id="stName" style="margin: 0; font-size: 1.1rem;"></h2>
-                <small id="stIndex" style="color: #666;"></small>
-            </div>
-
-            <div id="materialDisplay" style="display: none;">
-                <h3>📚 ފިލާވަޅުތައް</h3>
-                <div id="materialList"></div>
+                <small id="stClass" style="color: #666;"></small>
             </div>
 
             <div class="table-container">
@@ -245,18 +237,13 @@
                 </table>
             </div>
 
-            <div style="margin-top: 15px; padding: 12px; background: #fff4e5; border-right: 4px solid #ffa000; border-radius: 8px; font-size: 14px;">
+            <div id="stNoteBox" style="margin-top: 15px; padding: 12px; background: #fff4e5; border-right: 4px solid #ffa000; border-radius: 8px; font-size: 14px;">
                 <strong>ނޯޓް:</strong> <span id="stNote"></span>
-            </div>
-
-            <div class="comment-section">
-                <h3>💬 ބެލެނިވެރިންގެ ޚިޔާލު</h3>
-                <textarea id="parentComment" placeholder="މިތަނުގައި ލިޔުއްވާ..."></textarea>
-                <button onclick="submitComment()">ފޮނުވާ</button>
             </div>
         </div>
     </div>
 
+    <!-- Teacher View -->
     <div id="teacherView" class="view-section">
         <div id="adminLoginForm" style="text-align: center; padding: 20px;">
             <h3>ލޮގިން</h3>
@@ -265,68 +252,54 @@
         </div>
 
         <div id="teacherDashboard" style="display:none;">
-            <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #ddd;">
-                <h3>ފިލާވަޅު އަޕްލޯޑް</h3>
-                <input type="text" id="matTitle" placeholder="ނަން">
-                <input type="url" id="matLink" placeholder="ލިންކް">
-                <button onclick="addMaterial()">އަޕްލޯޑް</button>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <small>ޖުމްލަ ކުދިން</small>
+                    <h2 id="totalStudentsCount">0</h2>
+                </div>
+                <div class="stat-card">
+                    <small>މިއަދުގެ ޙާޟިރީ</small>
+                    <h2 id="todayAttendance">0%</h2>
+                </div>
             </div>
-            
+
+            <div class="sub-tabs" id="gradeTabs">
+                <!-- Grade tabs will be injected here -->
+            </div>
+
+            <div id="classFilterArea" class="sub-tabs" style="border-bottom:none; margin-top:-10px;">
+                <!-- Class tabs for selected grade -->
+            </div>
+
             <div class="table-container">
-                <table>
+                <table id="teacherTable">
                     <thead>
-                        <tr><th>އިންޑެކްސް</th><th>ނަން</th><th>Unit 1</th><th>Week 1</th><th>Week 2</th><th>Week 3</th><th>Week 4</th><th>Week 5</th><th>އަމަލު</th></tr>
+                        <tr>
+                            <th>އިންޑެކްސް</th>
+                            <th>ނަން</th>
+                            <th>Unit 1</th>
+                            <th>Week 1</th>
+                            <th>Week 2</th>
+                            <th>Week 3</th>
+                            <th>Week 4</th>
+                            <th>Week 5</th>
+                            <th>އަމަލު</th>
+                        </tr>
                     </thead>
-                    <tbody id="allStudentsBody"></tbody>
+                    <tbody id="allStudentsBody">
+                        <tr><td colspan="9">ލޯޑް ވަނީ...</td></tr>
+                    </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
 
-<div id="editModal" class="modal">
-    <div class="modal-content">
-        <h3 id="editTitle">ބަދަލުކުރައްވާ</h3>
-        <input type="hidden" id="editRowIndex">
-        <div style="height: 300px; overflow-y: auto; padding: 5px;">
-            <div style="margin-bottom:10px; text-align:right;">
-                <label>Unit 1 Marks:</label>
-                <input type="number" id="editUnit1" placeholder="މާކްސް">
-            </div>
-            <div style="margin-bottom:10px; text-align:right;">
-                <label>Week 1 Status:</label>
-                <select id="editWeek1"><option value="Not Done">Not Done</option><option value="Done">Done</option></select>
-            </div>
-            <div style="margin-bottom:10px; text-align:right;">
-                <label>Week 2 Status:</label>
-                <select id="editWeek2"><option value="Not Done">Not Done</option><option value="Done">Done</option></select>
-            </div>
-            <div style="margin-bottom:10px; text-align:right;">
-                <label>Week 3 Status:</label>
-                <select id="editWeek3"><option value="Not Done">Not Done</option><option value="Done">Done</option></select>
-            </div>
-            <div style="margin-bottom:10px; text-align:right;">
-                <label>Week 4 Status:</label>
-                <select id="editWeek4"><option value="Not Done">Not Done</option><option value="Done">Done</option></select>
-            </div>
-            <div style="margin-bottom:10px; text-align:right;">
-                <label>Week 5 Status:</label>
-                <select id="editWeek5"><option value="Not Done">Not Done</option><option value="Done">Done</option></select>
-            </div>
-            <textarea id="editNote" placeholder="ނޯޓް"></textarea>
-        </div>
-        <div style="margin-top: 15px;">
-            <button onclick="closeModal()" style="background:#6c757d; width: 48%; float: left;">ބާތިލް</button>
-            <button onclick="saveDataMock()" style="background:#28a745; width: 48%; float: right;">ސޭވް</button>
-        </div>
-        <div style="clear:both;"></div>
-    </div>
-</div>
-
 <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx0FuKBjx_6ZwkA13pmpuqGRsqe_7NXwm6IKhdynSJgslnXwUaFWxvg5tsEY5oJYVVR/exec";
     let allData = [];
-    let materials = [];
+    let currentGrade = "All";
+    let currentClass = "All";
 
     function showTab(tabId) {
         document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
@@ -339,7 +312,7 @@
         if (document.getElementById('adminPass').value === "admin123") {
             document.getElementById('adminLoginForm').style.display = 'none';
             document.getElementById('teacherDashboard').style.display = 'block';
-            loadAllDataForTeacher();
+            loadTeacherData();
         } else { alert("ޕާސްވޯޑް ނުބައި!"); }
     }
 
@@ -363,89 +336,103 @@
             const s = data.find(x => x.Index && x.Index.toString() === input);
             if (s) {
                 document.getElementById('stName').innerText = s.Name;
-                document.getElementById('stIndex').innerText = "އިންޑެކްސް: " + s.Index;
+                document.getElementById('stClass').innerText = `ގްރޭޑް ${s.Grade || ''} ${s.Class || ''} | އިންޑެކްސް: ${s.Index}`;
                 document.getElementById('stNote').innerText = s.Note || "ނޯޓެއް ނެތް";
                 
                 let rows = "";
-                // Unit Tests (Unit1, Unit2, Unit3)
+                // Units
                 for(let i=1; i<=3; i++) {
-                    const fieldName = 'Unit' + i;
-                    if(s[fieldName] !== undefined && s[fieldName] !== "") {
-                        const m = parseInt(s[fieldName]);
+                    const f = 'Unit' + i;
+                    if(s[f] !== undefined && s[f] !== "") {
+                        const m = parseInt(s[f]);
                         rows += `<tr><td>Unit ${i}</td><td>${m}</td><td><span class="grade-badge ${m>=50?'pass':'fail'}">${m>=50?'Pass':'Fail'}</span></td></tr>`;
                     }
                 }
-                
-                // Week Status (Week1 through Week 5)
+                // Weeks
                 for(let i=1; i<=5; i++) {
-                    const fieldName = 'Week' + i;
-                    if(s[fieldName] !== undefined && s[fieldName] !== "") {
-                        const status = s[fieldName];
-                        const isDone = status.toString().toLowerCase() === 'done';
-                        rows += `<tr><td>Week ${i} Work</td><td>${status}</td><td><span class="grade-badge ${isDone?'done':'not-done'}">${isDone?'ނިމިއްޖެ':'ނުނިމޭ'}</span></td></tr>`;
+                    const f = 'Week' + i;
+                    if(s[f] !== undefined && s[f] !== "") {
+                        const status = s[f].toString().toLowerCase();
+                        const isDone = status === 'done';
+                        rows += `<tr><td>Week ${i} Work</td><td>${s[f]}</td><td><span class="grade-badge ${isDone?'done':'not-done'}">${isDone?'ނިމިއްޖެ':'ނުނިމޭ'}</span></td></tr>`;
                     }
                 }
-
-                document.getElementById('resultTableBody').innerHTML = rows || '<tr><td colspan="3">މަޢުލޫމާތެއް ނުފެނުނު</td></tr>';
+                document.getElementById('resultTableBody').innerHTML = rows;
                 document.getElementById('resultArea').style.display = 'block';
-                
-                if (materials.length > 0) {
-                    document.getElementById('materialDisplay').style.display = 'block';
-                    document.getElementById('materialList').innerHTML = materials.map(m => `
-                        <div class="material-card">
-                            <strong>${m.title}</strong><br>
-                            <a href="${m.link}" target="_blank">ބަލާލުމަށް</a>
-                        </div>
-                    `).join('');
-                }
-            } else { alert("ނުފެނުނު!"); }
+            } else { alert("ދަރިވަރު ނުފެނުނު!"); }
         });
     }
 
-    function loadAllDataForTeacher() {
+    function loadTeacherData() {
         fetchData((data) => {
             allData = data;
-            document.getElementById('allStudentsBody').innerHTML = data.map((s, idx) => `
-                <tr>
-                    <td>${s.Index}</td>
-                    <td>${s.Name}</td>
-                    <td>${s.Unit1 || 0}</td>
-                    <td><span class="grade-badge ${s.Week1 && s.Week1.toString().toLowerCase() === 'done' ? 'done' : 'not-done'}">${s.Week1 || 'N/A'}</span></td>
-                    <td><span class="grade-badge ${s.Week2 && s.Week2.toString().toLowerCase() === 'done' ? 'done' : 'not-done'}">${s.Week2 || 'N/A'}</span></td>
-                    <td><span class="grade-badge ${s.Week3 && s.Week3.toString().toLowerCase() === 'done' ? 'done' : 'not-done'}">${s.Week3 || 'N/A'}</span></td>
-                    <td><span class="grade-badge ${s.Week4 && s.Week4.toString().toLowerCase() === 'done' ? 'done' : 'not-done'}">${s.Week4 || 'N/A'}</span></td>
-                    <td><span class="grade-badge ${s.Week5 && s.Week5.toString().toLowerCase() === 'done' ? 'done' : 'not-done'}">${s.Week5 || 'N/A'}</span></td>
-                    <td><button onclick="openEditModal(${idx})" style="width:auto; padding:5px 10px;">Edit</button></td>
-                </tr>
-            `).join('');
+            renderTeacherControls();
+            renderTeacherTable();
+            document.getElementById('totalStudentsCount').innerText = data.length;
         });
     }
 
-    function openEditModal(idx) {
-        const s = allData[idx];
-        document.getElementById('editTitle').innerText = s.Name;
-        document.getElementById('editRowIndex').value = idx;
-        document.getElementById('editUnit1').value = s.Unit1 || 0;
-        document.getElementById('editWeek1').value = s.Week1 || "Not Done";
-        document.getElementById('editWeek2').value = s.Week2 || "Not Done";
-        document.getElementById('editWeek3').value = s.Week3 || "Not Done";
-        document.getElementById('editWeek4').value = s.Week4 || "Not Done";
-        document.getElementById('editWeek5').value = s.Week5 || "Not Done";
-        document.getElementById('editNote').value = s.Note || "";
-        document.getElementById('editModal').style.display = 'block';
+    function renderTeacherControls() {
+        // Get unique grades
+        const grades = ["All", ...new Set(allData.map(s => s.Grade).filter(g => g))];
+        const gradeTabs = document.getElementById('gradeTabs');
+        gradeTabs.innerHTML = grades.map(g => `
+            <button class="sub-tab-btn ${currentGrade === g ? 'active' : ''}" onclick="setGrade('${g}')">${g === 'All' ? 'ހުރިހާ ގްރޭޑެއް' : 'ގްރޭޑް ' + g}</button>
+        `).join('');
+
+        // Classes for selected grade
+        const filteredForGrade = currentGrade === "All" ? allData : allData.filter(s => s.Grade == currentGrade);
+        const classes = ["All", ...new Set(filteredForGrade.map(s => s.Class).filter(c => c))];
+        const classFilterArea = document.getElementById('classFilterArea');
+        classFilterArea.innerHTML = classes.map(c => `
+            <button class="sub-tab-btn ${currentClass === c ? 'active' : ''}" style="font-size:11px;" onclick="setClass('${c}')">${c === 'All' ? 'ހުރިހާ ކްލާހެއް' : 'ކްލާސް ' + c}</button>
+        `).join('');
     }
 
-    function closeModal() { document.getElementById('editModal').style.display = 'none'; }
-    
-    function addMaterial() {
-        const t = document.getElementById('matTitle').value;
-        const l = document.getElementById('matLink').value;
-        if(t && l) { materials.push({title: t, link: l}); alert("އިތުރުކުރެވިއްޖެ!"); }
+    function setGrade(g) {
+        currentGrade = g;
+        currentClass = "All"; // Reset class when grade changes
+        renderTeacherControls();
+        renderTeacherTable();
     }
 
-    function submitComment() { alert("ފޮނުވިއްޖެ!"); document.getElementById('parentComment').value = ""; }
-    
-    function saveDataMock() { alert("ސޭވް ކުރެވިއްޖެ (Mock)"); closeModal(); }
+    function setClass(c) {
+        currentClass = c;
+        renderTeacherControls();
+        renderTeacherTable();
+    }
+
+    function renderTeacherTable() {
+        let filtered = allData;
+        if (currentGrade !== "All") filtered = filtered.filter(s => s.Grade == currentGrade);
+        if (currentClass !== "All") filtered = filtered.filter(s => s.Class == currentClass);
+
+        const body = document.getElementById('allStudentsBody');
+        if (filtered.length === 0) {
+            body.innerHTML = '<tr><td colspan="9">މި ގްރޫޕުގައި ކުއްޖަކު ނެތް</td></tr>';
+            return;
+        }
+
+        body.innerHTML = filtered.map(s => `
+            <tr>
+                <td>${s.Index}</td>
+                <td style="text-align:right;">${s.Name} <br><small style="color:gray;">${s.Grade}${s.Class}</small></td>
+                <td>${s.Unit1 || '-'}</td>
+                <td>${statusBadge(s.Week1)}</td>
+                <td>${statusBadge(s.Week2)}</td>
+                <td>${statusBadge(s.Week3)}</td>
+                <td>${statusBadge(s.Week4)}</td>
+                <td>${statusBadge(s.Week5)}</td>
+                <td><button style="padding:5px; width:auto; font-size:12px;" onclick="alert('Editing ${s.Index}')">Edit</button></td>
+            </tr>
+        `).join('');
+    }
+
+    function statusBadge(val) {
+        if(!val) return '-';
+        const isDone = val.toString().toLowerCase() === 'done';
+        return `<span class="grade-badge ${isDone?'done':'not-done'}">${isDone?'D':'X'}</span>`;
+    }
 </script>
 </body>
 </html>
