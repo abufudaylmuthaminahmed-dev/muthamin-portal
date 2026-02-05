@@ -240,7 +240,7 @@
 
         db.forEach(s => {
             let v = s[item] || "";
-            let nKey = "Note " + item;
+            let nKey = "Note" + item;
             let n = s[nKey] || "";
             let grade = mode !== 'work' ? calculateGrade(v, fullMarks) : "";
             let perc = mode !== 'work' ? calculatePercentage(v, fullMarks) : "";
@@ -322,7 +322,7 @@
         const idx = document.getElementById('pIdx').value;
         if(!idx) return;
         const res = document.getElementById('pRes');
-        res.innerHTML = '<div class="loader"></div>'; res.style.display = 'block';
+        res.innerHTML = '<div class="loader"></div><p>ބަލަނީ...</p>'; res.style.display = 'block';
 
         const cb = 's'+Date.now();
         window[cb] = (data) => {
@@ -335,6 +335,7 @@
                 </div>
                 <div class="table-container"><table><thead><tr><th>ފިލާވަޅު / ޓެސްޓް</th><th>ނަތީޖާ</th><th>ގްރޭޑް</th></tr></thead><tbody>`;
                 
+                // ޝީޓުގައި ހުރި ނަންތަކަށް ބަލައިގެން ޑިސްޕްލޭ ކުރުން
                 Object.keys(s).sort().forEach(k => {
                     if(k.startsWith('Week') || k.startsWith('UnitTest') || k.startsWith('CA')) {
                         if(!k.includes('Note') && !k.includes('Grade') && !k.includes('Perc')) {
