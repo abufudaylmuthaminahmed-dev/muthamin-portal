@@ -39,7 +39,6 @@
 
         h1 { color: #00796b; text-align: center; font-family: "MV Waheed"; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         
-        /* Tabs */
         .tabs { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid #eee; }
         .tab-btn { 
             flex: 1; padding: 12px; border: none; background: none; 
@@ -47,12 +46,10 @@
         }
         .tab-btn.active { color: #00796b; border-bottom: 3px solid #00796b; }
 
-        /* Sub Tabs for Teacher */
-        .sub-tabs { display: flex; gap: 10px; margin-bottom: 15px; justify-content: center; flex-wrap: wrap; }
-        .sub-tab { padding: 8px 20px; background: #f0f0f0; border-radius: 20px; cursor: pointer; font-size: 14px; }
+        .sub-tabs { display: flex; gap: 5px; margin-bottom: 15px; justify-content: center; flex-wrap: wrap; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+        .sub-tab { padding: 8px 15px; background: #f0f0f0; border-radius: 20px; cursor: pointer; font-size: 13px; color: #555; transition: 0.3s; }
         .sub-tab.active { background: #00796b; color: white; }
 
-        /* Card styles */
         .card { background: #e0f2f1; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
         input, select, textarea { 
             width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ccc; 
@@ -66,7 +63,6 @@
         }
         .btn-save { background: #2e7d32; margin-top: 15px; }
 
-        /* Table */
         .table-container { overflow-x: auto; margin-top: 15px; max-height: 600px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; }
         table { width: 100%; border-collapse: collapse; min-width: 700px; }
         th, td { padding: 10px; border-bottom: 1px solid #eee; text-align: center; }
@@ -77,9 +73,11 @@
         .status-pending { background: #d32f2f; }
         .status-incomplete { background: #f57f17; }
         
-        .pills { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
-        .pill { padding: 8px 15px; background: #eee; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 14px; }
-        .pill.active { background: #00796b; color: white; }
+        .pills-group { margin-bottom: 10px; border-bottom: 1px dashed #ccc; padding-bottom: 8px; }
+        .pills-label { font-size: 12px; color: #555; margin-bottom: 5px; font-weight: bold; }
+        .pills { display: flex; gap: 8px; overflow-x: auto; padding: 5px 0; scrollbar-width: none; }
+        .pill { padding: 6px 12px; background: #eee; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 13px; border: 1px solid transparent; }
+        .pill.active { background: #00796b; color: white; border-color: #004d40; }
 
         .loader { border: 3px solid #f3f3f3; border-top: 3px solid #00796b; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -88,11 +86,11 @@
         
         .inline-input { width: 100%; padding: 5px; margin: 0; }
         .grade-badge { padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 13px; display: inline-block; min-width: 30px; }
-        .grade-star { background: #ffd700; color: #000; }
-        .grade-a { background: #c8e6c9; color: #2e7d32; }
-        .grade-b { background: #fff9c4; color: #f57f17; }
-        .grade-c { background: #ffe0b2; color: #ef6c00; }
-        .grade-f { background: #ffcdd2; color: #c62828; }
+        .grade-star { background: #ffd700; color: #000; } /* A* */
+        .grade-a { background: #c8e6c9; color: #2e7d32; } /* A */
+        .grade-b { background: #fff9c4; color: #f57f17; } /* B */
+        .grade-c { background: #ffe0b2; color: #ef6c00; } /* C */
+        .grade-f { background: #ffcdd2; color: #c62828; } /* F */
         .perc-text { font-size: 12px; color: #666; margin-top: 2px; display: block; }
     </style>
 </head>
@@ -134,7 +132,7 @@
                 </table>
             </div>
 
-            <div class="section-header">ޔުނިޓް ޓެސްޓް ނަތީޖާ (Unit Test Results)</div>
+            <div class="section-header">ޔުނިޓް ޓެސްްޓް ނަތީޖާ (Unit Test Results)</div>
             <div class="table-container">
                 <table>
                     <thead>
@@ -163,23 +161,30 @@
         <div id="teacherPanel" style="display:none;">
             <div class="sub-tabs">
                 <div class="sub-tab active" id="subTabWork" onclick="switchTeacherMode('work')">ހަފްތާގެ މަސައްކަތް</div>
-                <div class="sub-tab" id="subTabTest" onclick="switchTeacherMode('test')">ޔުނިޓް ޓެސްޓް މާކްސް</div>
+                <div class="sub-tab" id="subTabTest" onclick="switchTeacherMode('test')">ޔުނިޓް ޓެސްޓް</div>
+                <div class="sub-tab" id="subTabCA" onclick="switchTeacherMode('ca')">ކްލާސް އެސެސްމެންޓް</div>
             </div>
 
             <div class="card" style="background:#f1f8e9;">
-                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom:15px;">
                     <div style="flex: 1; min-width: 150px;">
-                        <label id="bulkItemLabel" style="font-weight: bold; display: block;">ހަފްތާ:</label>
+                        <label id="bulkItemLabel" style="font-weight: bold; display: block;">ހަފްތާ އިޚްތިޔާރު ކުރައްވާ:</label>
                         <select id="bulkItemSelect" onchange="renderTeacherTable()"></select>
                     </div>
                     <div id="totalMarksArea" style="flex: 1; min-width: 120px; display: none;">
                         <label style="font-weight: bold; display: block;">ޖުމްލަ މާކްސް:</label>
                         <input type="number" id="totalMarksInput" value="20" oninput="renderTeacherTable()" style="margin:0;">
                     </div>
-                    <div style="flex: 2; min-width: 200px;">
-                        <label style="font-weight: bold; display: block;">ފިލްޓަރު:</label>
-                        <div id="filterButtons" class="pills"></div>
-                    </div>
+                </div>
+
+                <div class="pills-group">
+                    <div class="pills-label">ގްރޭޑް ފިލްޓަރު:</div>
+                    <div id="gradeFilterButtons" class="pills"></div>
+                </div>
+                
+                <div class="pills-group" style="border:none; padding:0;">
+                    <div class="pills-label">ކްލާސް ފިލްޓަރު:</div>
+                    <div id="classFilterButtons" class="pills"></div>
                 </div>
             </div>
 
@@ -206,24 +211,51 @@
 <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbx0FuKBjx_6ZwkA13pmpuqGRsqe_7NXwm6IKhdynSJgslnXwUaFWxvg5tsEY5oJYVVR/exec";
     let database = [];
-    let activeFilter = "All";
+    let activeGradeFilter = "All";
+    let activeClassFilter = "All";
     let teacherMode = "work"; 
 
-    // ގްރޭޑް ހިސާބުކުރާ ފަންކްޝަން
+    function getValueBySmartKey(obj, baseKey, num) {
+        // baseKey is 'Week', 'Test', or 'CA'
+        const keys = [
+            baseKey + num,
+            "Unit " + baseKey + " " + num,
+            "Unit " + baseKey + num,
+            baseKey + " " + num
+        ];
+        for (let k of keys) {
+            if (obj[k] !== undefined) return obj[k];
+        }
+        return undefined;
+    }
+
+    function getCleanMark(val) {
+        if (val === undefined || val === null || val === "") return "";
+        return val.toString().trim();
+    }
+
     function calculateGrade(mark, total) {
         const m = parseFloat(mark);
         const t = parseFloat(total) || 20;
-        if (isNaN(m) || mark === "") return { label: "-", class: "", perc: "-" };
-        
+        if (isNaN(m) || mark === "" || mark === null) return { label: "-", class: "", perc: "-" };
         const percentage = Math.round((m / t) * 100);
         
-        let label = "F";
+        let label = "Fail"; 
         let className = "grade-f";
 
-        if (percentage >= 90) { label = "A*"; className = "grade-star"; }
-        else if (percentage >= 75) { label = "A"; className = "grade-a"; }
-        else if (percentage >= 60) { label = "B"; className = "grade-b"; }
-        else if (percentage >= 50) { label = "C"; className = "grade-c"; }
+        if (percentage >= 90) { 
+            label = "A*"; 
+            className = "grade-star"; 
+        } else if (percentage >= 80) { 
+            label = "A"; 
+            className = "grade-a"; 
+        } else if (percentage >= 70) { 
+            label = "B"; 
+            className = "grade-b"; 
+        } else if (percentage >= 60) { 
+            label = "C"; 
+            className = "grade-c"; 
+        }
         
         return { label: label, class: className, perc: percentage + "%" };
     }
@@ -232,15 +264,23 @@
         const select = document.getElementById('bulkItemSelect');
         const totalArea = document.getElementById('totalMarksArea');
         let options = "";
+        
         if(teacherMode === 'work') {
             document.getElementById('bulkItemLabel').innerText = "ހަފްތާ އިޚްތިޔާރު ކުރައްވާ:";
             for(let i=1; i<=45; i++) options += `<option value="Week${i}">Week ${i}</option>`;
             totalArea.style.display = "none";
-        } else {
+        } else if(teacherMode === 'test') {
             document.getElementById('bulkItemLabel').innerText = "ޔުނިޓް ޓެސްޓް:";
             for(let i=1; i<=10; i++) options += `<option value="Test${i}">Unit Test ${i}</option>`;
             totalArea.style.display = "block";
+            document.getElementById('totalMarksInput').value = "20";
+        } else if(teacherMode === 'ca') {
+            document.getElementById('bulkItemLabel').innerText = "އެސެސްމެންޓް:";
+            for(let i=1; i<=4; i++) options += `<option value="CA${i}">CA ${i}</option>`;
+            totalArea.style.display = "block";
+            document.getElementById('totalMarksInput').value = "100";
         }
+        
         select.innerHTML = options;
         updateTableHead();
     }
@@ -268,8 +308,8 @@
         teacherMode = mode;
         document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
         if(mode === 'work') document.getElementById('subTabWork').classList.add('active');
-        else document.getElementById('subTabTest').classList.add('active');
-        
+        else if(mode === 'test') document.getElementById('subTabTest').classList.add('active');
+        else if(mode === 'ca') document.getElementById('subTabCA').classList.add('active');
         setupSelects();
         renderTeacherTable();
     }
@@ -311,17 +351,32 @@
     }
 
     function renderFilters() {
-        const filterArea = document.getElementById('filterButtons');
-        const grades = [...new Set(database.map(s => s.Grade))].sort();
-        let html = `<div class="pill ${activeFilter === 'All' ? 'active' : ''}" onclick="applyFilter('All')">ހުރިހާ ކުދިން</div>`;
+        const gradeArea = document.getElementById('gradeFilterButtons');
+        const classArea = document.getElementById('classFilterButtons');
+        
+        const grades = [...new Set(database.map(s => s.Grade))].sort((a,b) => a-b);
+        let gHtml = `<div class="pill ${activeGradeFilter === 'All' ? 'active' : ''}" onclick="applyGradeFilter('All')">ހުރިހާ ގްރޭޑެއް</div>`;
         grades.forEach(g => {
-            if(g) html += `<div class="pill ${activeFilter === g.toString() ? 'active' : ''}" onclick="applyFilter('${g}')">ގްރޭޑް ${g}</div>`;
+            if(g) gHtml += `<div class="pill ${activeGradeFilter === g.toString() ? 'active' : ''}" onclick="applyGradeFilter('${g}')">ގްރޭޑް ${g}</div>`;
         });
-        filterArea.innerHTML = html;
+        gradeArea.innerHTML = gHtml;
+
+        const classes = [...new Set(database.map(s => s.Class))].filter(Boolean).sort();
+        let cHtml = `<div class="pill ${activeClassFilter === 'All' ? 'active' : ''}" onclick="applyClassFilter('All')">ހުރިހާ ކްލާހެއް</div>`;
+        classes.forEach(c => {
+            cHtml += `<div class="pill ${activeClassFilter === c ? 'active' : ''}" onclick="applyClassFilter('${c}')">${c}</div>`;
+        });
+        classArea.innerHTML = cHtml;
     }
 
-    function applyFilter(f) {
-        activeFilter = f.toString();
+    function applyGradeFilter(f) {
+        activeGradeFilter = f.toString();
+        renderFilters();
+        renderTeacherTable();
+    }
+
+    function applyClassFilter(f) {
+        activeClassFilter = f;
         renderFilters();
         renderTeacherTable();
     }
@@ -333,55 +388,35 @@
         const res = calculateGrade(mark, total);
         const badge = document.getElementById(`grade-badge-${index}`);
         const perc = document.getElementById(`perc-text-${index}`);
-        
-        if(badge) {
-            badge.innerText = res.label;
-            badge.className = `grade-badge ${res.class}`;
-        }
+        if(badge) { badge.innerText = res.label; badge.className = `grade-badge ${res.class}`; }
         if(perc) perc.innerText = res.perc;
     }
 
     function renderTeacherTable() {
         const body = document.getElementById('teacherTableBody');
         const selectedItem = document.getElementById('bulkItemSelect').value;
+        
+        let baseKey, noteKeyPrefix;
+        if(teacherMode === 'work') { baseKey = 'Week'; noteKeyPrefix = 'Note'; }
+        else if(teacherMode === 'test') { baseKey = 'Test'; noteKeyPrefix = 'TNote'; }
+        else { baseKey = 'CA'; noteKeyPrefix = 'CANote'; }
+
+        const itemNum = selectedItem.replace(baseKey, '');
         const totalMarks = document.getElementById('totalMarksInput').value;
-        const noteKey = teacherMode === 'work' ? selectedItem.replace("Week", "Note") : selectedItem.replace("Test", "TNote");
-
+        
         let filtered = database;
-        if(activeFilter !== "All") {
-            filtered = database.filter(s => s.Grade.toString() === activeFilter);
-        }
-
+        if(activeGradeFilter !== "All") filtered = filtered.filter(s => s.Grade.toString() === activeGradeFilter);
+        if(activeClassFilter !== "All") filtered = filtered.filter(s => s.Class === activeClassFilter);
+        
         body.innerHTML = filtered.map(s => {
-            const currentVal = s[selectedItem] || "";
-            const currentNote = s[noteKey] || "";
-
+            const currentVal = getCleanMark(getValueBySmartKey(s, baseKey, itemNum));
+            const currentNote = getValueBySmartKey(s, noteKeyPrefix, itemNum) || "";
+            
             if(teacherMode === 'work') {
-                return `<tr>
-                    <td>${s.Index}</td>
-                    <td style="text-align:right;">${s.Name}</td>
-                    <td>
-                        <select class="inline-input" data-index="${s.Index}" data-type="val">
-                            <option value="">-</option>
-                            <option value="ނިމިފައި" ${currentVal === 'ނިމިފައި' ? 'selected' : ''}>ނިމިފައި</option>
-                            <option value="ނުނިމޭ" ${currentVal === 'ނުނިމޭ' ? 'selected' : ''}>ނުނިމޭ</option>
-                            <option value="ފުރިހަމައެއް ނުވޭ" ${currentVal === 'ފުރިހަމައެއް ނުވޭ' ? 'selected' : ''}>ފުރިހަމައެއް ނުވޭ</option>
-                        </select>
-                    </td>
-                    <td><input type="text" class="inline-input" data-index="${s.Index}" data-type="note" value="${currentNote}"></td>
-                </tr>`;
+                return `<tr><td>${s.Index}</td><td style="text-align:right;">${s.Name}<br><small style="color:#666;">${s.Grade}${s.Class}</small></td><td><select class="inline-input" data-index="${s.Index}" data-type="val"><option value="">-</option><option value="ނިމިފައި" ${currentVal === 'ނިމިފައި' ? 'selected' : ''}>ނިމިފައި</option><option value="ނުނިމޭ" ${currentVal === 'ނުނިމޭ' ? 'selected' : ''}>ނުނިމޭ</option><option value="ފުރިހަމައެއް ނުވޭ" ${currentVal === 'ފުރިހަމައެއް ނުވޭ' ? 'selected' : ''}>ފުރިހަމައެއް ނުވޭ</option></select></td><td><input type="text" class="inline-input" data-index="${s.Index}" data-type="note" value="${currentNote}"></td></tr>`;
             } else {
                 const res = calculateGrade(currentVal, totalMarks);
-                return `<tr>
-                    <td>${s.Index}</td>
-                    <td style="text-align:right;">${s.Name}</td>
-                    <td><input type="number" class="inline-input" data-index="${s.Index}" data-type="val" value="${currentVal}" oninput="updateLiveGrade(this)"></td>
-                    <td>
-                        <span id="grade-badge-${s.Index}" class="grade-badge ${res.class}">${res.label}</span>
-                        <span id="perc-text-${s.Index}" class="perc-text">${res.perc}</span>
-                    </td>
-                    <td><input type="text" class="inline-input" data-index="${s.Index}" data-type="note" value="${currentNote}"></td>
-                </tr>`;
+                return `<tr><td>${s.Index}</td><td style="text-align:right;">${s.Name}<br><small style="color:#666;">${s.Grade}${s.Class}</small></td><td><input type="number" class="inline-input" data-index="${s.Index}" data-type="val" value="${currentVal}" oninput="updateLiveGrade(this)"></td><td><span id="grade-badge-${s.Index}" class="grade-badge ${res.class}">${res.label}</span><span id="perc-text-${s.Index}" class="perc-text">${res.perc}</span></td><td><input type="text" class="inline-input" data-index="${s.Index}" data-type="note" value="${currentNote}"></td></tr>`;
             }
         }).join('');
     }
@@ -391,15 +426,11 @@
         const btn = document.getElementById('searchBtn');
         if(!idx) return;
         btn.innerHTML = '<span class="loader"></span> ހޯދަނީ...';
-        
         fetchData(data => {
             btn.innerText = "މަޢުލޫމާތު ބަލާ";
             const student = data.find(s => s.Index.toString() === idx);
             if(student) displayStudent(student);
-            else {
-                alert("ދަރިވަރު ނުފެނުނު!");
-                document.getElementById('studentResults').style.display = 'none';
-            }
+            else { alert("ދަރިވަރު ނުފެނުނު!"); document.getElementById('studentResults').style.display = 'none'; }
         });
     }
 
@@ -409,36 +440,28 @@
         
         let workHtml = "";
         for(let i=1; i<=45; i++) {
-            const status = s['Week'+i];
-            const note = s['Note'+i];
+            const status = getValueBySmartKey(s, 'Week', i);
+            const note = getValueBySmartKey(s, 'Note', i);
             if(status) {
                 let sClass = 'status-pending';
                 if(status === 'ނިމިފައި') sClass = 'status-done';
                 else if(status === 'ނުނިމޭ') sClass = 'status-pending';
                 else if(status === 'ފުރިހަމައެއް ނުވޭ') sClass = 'status-incomplete';
-
                 workHtml += `<tr><td>Week ${i}</td><td><span class="status ${sClass}">${status}</span></td><td style="font-size:12px;">${note || '-'}</td></tr>`;
             }
         }
         document.getElementById('workTableBody').innerHTML = workHtml || '<tr><td colspan="3">މަސައްކަތެއް ރެކޯޑް ކުރެވިފައެއް ނެތް</td></tr>';
-
+        
         let testHtml = "";
         for(let i=1; i<=10; i++) {
-            const mark = s['Test'+i];
-            const note = s['TNote'+i];
-            if(mark !== undefined && mark !== null && mark !== "") {
-                const res = calculateGrade(mark, 20); // ބެލެނިވެރިންނަށް ދައްކާނީ 20 އިން
-                testHtml += `<tr>
-                    <td>Unit Test ${i}</td>
-                    <td>${mark}</td>
-                    <td>${res.perc}</td>
-                    <td><span class="grade-badge ${res.class}">${res.label}</span></td>
-                    <td style="font-size:12px;">${note || '-'}</td>
-                </tr>`;
+            const mark = getCleanMark(getValueBySmartKey(s, 'Test', i));
+            const note = getValueBySmartKey(s, 'TNote', i);
+            if(mark !== "") {
+                const res = calculateGrade(mark, 20); 
+                testHtml += `<tr><td>Unit Test ${i}</td><td>${mark}</td><td>${res.perc}</td><td><span class="grade-badge ${res.class}">${res.label}</span></td><td style="font-size:12px;">${note || '-'}</td></tr>`;
             }
         }
         document.getElementById('testTableBody').innerHTML = testHtml || '<tr><td colspan="5">ޔުނިޓް ޓެސްޓެއް ރެކޯޑް ކުރެވިފައެއް ނެތް</td></tr>';
-
         document.getElementById('studentResults').style.display = 'block';
     }
 
@@ -446,63 +469,63 @@
         const btn = document.getElementById('bulkSaveBtn');
         const selectedItem = document.getElementById('bulkItemSelect').value;
         const rows = document.querySelectorAll('#teacherTableBody tr');
-        
         btn.disabled = true;
         btn.innerHTML = '<span class="loader"></span> ސޭވް ވަނީ...';
 
         const updates = [];
-        const noteKey = teacherMode === 'work' ? selectedItem.replace("Week", "Note") : selectedItem.replace("Test", "TNote");
+        let baseKey, noteKeyPrefix;
+        if(teacherMode === 'work') { baseKey = 'Week'; noteKeyPrefix = 'Note'; }
+        else if(teacherMode === 'test') { baseKey = 'Test'; noteKeyPrefix = 'TNote'; }
+        else { baseKey = 'CA'; noteKeyPrefix = 'CANote'; }
+
+        const itemNum = selectedItem.replace(baseKey, '');
+        const currentNoteKey = noteKeyPrefix + itemNum;
 
         rows.forEach(row => {
             const valInput = row.querySelector('[data-type="val"]');
             const noteInput = row.querySelector('[data-type="note"]');
             if(!valInput) return;
-
             const index = valInput.dataset.index;
             const val = valInput.value;
             const note = noteInput.value;
-
             const sIdx = database.findIndex(s => s.Index.toString() === index);
             if(sIdx !== -1) {
-                // ޑޭޓާ ބަދަލުވެފައިވާނަމަ ނުވަތަ އައު ޑޭޓާއެއްނަމަ updates އަށް އިތުރުކުރުން
-                if (database[sIdx][selectedItem] != val || database[sIdx][noteKey] != note) {
-                    updates.push({ index, status: val, note });
-                    
-                    // ސޭވް ކުރުމުގެ ކުރިން ލޯކަލްކޮށް ޑޭޓާ އަޕްޑޭޓްކޮށްލުން (އޭރުން ވަގުތުން ފެންނާނެ)
+                const oldVal = getCleanMark(getValueBySmartKey(database[sIdx], baseKey, itemNum));
+                const oldNote = getValueBySmartKey(database[sIdx], noteKeyPrefix, itemNum) || "";
+                
+                if (oldVal != val || oldNote != note) {
+                    updates.push({ index, val, note });
                     database[sIdx][selectedItem] = val;
-                    database[sIdx][noteKey] = note;
+                    database[sIdx][currentNoteKey] = note;
                 }
             }
         });
 
         if (updates.length === 0) {
             alert("ސޭވް ކުރާނެ އައު ބަދަލެއް ނެތް.");
-            btn.disabled = false;
-            btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
+            btn.disabled = false; btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
             return;
         }
 
         const payload = { 
+            action: 'save',
             mode: teacherMode, 
             item: selectedItem, 
-            updates: updates 
+            updates: JSON.stringify(updates) 
         };
 
+        const params = new URLSearchParams(payload).toString();
+
         try {
-            // Google Script އަށް ޑޭޓާ ފޮނުވުން
-            await fetch(API_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+            await fetch(`${API_URL}?${params}`, {
+                method: 'GET',
+                mode: 'no-cors'
             });
-            
-            alert("ކާމިޔާބުކަމާއެކު ސޭވް ކުރެވިއްޖެ!");
-            // ޑޭޓާ އަޕްޑޭޓް ކުރުން
-            loadData();
+            alert("ސޭވް ކުރަން ފޮނުވިއްޖެ. ކުޑަވަގުތުކޮޅަކުން ލިސްޓް އަޕްޑޭޓްވާނެ.");
+            setTimeout(loadData, 2000);
         } catch (e) {
+            console.error("Save Error:", e);
             alert("ސޭވް ކުރުމުގައި މައްސަލައެއް ދިމާވެއްޖެ.");
-            console.error(e);
         } finally {
             btn.disabled = false;
             btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
