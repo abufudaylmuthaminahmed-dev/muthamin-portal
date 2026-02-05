@@ -153,7 +153,7 @@
 </div>
 
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycby3LNyUQm_vv1PukMMIIPHhbOFFi8pXqPM9RMtVk23rWimINVfnVp5qkrEpx091gVuN/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbwtH5H6xdj5-7x1X1xWBbIQrFXsxHN0E4GvFKtS43raYqD6ga7JJLrx-Y5Ja5I2EVO4/exec";
     
     let db = [];
     let currentMode = 'week';
@@ -173,22 +173,29 @@
         } else alert("ޕާސްވޯޑް ނުބައި!");
     }
 
-    // ޑޭޓާ ފެޗްކުރުން (JSONP)
+    // ޑޭޓާ ފެޗްކުރުން (JSONP) - Always unique timestamp to avoid cache
     function refreshData() {
         document.getElementById('loadingMsg').style.display = 'block';
         document.getElementById('tableBody').innerHTML = '';
         
-        const cb = 'cb_' + Date.now();
+        // Random number to force bypass cache
+        const uniqueId = Date.now() + "_" + Math.floor(Math.random() * 1000);
+        const cb = 'cb_' + uniqueId;
+        
         window[cb] = (data) => {
             db = data;
             populateFilters();
             setMode(currentMode); // Re-render
             document.getElementById('loadingMsg').style.display = 'none';
             delete window[cb];
+            const s = document.getElementById('script_' + uniqueId);
+            if(s) s.remove();
         };
         
         const script = document.createElement('script');
-        script.src = `${API_URL}?prefix=${cb}&action=read&t=${Date.now()}`;
+        script.id = 'script_' + uniqueId;
+        // Added t parameter with unique timestamp
+        script.src = `${API_URL}?prefix=${cb}&action=read&t=${uniqueId}`;
         document.body.appendChild(script);
     }
 
@@ -325,7 +332,6 @@
             });
         });
 
-        // Use Form POST via fetch with no-cors (safest method)
         const payload = {
             action: 'save',
             item: item,
@@ -333,20 +339,19 @@
             updates: JSON.stringify(updates)
         };
         
-        // Construct query string for GET fallback or POST body
         const params = new URLSearchParams(payload);
 
-        fetch(API_URL, {
+        // Fetch with no-cors to post data and force cache bypass
+        fetch(`${API_URL}?${params}&t=${Date.now()}`, {
             method: 'POST',
             mode: 'no-cors',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: params
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         }).then(() => {
             setTimeout(() => {
                 alert("ބަދަލުތައް ސޭވްވެއްޖެ!");
                 btn.disabled = false;
                 btn.innerHTML = "<span>💾 ސޭވްކުރޭ</span>";
-                refreshData(); // Reload to confirm
+                refreshData(); // Force reload to see changes
             }, 1500);
         }).catch(e => {
             alert("މައްސަލައެއް ދިމާވެއްޖެ");
@@ -355,40 +360,45 @@
     }
 
     function searchStudent() {
-        const idx = document.getElementById('pIdx').value;
+        const idx = document.getElementById('stIdx').value;
         if(!idx) return;
-        document.getElementById('pRes').innerHTML = '<div class="loader loader-dark"></div>';
-        document.getElementById('pRes').style.display = 'block';
+        document.getElementById('parentResults').innerHTML = '<div style="text-align:center"><div class="loader loader-dark"></div></div>';
 
-        const cb = 'find_' + Date.now();
+        const uniqueId = Date.now() + "_" + Math.floor(Math.random() * 1000);
+        const cb = 'find_' + uniqueId;
+        
         window[cb] = (data) => {
             const s = data.find(x => String(x.Index) === String(idx));
             if(s) {
-                let html = `<div class="st-header"><div><h2>${s.Name}</h2><small>${s.Grade} ${s.Class}</small></div><h1>${s.Index}</h1></div>`;
+                let html = `<div class="st-card"><div class="st-header"><div><h2>${s.Name}</h2><small>${s.Grade} ${s.Class}</small></div><h1>${s.Index}</h1></div>`;
                 
                 // Show Weeks
                 html += `<h4>ހަފްތާގެ މަސައްކަތް</h4>`;
                 for(let i=1; i<=45; i++) {
                     let v = findVal(s, 'Week'+i);
                     let n = findVal(s, 'Note'+i);
-                    if(v) html += `<div class="st-row"><span>Week ${i}</span><span><b>${v}</b> <br><small>${n}</small></span></div>`;
+                    if(v) html += `<div class="st-row"><span>Week ${i}</span><span><b>${v}</b> <br><small style="color:#666">${n}</small></span></div>`;
                 }
 
                 // Show Tests
                 html += `<h4>ޔުނިޓް ޓެސްޓް</h4>`;
                 for(let i=1; i<=10; i++) {
                     let v = findVal(s, 'Unit Test '+i);
-                    if(v) html += `<div class="st-row"><span>Test ${i}</span><b>${v}</b></div>`;
+                    let n = findVal(s, 'TNote'+i); // Note for test
+                    if(v) html += `<div class="st-row"><span>Test ${i}</span><span><b>${v}</b> <br><small style="color:#666">${n}</small></span></div>`;
                 }
 
-                document.getElementById('pRes').innerHTML = html;
+                document.getElementById('parentResults').innerHTML = html;
             } else {
-                document.getElementById('pRes').innerHTML = "ދަރިވަރު ނުފެނުނު";
+                document.getElementById('parentResults').innerHTML = "<p style='text-align:center; color:red'>ދަރިވަރު ނުފެނުނު</p>";
             }
             delete window[cb];
+            const sEl = document.getElementById('script_' + uniqueId);
+            if(sEl) sEl.remove();
         };
         const script = document.createElement('script');
-        script.src = `${API_URL}?prefix=${cb}&action=read`;
+        script.id = 'script_' + uniqueId;
+        script.src = `${API_URL}?prefix=${cb}&action=read&t=${uniqueId}`;
         document.body.appendChild(script);
     }
 </script>
