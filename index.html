@@ -24,18 +24,19 @@
         
         input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; text-align: center; }
         
-        .btn { width: 100%; padding: 14px; background: #00796b; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
-        .btn:active { transform: scale(0.98); }
+        .btn { width: 100%; padding: 14px; background: #00796b; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.2s; }
+        .btn:active { transform: scale(0.96); opacity: 0.8; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
         .btn-save { background: #2e7d32; margin-top: 15px; position: sticky; bottom: 10px; z-index: 100; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
 
         /* Horizontal Scrolling Filters */
-        .pills-container { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .pills-container { display: flex; gap: 8px; overflow-x: auto; padding: 5px 0; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
         .pills-container::-webkit-scrollbar { display: none; }
-        .pill { padding: 8px 16px; background: #eee; border-radius: 25px; cursor: pointer; white-space: nowrap; font-size: 13px; border: 1px solid transparent; flex-shrink: 0; }
-        .pill.active { background: #00796b; color: white; }
+        .pill { padding: 8px 16px; background: #eee; border-radius: 25px; cursor: pointer; white-space: nowrap; font-size: 13px; border: 1px solid transparent; flex-shrink: 0; transition: background 0.2s; }
+        .pill.active { background: #00796b; color: white; border-color: #00796b; }
 
         /* Responsive Table */
-        .table-container { width: 100%; overflow-x: auto; margin-top: 10px; border: 1px solid #eee; border-radius: 8px; background: white; -webkit-overflow-scrolling: touch; }
+        .table-container { width: 100%; overflow-x: auto; margin-top: 10px; border: 1px solid #eee; border-radius: 8px; background: white; -webkit-overflow-scrolling: touch; position: relative; min-height: 100px; }
         table { width: 100%; border-collapse: collapse; min-width: 500px; font-size: 14px; }
         th, td { padding: 12px 8px; border-bottom: 1px solid #eee; text-align: center; }
         th { background: #f8f9fa; color: #00796b; position: sticky; top: 0; z-index: 10; }
@@ -47,11 +48,14 @@
         .loader { border: 3px solid #f3f3f3; border-top: 3px solid #00796b; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+        .filter-label { font-size: 12px; margin: 10px 0 5px 0; color: #555; font-weight: bold; }
+
         @media (max-width: 600px) {
             .container { padding: 10px; }
             h1 { font-size: 1.2rem; }
-            th, td { padding: 10px 5px; font-size: 13px; }
-            input.val-in { padding: 5px; font-size: 14px; }
+            th, td { padding: 8px 4px; font-size: 12px; }
+            input, select { padding: 10px; font-size: 14px; }
+            .btn { padding: 12px; font-size: 15px; }
         }
     </style>
 </head>
@@ -94,8 +98,14 @@
 
             <div class="card" style="background:#f1f8e9; padding: 10px;">
                 <select id="itemSelect" onchange="renderTeacherTable()"></select>
-                <div style="font-size: 12px; margin: 10px 0 5px 0; color: #555;">ގްރޭޑް ފިލްޓަރު: (ކަނާތުން ވާތަށް ކަހާލާ)</div>
+                
+                <div class="filter-label">ގްރޭޑް:</div>
                 <div id="gradeFilter" class="pills-container"></div>
+                
+                <div id="classFilterSection" style="display:none;">
+                    <div class="filter-label">ކްލާސް:</div>
+                    <div id="classFilter" class="pills-container"></div>
+                </div>
             </div>
 
             <div class="table-container">
@@ -118,12 +128,13 @@
 </div>
 
 <script>
-    // މުހިންމު: ތިޔަބޭފުޅާގެ އައު Web App URL މިތަނަށް ލައްވާ
-    const API_URL = "https://script.google.com/macros/s/AKfycbxR8LP6vJpY6tC57_D-YlEbhBoDSHSe0mx5_IeOxSBgKiJ5enmplkGPFHK48k8XcGw_/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbx0FuKBjx_6ZwkA13pmpuqGRsqe_7NXwm6IKhdynSJgslnXwUaFWxvg5tsEY5oJYVVR/exec";
     
     let database = [];
     let currentMode = 'work';
     let selectedGrade = 'All';
+    let selectedClass = 'All';
+    let isFetching = false;
 
     function showTab(id, btn) {
         document.getElementById('parentView').style.display = id === 'parentView' ? 'block' : 'none';
@@ -141,12 +152,16 @@
     }
 
     function loadData() {
+        if(isFetching) return;
+        isFetching = true;
+
         const body = document.getElementById('teacherTableBody');
         body.innerHTML = '<tr><td colspan="4"><span class="loader"></span> ލޯޑް ވަނީ...</td></tr>';
         
         const callback = 'jsonp_' + Date.now();
         window[callback] = (data) => {
             database = data;
+            isFetching = false;
             setMode(currentMode);
             renderFilters();
             delete window[callback];
@@ -173,32 +188,76 @@
     }
 
     function renderFilters() {
+        if(!database.length) return;
+        
+        // Grade Filter
         const grades = [...new Set(database.map(s => s.Grade))].filter(Boolean).sort((a,b)=>a-b);
-        let html = `<div class="pill ${selectedGrade === 'All' ? 'active' : ''}" onclick="filterGrade('All')">All</div>`;
+        let gHtml = `<div class="pill ${selectedGrade === 'All' ? 'active' : ''}" onclick="filterGrade('All')">All</div>`;
         grades.forEach(g => {
-            html += `<div class="pill ${selectedGrade == g ? 'active' : ''}" onclick="filterGrade('${g}')">ގްރޭޑް ${g}</div>`;
+            gHtml += `<div class="pill ${selectedGrade == g ? 'active' : ''}" onclick="filterGrade('${g}')">ގްރޭޑް ${g}</div>`;
         });
-        document.getElementById('gradeFilter').innerHTML = html;
+        document.getElementById('gradeFilter').innerHTML = gHtml;
+
+        // Class Filter (only show if a grade is selected)
+        const classSection = document.getElementById('classFilterSection');
+        if(selectedGrade === 'All') {
+            classSection.style.display = 'none';
+            selectedClass = 'All';
+        } else {
+            classSection.style.display = 'block';
+            const classes = [...new Set(database.filter(s => s.Grade && s.Grade.toString() === selectedGrade.toString()).map(s => s.Class))].filter(Boolean).sort();
+            
+            let cHtml = `<div class="pill ${selectedClass === 'All' ? 'active' : ''}" onclick="filterClass('All')">ހުރިހާ ކްލާހެއް</div>`;
+            classes.forEach(c => {
+                cHtml += `<div class="pill ${selectedClass == c ? 'active' : ''}" onclick="filterClass('${c}')">${c}</div>`;
+            });
+            document.getElementById('classFilter').innerHTML = cHtml;
+        }
     }
 
     function filterGrade(g) { 
+        if(selectedGrade === g) return;
         selectedGrade = g; 
+        selectedClass = 'All'; // Reset class filter when grade changes
         renderFilters();
         renderTeacherTable(); 
+    }
+
+    function filterClass(c) {
+        if(selectedClass === c) return;
+        selectedClass = c;
+        renderFilters();
+        renderTeacherTable();
     }
 
     function renderTeacherTable() {
         const item = document.getElementById('itemSelect').value;
         const body = document.getElementById('teacherTableBody');
+        
+        if(!database.length) return;
+
         let filtered = database;
-        if(selectedGrade !== 'All') filtered = database.filter(s => s.Grade.toString() === selectedGrade.toString());
+        
+        // Filter by Grade
+        if(selectedGrade !== 'All') {
+            const gStr = selectedGrade.toString();
+            filtered = filtered.filter(s => s.Grade && s.Grade.toString() === gStr);
+        }
+        
+        // Filter by Class
+        if(selectedClass !== 'All') {
+            const cStr = selectedClass.toString();
+            filtered = filtered.filter(s => s.Class && s.Class.toString() === cStr);
+        }
 
         if(filtered.length === 0) {
             body.innerHTML = '<tr><td colspan="4">ލިސްޓުގައި އެއްވެސް ކުއްޖަކު ނެތް</td></tr>';
             return;
         }
 
-        body.innerHTML = filtered.map(s => {
+        let rowsHtml = '';
+        for(let i=0; i < filtered.length; i++) {
+            const s = filtered[i];
             let valField = "";
             let num = item.replace(/[a-zA-Z]/g, '');
             let currentVal = s[item] || "";
@@ -206,23 +265,25 @@
             let currentNote = s[noteKey] || "";
 
             if(currentMode === 'work') {
-                valField = `<select data-idx="${s.Index}" class="val-in" style="width:100%;"><option value="">-</option><option value="ނިމިފައި" ${currentVal==='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${currentVal==='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option></select>`;
+                valField = `<select data-idx="${s.Index}" class="val-in"><option value="">-</option><option value="ނިމިފައި" ${currentVal==='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${currentVal==='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option></select>`;
             } else {
-                valField = `<input type="number" data-idx="${s.Index}" class="val-in" value="${currentVal}" style="width:60px;" inputmode="numeric">`;
+                valField = `<input type="number" data-idx="${s.Index}" class="val-in" value="${currentVal}" inputmode="numeric" style="width:60px;">`;
             }
 
-            return `<tr>
+            rowsHtml += `<tr>
                 <td>${s.Index}</td>
                 <td style="text-align:right;">${s.Name}<br><small style="color:#888;">${s.Grade}${s.Class}</small></td>
                 <td>${valField}</td>
-                <td><input type="text" data-idx="${s.Index}" class="note-in" value="${currentNote}" style="width:100%;"></td>
+                <td><input type="text" data-idx="${s.Index}" class="note-in" value="${currentNote}"></td>
             </tr>`;
-        }).join('');
+        }
+        body.innerHTML = rowsHtml;
     }
 
     async function saveData() {
         const btn = document.getElementById('saveBtn');
         const item = document.getElementById('itemSelect').value;
+        
         btn.disabled = true;
         btn.innerHTML = '<span class="loader"></span> ސޭވް ވަނީ...';
 
@@ -230,51 +291,53 @@
         const valInputs = document.querySelectorAll('.val-in');
         const noteInputs = document.querySelectorAll('.note-in');
 
-        valInputs.forEach((el, i) => {
+        for(let i=0; i < valInputs.length; i++) {
             updates.push({
-                index: el.dataset.idx,
-                val: el.value,
+                index: valInputs[i].dataset.idx,
+                val: valInputs[i].value,
                 note: noteInputs[i].value
             });
-        });
+        }
 
         const url = `${API_URL}?action=save&mode=${currentMode}&item=${item}&updates=${encodeURIComponent(JSON.stringify(updates))}`;
         
         try {
             await fetch(url, { mode: 'no-cors' });
             alert("ސޭވް ކުރަން ފޮނުވިއްޖެ! ކުޑަވަގުތުކޮޅަކުން ޝީޓަށް ބަދަލު އަންނާނެ.");
-            setTimeout(loadData, 2000);
+            btn.disabled = false;
+            btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
         } catch(e) {
             alert("މައްސަލައެއް ދިމާވެއްޖެ!");
-        } finally {
             btn.disabled = false;
             btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
         }
     }
 
     function searchStudent() {
-        const idx = document.getElementById('searchIndex').value;
+        const idxInput = document.getElementById('searchIndex');
+        const idx = idxInput.value;
         if(!idx) return;
         
         const btn = document.getElementById('searchBtn');
+        btn.disabled = true;
         btn.innerHTML = '<span class="loader"></span>';
         
         const callback = 'search_' + Date.now();
         window[callback] = (data) => {
+            btn.disabled = false;
             btn.innerText = "މަޢުލޫމާތު ބަލާ";
-            const s = data.find(x => x.Index.toString() === idx);
+            const s = data.find(x => x.Index && x.Index.toString() === idx);
             if(s) {
                 document.getElementById('studentHeader').innerHTML = `<h2 style="margin:0;">${s.Name}</h2><p style="margin:5px 0 0 0; opacity:0.8;">ގްރޭޑް: ${s.Grade} ${s.Class}</p>`;
                 document.getElementById('studentResults').style.display = 'block';
                 
                 let html = "<thead><tr><th>ބައި</th><th>ނަތީޖާ</th></tr></thead><tbody>";
-                // Show some summary (example: first 5 weeks)
-                for(let i=1; i<=5; i++) {
+                for(let i=1; i<=10; i++) {
                     if(s['Week'+i]) html += `<tr><td>Week ${i}</td><td>${s['Week'+i]}</td></tr>`;
                 }
                 html += "</tbody>";
                 document.getElementById('resultsTable').innerHTML = html;
-                window.scrollTo({ top: document.getElementById('studentResults').offsetTop, behavior: 'smooth' });
+                window.scrollTo({ top: document.getElementById('studentResults').offsetTop - 20, behavior: 'smooth' });
             } else alert("ދަރިވަރު ނުފެނުނު");
             delete window[callback];
         };
