@@ -198,7 +198,7 @@
         });
         document.getElementById('gradeFilter').innerHTML = gHtml;
 
-        // Class Filter (only show if a grade is selected)
+        // Class Filter
         const classSection = document.getElementById('classFilterSection');
         if(selectedGrade === 'All') {
             classSection.style.display = 'none';
@@ -218,7 +218,7 @@
     function filterGrade(g) { 
         if(selectedGrade === g) return;
         selectedGrade = g; 
-        selectedClass = 'All'; // Reset class filter when grade changes
+        selectedClass = 'All'; 
         renderFilters();
         renderTeacherTable(); 
     }
@@ -237,18 +237,8 @@
         if(!database.length) return;
 
         let filtered = database;
-        
-        // Filter by Grade
-        if(selectedGrade !== 'All') {
-            const gStr = selectedGrade.toString();
-            filtered = filtered.filter(s => s.Grade && s.Grade.toString() === gStr);
-        }
-        
-        // Filter by Class
-        if(selectedClass !== 'All') {
-            const cStr = selectedClass.toString();
-            filtered = filtered.filter(s => s.Class && s.Class.toString() === cStr);
-        }
+        if(selectedGrade !== 'All') filtered = filtered.filter(s => s.Grade && s.Grade.toString() === selectedGrade.toString());
+        if(selectedClass !== 'All') filtered = filtered.filter(s => s.Class && s.Class.toString() === selectedClass.toString());
 
         if(filtered.length === 0) {
             body.innerHTML = '<tr><td colspan="4">ލިސްޓުގައި އެއްވެސް ކުއްޖަކު ނެތް</td></tr>';
@@ -258,17 +248,14 @@
         let rowsHtml = '';
         for(let i=0; i < filtered.length; i++) {
             const s = filtered[i];
-            let valField = "";
             let num = item.replace(/[a-zA-Z]/g, '');
             let currentVal = s[item] || "";
             let noteKey = currentMode === 'work' ? 'Note'+num : (currentMode === 'test' ? 'TNote'+num : 'CANote'+num);
             let currentNote = s[noteKey] || "";
 
-            if(currentMode === 'work') {
-                valField = `<select data-idx="${s.Index}" class="val-in"><option value="">-</option><option value="ނިމިފައި" ${currentVal==='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${currentVal==='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option></select>`;
-            } else {
-                valField = `<input type="number" data-idx="${s.Index}" class="val-in" value="${currentVal}" inputmode="numeric" style="width:60px;">`;
-            }
+            let valField = currentMode === 'work' 
+                ? `<select data-idx="${s.Index}" class="val-in"><option value="">-</option><option value="ނިމިފައި" ${currentVal==='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${currentVal==='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option></select>`
+                : `<input type="number" data-idx="${s.Index}" class="val-in" value="${currentVal}" inputmode="numeric" style="width:60px;">`;
 
             rowsHtml += `<tr>
                 <td>${s.Index}</td>
@@ -288,54 +275,49 @@
         btn.innerHTML = '<span class="loader"></span> ސޭވް ވަނީ...';
 
         const updates = [];
-        const valInputs = document.querySelectorAll('.val-in');
-        const noteInputs = document.querySelectorAll('.note-in');
-
-        for(let i=0; i < valInputs.length; i++) {
+        document.querySelectorAll('.val-in').forEach((input, i) => {
+            const noteInput = document.querySelectorAll('.note-in')[i];
             updates.push({
-                index: valInputs[i].dataset.idx,
-                val: valInputs[i].value,
-                note: noteInputs[i].value
+                index: input.dataset.idx,
+                val: input.value,
+                note: noteInput.value
             });
-        }
-
-        // Send data using a safer fetch approach with GET params for simple Google Script communication
-        const params = new URLSearchParams({
-            action: 'save',
-            mode: currentMode,
-            item: item,
-            updates: JSON.stringify(updates)
         });
 
-        const url = `${API_URL}?${params.toString()}`;
-        
+        // Use a form-style submission which is often more reliable for Google Scripts
+        const formData = new URLSearchParams();
+        formData.append('action', 'save');
+        formData.append('mode', currentMode);
+        formData.append('item', item);
+        formData.append('updates', JSON.stringify(updates));
+
         try {
-            // Using a hidden script element for cross-domain save if fetch fails due to CORS
-            const script = document.createElement('script');
-            script.src = url + '&t=' + Date.now();
-            document.body.appendChild(script);
+            // We use img or script tag as a fallback for the "no-response" issue often found in cross-origin apps script
+            const tempScript = document.createElement('script');
+            const saveUrl = `${API_URL}?${formData.toString()}&t=${Date.now()}`;
             
-            // Give it some time to process
+            tempScript.src = saveUrl;
+            document.body.appendChild(tempScript);
+
+            // Give visual feedback after a short delay
             setTimeout(() => {
-                alert("ސޭވް ކުރުމުގެ މަސައްކަތް ކުރިއަށް ދަނީ! ޝީޓަށް ބަދަލު އަންނަން ކުޑަ ވަގުތުކޮޅެއް ނަގާފާނެ.");
+                alert("ބަދަލުތައް ފޮނުވިއްޖެ! ޝީޓް އަޕްޑޭޓް ވާން 10-20 ސިކުންތު ނަގާފާނެ. ޝީޓްގައި ބަދަލު ނުފެންނަނަމަ އަލުން ސޭވް ކޮށްލައްވާ.");
                 btn.disabled = false;
                 btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
-                script.remove();
+                tempScript.remove();
             }, 2000);
-            
+
         } catch(e) {
-            console.error("Save error:", e);
-            alert("މައްސަލައެއް ދިމާވެއްޖެ! އަލުން މަސައްކަތް ކޮށްލައްވާ.");
+            console.error("Save Error:", e);
+            alert("ސޭވް ކުރުމުގައި މައްސަލައެއް ދިމާވެއްޖެ.");
             btn.disabled = false;
             btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
         }
     }
 
     function searchStudent() {
-        const idxInput = document.getElementById('searchIndex');
-        const idx = idxInput.value;
+        const idx = document.getElementById('searchIndex').value;
         if(!idx) return;
-        
         const btn = document.getElementById('searchBtn');
         btn.disabled = true;
         btn.innerHTML = '<span class="loader"></span>';
@@ -348,13 +330,9 @@
             if(s) {
                 document.getElementById('studentHeader').innerHTML = `<h2 style="margin:0;">${s.Name}</h2><p style="margin:5px 0 0 0; opacity:0.8;">ގްރޭޑް: ${s.Grade} ${s.Class}</p>`;
                 document.getElementById('studentResults').style.display = 'block';
-                
                 let html = "<thead><tr><th>ބައި</th><th>ނަތީޖާ</th></tr></thead><tbody>";
-                for(let i=1; i<=10; i++) {
-                    if(s['Week'+i]) html += `<tr><td>Week ${i}</td><td>${s['Week'+i]}</td></tr>`;
-                }
-                html += "</tbody>";
-                document.getElementById('resultsTable').innerHTML = html;
+                for(let i=1; i<=10; i++) { if(s['Week'+i]) html += `<tr><td>Week ${i}</td><td>${s['Week'+i]}</td></tr>`; }
+                document.getElementById('resultsTable').innerHTML = html + "</tbody>";
                 window.scrollTo({ top: document.getElementById('studentResults').offsetTop - 20, behavior: 'smooth' });
             } else alert("ދަރިވަރު ނުފެނުނު");
             delete window[callback];
