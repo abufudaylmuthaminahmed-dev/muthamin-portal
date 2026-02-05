@@ -2,61 +2,30 @@
 <html lang="dv" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>އިސްލާމް ޕޯޓަލް</title>
     <style>
         @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
-        
-        * { font-family: "Faruma", sans-serif; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
-        body { background-color: #f4f7f6; margin: 0; padding: 10px; text-align: right; overflow-x: hidden; }
-        
-        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        
-        h1 { color: #00796b; text-align: center; font-size: 1.5rem; margin-bottom: 20px; }
-        
-        /* Tabs */
+        * { font-family: "Faruma", sans-serif; box-sizing: border-box; }
+        body { background-color: #f4f7f6; margin: 0; padding: 10px; text-align: right; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1 { color: #00796b; text-align: center; }
         .tabs { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid #eee; }
-        .tab-btn { flex: 1; padding: 12px 5px; border: none; background: none; cursor: pointer; font-weight: bold; font-size: 14px; color: #666; white-space: nowrap; }
+        .tab-btn { flex: 1; padding: 12px; border: none; background: none; cursor: pointer; font-weight: bold; }
         .tab-btn.active { color: #00796b; border-bottom: 3px solid #00796b; }
-
         .card { background: #f9f9f9; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #eee; }
-        
         input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; text-align: center; }
-        
-        .btn { width: 100%; padding: 14px; background: #00796b; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.2s; }
-        .btn:active { transform: scale(0.96); opacity: 0.8; }
-        .btn:disabled { background: #ccc; cursor: not-allowed; }
-        .btn-save { background: #2e7d32; margin-top: 15px; position: sticky; bottom: 10px; z-index: 100; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
-
-        /* Horizontal Scrolling Filters */
-        .pills-container { display: flex; gap: 8px; overflow-x: auto; padding: 5px 0; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-        .pills-container::-webkit-scrollbar { display: none; }
-        .pill { padding: 8px 16px; background: #eee; border-radius: 25px; cursor: pointer; white-space: nowrap; font-size: 13px; border: 1px solid transparent; flex-shrink: 0; transition: background 0.2s; }
-        .pill.active { background: #00796b; color: white; border-color: #00796b; }
-
-        /* Responsive Table */
-        .table-container { width: 100%; overflow-x: auto; margin-top: 10px; border: 1px solid #eee; border-radius: 8px; background: white; -webkit-overflow-scrolling: touch; position: relative; min-height: 100px; }
-        table { width: 100%; border-collapse: collapse; min-width: 500px; font-size: 14px; }
-        th, td { padding: 12px 8px; border-bottom: 1px solid #eee; text-align: center; }
-        th { background: #f8f9fa; color: #00796b; position: sticky; top: 0; z-index: 10; }
-
-        .sub-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; border-bottom: 1px solid #ddd; margin-bottom: 15px; }
-        .sub-tab { padding: 8px 15px; background: #f0f0f0; border-radius: 20px; cursor: pointer; font-size: 13px; white-space: nowrap; flex-shrink: 0; }
-        .sub-tab.active { background: #00796b; color: white; }
-
-        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #00796b; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
+        .btn { width: 100%; padding: 14px; background: #00796b; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        .btn:disabled { background: #ccc; }
+        .table-container { width: 100%; overflow-x: auto; margin-top: 10px; border-radius: 8px; border: 1px solid #eee; }
+        table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: center; }
+        th { background: #f8f9fa; color: #00796b; }
+        .pills { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; }
+        .pill { padding: 8px 15px; background: #eee; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 13px; }
+        .pill.active { background: #00796b; color: white; }
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #00796b; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        .filter-label { font-size: 12px; margin: 10px 0 5px 0; color: #555; font-weight: bold; }
-
-        @media (max-width: 600px) {
-            .container { padding: 10px; }
-            h1 { font-size: 1.2rem; }
-            th, td { padding: 8px 4px; font-size: 12px; }
-            input, select { padding: 10px; font-size: 14px; }
-            .btn { padding: 12px; font-size: 15px; }
-        }
     </style>
 </head>
 <body>
@@ -65,268 +34,151 @@
     <h1>🌙 އިސްލާމް ޕޯޓަލް</h1>
 
     <div class="tabs">
-        <button class="tab-btn active" id="btnParent" onclick="showTab('parentView', this)">ބެލެނިވެރިން</button>
-        <button class="tab-btn" id="btnTeacher" onclick="showTab('teacherView', this)">މުދައްރިސުން</button>
+        <button class="tab-btn active" onclick="showTab('parent')">ބެލެނިވެރިން</button>
+        <button class="tab-btn" onclick="showTab('teacher')">މުދައްރިސުން</button>
     </div>
 
-    <!-- Parent Section -->
     <div id="parentView">
         <div class="card">
-            <input type="number" id="searchIndex" placeholder="އިންޑެކްސް ނަންބަރު" inputmode="numeric">
-            <button class="btn" id="searchBtn" onclick="searchStudent()">މަޢުލޫމާތު ބަލާ</button>
+            <input type="number" id="pIdx" placeholder="އިންޑެކްސް ނަންބަރު">
+            <button class="btn" id="pBtn" onclick="searchStudent()">މަޢުލޫމާތު ބަލާ</button>
         </div>
-        <div id="studentResults" style="display:none;">
-            <div id="studentHeader" style="background:#00796b; color:white; padding:15px; border-radius:10px; margin-bottom:15px; text-align:center;"></div>
-            <div class="table-container"><table id="resultsTable"></table></div>
-        </div>
+        <div id="pRes" class="card" style="display:none;"></div>
     </div>
 
-    <!-- Teacher Section -->
     <div id="teacherView" style="display:none;">
-        <div id="loginArea" class="card" style="text-align:center;">
-            <h3>ލޮގިން</h3>
-            <input type="password" id="passInput" placeholder="ޕާސްވޯޑް">
-            <button class="btn" onclick="loginTeacher()">ލޮގިން</button>
+        <div id="loginArea" class="card">
+            <input type="password" id="tPass" placeholder="ޕާސްވޯޑް">
+            <button class="btn" onclick="login()">ލޮގިން</button>
         </div>
-
         <div id="teacherPanel" style="display:none;">
-            <div class="sub-tabs">
-                <div class="sub-tab active" id="tabWork" onclick="setMode('work')">ހަފްތާ</div>
-                <div class="sub-tab" id="tabTest" onclick="setMode('test')">ޔުނިޓް ޓެސްޓް</div>
-                <div class="sub-tab" id="tabCA" onclick="setMode('ca')">CA</div>
+            <div class="pills">
+                <div class="pill active" id="m_work" onclick="setMode('work')">ހަފްތާ</div>
+                <div class="pill" id="m_test" onclick="setMode('test')">ޔުނިޓް ޓެސްޓް</div>
+                <div class="pill" id="m_ca" onclick="setMode('ca')">CA</div>
             </div>
-
-            <div class="card" style="background:#f1f8e9; padding: 10px;">
-                <select id="itemSelect" onchange="renderTeacherTable()"></select>
-                
-                <div class="filter-label">ގްރޭޑް:</div>
-                <div id="gradeFilter" class="pills-container"></div>
-                
-                <div id="classFilterSection" style="display:none;">
-                    <div class="filter-label">ކްލާސް:</div>
-                    <div id="classFilter" class="pills-container"></div>
-                </div>
-            </div>
-
+            <select id="itemSelect" onchange="renderTeacherTable()"></select>
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 60px;">އިންޑެކްސް</th>
+                            <th>Index</th>
                             <th>ނަން</th>
                             <th id="valHead">ހާލަތު</th>
                             <th>ނޯޓް</th>
                         </tr>
                     </thead>
-                    <tbody id="teacherTableBody"></tbody>
+                    <tbody id="tBody"></tbody>
                 </table>
             </div>
-            
-            <button class="btn btn-save" id="saveBtn" onclick="saveData()">ހުރިހާ ބަދަލެއް ސޭވްކުރޭ</button>
+            <button class="btn" id="sBtn" style="background:#2e7d32; margin-top:15px;" onclick="saveData()">ހުރިހާ ބަދަލެއް ސޭވްކުރޭ</button>
         </div>
     </div>
 </div>
 
 <script>
-    // Web App URL
-    const API_URL = "https://script.google.com/macros/s/AKfycby1_Dh5YlYpNejIE-bJ7lGH5a8gHmbEUWufvROWRwfywLvQ18j7Ei-NFLELm16R676s/exec";
-    
-    let database = [];
-    let currentMode = 'work';
-    let selectedGrade = 'All';
-    let selectedClass = 'All';
-    let isFetching = false;
+    // Web App URL އިޞްލާޙު ކުރެވިފައި
+    const API_URL = "https://script.google.com/macros/s/AKfycbwtH5H6xdj5-7x1X1xWBbIQrFXsxHN0E4GvFKtS43raYqD6ga7JJLrx-Y5Ja5I2EVO4/exec"; 
+    let db = [];
+    let mode = 'work';
 
-    function showTab(id, btn) {
-        document.getElementById('parentView').style.display = id === 'parentView' ? 'block' : 'none';
-        document.getElementById('teacherView').style.display = id === 'teacherView' ? 'block' : 'none';
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+    function showTab(t) {
+        document.getElementById('parentView').style.display = t==='parent'?'block':'none';
+        document.getElementById('teacherView').style.display = t==='teacher'?'block':'none';
+        document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active', (i==0&&t=='parent')||(i==1&&t=='teacher')));
     }
 
-    function loginTeacher() {
-        if(document.getElementById('passInput').value === "123") {
+    function login() {
+        if(document.getElementById('tPass').value === "123") {
             document.getElementById('loginArea').style.display = 'none';
             document.getElementById('teacherPanel').style.display = 'block';
-            loadData();
-        } else alert("ޕާސްވޯޑް ނުބައި");
+            fetchData();
+        } else alert("ކުށް ޕާސްވޯޑެއް!");
     }
 
-    function loadData() {
-        if(isFetching) return;
-        isFetching = true;
-
-        const body = document.getElementById('teacherTableBody');
-        body.innerHTML = '<tr><td colspan="4"><span class="loader"></span> ލޯޑް ވަނީ...</td></tr>';
-        
-        const callback = 'jsonp_' + Date.now();
-        window[callback] = (data) => {
-            database = data;
-            isFetching = false;
-            setMode(currentMode);
-            renderFilters();
-            delete window[callback];
-        };
-        const script = document.createElement('script');
-        script.src = `${API_URL}?prefix=${callback}&t=${Date.now()}`;
-        document.body.appendChild(script);
+    function fetchData() {
+        const cb = 'p' + Date.now();
+        window[cb] = (data) => { db = data; setMode(mode); delete window[cb]; };
+        const s = document.createElement('script');
+        s.src = `${API_URL}?prefix=${cb}&t=${Date.now()}`;
+        document.body.appendChild(s);
     }
 
-    function setMode(mode) {
-        currentMode = mode;
-        document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
-        const tabEl = document.getElementById('tab' + mode.charAt(0).toUpperCase() + mode.slice(1));
-        if(tabEl) tabEl.classList.add('active');
-        
-        let options = "";
-        if(mode === 'work') for(let i=1; i<=45; i++) options += `<option value="Week${i}">Week ${i}</option>`;
-        else if(mode === 'test') for(let i=1; i<=10; i++) options += `<option value="Test${i}">Unit Test ${i}</option>`;
-        else if(mode === 'ca') for(let i=1; i<=4; i++) options += `<option value="CA${i}">CA ${i}</option>`;
-        
-        document.getElementById('itemSelect').innerHTML = options;
-        document.getElementById('valHead').innerText = mode === 'work' ? 'ހާލަތު' : 'މާކްސް';
-        renderTeacherTable();
-    }
-
-    function renderFilters() {
-        if(!database.length) return;
-        
-        const grades = [...new Set(database.map(s => s.Grade))].filter(Boolean).sort((a,b)=>a-b);
-        let gHtml = `<div class="pill ${selectedGrade === 'All' ? 'active' : ''}" onclick="filterGrade('All')">All</div>`;
-        grades.forEach(g => {
-            gHtml += `<div class="pill ${selectedGrade == g ? 'active' : ''}" onclick="filterGrade('${g}')">ގްރޭޑް ${g}</div>`;
-        });
-        document.getElementById('gradeFilter').innerHTML = gHtml;
-
-        const classSection = document.getElementById('classFilterSection');
-        if(selectedGrade === 'All') {
-            classSection.style.display = 'none';
-            selectedClass = 'All';
-        } else {
-            classSection.style.display = 'block';
-            const classes = [...new Set(database.filter(s => s.Grade && s.Grade.toString() === selectedGrade.toString()).map(s => s.Class))].filter(Boolean).sort();
-            let cHtml = `<div class="pill ${selectedClass === 'All' ? 'active' : ''}" onclick="filterClass('All')">ހުރިހާ ކްލާހެއް</div>`;
-            classes.forEach(c => {
-                cHtml += `<div class="pill ${selectedClass == c ? 'active' : ''}" onclick="filterClass('${c}')">${c}</div>`;
-            });
-            document.getElementById('classFilter').innerHTML = cHtml;
-        }
-    }
-
-    function filterGrade(g) { 
-        selectedGrade = g; 
-        selectedClass = 'All'; 
-        renderFilters();
-        renderTeacherTable(); 
-    }
-
-    function filterClass(c) {
-        selectedClass = c;
-        renderFilters();
+    function setMode(m) {
+        mode = m;
+        document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+        document.getElementById('m_'+m).classList.add('active');
+        let opt = "";
+        if(m=='work') for(let i=1;i<=45;i++) opt += `<option value="Week ${i}">Week ${i}</option>`;
+        if(m=='test') for(let i=1;i<=10;i++) opt += `<option value="Unit Test ${i}">Unit Test ${i}</option>`;
+        if(m=='ca') for(let i=1;i<=4;i++) opt += `<option value="CA ${i}">CA ${i}</option>`;
+        document.getElementById('itemSelect').innerHTML = opt;
+        document.getElementById('valHead').innerText = m=='work'?'ހާލަތު':'މާކްސް';
         renderTeacherTable();
     }
 
     function renderTeacherTable() {
         const item = document.getElementById('itemSelect').value;
-        const body = document.getElementById('teacherTableBody');
-        if(!database.length) return;
-
-        let filtered = database;
-        if(selectedGrade !== 'All') filtered = filtered.filter(s => s.Grade && s.Grade.toString() === selectedGrade.toString());
-        if(selectedClass !== 'All') filtered = filtered.filter(s => s.Class && s.Class.toString() === selectedClass.toString());
-
-        let rowsHtml = '';
-        filtered.forEach(s => {
-            let num = item.replace(/[a-zA-Z]/g, '');
-            let currentVal = s[item] || "";
-            let noteKey = currentMode === 'work' ? 'Note'+num : (currentMode === 'test' ? 'TNote'+num : 'CANote'+num);
-            let currentNote = s[noteKey] || "";
-
-            let valField = currentMode === 'work' 
-                ? `<select data-idx="${s.Index}" class="val-in"><option value="">-</option><option value="ނިމިފައި" ${currentVal==='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${currentVal==='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option></select>`
-                : `<input type="number" data-idx="${s.Index}" class="val-in" value="${currentVal}" inputmode="numeric" style="width:60px;">`;
-
-            rowsHtml += `<tr>
-                <td>${s.Index}</td>
-                <td style="text-align:right;">${s.Name}<br><small style="color:#888;">${s.Grade}${s.Class}</small></td>
-                <td>${valField}</td>
-                <td><input type="text" data-idx="${s.Index}" class="note-in" value="${currentNote}"></td>
-            </tr>`;
+        let html = "";
+        db.forEach(s => {
+            let v = s[item] || "";
+            let nKey = "Note " + item;
+            let n = s[nKey] || "";
+            let input = mode=='work' 
+                ? `<select class="v-in" data-idx="${s.Index}"><option value="">-</option><option value="ނިމިފައި" ${v=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${v=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option></select>`
+                : `<input type="number" class="v-in" data-idx="${s.Index}" value="${v}" style="width:60px">`;
+            html += `<tr><td>${s.Index}</td><td style="text-align:right">${s.Name}</td><td>${input}</td><td><input type="text" class="n-in" data-idx="${s.Index}" value="${n}"></td></tr>`;
         });
-        body.innerHTML = rowsHtml || '<tr><td colspan="4">ނަތީޖާއެއް ނުފެނުނު</td></tr>';
+        document.getElementById('tBody').innerHTML = html;
     }
 
-    function saveData() {
-        const btn = document.getElementById('saveBtn');
+    async function saveData() {
+        const btn = document.getElementById('sBtn');
         const item = document.getElementById('itemSelect').value;
+        btn.disabled = true; btn.innerText = "ސޭވް ވަނީ...";
         
-        btn.disabled = true;
-        btn.innerHTML = '<span class="loader"></span> ސޭވް ވަނީ...';
+        const updates = Array.from(document.querySelectorAll('.v-in')).map((el, i) => ({
+            index: el.dataset.idx,
+            val: el.value,
+            note: document.querySelectorAll('.n-in')[i].value
+        }));
 
-        const updates = [];
-        document.querySelectorAll('.val-in').forEach((input, i) => {
-            const noteInput = document.querySelectorAll('.note-in')[i];
-            updates.push({
-                index: input.dataset.idx,
-                val: input.value,
-                note: noteInput.value
-            });
-        });
-
-        // Use standard URL redirection for saving (form submit style)
-        // This is the most reliable way when CORS is an issue
-        const formData = new URLSearchParams();
-        formData.append('action', 'save');
-        formData.append('mode', currentMode);
-        formData.append('item', item);
-        formData.append('updates', JSON.stringify(updates));
-
-        const finalUrl = `${API_URL}?${formData.toString()}`;
-        
-        // We use an image request or a hidden script to trigger the URL without leaving the page
-        const trigger = new Image();
-        trigger.src = finalUrl;
-        
-        // Since we can't easily get a success response from a cross-origin GET, 
-        // we wait a moment and assume it sent.
-        setTimeout(() => {
-            alert("ބަދަލުތައް ސޭވް ކުރުމަށް ފޮނުވިއްޖެ. ޝީޓަށް ބަދަލު އަންނަން ކުޑަ ވަގުތުކޮޅެއް ނަގާފާނެ.");
-            btn.disabled = false;
-            btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
-            loadData(); // Reload to see if changes are reflected
-        }, 3000);
+        try {
+            const p = new URLSearchParams({ action:'save', item:item, updates:JSON.stringify(updates) });
+            await fetch(`${API_URL}?${p.toString()}`, { mode:'no-cors' });
+            alert("ސޭވް ކުރެވިއްޖެ!");
+            fetchData();
+        } catch(e) { alert("މައްސަލައެއް ޖެހިއްޖެ!"); }
+        btn.disabled = false; btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
     }
 
     function searchStudent() {
-        const idx = document.getElementById('searchIndex').value;
+        const idx = document.getElementById('pIdx').value;
         if(!idx) return;
-        const btn = document.getElementById('searchBtn');
-        btn.disabled = true;
-        btn.innerHTML = '<span class="loader"></span>';
-        
-        const callback = 'search_' + Date.now();
-        window[callback] = (data) => {
-            btn.disabled = false;
-            btn.innerText = "މަޢުލޫމާތު ބަލާ";
-            const s = data.find(x => x.Index && x.Index.toString() === idx);
+        const res = document.getElementById('pRes');
+        res.innerHTML = '<div class="loader"></div>'; res.style.display = 'block';
+
+        const cb = 's'+Date.now();
+        window[cb] = (data) => {
+            const s = data.find(x => String(x.Index) === String(idx));
             if(s) {
-                document.getElementById('studentHeader').innerHTML = `<h2 style="margin:0;">${s.Name}</h2><p style="margin:5px 0 0 0; opacity:0.8;">ގްރޭޑް: ${s.Grade} ${s.Class}</p>`;
-                document.getElementById('studentResults').style.display = 'block';
-                let html = "<thead><tr><th>ބައި</th><th>ނަތީޖާ</th></tr></thead><tbody>";
-                
-                const prefix = currentMode === 'work' ? 'Week' : (currentMode === 'test' ? 'Test' : 'CA');
-                for(let i=1; i<=45; i++) { 
-                    let key = prefix + i;
-                    if(s[key]) html += `<tr><td>${prefix} ${i}</td><td>${s[key]}</td></tr>`; 
-                }
-                document.getElementById('resultsTable').innerHTML = html + "</tbody>";
-                window.scrollTo({ top: document.getElementById('studentResults').offsetTop - 20, behavior: 'smooth' });
-            } else alert("ދަރިވަރު ނުފެނުނު");
-            delete window[callback];
+                let h = `<h3>${s.Name}</h3><p>ގްރޭޑް ${s.Grade} ${s.Class}</p><hr><table>`;
+                // ހުރިހާ ޑޭޓާއެއް ދެއްކުން
+                Object.keys(s).forEach(k => {
+                    if(k.includes('Week') || k.includes('Unit Test') || k.includes('CA')) {
+                        if(!k.toLowerCase().includes('note') && isNaN(k)) {
+                           h += `<tr><td style="text-align:right"><b>${k}:</b></td><td>${s[k] || '-'}</td></tr>`;
+                           let n = s["Note " + k]; if(n) h += `<tr><td colspan="2" style="font-size:12px;color:blue">${n}</td></tr>`;
+                        }
+                    }
+                });
+                res.innerHTML = h + "</table>";
+            } else res.innerHTML = "ފިލާވަޅެއް ނުފެނުނު!";
+            delete window[cb];
         };
-        const script = document.createElement('script');
-        script.src = `${API_URL}?prefix=${callback}&t=${Date.now()}`;
-        document.body.appendChild(script);
+        const sc = document.createElement('script');
+        sc.src = `${API_URL}?prefix=${cb}`;
+        document.body.appendChild(sc);
     }
 </script>
 </body>
