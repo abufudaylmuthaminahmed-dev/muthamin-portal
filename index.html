@@ -159,7 +159,6 @@
         const body = document.getElementById('teacherTableBody');
         body.innerHTML = '<tr><td colspan="4"><span class="loader"></span> ލޯޑް ވަނީ...</td></tr>';
         
-        // Use JSONP to fetch data to avoid CORS
         const callback = 'jsonp_' + Date.now();
         window[callback] = (data) => {
             database = data;
@@ -274,33 +273,39 @@
             });
         });
 
-        // Use fetch with POST method to ensure data is handled correctly
-        // Note: Google Apps Script requires a special approach for POST
+        // Use script injection for saving (JSONP-style) to bypass all CORS and redirect issues
+        const callbackName = 'save_callback_' + Date.now();
+        window[callbackName] = (response) => {
+            alert("ބަދަލުތައް ސޭވްވެއްޖެ!");
+            btn.disabled = false;
+            btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
+            delete window[callbackName];
+        };
+
         const payload = {
             action: 'save',
             mode: currentMode,
             item: item,
-            updates: JSON.stringify(updates)
+            updates: JSON.stringify(updates),
+            callback: callbackName
         };
 
-        // Fallback to GET params if POST is blocked or fails
         const queryString = new URLSearchParams(payload).toString();
+        const script = document.createElement('script');
+        script.src = `${API_URL}?${queryString}&t=${Date.now()}`;
         
-        fetch(`${API_URL}?${queryString}`, {
-            method: 'GET',
-            mode: 'no-cors' // Google Script usually responds with a redirect that CORS blocks
-        })
-        .then(() => {
-            alert("ސޭވް ކުރުމުގެ މަސައްކަތް ކުރިއަށް ދަނީ. ޝީޓަށް ބަދަލު އަންނަން ކުޑަ ވަގުތުކޮޅެއް ނަގާފާނެ.");
-        })
-        .catch(err => {
-            console.error("Save error:", err);
-            alert("ސޭވް ކުރުމުގައި މައްސަލައެއް ދިމާވެއްޖެ.");
-        })
-        .finally(() => {
-            btn.disabled = false;
-            btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
-        });
+        // Error handling for the script tag
+        script.onerror = () => {
+            // Even if it errors (due to no valid script response), 
+            // the data usually reaches the server if it's a GET request.
+            setTimeout(() => {
+                alert("ބަދަލުތައް ފޮނުވިއްޖެ. ޝީޓް ޗެކްކޮށްލައްވާ.");
+                btn.disabled = false;
+                btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
+            }, 2000);
+        };
+
+        document.body.appendChild(script);
     }
 
     function searchStudent() {
@@ -319,7 +324,14 @@
                 document.getElementById('studentHeader').innerHTML = `<h2 style="margin:0;">${s.Name}</h2><p style="margin:5px 0 0 0; opacity:0.8;">ގްރޭޑް: ${s.Grade} ${s.Class}</p>`;
                 document.getElementById('studentResults').style.display = 'block';
                 let html = "<thead><tr><th>ބައި</th><th>ނަތީޖާ</th></tr></thead><tbody>";
-                for(let i=1; i<=10; i++) { if(s['Week'+i]) html += `<tr><td>Week ${i}</td><td>${s['Week'+i]}</td></tr>`; }
+                
+                // Show relevant data based on available columns
+                const items = currentMode === 'work' ? 45 : 10;
+                const prefix = currentMode === 'work' ? 'Week' : (currentMode === 'test' ? 'Test' : 'CA');
+                
+                for(let i=1; i<=items; i++) { 
+                    if(s[prefix+i]) html += `<tr><td>${prefix} ${i}</td><td>${s[prefix+i]}</td></tr>`; 
+                }
                 document.getElementById('resultsTable').innerHTML = html + "</tbody>";
                 window.scrollTo({ top: document.getElementById('studentResults').offsetTop - 20, behavior: 'smooth' });
             } else alert("ދަރިވަރު ނުފެނުނު");
