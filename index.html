@@ -8,24 +8,43 @@
         @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
         * { font-family: "Faruma", sans-serif; box-sizing: border-box; }
         body { background-color: #f4f7f6; margin: 0; padding: 10px; text-align: right; }
-        .container { max-width: 900px; margin: 0 auto; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        h1 { color: #00796b; text-align: center; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1 { color: #00796b; text-align: center; margin-bottom: 25px; }
         .tabs { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid #eee; }
-        .tab-btn { flex: 1; padding: 12px; border: none; background: none; cursor: pointer; font-weight: bold; }
-        .tab-btn.active { color: #00796b; border-bottom: 3px solid #00796b; }
-        .card { background: #f9f9f9; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #eee; }
-        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; text-align: center; }
-        .btn { width: 100%; padding: 14px; background: #00796b; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        .tab-btn { flex: 1; padding: 15px; border: none; background: none; cursor: pointer; font-weight: bold; font-size: 16px; }
+        .tab-btn.active { color: #00796b; border-bottom: 4px solid #00796b; }
+        .card { background: #f9f9f9; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #eee; }
+        input, select { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; text-align: center; }
+        .btn { width: 100%; padding: 16px; background: #00796b; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; transition: 0.3s; }
+        .btn:hover { background: #004d40; }
         .btn:disabled { background: #ccc; }
-        .table-container { width: 100%; overflow-x: auto; margin-top: 10px; border-radius: 8px; border: 1px solid #eee; }
-        table { width: 100%; border-collapse: collapse; min-width: 500px; }
-        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: center; }
-        th { background: #f8f9fa; color: #00796b; }
-        .pills { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; }
-        .pill { padding: 8px 15px; background: #eee; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 13px; }
-        .pill.active { background: #00796b; color: white; }
-        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #00796b; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; }
+        
+        .table-container { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 10px; border: 1px solid #ddd; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th, td { padding: 15px; border-bottom: 1px solid #eee; text-align: center; }
+        th { background: #00796b; color: white; position: sticky; top: 0; }
+        tr:nth-child(even) { background-color: #fcfcfc; }
+        tr:hover { background-color: #f1f8e9; }
+
+        .v-in { width: 90px !important; height: 45px; font-size: 18px !important; font-weight: bold; border: 2px solid #00796b !important; }
+        .n-in { text-align: right !important; min-width: 150px; }
+
+        .pills { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; margin-bottom: 10px; }
+        .pill { padding: 10px 20px; background: #eee; border-radius: 25px; cursor: pointer; white-space: nowrap; font-size: 14px; transition: 0.2s; }
+        .pill.active { background: #00796b; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #00796b; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; display: inline-block; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .summary-card { background: #e0f2f1; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-around; text-align: center; }
+        .summary-val { display: block; font-size: 24px; font-weight: bold; color: #00796b; }
+        .grade-badge { padding: 5px 12px; border-radius: 6px; font-weight: bold; color: white; font-size: 14px; display: inline-block; }
+        .grade-A-star { background: #ffd700; color: black; border: 1px solid #b8860b; }
+        .grade-A { background: #4caf50; }
+        .grade-B { background: #2196f3; }
+        .grade-C { background: #ff9800; }
+        .grade-Fail { background: #f44336; }
+        .full-marks-area { display: flex; align-items: center; gap: 15px; background: #e8f5e9; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #c8e6c9; }
     </style>
 </head>
 <body>
@@ -38,49 +57,94 @@
         <button class="tab-btn" onclick="showTab('teacher')">މުދައްރިސުން</button>
     </div>
 
+    <!-- Parent View -->
     <div id="parentView">
         <div class="card">
-            <input type="number" id="pIdx" placeholder="އިންޑެކްސް ނަންބަރު">
+            <input type="number" id="pIdx" placeholder="ކުއްޖާގެ އިންޑެކްސް ނަންބަރު ޖައްސަވާ">
             <button class="btn" id="pBtn" onclick="searchStudent()">މަޢުލޫމާތު ބަލާ</button>
         </div>
-        <div id="pRes" class="card" style="display:none;"></div>
+        <div id="pRes" style="display:none; text-align:center;"></div>
     </div>
 
+    <!-- Teacher View -->
     <div id="teacherView" style="display:none;">
         <div id="loginArea" class="card">
-            <input type="password" id="tPass" placeholder="ޕާސްވޯޑް">
+            <h3 style="text-align:center;">މުދައްރިސުންގެ ބައި</h3>
+            <input type="password" id="tPass" placeholder="ޕާސްވޯޑް ޖައްސަވާ">
             <button class="btn" onclick="login()">ލޮގިން</button>
         </div>
+        
         <div id="teacherPanel" style="display:none;">
             <div class="pills">
-                <div class="pill active" id="m_work" onclick="setMode('work')">ހަފްތާ</div>
+                <div class="pill active" id="m_work" onclick="setMode('work')">ހަފްތާގެ މަސައްކަތް</div>
                 <div class="pill" id="m_test" onclick="setMode('test')">ޔުނިޓް ޓެސްޓް</div>
-                <div class="pill" id="m_ca" onclick="setMode('ca')">CA</div>
+                <div class="pill" id="m_ca" onclick="setMode('ca')">CA (އެސެސްމަންޓް)</div>
             </div>
-            <select id="itemSelect" onchange="renderTeacherTable()"></select>
-            <div class="table-container">
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; align-items: end;">
+                <div>
+                    <label>އައިޓަމް ހިޔާރުކުރޭ:</label>
+                    <select id="itemSelect" onchange="renderTeacherTable()"></select>
+                </div>
+                <div id="fullMarksContainer" class="full-marks-area" style="display:none;">
+                    <label style="white-space: nowrap; font-weight: bold;">ޖުމްލަ މާކްސް:</label>
+                    <input type="number" id="fullMarks" value="100" style="margin:0; height:45px; background:white;" oninput="renderTeacherTable()">
+                </div>
+            </div>
+
+            <div id="tLoading" style="text-align:center; padding:20px; display:none;">
+                <div class="loader"></div>
+                <p>ލިސްޓު ލޯޑްވަނީ...</p>
+            </div>
+
+            <div class="table-container" id="tContainer">
                 <table>
                     <thead>
                         <tr>
-                            <th>Index</th>
-                            <th>ނަން</th>
-                            <th id="valHead">ހާލަތު</th>
+                            <th style="width: 80px;">Index</th>
+                            <th style="text-align:right">ދަރިވަރުގެ ނަން</th>
+                            <th id="valHead">މާކްސް</th>
+                            <th style="width: 140px;">ނަތީޖާ</th>
                             <th>ނޯޓް</th>
                         </tr>
                     </thead>
                     <tbody id="tBody"></tbody>
                 </table>
             </div>
-            <button class="btn" id="sBtn" style="background:#2e7d32; margin-top:15px;" onclick="saveData()">ހުރިހާ ބަދަލެއް ސޭވްކުރޭ</button>
+            <button class="btn" id="sBtn" style="background:#2e7d32; margin-top:20px; border-bottom: 4px solid #1b5e20;" onclick="saveData()">ހުރިހާ ބަދަލެއް ސޭވްކުރޭ</button>
         </div>
     </div>
 </div>
 
 <script>
-    // Web App URL އިޞްލާޙު ކުރެވިފައި
-    const API_URL = "https://script.google.com/macros/s/AKfycbwtH5H6xdj5-7x1X1xWBbIQrFXsxHN0E4GvFKtS43raYqD6ga7JJLrx-Y5Ja5I2EVO4/exec"; 
+    // މުހިންމު: ތިރީގައިވާ URL އަކީ ތިޔަބޭފުޅާގެ Google Script URL އަށް ބަދަލުކުރަންވާނެއެވެ.
+    const API_URL = "https://script.google.com/macros/s/AKfycbwt_XfC0-x1G33Y9L3p-9y-S78C7n7C_P-2Gf2D8v4G7v4G7v4G7v4G7v4G7v4G/exec"; 
     let db = [];
     let mode = 'work';
+
+    function calculateGrade(marks, fullMarks = 100) {
+        if (marks === "" || marks === null || isNaN(marks) || fullMarks <= 0) return "";
+        let m = (parseFloat(marks) / parseFloat(fullMarks)) * 100;
+        if (m >= 90) return "A*";
+        if (m >= 80) return "A";
+        if (m >= 70) return "B";
+        if (m >= 60) return "C";
+        return "Fail";
+    }
+
+    function calculatePercentage(marks, fullMarks = 100) {
+        if (marks === "" || marks === null || isNaN(marks) || fullMarks <= 0) return "";
+        return Math.round((parseFloat(marks) / parseFloat(fullMarks)) * 100);
+    }
+
+    function getGradeClass(g) {
+        if (g === "A*") return "grade-A-star";
+        if (g === "A") return "grade-A";
+        if (g === "B") return "grade-B";
+        if (g === "C") return "grade-C";
+        if (g === "Fail") return "grade-Fail";
+        return "";
+    }
 
     function showTab(t) {
         document.getElementById('parentView').style.display = t==='parent'?'block':'none';
@@ -97,8 +161,17 @@
     }
 
     function fetchData() {
+        document.getElementById('tLoading').style.display = 'block';
+        document.getElementById('tContainer').style.display = 'none';
+        
         const cb = 'p' + Date.now();
-        window[cb] = (data) => { db = data; setMode(mode); delete window[cb]; };
+        window[cb] = (data) => { 
+            db = data; 
+            document.getElementById('tLoading').style.display = 'none';
+            document.getElementById('tContainer').style.display = 'block';
+            setMode(mode); 
+            delete window[cb]; 
+        };
         const s = document.createElement('script');
         s.src = `${API_URL}?prefix=${cb}&t=${Date.now()}`;
         document.body.appendChild(s);
@@ -108,26 +181,66 @@
         mode = m;
         document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
         document.getElementById('m_'+m).classList.add('active');
+        
         let opt = "";
-        if(m=='work') for(let i=1;i<=45;i++) opt += `<option value="Week ${i}">Week ${i}</option>`;
-        if(m=='test') for(let i=1;i<=10;i++) opt += `<option value="Unit Test ${i}">Unit Test ${i}</option>`;
-        if(m=='ca') for(let i=1;i<=4;i++) opt += `<option value="CA ${i}">CA ${i}</option>`;
+        if(m=='work') {
+            for(let i=1;i<=45;i++) opt += `<option value="Week ${i}">Week ${i}</option>`;
+            document.getElementById('fullMarksContainer').style.display = 'none';
+        } else {
+            document.getElementById('fullMarksContainer').style.display = 'flex';
+            if(m=='test') for(let i=1;i<=10;i++) opt += `<option value="Unit Test ${i}">Unit Test ${i}</option>`;
+            if(m=='ca') for(let i=1;i<=4;i++) opt += `<option value="CA ${i}">CA ${i}</option>`;
+        }
+        
         document.getElementById('itemSelect').innerHTML = opt;
         document.getElementById('valHead').innerText = m=='work'?'ހާލަތު':'މާކްސް';
         renderTeacherTable();
     }
 
+    function updateRowGrade(el) {
+        if (mode === 'work') return;
+        const idx = el.dataset.idx;
+        const gradeDisplay = document.getElementById(`grade-${idx}`);
+        const fullMarks = document.getElementById('fullMarks').value || 100;
+        const marks = el.value;
+        const grade = calculateGrade(marks, fullMarks);
+        const perc = calculatePercentage(marks, fullMarks);
+        
+        if(grade !== "") {
+            gradeDisplay.innerHTML = `<span style="font-size:12px">${perc}%</span> <span class="grade-badge ${getGradeClass(grade)}">${grade}</span>`;
+        } else {
+            gradeDisplay.innerHTML = "";
+        }
+    }
+
     function renderTeacherTable() {
         const item = document.getElementById('itemSelect').value;
+        const fullMarks = document.getElementById('fullMarks').value || 100;
         let html = "";
+        
+        if(!db || db.length === 0) {
+            document.getElementById('tBody').innerHTML = "<tr><td colspan='5'>ލިސްޓު ނުފެނުނު. ޑޭޓާ ކަނެކްޝަން ޗެކްކޮށްލައްވާ.</td></tr>";
+            return;
+        }
+
         db.forEach(s => {
             let v = s[item] || "";
             let nKey = "Note " + item;
             let n = s[nKey] || "";
+            let grade = mode !== 'work' ? calculateGrade(v, fullMarks) : "";
+            let perc = mode !== 'work' ? calculatePercentage(v, fullMarks) : "";
+            
             let input = mode=='work' 
                 ? `<select class="v-in" data-idx="${s.Index}"><option value="">-</option><option value="ނިމިފައި" ${v=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${v=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option></select>`
-                : `<input type="number" class="v-in" data-idx="${s.Index}" value="${v}" style="width:60px">`;
-            html += `<tr><td>${s.Index}</td><td style="text-align:right">${s.Name}</td><td>${input}</td><td><input type="text" class="n-in" data-idx="${s.Index}" value="${n}"></td></tr>`;
+                : `<input type="number" class="v-in" data-idx="${s.Index}" value="${v}" oninput="updateRowGrade(this)">`;
+            
+            html += `<tr>
+                <td style="font-weight:bold">${s.Index}</td>
+                <td style="text-align:right">${s.Name}</td>
+                <td>${input}</td>
+                <td><span id="grade-${s.Index}">${mode !== 'work' && grade !== "" ? `<span style="font-size:12px">${perc}%</span> <span class="grade-badge ${getGradeClass(grade)}">${grade}</span>` : ""}</span></td>
+                <td><input type="text" class="n-in" data-idx="${s.Index}" value="${n}" placeholder="ނޯޓެއް..."></td>
+            </tr>`;
         });
         document.getElementById('tBody').innerHTML = html;
     }
@@ -135,20 +248,37 @@
     async function saveData() {
         const btn = document.getElementById('sBtn');
         const item = document.getElementById('itemSelect').value;
+        const fullMarks = document.getElementById('fullMarks').value || 100;
+        
         btn.disabled = true; btn.innerText = "ސޭވް ވަނީ...";
         
-        const updates = Array.from(document.querySelectorAll('.v-in')).map((el, i) => ({
-            index: el.dataset.idx,
-            val: el.value,
-            note: document.querySelectorAll('.n-in')[i].value
-        }));
+        const updates = Array.from(document.querySelectorAll('.v-in')).map((el, i) => {
+            let val = el.value;
+            let grade = mode !== 'work' ? calculateGrade(val, fullMarks) : "";
+            let perc = mode !== 'work' ? calculatePercentage(val, fullMarks) : "";
+            return {
+                index: el.dataset.idx,
+                val: val,
+                grade: grade,
+                perc: perc,
+                note: document.querySelectorAll('.n-in')[i].value
+            };
+        });
 
         try {
-            const p = new URLSearchParams({ action:'save', item:item, updates:JSON.stringify(updates) });
+            const p = new URLSearchParams({ 
+                action:'save', 
+                item:item, 
+                mode: mode,
+                updates:JSON.stringify(updates) 
+            });
+            // Google Apps Script requires JSONP or no-cors for simple requests without proper headers
             await fetch(`${API_URL}?${p.toString()}`, { mode:'no-cors' });
-            alert("ސޭވް ކުރެވިއްޖެ!");
+            alert("ހުރިހާ ބަދަލެއް ކާމިޔާބުކަމާއެކު ސޭވް ކުރެވިއްޖެ!");
             fetchData();
-        } catch(e) { alert("މައްސަލައެއް ޖެހިއްޖެ!"); }
+        } catch(e) { 
+            alert("ސޭވް ކުރުމުގައި މައްސަލައެއް ޖެހިއްޖެ. އަލުން މަސައްކަތް ކޮށްލައްވާ."); 
+        }
         btn.disabled = false; btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
     }
 
@@ -156,24 +286,75 @@
         const idx = document.getElementById('pIdx').value;
         if(!idx) return;
         const res = document.getElementById('pRes');
-        res.innerHTML = '<div class="loader"></div>'; res.style.display = 'block';
+        res.innerHTML = '<div class="loader"></div><p>ބަލަނީ...</p>'; res.style.display = 'block';
 
         const cb = 's'+Date.now();
         window[cb] = (data) => {
             const s = data.find(x => String(x.Index) === String(idx));
             if(s) {
-                let h = `<h3>${s.Name}</h3><p>ގްރޭޑް ${s.Grade} ${s.Class}</p><hr><table>`;
-                // ހުރިހާ ޑޭޓާއެއް ދެއްކުން
-                Object.keys(s).forEach(k => {
-                    if(k.includes('Week') || k.includes('Unit Test') || k.includes('CA')) {
-                        if(!k.toLowerCase().includes('note') && isNaN(k)) {
-                           h += `<tr><td style="text-align:right"><b>${k}:</b></td><td>${s[k] || '-'}</td></tr>`;
-                           let n = s["Note " + k]; if(n) h += `<tr><td colspan="2" style="font-size:12px;color:blue">${n}</td></tr>`;
-                        }
+                let totalMarks = s.Total || '-';
+                let percentage = s.Percentage || '-';
+                let gradeOverall = s.Grade || '-';
+
+                let h = `
+                    <div class="card" style="border-right: 5px solid #00796b;">
+                        <h2 style="margin:0; color:#00796b;">${s.Name}</h2>
+                        <p style="margin:5px 0; color:#555; font-size:18px;">އިންޑެކްސް: <b>${s.Index}</b></p>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <div class="summary-item">
+                            <span style="font-size:12px; color:#555;">ޖުމްލަ މާކްސް</span>
+                            <span class="summary-val">${totalMarks}</span>
+                        </div>
+                        <div class="summary-item" style="border-right: 1px solid #b2dfdb; border-left: 1px solid #b2dfdb;">
+                            <span style="font-size:12px; color:#555;">އިންސައްތަ</span>
+                            <span class="summary-val">${percentage}${percentage !== '-' ? '%' : ''}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span style="font-size:12px; color:#555;">ގްރޭޑް</span>
+                            <span class="summary-val">${gradeOverall}</span>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h4 style="border-bottom:2px solid #00796b; padding-bottom:8px; margin-top:0; text-align:right;">ނަތީޖާތަކުގެ ތަފްޞީލް</h4>
+                        <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="text-align:right">ފިލާވަޅު / ޓެސްޓް</th>
+                                    <th>ނަތީޖާ</th>
+                                    <th>ގްރޭޑް</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+                
+                // ތަފްޞީލީ ލިސްޓު ހެދުން
+                Object.keys(s).sort().forEach(k => {
+                    if((k.includes('Week') || k.includes('Unit Test') || k.includes('CA')) && 
+                       !k.toLowerCase().includes('note') && !k.toLowerCase().includes('grade') && !k.toLowerCase().includes('perc')) {
+                        let val = s[k] || '-';
+                        let note = s["Note " + k] || "";
+                        let g = s["Grade " + k] || "";
+                        let p = s["Perc " + k] || "";
+                        
+                        h += `<tr>
+                                <td style="text-align:right">
+                                    <b>${k}</b>
+                                    ${note ? `<br><small style="color:#00796b; background:#e8f5e9; padding:2px 5px; border-radius:4px;">${note}</small>` : ''}
+                                </td>
+                                <td><span style="background:#f0f0f0; padding:6px 12px; border-radius:20px; font-weight:bold;">${val}</span></td>
+                                <td>${g ? `<small>${p}%</small> <span class="grade-badge ${getGradeClass(g)}">${g}</span>` : '-'}</td>
+                              </tr>`;
                     }
                 });
-                res.innerHTML = h + "</table>";
-            } else res.innerHTML = "ފިލާވަޅެއް ނުފެނުނު!";
+                
+                h += `</tbody></table></div></div>`;
+                res.innerHTML = h;
+            } else {
+                res.innerHTML = '<div class="card" style="color:red; border:2px solid red;">މި އިންޑެކްސް ނަންބަރުގެ ދަރިވަރަކު ނުފެނުނު!</div>';
+            }
             delete window[cb];
         };
         const sc = document.createElement('script');
