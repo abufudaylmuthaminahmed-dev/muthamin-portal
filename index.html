@@ -196,7 +196,7 @@
 </div>
 
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbx0FuKBjx_6ZwkA13pmpuqGRsqe_7NXwm6IKhdynSJgslnXwUaFWxvg5tsEY5oJYVVR/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbwLbeWaCeeZbGZdP0pVToAm82YzyI5nQwb8rW8CJTkI0Z6CWwYiU1GdCVFHn--jWmcO/exec";
     let database = [];
     let activeFilter = "All";
     let teacherMode = "work"; 
@@ -392,46 +392,48 @@
         btn.disabled = true;
         btn.innerHTML = '<span class="loader"></span> ސޭވް ވަނީ...';
 
-        const allPromises = [];
+        const updates = [];
         
         rows.forEach(row => {
             const index = row.querySelector('[data-type="val"]').dataset.index;
             const val = row.querySelector('[data-type="val"]').value;
             const note = row.querySelector('[data-type="note"]').value;
 
-            // ހަމައެކަނި ބަދަލުވެފައިވާ ޑޭޓާ ފޮނުވުން
             const student = database.find(s => s.Index.toString() === index);
             const noteKey = teacherMode === 'work' ? selectedItem.replace("Week", "Note") : selectedItem.replace("Test", "TNote");
             
+            // ހަމައެކަނި ބަދަލުވެފައިވާ ޑޭޓާ ލިސްޓަށް އިތުރުކުރުން
             if (student[selectedItem] != val || student[noteKey] != note) {
-                const payload = {
+                updates.push({
                     index: index,
-                    week: selectedItem,
                     status: val,
-                    note: note,
-                    mode: teacherMode
-                };
-                
-                allPromises.push(
-                    fetch(API_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        body: JSON.stringify(payload)
-                    })
-                );
+                    note: note
+                });
             }
         });
 
-        if (allPromises.length === 0) {
+        if (updates.length === 0) {
             alert("ސޭވް ކުރާނެ އައު ބަދަލެއް ނެތް.");
             btn.disabled = false;
             btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
             return;
         }
 
+        // ހުރިހާ ޑޭޓާއެއް އެއްކޮށް ފޮނުވާލުން
+        const payload = {
+            mode: teacherMode,
+            item: selectedItem,
+            updates: updates
+        };
+
         try {
-            await Promise.all(allPromises);
-            alert("ކާމިޔާބުކަމާއެކު ސޭވް ކުރެވިއްޖެ! (ޝީޓުގައި އަޕްޑޭޓްވާން ކުޑަވަގުތުކޮޅެއް ނަގާފާނެ)");
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify(payload)
+            });
+            
+            alert("ކާމިޔާބުކަމާއެކު ސޭވް ކުރެވިއްޖެ!");
             loadData(); // ޑޭޓާ ރިފްރެޝް ކުރުން
         } catch (e) {
             alert("ސޭވް ކުރުމުގައި މައްސަލައެއް ދިމާވެއްޖެ.");
