@@ -128,7 +128,7 @@
 </div>
 
 <script>
-    // Updated Script URL
+    // Web App URL
     const API_URL = "https://script.google.com/macros/s/AKfycbx0FuKBjx_6ZwkA13pmpuqGRsqe_7NXwm6IKhdynSJgslnXwUaFWxvg5tsEY5oJYVVR/exec";
     
     let database = [];
@@ -273,39 +273,28 @@
             });
         });
 
-        // Use script injection for saving (JSONP-style) to bypass all CORS and redirect issues
-        const callbackName = 'save_callback_' + Date.now();
-        window[callbackName] = (response) => {
-            alert("ބަދަލުތައް ސޭވްވެއްޖެ!");
+        // Use standard URL redirection for saving (form submit style)
+        // This is the most reliable way when CORS is an issue
+        const formData = new URLSearchParams();
+        formData.append('action', 'save');
+        formData.append('mode', currentMode);
+        formData.append('item', item);
+        formData.append('updates', JSON.stringify(updates));
+
+        const finalUrl = `${API_URL}?${formData.toString()}`;
+        
+        // We use an image request or a hidden script to trigger the URL without leaving the page
+        const trigger = new Image();
+        trigger.src = finalUrl;
+        
+        // Since we can't easily get a success response from a cross-origin GET, 
+        // we wait a moment and assume it sent.
+        setTimeout(() => {
+            alert("ބަދަލުތައް ސޭވް ކުރުމަށް ފޮނުވިއްޖެ. ޝީޓަށް ބަދަލު އަންނަން ކުޑަ ވަގުތުކޮޅެއް ނަގާފާނެ.");
             btn.disabled = false;
             btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
-            delete window[callbackName];
-        };
-
-        const payload = {
-            action: 'save',
-            mode: currentMode,
-            item: item,
-            updates: JSON.stringify(updates),
-            callback: callbackName
-        };
-
-        const queryString = new URLSearchParams(payload).toString();
-        const script = document.createElement('script');
-        script.src = `${API_URL}?${queryString}&t=${Date.now()}`;
-        
-        // Error handling for the script tag
-        script.onerror = () => {
-            // Even if it errors (due to no valid script response), 
-            // the data usually reaches the server if it's a GET request.
-            setTimeout(() => {
-                alert("ބަދަލުތައް ފޮނުވިއްޖެ. ޝީޓް ޗެކްކޮށްލައްވާ.");
-                btn.disabled = false;
-                btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
-            }, 2000);
-        };
-
-        document.body.appendChild(script);
+            loadData(); // Reload to see if changes are reflected
+        }, 3000);
     }
 
     function searchStudent() {
@@ -325,12 +314,10 @@
                 document.getElementById('studentResults').style.display = 'block';
                 let html = "<thead><tr><th>ބައި</th><th>ނަތީޖާ</th></tr></thead><tbody>";
                 
-                // Show relevant data based on available columns
-                const items = currentMode === 'work' ? 45 : 10;
                 const prefix = currentMode === 'work' ? 'Week' : (currentMode === 'test' ? 'Test' : 'CA');
-                
-                for(let i=1; i<=items; i++) { 
-                    if(s[prefix+i]) html += `<tr><td>${prefix} ${i}</td><td>${s[prefix+i]}</td></tr>`; 
+                for(let i=1; i<=45; i++) { 
+                    let key = prefix + i;
+                    if(s[key]) html += `<tr><td>${prefix} ${i}</td><td>${s[key]}</td></tr>`; 
                 }
                 document.getElementById('resultsTable').innerHTML = html + "</tbody>";
                 window.scrollTo({ top: document.getElementById('studentResults').offsetTop - 20, behavior: 'smooth' });
