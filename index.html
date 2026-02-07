@@ -2,406 +2,321 @@
 <html lang="dv" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>އިސްލާމް ޕޯޓަލް</title>
     <style>
         @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
-        @font-face { font-family: 'MV Waheed'; src: local('MV Waheed'), url('https://fonts.cdnfonts.com/s/73114/MV_Waheed.woff') format('woff'); }
-        
-        * { font-family: "Faruma", sans-serif; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
-        body { background-color: #f3f4f6; margin: 0; padding: 10px; text-align: right; color: #333; }
-        
-        .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); min-height: 90vh; }
-        
-        h1 { color: #00897b; text-align: center; font-family: "MV Waheed"; margin-bottom: 25px; font-size: 1.8rem; }
-        
-        /* Modern Tabs */
-        .tabs { display: flex; background: #e0f2f1; padding: 5px; border-radius: 12px; margin-bottom: 20px; }
-        .tab-btn { flex: 1; padding: 12px; border: none; background: none; cursor: pointer; font-weight: bold; font-size: 16px; color: #00695c; border-radius: 8px; transition: 0.3s; }
-        .tab-btn.active { background: #fff; color: #004d40; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-
-        /* Login Card */
-        .login-card { text-align: center; padding: 40px 20px; background: #fafafa; border-radius: 12px; border: 1px dashed #ccc; }
-        .login-input { padding: 12px; font-size: 16px; border: 1px solid #ddd; border-radius: 8px; width: 200px; text-align: center; margin-bottom: 10px; }
-
-        /* Controls Area */
-        .controls { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; background: #f5f5f5; padding: 15px; border-radius: 12px; }
-        .control-row { display: flex; gap: 10px; align-items: center; justify-content: space-between; }
-        select { padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 14px; background: white; flex: 1; }
-        
-        /* Pills for Mode Selection */
-        .mode-pills { display: flex; gap: 5px; background: #fff; padding: 5px; border-radius: 25px; border: 1px solid #eee; display: inline-flex; }
-        .mode-btn { padding: 8px 15px; border: none; background: none; cursor: pointer; border-radius: 20px; font-size: 13px; }
-        .mode-btn.active { background: #00897b; color: white; }
-
-        /* Table Styling */
-        .table-wrap { overflow-x: auto; border: 1px solid #eee; border-radius: 10px; background: white; max-height: 65vh; }
-        table { width: 100%; border-collapse: collapse; min-width: 700px; }
-        th { background: #00897b; color: white; padding: 12px; position: sticky; top: 0; z-index: 10; font-size: 14px; }
-        td { padding: 8px; border-bottom: 1px solid #f0f0f0; text-align: center; vertical-align: middle; }
-        tr:nth-child(even) { background-color: #fafafa; }
-        
-        /* Inputs in Table */
-        .v-input { width: 100%; padding: 8px; border: 2px solid #b2dfdb; border-radius: 6px; text-align: center; font-weight: bold; font-size: 15px; }
-        .v-input:focus { border-color: #00897b; outline: none; background: #e0f2f1; }
-        .n-input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; }
-
-        /* Grade Badges */
-        .badge { padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 12px; color: white; display: inline-block; min-width: 30px; }
-        .bg-A-star { background: #ffd700; color: #333; }
-        .bg-A { background: #43a047; }
-        .bg-B { background: #1e88e5; }
-        .bg-C { background: #fb8c00; }
-        .bg-F { background: #e53935; }
-
-        /* Save Button */
-        .fab-save { 
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: #2e7d32; color: white; padding: 12px 30px; 
-            border-radius: 30px; border: none; font-size: 16px; font-weight: bold; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer; z-index: 100;
-            display: flex; align-items: center; gap: 10px;
-        }
-        .fab-save:disabled { background: #9e9e9e; cursor: wait; }
-
-        .loader { border: 3px solid #fff; border-top: 3px solid rgba(255,255,255,0.3); border-radius: 50%; width: 18px; height: 18px; animation: spin 1s linear infinite; }
-        .loader-dark { border: 3px solid #00897b; border-top: 3px solid transparent; }
+        * { font-family: "Faruma", sans-serif; box-sizing: border-box; }
+        body { background-color: #f0f4f8; margin: 0; padding: 10px; text-align: right; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h1 { color: #00796b; text-align: center; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 12px; border: none; background: #eee; cursor: pointer; border-radius: 8px; font-weight: bold; }
+        .tab-btn.active { background: #00796b; color: white; }
+        .card { border: 1px solid #ddd; padding: 15px; border-radius: 10px; margin-bottom: 15px; background: #fdfdfd; }
+        select, input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; text-align: center; font-size: 16px; }
+        .btn { width: 100%; padding: 14px; background: #00796b; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; }
+        .btn:disabled { background: #ccc; }
+        .table-container { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 10px; border: 1px solid #eee; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th, td { border-bottom: 1px solid #eee; padding: 12px; text-align: center; }
+        th { background: #f1f1f1; color: #00796b; font-size: 14px; }
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #00796b; border-radius: 50%; width: 25px; height: 25px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* Student Card */
-        .st-card { background: white; border: 1px solid #eee; border-radius: 12px; padding: 15px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
-        .st-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px; }
-        .st-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #eee; font-size: 14px; }
+        .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .label { font-size: 12px; color: #666; margin-bottom: -5px; display: block; }
+        
+        /* Parent View Specific Styles */
+        .st-header { border-bottom: 2px solid #00796b; margin-bottom: 15px; padding-bottom: 10px; }
+        .st-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #eee; align-items: center; }
+        .st-row:last-child { border-bottom: none; }
+        .grade-badge { padding: 4px 8px; border-radius: 5px; color: white; font-size: 12px; font-weight: bold; }
+        .g-A-star { background: #ffd700; color: black; }
+        .g-A { background: #43a047; }
+        .g-B { background: #1e88e5; }
+        .g-C { background: #fb8c00; }
+        .g-Fail { background: #e53935; }
+        .cat-title { margin: 20px 0 10px; color: #00796b; font-size: 16px; font-weight: bold; background: #e0f2f1; padding: 8px; border-radius: 5px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>🌙 އިސްލާމް ޕޯޓަލް</h1>
-
     <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('parent')">ބެލެނިވެރިން</button>
-        <button class="tab-btn" onclick="switchTab('teacher')">މުދައްރިސުން</button>
+        <button class="tab-btn active" onclick="setTab('parent')">ބެލެނިވެރިން</button>
+        <button class="tab-btn" onclick="setTab('teacher')">މުދައްރިސުން</button>
     </div>
 
-    <!-- PARENT VIEW -->
-    <div id="viewParent">
-        <div style="text-align: center; margin-bottom: 20px;">
-            <input type="number" id="stIdx" placeholder="އިންޑެކްސް ނަންބަރު" class="login-input" style="width: 100%; max-width: 300px;">
-            <button onclick="findStudent()" style="padding: 12px 25px; background: #00897b; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">ބަލާލުމަށް</button>
+    <!-- Parent View -->
+    <div id="parentView">
+        <div class="card">
+            <input type="number" id="pIdx" placeholder="އިންޑެކްސް ނަންބަރު">
+            <button class="btn" id="pBtn" onclick="searchStudent()">މަޢުލޫމާތު ބަލާ</button>
         </div>
-        <div id="parentResults"></div>
+        <div id="pRes" class="card" style="display:none;"></div>
     </div>
 
-    <!-- TEACHER VIEW -->
-    <div id="viewTeacher" style="display: none;">
-        <div id="loginSection" class="login-card">
-            <h3>މުދައްރިސުންގެ ލޮގިން</h3>
-            <input type="password" id="tPass" class="login-input" placeholder="ޕާސްވޯޑް">
-            <br>
-            <button onclick="teacherLogin()" style="padding: 10px 30px; background: #00897b; color: white; border: none; border-radius: 5px; cursor: pointer;">ލޮގިން</button>
+    <!-- Teacher View -->
+    <div id="teacherView" style="display:none;">
+        <div id="loginArea" class="card">
+            <input type="password" id="pass" placeholder="ޕާސްވޯޑް">
+            <button class="btn" onclick="login()">ލޮގިން</button>
         </div>
+        <div id="teacherPanel" style="display:none;">
+            <div class="card">
+                <span class="label">ބައި:</span>
+                <select id="colSelect" onchange="renderTeacherTable()">
+                    <optgroup label="Unit Tests">
+                        <option value="Unit Test 1">Unit Test 1</option>
+                        <option value="Unit Test 2">Unit Test 2</option>
+                        <option value="Unit Test 3">Unit Test 3</option>
+                        <option value="Unit Test 4">Unit Test 4</option>
+                        <option value="Unit Test 5">Unit Test 5</option>
+                        <option value="Unit Test 6">Unit Test 6</option>
+                        <option value="Unit Test 7">Unit Test 7</option>
+                        <option value="Unit Test 8">Unit Test 8</option>
+                        <option value="Unit Test 9">Unit Test 9</option>
+                        <option value="Unit Test 10">Unit Test 10</option>
+                    </optgroup>
+                    <optgroup label="Continuous Assessment">
+                        <option value="CA1">CA1</option>
+                        <option value="CA2">CA2</option>
+                        <option value="CA3">CA3</option>
+                        <option value="CA4">CA4</option>
+                    </optgroup>
+                    <optgroup label="Weeks">
+                        <option value="Week1">Week 1</option>
+                        <option value="Week2">Week 2</option>
+                        <option value="Week3">Week 3</option>
+                        <option value="Week4">Week 4</option>
+                        <option value="Week5">Week 5</option>
+                    </optgroup>
+                </select>
 
-        <div id="dashboard" style="display: none;">
-            <div class="controls">
-                <div class="control-row">
-                    <div class="mode-pills">
-                        <button class="mode-btn active" onclick="setMode('week')" id="btn-week">ހަފްތާ</button>
-                        <button class="mode-btn" onclick="setMode('unit')" id="btn-unit">ޔުނިޓް</button>
-                        <button class="mode-btn" onclick="setMode('ca')" id="btn-ca">CA</button>
+                <div class="filter-grid">
+                    <div>
+                        <span class="label">ގްރޭޑް:</span>
+                        <select id="gradeFilter" onchange="renderTeacherTable()">
+                            <option value="All">ހުރިހާ ގްރޭޑެއް</option>
+                        </select>
                     </div>
-                    <button onclick="refreshData()" style="background:none; border:none; color:#00695c; cursor:pointer;">🔄 Refresh</button>
+                    <div>
+                        <span class="label">ކްލާސް:</span>
+                        <select id="classFilter" onchange="renderTeacherTable()">
+                            <option value="All">ހުރިހާ ކްލާހެއް</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="margin-top:10px; display:flex; align-items:center; gap:10px;" id="totalDiv">
+                    <span class="label">ޖުމްލަ މާކްސް:</span>
+                    <input type="number" id="totalMarks" value="20" style="width:60px; padding:5px; margin:0;" oninput="renderTeacherTable()">
                 </div>
                 
-                <div class="control-row">
-                    <select id="itemSelect" onchange="renderTable()"></select>
-                    <select id="gradeFilter" onchange="renderTable()" style="max-width: 100px;">
-                        <option value="All">All Grd</option>
-                    </select>
-                </div>
-
-                <div id="totalMarksDiv" style="display:none; text-align:left;">
-                    <small>Out of:</small> <input type="number" id="totalMarks" value="20" style="width:60px; padding:5px; text-align:center; border:1px solid #ccc; border-radius:5px;" oninput="renderTable()">
-                </div>
+                <button class="btn" style="background:#607d8b; margin-top:10px;" onclick="fetchData()">Refresh 🔄</button>
             </div>
-
-            <div id="loadingMsg" style="text-align:center; padding:20px; display:none;">
-                <div class="loader loader-dark"></div> ލޯޑްވަނީ...
-            </div>
-
+            
             <div class="table-container">
-                <table id="teacherTable">
+                <table>
                     <thead>
                         <tr>
-                            <th style="width:60px">Index</th>
-                            <th>Name</th>
-                            <th id="thVal">Status/Marks</th>
-                            <th id="thGrade" style="width:60px; display:none;">%</th>
-                            <th>Note</th>
+                            <th style="width:70px;">Index</th>
+                            <th>ނަން</th>
+                            <th id="valHead">މާކްސް / ހާލަތު</th>
+                            <th id="thG" style="display:none;">%</th>
                         </tr>
                     </thead>
-                    <tbody id="tableBody"></tbody>
+                    <tbody id="tBody"></tbody>
                 </table>
             </div>
-
-            <button id="saveBtn" class="fab-save" onclick="saveChanges()">
-                <span>💾 ސޭވްކުރޭ</span>
-            </button>
+            <button class="btn" id="sBtn" style="background:#2e7d32; margin-top:15px;" onclick="saveTeacherData()">ހުރިހާ ބަދަލެއް ސޭވްކުރޭ</button>
         </div>
     </div>
 </div>
 
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbzuQSGE6LGgD48ILvy8Cpu-xYLgPdprP2p8_aA12lc739LCYaxw05S7w1BbnurID0CL/exec";
-    
+    // މުހިންމު: ތިޔަބޭފުޅާގެ Web App URL
+    const API_URL = "https://script.google.com/macros/s/AKfycbwtH5H6xdj5-7x1X1xWBbIQrFXsxHN0E4GvFKtS43raYqD6ga7JJLrx-Y5Ja5I2EVO4/exec";
     let db = [];
-    let currentMode = 'week';
-    let dataCache = {};
 
-    function switchTab(tab) {
-        document.getElementById('viewParent').style.display = tab === 'parent' ? 'block' : 'none';
-        document.getElementById('viewTeacher').style.display = tab === 'teacher' ? 'block' : 'none';
-        document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', (tab === 'parent' ? i === 0 : i === 1)));
+    function setTab(t) {
+        document.getElementById('parentView').style.display = t==='parent'?'block':'none';
+        document.getElementById('teacherView').style.display = t==='teacher'?'block':'none';
+        document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', (i===0 && t==='parent') || (i===1 && t==='teacher')));
     }
 
-    function teacherLogin() {
-        if(document.getElementById('tPass').value === "123") {
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-            refreshData();
-        } else alert("ޕާސްވޯޑް ނުބައި!");
+    function login() {
+        if(document.getElementById('pass').value === "123") {
+            document.getElementById('loginArea').style.display='none';
+            document.getElementById('teacherPanel').style.display='block';
+            fetchData();
+        } else alert("ކުށް ޕާސްވޯޑެއް!");
     }
 
-    // ޑޭޓާ ފެޗްކުރުން (JSONP) - Always unique timestamp to avoid cache
-    function refreshData() {
-        document.getElementById('loadingMsg').style.display = 'block';
-        document.getElementById('tableBody').innerHTML = '';
-        
-        // Random number to force bypass cache
-        const uniqueId = Date.now() + "_" + Math.floor(Math.random() * 1000);
-        const cb = 'cb_' + uniqueId;
-        
-        window[cb] = (data) => {
-            db = data;
-            populateFilters();
-            setMode(currentMode); // Re-render
-            document.getElementById('loadingMsg').style.display = 'none';
-            delete window[cb];
-            const s = document.getElementById('script_' + uniqueId);
-            if(s) s.remove();
+    function fetchData() {
+        document.getElementById('tBody').innerHTML = '<tr><td colspan="4"><div class="loader"></div> ލޯޑް ވަނީ...</td></tr>';
+        const cb = 'jsonp_' + Date.now();
+        window[cb] = (data) => { 
+            db = data; 
+            updateFilters();
+            renderTeacherTable(); 
+            delete window[cb]; 
         };
-        
-        const script = document.createElement('script');
-        script.id = 'script_' + uniqueId;
-        // Added t parameter with unique timestamp
-        script.src = `${API_URL}?prefix=${cb}&action=read&t=${uniqueId}`;
-        document.body.appendChild(script);
+        const s = document.createElement('script');
+        s.src = `${API_URL}?prefix=${cb}&action=read&t=${Date.now()}`;
+        document.body.appendChild(s);
     }
 
-    function setMode(mode) {
-        currentMode = mode;
-        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn-' + mode).classList.add('active');
-
-        // Populate Items Dropdown
-        const select = document.getElementById('itemSelect');
-        let html = '';
-        if(mode === 'week') {
-            for(let i=1; i<=45; i++) html += `<option value="Week${i}">Week ${i}</option>`;
-            document.getElementById('totalMarksDiv').style.display = 'none';
-            document.getElementById('thVal').innerText = "Status";
-            document.getElementById('thGrade').style.display = "none";
-        } else if(mode === 'unit') {
-            for(let i=1; i<=10; i++) html += `<option value="Unit Test ${i}">Unit Test ${i}</option>`;
-            document.getElementById('totalMarksDiv').style.display = 'block';
-            document.getElementById('thVal').innerText = "Marks";
-            document.getElementById('thGrade').style.display = "table-cell";
-        } else {
-            for(let i=1; i<=4; i++) html += `<option value="CA${i}">CA ${i}</option>`;
-            document.getElementById('totalMarksDiv').style.display = 'block';
-            document.getElementById('thVal').innerText = "Marks";
-            document.getElementById('thGrade').style.display = "table-cell";
-        }
-        select.innerHTML = html;
-        renderTable();
-    }
-
-    function populateFilters() {
-        if(!db.length) return;
+    function updateFilters() {
         const grades = [...new Set(db.map(s => s.Grade))].filter(Boolean).sort();
-        let html = '<option value="All">All Grades</option>';
-        grades.forEach(g => html += `<option value="${g}">${g}</option>`);
-        document.getElementById('gradeFilter').innerHTML = html;
-    }
-
-    // ޑޭޓާ ހޯދުމަށް އެހީވެދޭ ފަންކްޝަން (Normalization)
-    function findVal(student, key) {
-        // 1. Try exact match
-        if (student[key] !== undefined) return student[key];
+        const classes = [...new Set(db.map(s => s.Class))].filter(Boolean).sort();
         
-        // 2. Try lowercase no space match (e.g. 'Week 1' -> 'week1')
-        let simpleKey = key.toLowerCase().replace(/\s+/g, '');
-        let keys = Object.keys(student);
-        for(let k of keys) {
-            if(k.toLowerCase().replace(/\s+/g, '') === simpleKey) return student[k];
-        }
-        return "";
-    }
+        let gHtml = '<option value="All">ހުރިހާ ގްރޭޑެއް</option>';
+        grades.forEach(g => gHtml += `<option value="${g}">ގްރޭޑް ${g}</option>`);
+        document.getElementById('gradeFilter').innerHTML = gHtml;
 
-    function renderTable() {
-        const tbody = document.getElementById('tableBody');
-        const item = document.getElementById('itemSelect').value;
-        const gradeFilter = document.getElementById('gradeFilter').value;
-        const total = document.getElementById('totalMarks').value || 100;
-        
-        // Determine Note Key
-        let num = item.match(/\d+/)[0];
-        let noteKey = currentMode === 'week' ? 'Note'+num : (currentMode === 'unit' ? 'TNote'+num : 'CANote'+num);
-
-        let filtered = db.filter(s => gradeFilter === 'All' || s.Grade == gradeFilter);
-        
-        if(!filtered.length) {
-            tbody.innerHTML = '<tr><td colspan="5">No data</td></tr>';
-            return;
-        }
-
-        tbody.innerHTML = filtered.map(s => {
-            let val = findVal(s, item); // Using helper to find value
-            let note = findVal(s, noteKey);
-            
-            let inputField;
-            let gradeDisplay = '';
-
-            if(currentMode === 'week') {
-                inputField = `
-                    <select class="v-in" data-idx="${s.Index}">
-                        <option value="">-</option>
-                        <option value="ނިމިފައި" ${val === 'ނިމިފައި' ? 'selected' : ''}>ނިމިފައި</option>
-                        <option value="ނުނިމޭ" ${val === 'ނުނިމޭ' ? 'selected' : ''}>ނުނިމޭ</option>
-                        <option value="ފުރިހަމައެއް ނުވޭ" ${val === 'ފުރިހަމައެއް ނުވޭ' ? 'selected' : ''}>ފުރިހަމައެއް ނުވޭ</option>
-                    </select>`;
-            } else {
-                inputField = `<input type="number" class="v-in" data-idx="${s.Index}" value="${val}" oninput="calcRow(this, ${total})">`;
-                let g = calcGrade(val, total);
-                gradeDisplay = val ? `<span class="badge ${g.cls}">${g.lbl}</span>` : '';
-            }
-
-            return `<tr>
-                <td>${s.Index}</td>
-                <td style="text-align:right">${s.Name} <br><small style="color:#888">${s.Grade} ${s.Class}</small></td>
-                <td>${inputField}</td>
-                ${currentMode !== 'week' ? `<td id="g-${s.Index}">${gradeDisplay}</td>` : ''}
-                <td><input type="text" class="n-in" value="${note}" placeholder="..."></td>
-            </tr>`;
-        }).join('');
+        let cHtml = '<option value="All">ހުރިހާ ކްލާހެއް</option>';
+        classes.forEach(c => cHtml += `<option value="${c}">${c}</option>`);
+        document.getElementById('classFilter').innerHTML = cHtml;
     }
 
     function calcGrade(m, t) {
-        if(!m || isNaN(m)) return { lbl:'', cls:'' };
         let p = (m/t)*100;
-        if(p>=90) return {lbl:'A*', cls:'bg-A-star'};
-        if(p>=80) return {lbl:'A', cls:'bg-A'};
-        if(p>=70) return {lbl:'B', cls:'bg-B'};
-        if(p>=60) return {lbl:'C', cls:'bg-C'};
-        return {lbl:'Fail', cls:'bg-F'};
+        if(p>=90) return {lbl:'A*', cls:'g-A-star', perc:Math.round(p)+'%'};
+        if(p>=80) return {lbl:'A', cls:'g-A', perc:Math.round(p)+'%'};
+        if(p>=70) return {lbl:'B', cls:'g-B', perc:Math.round(p)+'%'};
+        if(p>=60) return {lbl:'C', cls:'g-C', perc:Math.round(p)+'%'};
+        return {lbl:'Fail', cls:'g-Fail', perc:Math.round(p)+'%'};
     }
 
-    function calcRow(el, t) {
+    function findVal(student, key) {
+        let cleanKey = key.toLowerCase().replace(/\s/g, '');
+        return student[key] || student[cleanKey] || "";
+    }
+
+    function renderTeacherTable() {
+        const col = document.getElementById('colSelect').value;
+        const selGrade = document.getElementById('gradeFilter').value;
+        const selClass = document.getElementById('classFilter').value;
+        const total = document.getElementById('totalMarks').value || 100;
+        
+        // Hide total marks input for Weeks
+        const isWeek = col.startsWith('Week');
+        document.getElementById('totalDiv').style.display = isWeek ? 'none' : 'flex';
+        document.getElementById('thG').style.display = isWeek ? 'none' : 'table-cell';
+        document.getElementById('valHead').innerText = isWeek ? 'ހާލަތު' : 'މާކްސް';
+
+        let filtered = db;
+        if(selGrade !== 'All') filtered = filtered.filter(s => String(s.Grade) === String(selGrade));
+        if(selClass !== 'All') filtered = filtered.filter(s => String(s.Class) === String(selClass));
+
+        let num = col.match(/\d+/)[0];
+        let noteKey = isWeek ? 'Note'+num : (col.startsWith('Unit') ? 'TNote'+num : 'CANote'+num);
+
+        let html = "";
+        filtered.forEach(s => {
+            let val = findVal(s, col);
+            let n = findVal(s, noteKey);
+            
+            let input = isWeek 
+                ? `<select class="v-in" data-idx="${s.Index}"><option value="">-</option><option value="ނިމިފައި" ${val==='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${val==='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމަ ނުވޭ" ${val==='ފުރިހަމަ ނުވޭ'?'selected':''}>ފުރިހަމަ ނުވޭ</option></select>`
+                : `<input type="number" class="v-in" data-idx="${s.Index}" value="${val}" style="width:60px" oninput="updRow(this, ${total})">`;
+            
+            let gradeHtml = "";
+            if(!isWeek && val) {
+                let g = calcGrade(val, total);
+                gradeHtml = `<span class="grade-badge ${g.cls}">${g.lbl} (${g.perc})</span>`;
+            }
+
+            html += `<tr><td>${s.Index}</td><td style="text-align:right">${s.Name}<br><small style="color:#888">ގްރޭޑް ${s.Grade} ${s.Class}</small></td><td>${input} <div id="g-${s.Index}">${gradeHtml}</div></td>${!isWeek?`<td></td>`:''}<td><input type="text" class="n-in" data-idx="${s.Index}" value="${n}" placeholder="ނޯޓް"></td></tr>`;
+        });
+        document.getElementById('tBody').innerHTML = html || "<tr><td colspan='4'>ޑޭޓާ އެއް ނެތް</td></tr>";
+    }
+
+    function updRow(el, t) {
         let g = calcGrade(el.value, t);
-        document.getElementById('g-'+el.dataset.idx).innerHTML = `<span class="badge ${g.cls}">${g.lbl}</span>`;
+        document.getElementById('g-'+el.dataset.idx).innerHTML = el.value ? `<span class="grade-badge ${g.cls}">${g.lbl} (${g.perc})</span>` : '';
     }
 
-    function saveChanges() {
-        const btn = document.getElementById('saveBtn');
-        const item = document.getElementById('itemSelect').value;
+    async function saveTeacherData() {
+        const btn = document.getElementById('sBtn');
+        const col = document.getElementById('colSelect').value;
         const total = document.getElementById('totalMarks').value;
+        const isWeek = col.startsWith('Week');
+        const mode = isWeek ? 'work' : (col.startsWith('Unit') ? 'test' : 'ca');
+
+        btn.disabled = true; btn.innerText = "ސޭވް ވަނީ...";
         
-        btn.disabled = true;
-        btn.innerHTML = '<div class="loader"></div> ސޭވް ވަނީ...';
-
-        const inputs = document.querySelectorAll('.v-in');
-        const notes = document.querySelectorAll('.n-in');
-        let updates = [];
-
-        inputs.forEach((inp, i) => {
-            updates.push({
-                index: inp.dataset.idx,
-                val: inp.value,
-                note: notes[i].value
-            });
+        const updates = Array.from(document.querySelectorAll('.v-in')).map((el, i) => {
+            let obj = {
+                index: el.dataset.idx,
+                val: el.value,
+                note: document.querySelectorAll('.n-in')[i].value
+            };
+            // Add auto-calculated grade for tests
+            if(!isWeek && el.value) {
+                let g = calcGrade(el.value, total);
+                obj.grade = g.lbl;
+            }
+            return obj;
         });
 
-        const payload = {
-            action: 'save',
-            item: item,
-            mode: currentMode,
-            updates: JSON.stringify(updates)
-        };
+        const params = new URLSearchParams({ action:'save', item:col, mode:mode, updates:JSON.stringify(updates) });
         
-        const params = new URLSearchParams(payload);
-
-        // Fetch with no-cors to post data and force cache bypass
-        fetch(`${API_URL}?${params}&t=${Date.now()}`, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-        }).then(() => {
-            setTimeout(() => {
-                alert("ބަދަލުތައް ސޭވްވެއްޖެ!");
-                btn.disabled = false;
-                btn.innerHTML = "<span>💾 ސޭވްކުރޭ</span>";
-                refreshData(); // Force reload to see changes
-            }, 1500);
-        }).catch(e => {
-            alert("މައްސަލައެއް ދިމާވެއްޖެ");
-            btn.disabled = false;
-        });
+        try {
+            await fetch(`${API_URL}?${params.toString()}`, { mode:'no-cors' });
+            alert("ބަދަލުތައް ފޮނުވިއްޖެ!");
+            setTimeout(fetchData, 1500);
+        } catch(e) { alert("މައްސަލައެއް ދިމާވެއްޖެ"); }
+        btn.disabled = false; btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
     }
 
     function searchStudent() {
-        const idx = document.getElementById('stIdx').value;
+        const idx = document.getElementById('pIdx').value;
         if(!idx) return;
-        document.getElementById('parentResults').innerHTML = '<div style="text-align:center"><div class="loader loader-dark"></div></div>';
+        const res = document.getElementById('pRes');
+        res.innerHTML = '<div style="text-align:center"><div class="loader"></div></div>'; res.style.display = 'block';
 
-        const uniqueId = Date.now() + "_" + Math.floor(Math.random() * 1000);
-        const cb = 'find_' + uniqueId;
-        
+        const cb = 'src_' + Date.now();
         window[cb] = (data) => {
             const s = data.find(x => String(x.Index) === String(idx));
             if(s) {
-                let html = `<div class="st-card"><div class="st-header"><div><h2>${s.Name}</h2><small>${s.Grade} ${s.Class}</small></div><h1>${s.Index}</h1></div>`;
+                let h = `<div class="st-header"><div><h2>${s.Name}</h2><p>ގްރޭޑް ${s.Grade} ${s.Class}</p></div><h1>${s.Index}</h1></div>`;
                 
-                // Show Weeks
-                html += `<h4>ހަފްތާގެ މަސައްކަތް</h4>`;
+                // Weeks
+                h += `<div class="cat-title">ހަފްތާގެ މަސައްކަތް</div>`;
                 for(let i=1; i<=45; i++) {
-                    let v = findVal(s, 'Week'+i);
-                    let n = findVal(s, 'Note'+i);
-                    if(v) html += `<div class="st-row"><span>Week ${i}</span><span><b>${v}</b> <br><small style="color:#666">${n}</small></span></div>`;
+                    let v = findVal(s, 'Week'+i); let n = findVal(s, 'Note'+i);
+                    if(v) h += `<div class="st-row"><span>Week ${i}</span><div style="text-align:right"><b>${v}</b><br><small>${n}</small></div></div>`;
                 }
 
-                // Show Tests
-                html += `<h4>ޔުނިޓް ޓެސްޓް</h4>`;
+                // Unit Tests
+                h += `<div class="cat-title">ޔުނިޓް ޓެސްޓް</div>`;
                 for(let i=1; i<=10; i++) {
-                    let v = findVal(s, 'Unit Test '+i);
-                    let n = findVal(s, 'TNote'+i); // Note for test
-                    if(v) html += `<div class="st-row"><span>Test ${i}</span><span><b>${v}</b> <br><small style="color:#666">${n}</small></span></div>`;
+                    let v = findVal(s, 'Unit Test '+i); 
+                    // Try to find grade from sheet, or calculate if needed (requires total marks knowledge which we don't have here, so rely on saved grade)
+                    let g = findVal(s, 'Grade Unit Test '+i) || "";
+                    let n = findVal(s, 'TNote'+i);
+                    if(v) h += `<div class="st-row"><span>Test ${i}</span><div style="text-align:right"><b>${v}</b> ${g?`<span class="grade-badge ${getGradeClass(g)}">${g}</span>`:''}<br><small>${n}</small></div></div>`;
                 }
 
-                document.getElementById('parentResults').innerHTML = html;
-            } else {
-                document.getElementById('parentResults').innerHTML = "<p style='text-align:center; color:red'>ދަރިވަރު ނުފެނުނު</p>";
-            }
+                // CA
+                h += `<div class="cat-title">CA (އެސެސްމަންޓް)</div>`;
+                for(let i=1; i<=4; i++) {
+                    let v = findVal(s, 'CA'+i);
+                    let g = findVal(s, 'Grade CA'+i) || ""; 
+                    let n = findVal(s, 'CANote'+i);
+                    if(v) h += `<div class="st-row"><span>CA ${i}</span><div style="text-align:right"><b>${v}</b> ${g?`<span class="grade-badge ${getGradeClass(g)}">${g}</span>`:''}<br><small>${n}</small></div></div>`;
+                }
+
+                res.innerHTML = h;
+            } else res.innerHTML = "<p style='color:red'>ދަރިވަރު ނުފެނުނު!</p>";
             delete window[cb];
-            const sEl = document.getElementById('script_' + uniqueId);
-            if(sEl) sEl.remove();
         };
-        const script = document.createElement('script');
-        script.id = 'script_' + uniqueId;
-        script.src = `${API_URL}?prefix=${cb}&action=read&t=${uniqueId}`;
-        document.body.appendChild(script);
+        const s = document.createElement('script');
+        s.src = `${API_URL}?prefix=${cb}&action=read&t=${Date.now()}`;
+        document.body.appendChild(s);
     }
 </script>
-
 </body>
 </html>
