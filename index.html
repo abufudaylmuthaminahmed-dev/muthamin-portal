@@ -51,7 +51,7 @@
     <!-- Parent View -->
     <div id="parentView">
         <div class="card">
-            <input type="number" id="pIdx" placeholder="އިންޑެކްސް ނަންބަރު">
+            <input type="number" id="pIdx" placeholder="އިންޑެކްސް ނަންބަރު" inputmode="numeric">
             <button class="btn" id="pBtn" onclick="searchStudent()">މަޢުލޫމާތު ބަލާ</button>
         </div>
         <div id="pRes" class="card" style="display:none;"></div>
@@ -124,6 +124,7 @@
                             <th>ނަން</th>
                             <th id="valHead">މާކްސް / ހާލަތު</th>
                             <th id="thG" style="display:none;">%</th>
+                            <th>ނޯޓް</th>
                         </tr>
                     </thead>
                     <tbody id="tBody"></tbody>
@@ -135,9 +136,10 @@
 </div>
 
 <script>
-    // މުހިންމު: ތިޔަބޭފުޅާގެ Web App URL
+    // މުހިންމު: ތިރީގައިވާ URL އަކީ ތިޔަބޭފުޅާގެ Google Script URL އަށް ބަދަލުކުރަންވާނެއެވެ.
     const API_URL = "https://script.google.com/macros/s/AKfycbwtH5H6xdj5-7x1X1xWBbIQrFXsxHN0E4GvFKtS43raYqD6ga7JJLrx-Y5Ja5I2EVO4/exec";
     let db = [];
+    let mode = 'unit'; // Default to unit test
 
     function setTab(t) {
         document.getElementById('parentView').style.display = t==='parent'?'block':'none';
@@ -154,7 +156,7 @@
     }
 
     function fetchData() {
-        document.getElementById('tBody').innerHTML = '<tr><td colspan="4"><div class="loader"></div> ލޯޑް ވަނީ...</td></tr>';
+        document.getElementById('tBody').innerHTML = '<tr><td colspan="5"><div class="loader"></div> ލޯޑް ވަނީ...</td></tr>';
         const cb = 'jsonp_' + Date.now();
         window[cb] = (data) => { 
             db = data; 
@@ -200,8 +202,11 @@
         const selClass = document.getElementById('classFilter').value;
         const total = document.getElementById('totalMarks').value || 100;
         
+        // Determine mode based on selection
+        mode = col.startsWith('Week') ? 'work' : (col.startsWith('Unit') ? 'unit' : 'ca');
+
         // Hide total marks input for Weeks
-        const isWeek = col.startsWith('Week');
+        const isWeek = mode === 'work';
         document.getElementById('totalDiv').style.display = isWeek ? 'none' : 'flex';
         document.getElementById('thG').style.display = isWeek ? 'none' : 'table-cell';
         document.getElementById('valHead').innerText = isWeek ? 'ހާލަތު' : 'މާކްސް';
@@ -211,7 +216,7 @@
         if(selClass !== 'All') filtered = filtered.filter(s => String(s.Class) === String(selClass));
 
         let num = col.match(/\d+/)[0];
-        let noteKey = isWeek ? 'Note'+num : (col.startsWith('Unit') ? 'TNote'+num : 'CANote'+num);
+        let noteKey = mode === 'work' ? 'Note'+num : (mode === 'unit' ? 'TNote'+num : 'CANote'+num);
 
         let html = "";
         filtered.forEach(s => {
@@ -219,7 +224,7 @@
             let n = findVal(s, noteKey);
             
             let input = isWeek 
-                ? `<select class="v-in" data-idx="${s.Index}"><option value="">-</option><option value="ނިމިފައި" ${val==='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${val==='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމަ ނުވޭ" ${val==='ފުރިހަމަ ނުވޭ'?'selected':''}>ފުރިހަމަ ނުވޭ</option></select>`
+                ? `<select class="v-in" data-idx="${s.Index}"><option value="">-</option><option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމަ ނުވޭ" ${val=='ފުރިހަމަ ނުވޭ'?'selected':''}>ފުރިހަމަ ނުވޭ</option></select>`
                 : `<input type="number" class="v-in" data-idx="${s.Index}" value="${val}" style="width:60px" oninput="updRow(this, ${total})">`;
             
             let gradeHtml = "";
@@ -228,9 +233,9 @@
                 gradeHtml = `<span class="grade-badge ${g.cls}">${g.lbl} (${g.perc})</span>`;
             }
 
-            html += `<tr><td>${s.Index}</td><td style="text-align:right">${s.Name}<br><small style="color:#888">ގްރޭޑް ${s.Grade} ${s.Class}</small></td><td>${input} <div id="g-${s.Index}">${gradeHtml}</div></td>${!isWeek?`<td></td>`:''}<td><input type="text" class="n-in" data-idx="${s.Index}" value="${n}" placeholder="ނޯޓް"></td></tr>`;
+            html += `<tr><td>${s.Index}</td><td style="text-align:right">${s.Name}<br><small style="color:#888">ގްރޭޑް ${s.Grade} ${s.Class}</small></td><td>${input} <span id="g-${s.Index}">${gradeHtml}</span></td>${!isWeek?`<td></td>`:''}<td><input type="text" class="n-in" data-idx="${s.Index}" value="${n}" placeholder="ނޯޓް"></td></tr>`;
         });
-        document.getElementById('tBody').innerHTML = html || "<tr><td colspan='4'>ޑޭޓާ އެއް ނެތް</td></tr>";
+        document.getElementById('tBody').innerHTML = html || "<tr><td colspan='5'>ޑޭޓާ އެއް ނެތް</td></tr>";
     }
 
     function updRow(el, t) {
@@ -242,9 +247,7 @@
         const btn = document.getElementById('sBtn');
         const col = document.getElementById('colSelect').value;
         const total = document.getElementById('totalMarks').value;
-        const isWeek = col.startsWith('Week');
-        const mode = isWeek ? 'work' : (col.startsWith('Unit') ? 'test' : 'ca');
-
+        
         btn.disabled = true; btn.innerText = "ސޭވް ވަނީ...";
         
         const updates = Array.from(document.querySelectorAll('.v-in')).map((el, i) => {
@@ -253,15 +256,19 @@
                 val: el.value,
                 note: document.querySelectorAll('.n-in')[i].value
             };
-            // Add auto-calculated grade for tests
-            if(!isWeek && el.value) {
+            if(mode !== 'work' && el.value) {
                 let g = calcGrade(el.value, total);
                 obj.grade = g.lbl;
             }
             return obj;
         });
 
-        const params = new URLSearchParams({ action:'save', item:col, mode:mode, updates:JSON.stringify(updates) });
+        const params = new URLSearchParams({ 
+            action: 'save', 
+            item: col, 
+            mode: mode, // work, unit, or ca
+            updates: JSON.stringify(updates) 
+        });
         
         try {
             await fetch(`${API_URL}?${params.toString()}`, { mode:'no-cors' });
@@ -275,7 +282,8 @@
         const idx = document.getElementById('pIdx').value;
         if(!idx) return;
         const res = document.getElementById('pRes');
-        res.innerHTML = '<div style="text-align:center"><div class="loader"></div></div>'; res.style.display = 'block';
+        res.innerHTML = '<div class="loader"></div>'; 
+        res.style.display = 'block';
 
         const cb = 'src_' + Date.now();
         window[cb] = (data) => {
@@ -286,31 +294,31 @@
                 // Weeks
                 h += `<div class="cat-title">ހަފްތާގެ މަސައްކަތް</div>`;
                 for(let i=1; i<=45; i++) {
-                    let v = findVal(s, 'Week'+i); let n = findVal(s, 'Note'+i);
-                    if(v) h += `<div class="st-row"><span>Week ${i}</span><div style="text-align:right"><b>${v}</b><br><small>${n}</small></div></div>`;
+                    let v = findVal(s, 'Week'+i); 
+                    let n = findVal(s, 'Note'+i);
+                    if(v) h += `<div class="st-row"><span>Week ${i}</span><div style="text-align:right"><b>${v}</b><br><small style="color:#666">${n}</small></div></div>`;
                 }
 
                 // Unit Tests
                 h += `<div class="cat-title">ޔުނިޓް ޓެސްޓް</div>`;
                 for(let i=1; i<=10; i++) {
                     let v = findVal(s, 'Unit Test '+i); 
-                    // Try to find grade from sheet, or calculate if needed (requires total marks knowledge which we don't have here, so rely on saved grade)
-                    let g = findVal(s, 'Grade Unit Test '+i) || "";
                     let n = findVal(s, 'TNote'+i);
-                    if(v) h += `<div class="st-row"><span>Test ${i}</span><div style="text-align:right"><b>${v}</b> ${g?`<span class="grade-badge ${getGradeClass(g)}">${g}</span>`:''}<br><small>${n}</small></div></div>`;
+                    // We don't have total marks here easily, so we show raw marks or saved grade if available
+                    // If you save Grade columns in sheet, you can fetch them.
+                    if(v) h += `<div class="st-row"><span>Test ${i}</span><div style="text-align:right"><b>${v}</b><br><small>${n}</small></div></div>`;
                 }
 
                 // CA
                 h += `<div class="cat-title">CA (އެސެސްމަންޓް)</div>`;
                 for(let i=1; i<=4; i++) {
                     let v = findVal(s, 'CA'+i);
-                    let g = findVal(s, 'Grade CA'+i) || ""; 
                     let n = findVal(s, 'CANote'+i);
-                    if(v) h += `<div class="st-row"><span>CA ${i}</span><div style="text-align:right"><b>${v}</b> ${g?`<span class="grade-badge ${getGradeClass(g)}">${g}</span>`:''}<br><small>${n}</small></div></div>`;
+                    if(v) h += `<div class="st-row"><span>CA ${i}</span><div style="text-align:right"><b>${v}</b><br><small>${n}</small></div></div>`;
                 }
 
-                res.innerHTML = h;
-            } else res.innerHTML = "<p style='color:red'>ދަރިވަރު ނުފެނުނު!</p>";
+                document.getElementById('pRes').innerHTML = h;
+            } else document.getElementById('pRes').innerHTML = "<p style='color:red'>ދަރިވަރު ނުފެނުނު</p>";
             delete window[cb];
         };
         const s = document.createElement('script');
