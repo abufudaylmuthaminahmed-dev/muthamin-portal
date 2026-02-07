@@ -7,8 +7,8 @@
     <style>
         @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
         * { font-family: "Faruma", sans-serif; box-sizing: border-box; }
-        body { background-color: #f0f4f8; margin: 0; padding: 10px; text-align: right; }
-        .container { max-width: 900px; margin: 0 auto; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        body { background-color: #f0f4f8; margin: 0; padding: 15px; text-align: right; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         h1 { color: #00796b; text-align: center; }
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
         .tab-btn { flex: 1; padding: 12px; border: none; background: #eee; cursor: pointer; border-radius: 8px; font-weight: bold; }
@@ -21,7 +21,10 @@
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th, td { border-bottom: 1px solid #eee; padding: 12px; text-align: center; }
         th { background: #f1f1f1; color: #00796b; font-size: 14px; }
-        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #00796b; border-radius: 50%; width: 25px; height: 25px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
+        .pills { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; }
+        .pill { padding: 8px 15px; background: #eee; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 13px; }
+        .pill.active { background: #00796b; color: white; }
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #00796b; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .label { font-size: 12px; color: #666; margin-bottom: -5px; display: block; }
@@ -37,6 +40,10 @@
         .g-C { background: #fb8c00; }
         .g-Fail { background: #e53935; }
         .cat-title { margin: 20px 0 10px; color: #00796b; font-size: 16px; font-weight: bold; background: #e0f2f1; padding: 8px; border-radius: 5px; }
+
+        /* Input styling for Teacher Table */
+        .v-in { font-weight: bold; border: 2px solid #b2dfdb; }
+        .v-in:focus { border-color: #00796b; outline: none; }
     </style>
 </head>
 <body>
@@ -48,16 +55,16 @@
         <button class="tab-btn" onclick="setTab('teacher')">މުދައްރިސުން</button>
     </div>
 
-    <!-- Parent View -->
+    <!-- ބެލެނިވެރިންގެ ބައި -->
     <div id="parentView">
         <div class="card">
             <input type="number" id="pIdx" placeholder="އިންޑެކްސް ނަންބަރު" inputmode="numeric">
-            <button class="btn" id="pBtn" onclick="searchStudent()">މަޢުލޫމާތު ބަލާ</button>
+            <button class="btn" onclick="searchStudent()">މަޢުލޫމާތު ބަލާ</button>
         </div>
         <div id="pRes" class="card" style="display:none;"></div>
     </div>
 
-    <!-- Teacher View -->
+    <!-- މުދައްރިސުންގެ ބައި -->
     <div id="teacherView" style="display:none;">
         <div id="loginArea" class="card">
             <input type="password" id="pass" placeholder="ޕާސްވޯޑް">
@@ -108,11 +115,12 @@
                         </select>
                     </div>
                 </div>
-                <div style="margin-top:10px; display:flex; align-items:center; gap:10px;" id="totalDiv">
-                    <span class="label">ޖުމްލަ މާކްސް:</span>
-                    <input type="number" id="totalMarks" value="20" style="width:60px; padding:5px; margin:0;" oninput="renderTeacherTable()">
-                </div>
                 
+                <div id="totalDiv" style="margin-top: 10px; display: flex; align-items: center; gap: 10px;">
+                    <span class="label">ޖުމްލަ މާކްސް (Out of):</span>
+                    <input type="number" id="totalMarks" value="20" style="width: 80px; padding: 8px;" oninput="renderTeacherTable()">
+                </div>
+
                 <button class="btn" style="background:#607d8b; margin-top:10px;" onclick="fetchData()">Refresh 🔄</button>
             </div>
             
@@ -124,22 +132,22 @@
                             <th>ނަން</th>
                             <th id="valHead">މާކްސް / ހާލަތު</th>
                             <th id="thG" style="display:none;">%</th>
-                            <th>ނޯޓް</th>
                         </tr>
                     </thead>
                     <tbody id="tBody"></tbody>
                 </table>
             </div>
-            <button class="btn" id="sBtn" style="background:#2e7d32; margin-top:15px;" onclick="saveTeacherData()">ހުރިހާ ބަދަލެއް ސޭވްކުރޭ</button>
+            <button class="btn" id="sBtn" style="background:#2e7d32; margin-top:15px; position: sticky; bottom: 0;" onclick="saveTeacherData()">ހުރިހާ ބަދަލެއް ސޭވްކުރޭ</button>
         </div>
     </div>
 </div>
 
 <script>
-    // މުހިންމު: ތިރީގައިވާ URL އަކީ ތިޔަބޭފުޅާގެ Google Script URL އަށް ބަދަލުކުރަންވާނެއެވެ.
+    // މުހިންމު: ތިޔަބޭފުޅާގެ އައު Web App URL މިތަނަށް ލައްވާ
     const API_URL = "https://script.google.com/macros/s/AKfycbwtH5H6xdj5-7x1X1xWBbIQrFXsxHN0E4GvFKtS43raYqD6ga7JJLrx-Y5Ja5I2EVO4/exec";
+    
     let db = [];
-    let mode = 'unit'; // Default to unit test
+    let currentMode = 'unit'; // Default
 
     function setTab(t) {
         document.getElementById('parentView').style.display = t==='parent'?'block':'none';
@@ -155,8 +163,9 @@
         } else alert("ކުށް ޕާސްވޯޑެއް!");
     }
 
+    // ޑޭޓާ ކިޔުން (Read) - JSONP
     function fetchData() {
-        document.getElementById('tBody').innerHTML = '<tr><td colspan="5"><div class="loader"></div> ލޯޑް ވަނީ...</td></tr>';
+        document.getElementById('tBody').innerHTML = '<tr><td colspan="3"><div class="loader"></div> ލޯޑް ވަނީ...</td></tr>';
         const cb = 'jsonp_' + Date.now();
         window[cb] = (data) => { 
             db = data; 
@@ -182,18 +191,25 @@
         document.getElementById('classFilter').innerHTML = cHtml;
     }
 
+    function findVal(student, key) {
+        // ޝީޓުގައި ހުރި ނަން ނުވަތަ ސްޕޭސް ނުލައި ހުރި ނަމުން ހޯދުން
+        if (student[key] !== undefined) return student[key];
+        let simpleKey = key.toLowerCase().replace(/\s/g, '');
+        for(let k of Object.keys(student)) {
+            if(k.toLowerCase().replace(/\s/g, '') === simpleKey) return student[k];
+        }
+        return "";
+    }
+
+    // ގްރޭޑް ހިސާބުކުރުން
     function calcGrade(m, t) {
         let p = (m/t)*100;
+        if(isNaN(p)) return {lbl:'-', cls:'', perc:'-'};
         if(p>=90) return {lbl:'A*', cls:'g-A-star', perc:Math.round(p)+'%'};
         if(p>=80) return {lbl:'A', cls:'g-A', perc:Math.round(p)+'%'};
         if(p>=70) return {lbl:'B', cls:'g-B', perc:Math.round(p)+'%'};
         if(p>=60) return {lbl:'C', cls:'g-C', perc:Math.round(p)+'%'};
         return {lbl:'Fail', cls:'g-Fail', perc:Math.round(p)+'%'};
-    }
-
-    function findVal(student, key) {
-        let cleanKey = key.toLowerCase().replace(/\s/g, '');
-        return student[key] || student[cleanKey] || "";
     }
 
     function renderTeacherTable() {
@@ -202,40 +218,37 @@
         const selClass = document.getElementById('classFilter').value;
         const total = document.getElementById('totalMarks').value || 100;
         
-        // Determine mode based on selection
-        mode = col.startsWith('Week') ? 'work' : (col.startsWith('Unit') ? 'unit' : 'ca');
-
-        // Hide total marks input for Weeks
-        const isWeek = mode === 'work';
-        document.getElementById('totalDiv').style.display = isWeek ? 'none' : 'flex';
-        document.getElementById('thG').style.display = isWeek ? 'none' : 'table-cell';
-        document.getElementById('valHead').innerText = isWeek ? 'ހާލަތު' : 'މާކްސް';
+        // Mode detection
+        currentMode = col.startsWith('Week') ? 'work' : (col.startsWith('Unit') ? 'unit' : 'ca');
+        
+        // UI Updates
+        document.getElementById('valHead').innerText = currentMode === 'work' ? 'ހާލަތު' : 'މާކްސް';
+        document.getElementById('thG').style.display = currentMode === 'work' ? 'none' : 'table-cell';
+        document.getElementById('totalDiv').style.display = currentMode === 'work' ? 'none' : 'flex';
 
         let filtered = db;
         if(selGrade !== 'All') filtered = filtered.filter(s => String(s.Grade) === String(selGrade));
         if(selClass !== 'All') filtered = filtered.filter(s => String(s.Class) === String(selClass));
 
-        let num = col.match(/\d+/)[0];
-        let noteKey = mode === 'work' ? 'Note'+num : (mode === 'unit' ? 'TNote'+num : 'CANote'+num);
-
         let html = "";
         filtered.forEach(s => {
             let val = findVal(s, col);
-            let n = findVal(s, noteKey);
-            
-            let input = isWeek 
-                ? `<select class="v-in" data-idx="${s.Index}"><option value="">-</option><option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމަ ނުވޭ" ${val=='ފުރިހަމަ ނުވޭ'?'selected':''}>ފުރިހަމަ ނުވޭ</option></select>`
+            let nKey = currentMode === 'work' ? 'Note' + col.replace(/\D/g, '') : (currentMode === 'unit' ? 'TNote' + col.replace(/\D/g, '') : 'CANote' + col.replace(/\D/g, ''));
+            let n = findVal(s, nKey);
+
+            let input = currentMode === 'work' 
+                ? `<select class="v-in" data-idx="${s.Index}"><option value="">-</option><option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމައެއް ނުވޭ" ${val=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމައެއް ނުވޭ</option></select>`
                 : `<input type="number" class="v-in" data-idx="${s.Index}" value="${val}" style="width:60px" oninput="updRow(this, ${total})">`;
             
             let gradeHtml = "";
-            if(!isWeek && val) {
+            if(currentMode !== 'work') {
                 let g = calcGrade(val, total);
-                gradeHtml = `<span class="grade-badge ${g.cls}">${g.lbl} (${g.perc})</span>`;
+                gradeHtml = val ? `<span class="grade-badge ${g.cls}">${g.lbl} (${g.perc})</span>` : '-';
             }
 
-            html += `<tr><td>${s.Index}</td><td style="text-align:right">${s.Name}<br><small style="color:#888">ގްރޭޑް ${s.Grade} ${s.Class}</small></td><td>${input} <span id="g-${s.Index}">${gradeHtml}</span></td>${!isWeek?`<td></td>`:''}<td><input type="text" class="n-in" data-idx="${s.Index}" value="${n}" placeholder="ނޯޓް"></td></tr>`;
+            html += `<tr><td>${s.Index}</td><td style="text-align:right">${s.Name}<br><small style="color:#888">${s.Grade} ${s.Class}</small></td><td>${input} <span id="g-${s.Index}">${gradeHtml}</span></td>${currentMode!='work'?`<td></td>`:''}</tr>`;
         });
-        document.getElementById('tBody').innerHTML = html || "<tr><td colspan='5'>ޑޭޓާ އެއް ނެތް</td></tr>";
+        document.getElementById('tBody').innerHTML = html || "<tr><td colspan='3'>ޑޭޓާ އެއް ނެތް</td></tr>";
     }
 
     function updRow(el, t) {
@@ -243,47 +256,57 @@
         document.getElementById('g-'+el.dataset.idx).innerHTML = el.value ? `<span class="grade-badge ${g.cls}">${g.lbl} (${g.perc})</span>` : '';
     }
 
+    // ސޭވް ކުރުން (POST Method)
     async function saveTeacherData() {
         const btn = document.getElementById('sBtn');
-        const col = document.getElementById('colSelect').value;
+        const item = document.getElementById('colSelect').value;
         const total = document.getElementById('totalMarks').value;
         
-        btn.disabled = true; btn.innerText = "ސޭވް ވަނީ...";
+        btn.disabled = true; btn.innerHTML = '<div class="loader"></div> ސޭވް ވަނީ...';
         
-        const updates = Array.from(document.querySelectorAll('.v-in')).map((el, i) => {
+        const updates = Array.from(document.querySelectorAll('.v-in')).map((el) => {
             let obj = {
                 index: el.dataset.idx,
                 val: el.value,
-                note: document.querySelectorAll('.n-in')[i].value
+                // Note saving removed from this simplified view for robustness, 
+                // add back if needed similar to previous code
+                note: "" 
             };
-            if(mode !== 'work' && el.value) {
-                let g = calcGrade(el.value, total);
-                obj.grade = g.lbl;
-            }
             return obj;
         });
 
-        const params = new URLSearchParams({ 
-            action: 'save', 
-            item: col, 
-            mode: mode, // work, unit, or ca
-            updates: JSON.stringify(updates) 
-        });
-        
+        // Using POST with text/plain to avoid CORS preflight, handled by Apps Script doPost
         try {
-            await fetch(`${API_URL}?${params.toString()}`, { mode:'no-cors' });
-            alert("ބަދަލުތައް ފޮނުވިއްޖެ!");
-            setTimeout(fetchData, 1500);
-        } catch(e) { alert("މައްސަލައެއް ދިމާވެއްޖެ"); }
-        btn.disabled = false; btn.innerText = "ހުރިހާ ބަދަލެއް ސޭވްކުރޭ";
+            await fetch(API_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify({
+                    action: 'save',
+                    item: item, // e.g., "Unit Test 1"
+                    mode: currentMode,
+                    updates: JSON.stringify(updates)
+                })
+            });
+
+            setTimeout(() => {
+                alert("ބަދަލުތައް ސޭވްކުރެވިއްޖެ!");
+                btn.disabled = false;
+                btn.innerHTML = "<span>💾 ސޭވްކުރޭ</span>";
+                fetchData(); 
+            }, 1500);
+        } catch (e) {
+            alert("މައްސަލައެއް ދިމާވެއްޖެ");
+            btn.disabled = false;
+        }
     }
 
+    // ބެލެނިވެރިޔާގެ ބައި
     function searchStudent() {
         const idx = document.getElementById('pIdx').value;
         if(!idx) return;
         const res = document.getElementById('pRes');
-        res.innerHTML = '<div class="loader"></div>'; 
-        res.style.display = 'block';
+        res.innerHTML = '<div class="loader"></div>'; res.style.display = 'block';
 
         const cb = 'src_' + Date.now();
         window[cb] = (data) => {
@@ -295,35 +318,30 @@
                 h += `<div class="cat-title">ހަފްތާގެ މަސައްކަތް</div>`;
                 for(let i=1; i<=45; i++) {
                     let v = findVal(s, 'Week'+i); 
-                    let n = findVal(s, 'Note'+i);
-                    if(v) h += `<div class="st-row"><span>Week ${i}</span><div style="text-align:right"><b>${v}</b><br><small style="color:#666">${n}</small></div></div>`;
+                    if(v) h += `<div class="st-row"><span>Week ${i}</span><div style="text-align:right"><b>${v}</b></div></div>`;
                 }
 
                 // Unit Tests
                 h += `<div class="cat-title">ޔުނިޓް ޓެސްޓް</div>`;
                 for(let i=1; i<=10; i++) {
                     let v = findVal(s, 'Unit Test '+i); 
-                    let n = findVal(s, 'TNote'+i);
-                    // We don't have total marks here easily, so we show raw marks or saved grade if available
-                    // If you save Grade columns in sheet, you can fetch them.
-                    if(v) h += `<div class="st-row"><span>Test ${i}</span><div style="text-align:right"><b>${v}</b><br><small>${n}</small></div></div>`;
+                    if(v) h += `<div class="st-row"><span>Test ${i}</span><div style="text-align:right"><b>${v}</b></div></div>`;
                 }
 
                 // CA
                 h += `<div class="cat-title">CA (އެސެސްމަންޓް)</div>`;
                 for(let i=1; i<=4; i++) {
                     let v = findVal(s, 'CA'+i);
-                    let n = findVal(s, 'CANote'+i);
-                    if(v) h += `<div class="st-row"><span>CA ${i}</span><div style="text-align:right"><b>${v}</b><br><small>${n}</small></div></div>`;
+                    if(v) h += `<div class="st-row"><span>CA ${i}</span><div style="text-align:right"><b>${v}</b></div></div>`;
                 }
 
-                document.getElementById('pRes').innerHTML = h;
-            } else document.getElementById('pRes').innerHTML = "<p style='color:red'>ދަރިވަރު ނުފެނުނު</p>";
+                res.innerHTML = h;
+            } else res.innerHTML = "<p style='color:red'>ދަރިވަރު ނުފެނުނު!</p>";
             delete window[cb];
         };
-        const s = document.createElement('script');
-        s.src = `${API_URL}?prefix=${cb}&action=read&t=${Date.now()}`;
-        document.body.appendChild(s);
+        const sc = document.createElement('script');
+        sc.src = `${API_URL}?prefix=${cb}&action=read&t=${Date.now()}`;
+        document.body.appendChild(sc);
     }
 </script>
 </body>
