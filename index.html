@@ -7,8 +7,8 @@
     <style>
         @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
         * { font-family: "Faruma", sans-serif; box-sizing: border-box; }
-        body { background-color: #f0f4f8; margin: 0; padding: 15px; text-align: right; }
-        .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        body { background-color: #f0f4f8; margin: 0; padding: 10px; text-align: right; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         h1 { color: #00796b; text-align: center; }
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
         .tab-btn { flex: 1; padding: 12px; border: none; background: #eee; cursor: pointer; border-radius: 8px; font-weight: bold; }
@@ -28,7 +28,7 @@
         
         /* Parent View Specific Styles */
         .st-header { border-bottom: 2px solid #00796b; margin-bottom: 15px; padding-bottom: 10px; }
-        .st-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px dashed #eee; align-items: center; }
+        .st-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #eee; align-items: center; }
         .st-row:last-child { border-bottom: none; }
         .grade-badge { padding: 4px 8px; border-radius: 5px; color: white; font-size: 12px; font-weight: bold; margin-left: 5px; }
         .g-A-star { background: #ffd700; color: black; }
@@ -36,7 +36,7 @@
         .g-B { background: #1e88e5; }
         .g-C { background: #fb8c00; }
         .g-Fail { background: #e53935; }
-        .cat-title { margin: 25px 0 10px; color: #00796b; font-size: 16px; font-weight: bold; background: #e0f2f1; padding: 8px; border-radius: 5px; }
+        .cat-title { margin: 20px 0 10px; color: #00796b; font-size: 16px; font-weight: bold; background: #e0f2f1; padding: 8px; border-radius: 5px; }
 
         /* Input styling for Teacher Table */
         .v-in { font-weight: bold; border: 2px solid #b2dfdb; }
@@ -52,7 +52,7 @@
         <button class="tab-btn" onclick="setTab('teacher')">މުދައްރިސުން</button>
     </div>
 
-    <!-- ބެލެނިވެރިންގެ ބައި -->
+    <!-- Parent View -->
     <div id="parentView">
         <div class="card">
             <input type="number" id="pIdx" placeholder="އިންޑެކްސް ނަންބަރު" inputmode="numeric">
@@ -61,7 +61,7 @@
         <div id="pRes" class="card" style="display:none;"></div>
     </div>
 
-    <!-- މުދައްރިސުންގެ ބައި -->
+    <!-- Teacher View -->
     <div id="teacherView" style="display:none;">
         <div id="loginArea" class="card">
             <input type="password" id="pass" placeholder="ޕާސްވޯޑް">
@@ -135,7 +135,7 @@
                     <tbody id="tBody"></tbody>
                 </table>
             </div>
-            <button class="btn" id="sBtn" style="background:#2e7d32; margin-top:15px; position: sticky; bottom: 0;" onclick="saveTeacherData()">ހުރިހާ ބަދަލެއް ސޭވްކުރޭ</button>
+            <button class="btn" id="sBtn" style="background:#2e7d32; margin-top:15px;" onclick="saveTeacherData()">ހުރިހާ ބަދަލެއް ސޭވްކުރޭ</button>
         </div>
     </div>
 </div>
@@ -208,8 +208,8 @@
         const selClass = document.getElementById('classFilter').value;
         const total = document.getElementById('totalMarks').value || 100;
         
-        // Mode detection
-        currentMode = col.startsWith('Week') ? 'work' : (col.startsWith('Unit') ? 'unit' : 'ca');
+        // Mode detection fixed: 'test' for Unit Tests
+        currentMode = col.startsWith('Week') ? 'work' : (col.startsWith('Unit') ? 'test' : 'ca');
         
         // UI Updates
         document.getElementById('valHead').innerText = currentMode === 'work' ? 'ހާލަތު' : 'މާކްސް';
@@ -221,7 +221,8 @@
         if(selClass !== 'All') filtered = filtered.filter(s => String(s.Class) === String(selClass));
 
         let num = col.match(/\d+/)[0];
-        let noteKey = currentMode === 'work' ? 'Note'+num : (currentMode === 'unit' ? 'TNote'+num : 'CANote'+num);
+        // Ensure note key uses 'TNote' for 'test' mode
+        let noteKey = currentMode === 'work' ? 'Note'+num : (currentMode === 'test' ? 'TNote'+num : 'CANote'+num);
 
         let html = "";
         filtered.forEach(s => {
@@ -268,7 +269,6 @@
             return obj;
         });
 
-        // Safe POST using form-urlencoded to trigger Apps Script
         const params = new URLSearchParams({ 
             action:'save', 
             item:item, 
@@ -277,7 +277,7 @@
         });
         
         try {
-            await fetch(`${API_URL}?${params.toString()}`, { mode:'no-cors', method: 'POST' });
+            await fetch(`${API_URL}?${params.toString()}`, { mode:'no-cors' });
             alert("ބަދަލުތައް ފޮނުވިއްޖެ!");
             setTimeout(fetchData, 1500);
         } catch(e) { alert("މައްސަލައެއް ދިމާވެއްޖެ"); }
