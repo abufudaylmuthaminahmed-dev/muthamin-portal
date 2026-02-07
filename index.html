@@ -7,253 +7,219 @@
     <style>
         @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
         * { font-family: "Faruma", sans-serif; box-sizing: border-box; }
-        body { background-color: #f0f4f8; margin: 0; padding: 10px; text-align: right; -webkit-tap-highlight-color: transparent; }
-        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 15px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
-        h1 { color: #00796b; text-align: center; font-size: 1.6rem; margin-bottom: 20px; font-weight: bold; }
+        body { background-color: #f0f4f8; margin: 0; padding: 10px; text-align: right; }
         
-        /* Optimized Tabs */
-        .tabs { display: flex; gap: 8px; margin-bottom: 20px; background: #e0f2f1; padding: 5px; border-radius: 12px; }
-        .tab-btn { flex: 1; padding: 12px; border: none; background: none; cursor: pointer; font-weight: bold; font-size: 15px; color: #00695c; border-radius: 8px; transition: 0.2s; }
-        .tab-btn.active { background: #fff; color: #004d40; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: relative; }
+        
+        h1 { color: #00796b; text-align: center; margin-bottom: 25px; margin-top: 10px; }
+        
+        /* Admin Link */
+        .admin-link { position: absolute; top: 20px; left: 20px; font-size: 12px; color: #999; cursor: pointer; background: #f5f5f5; padding: 5px 12px; border-radius: 15px; transition: 0.3s; }
+        .admin-link:hover { background: #e0e0e0; color: #333; }
 
-        .card { border: 1px solid #eee; padding: 15px; border-radius: 12px; margin-bottom: 15px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+        .card { background: #f9f9f9; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #eee; }
         
-        /* Inputs & Buttons */
-        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; text-align: center; background: #fafafa; }
-        input:focus, select:focus { border-color: #00796b; outline: none; background: #fff; }
+        input, select { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; text-align: center; }
         
-        .btn { width: 100%; padding: 14px; background: #00796b; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.1s; }
-        .btn:active { transform: scale(0.98); }
-        .btn:disabled { background: #cfd8dc; color: #78909c; }
+        .btn { width: 100%; padding: 16px; background: #00796b; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; transition: 0.3s; margin-top: 10px; }
+        .btn:hover { background: #004d40; }
+        .btn:disabled { background: #ccc; }
         
-        /* Optimized Table */
-        .table-container { width: 100%; overflow-x: auto; margin-top: 10px; border-radius: 8px; border: 1px solid #eee; background: white; -webkit-overflow-scrolling: touch; }
+        .btn-mat { background: #f57c00; color: white; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-back { background: #607d8b; width: auto; padding: 8px 20px; font-size: 14px; margin-bottom: 15px; float: left; }
+
+        .table-container { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 10px; border: 1px solid #ddd; }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        th { background: #e0f2f1; color: #004d40; padding: 12px; font-size: 14px; position: sticky; top: 0; z-index: 10; font-weight: bold; }
-        td { padding: 10px; border-bottom: 1px solid #f0f0f0; text-align: center; font-size: 14px; }
+        th, td { padding: 15px; border-bottom: 1px solid #eee; text-align: center; }
+        th { background: #00796b; color: white; position: sticky; top: 0; }
+        tr:nth-child(even) { background-color: #fcfcfc; }
+
+        .v-in { width: 90px !important; height: 45px; font-size: 18px !important; font-weight: bold; border: 2px solid #b2dfdb !important; }
+        .n-in { text-align: right !important; min-width: 150px; }
+
+        .pills { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; margin-bottom: 10px; }
+        .pill { padding: 10px 20px; background: #eee; border-radius: 25px; cursor: pointer; white-space: nowrap; font-size: 14px; transition: 0.2s; }
+        .pill.active { background: #00796b; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         
-        /* Custom Inputs */
-        .v-in { width: 100% !important; font-weight: bold; border: 1px solid #b2dfdb !important; background: #fdfdfd; padding: 8px; border-radius: 6px; }
-        .v-in:focus { border: 2px solid #00796b !important; }
-        .n-in { text-align: right; font-size: 13px; }
-
-        /* Filter Pills */
-        .pills { display: flex; gap: 6px; overflow-x: auto; padding: 5px 0; margin-bottom: 10px; scrollbar-width: none; }
-        .pills::-webkit-scrollbar { display: none; }
-        .pill { padding: 8px 16px; background: #f5f5f5; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 13px; color: #555; border: 1px solid #eee; }
-        .pill.active { background: #00796b; color: white; border-color: #00796b; font-weight: bold; }
-
-        /* Floating Save Button */
-        .fab-save { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #2e7d32; color: white; padding: 12px 30px; border-radius: 50px; border: none; font-size: 16px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.25); z-index: 1000; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
-        .fab-save:active { transform: translateX(-50%) scale(0.95); }
-
-        /* Loader */
-        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #00796b; border-radius: 50%; width: 24px; height: 24px; animation: spin 0.8s linear infinite; display: inline-block; vertical-align: middle; }
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #00796b; border-radius: 50%; width: 25px; height: 25px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        /* Badges */
-        .grade-badge { padding: 4px 8px; border-radius: 6px; font-weight: bold; color: white; font-size: 12px; display: inline-block; min-width: 30px; }
-        .g-A-star { background: #fbc02d; color: #333; } .g-A { background: #43a047; } .g-B { background: #1976d2; }
-        .g-C { background: #f57c00; } .g-Fail { background: #d32f2f; }
-        
-        .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #323232; color: white; padding: 10px 20px; border-radius: 5px; font-size: 14px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 2000; }
-        .toast.show { opacity: 1; bottom: 90px; }
+        .st-header { border-bottom: 2px solid #00796b; margin-bottom: 15px; padding-bottom: 10px; }
+        .st-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px dashed #eee; align-items: center; }
+        .grade-badge { padding: 4px 8px; border-radius: 5px; color: white; font-size: 12px; font-weight: bold; margin-left: 5px; }
+        .g-A-star { background: #ffd700; color: black; }
+        .g-A { background: #43a047; } .g-B { background: #1e88e5; } .g-C { background: #fb8c00; } .g-Fail { background: #e53935; }
+        .cat-title { margin: 20px 0 10px; color: #00796b; font-size: 16px; font-weight: bold; background: #e0f2f1; padding: 8px; border-radius: 5px; }
+
+        /* Materials Modal */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
+        .modal-content { background-color: #fff; margin: 15% auto; padding: 20px; border-radius: 15px; width: 90%; max-width: 500px; text-align: center; }
+        .mat-link { display: block; padding: 15px; margin: 10px 0; background: #e0f2f1; color: #00695c; text-decoration: none; border-radius: 8px; font-weight: bold; border: 1px solid #b2dfdb; }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <span class="admin-link" onclick="toggleAdmin()">Admin 🔒</span>
     <h1>🌙 އިސްލާމް ޕޯޓަލް</h1>
-
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('parent')">ބެލެނިވެރިން</button>
-        <button class="tab-btn" onclick="switchTab('teacher')">މުދައްރިސުން</button>
-    </div>
 
     <!-- Parent View -->
     <div id="parentView">
         <div class="card">
+            <h3 style="margin-top:0; color:#555;">ނަތީޖާ ބެލުން</h3>
             <input type="number" id="pIdx" placeholder="އިންޑެކްސް ނަންބަރު" inputmode="numeric">
-            <button class="btn" onclick="searchStudent()">ބަލާލުމަށް</button>
+            <button class="btn" id="pBtn" onclick="searchStudent()">ހޯއްދަވާ</button>
         </div>
+
+        <!-- Materials Section -->
+        <div class="card" style="text-align:center; border: 1px dashed #f57c00; background:#fff3e0;">
+            <h3 style="margin-top:0; color:#e65100;">ފިލާވަޅުތައް</h3>
+            <p style="font-size:14px; color:#666;">ފޮތްތަކާއި ނޯޓްސް ޑައުންލޯޑް ކުރެއްވުމަށް</p>
+            <button class="btn btn-mat" onclick="openMaterials()">
+                <span>📥</span> ފިލާވަޅުތައް ޑައުންލޯޑް
+            </button>
+        </div>
+
         <div id="pRes" class="card" style="display:none;"></div>
     </div>
 
     <!-- Teacher View -->
     <div id="teacherView" style="display:none;">
-        <div id="loginArea" class="card">
-            <h3 style="text-align:center; margin-top:0;">ލޮގިން</h3>
+        <div id="loginArea" class="card" style="max-width: 400px; margin: 0 auto; text-align: center;">
+            <button class="btn btn-back" onclick="logout()">← Home</button>
+            <h3 style="margin-top:10px;">މުދައްރިސުންގެ ލޮގިން</h3>
             <input type="password" id="pass" placeholder="ޕާސްވޯޑް">
             <button class="btn" onclick="login()">ލޮގިން</button>
         </div>
-
         <div id="teacherPanel" style="display:none;">
-            <div class="pills">
-                <div class="pill active" id="m_work" onclick="setMode('work')">ހަފްތާ</div>
-                <div class="pill" id="m_test" onclick="setMode('test')">ޔުނިޓް ޓެސްޓް</div>
-                <div class="pill" id="m_ca" onclick="setMode('ca')">CA</div>
+            <div style="text-align:left; margin-bottom:15px;">
+                <button class="btn btn-back" onclick="logout()">← Logout</button>
             </div>
             
-            <div class="card" style="padding:12px;">
+            <div class="card">
+                <div class="pills">
+                    <div class="pill active" id="m_work" onclick="setMode('work')">ހަފްތާ</div>
+                    <div class="pill" id="m_test" onclick="setMode('test')">ޔުނިޓް ޓެސްޓް</div>
+                    <div class="pill" id="m_ca" onclick="setMode('ca')">CA</div>
+                </div>
+                
                 <div style="display:flex; gap:10px;">
                     <div style="flex:1">
-                        <small style="color:#666; font-weight:bold;">އައިޓަމް:</small>
+                        <small>އައިޓަމް:</small>
                         <select id="itemSelect" onchange="renderTeacherTable()"></select>
                     </div>
-                    <div id="totalDiv" style="width:90px; display:none;">
-                        <small style="color:#666; font-weight:bold;">Out of:</small>
-                        <input type="number" id="totalMarks" value="20" style="padding:8px;" oninput="renderTeacherTable()">
+                    <div id="totalDiv" style="width:80px; display:none;">
+                        <small>Out of:</small>
+                        <input type="number" id="totalMarks" value="20" oninput="renderTeacherTable()">
                     </div>
                 </div>
                 
-                <div style="margin-top:8px;">
+                <div style="margin-top:10px;">
+                    <small>ފިލްޓަރ:</small>
                     <div id="gradeFilter" class="pills"></div>
                     <div id="classFilter" class="pills"></div>
                 </div>
                 
                 <div style="text-align:right;">
-                    <button onclick="fetchData(true)" style="background:none; border:none; color:#00695c; font-size:13px; cursor:pointer; padding:5px;">🔄 Refresh Data</button>
+                     <button onclick="fetchData()" style="background:none; border:none; color:#00695c; cursor:pointer;">🔄 Refresh</button>
                 </div>
             </div>
-
+            
             <div class="table-container">
                 <table>
-                    <thead>
-                        <tr>
-                            <th style="width:50px">ID</th>
-                            <th>Name</th>
-                            <th id="valHead">Status</th>
-                            <th id="thG" style="width:60px; display:none;">%</th>
-                            <th>Note</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>Index</th><th>ނަން</th><th id="valHead">މާކްސް/ހާލަތު</th><th id="thG" style="display:none;">%</th><th>ނޯޓް</th></tr></thead>
                     <tbody id="tBody"></tbody>
                 </table>
             </div>
-            
-            <div style="height: 60px;"></div> <!-- Spacer for FAB -->
-            <button id="sBtn" class="fab-save" onclick="saveData()">
-                💾 ސޭވްކުރޭ
-            </button>
+            <button class="btn btn-save" id="sBtn" onclick="saveTeacherData()">💾 ސޭވްކުރޭ</button>
         </div>
     </div>
 </div>
 
-<div id="toast" class="toast"></div>
+<!-- Materials Modal -->
+<div id="matModal" class="modal">
+    <div class="modal-content">
+        <h2 style="color:#00796b;">📚 ފިލާވަޅުތައް</h2>
+        <a href="https://drive.google.com" target="_blank" class="mat-link">📂 ގޫގުލް ޑްރައިވް ފޯލްޑަރ</a>
+        <a href="#" target="_blank" class="mat-link">📝 ވޯކްޝީޓްތައް</a>
+        <a href="#" target="_blank" class="mat-link">📘 ޓެކްސްޓް ފޮތް</a>
+        <button class="btn" style="background:#78909c; margin-top:15px;" onclick="closeMaterials()">ބަންދުކުރޭ</button>
+    </div>
+</div>
 
 <script>
-    // URL
-    const API_URL = "https://script.google.com/macros/s/AKfycbyWB9o4c35QpXrrdOpFrILk9rsxrA3DI3dMUlNwtL89evIc-tGXMy3LAbvfSJq1JQZP/exec";
-    
+    const API_URL = "https://script.google.com/macros/s/AKfycbwyQ_JXrT6aeYhAccNbYBecUUaOb_dEfr0l-jg7gteWFRM40nKKGihWb7OyQmmQ5Pa5/exec";
     let db = [];
     let mode = 'work';
     let selGrade = 'All';
     let selClass = 'All';
 
-    // Local Storage Key
-    const CACHE_KEY = 'islam_portal_db_v1';
+    function openMaterials() { document.getElementById('matModal').style.display = "block"; }
+    function closeMaterials() { document.getElementById('matModal').style.display = "none"; }
+    window.onclick = function(event) { if (event.target == document.getElementById('matModal')) closeMaterials(); }
 
-    function init() {
-        // Load cached data immediately if available
-        const cached = localStorage.getItem(CACHE_KEY);
-        if (cached) {
-            try {
-                db = JSON.parse(cached);
-            } catch(e) {}
-        }
-    }
-    init();
-
-    function showToast(msg) {
-        const t = document.getElementById('toast');
-        t.innerText = msg;
-        t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 3000);
+    function toggleAdmin() {
+        document.getElementById('parentView').style.display = 'none';
+        document.getElementById('teacherView').style.display = 'block';
+        document.getElementById('loginArea').style.display = 'block';
+        document.getElementById('teacherPanel').style.display = 'none';
     }
 
-    function switchTab(t) {
-        document.getElementById('parentView').style.display = t=='parent'?'block':'none';
-        document.getElementById('teacherView').style.display = t=='teacher'?'block':'none';
-        document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active', (i==0&&t=='parent')||(i==1&&t=='teacher')));
+    function logout() {
+        document.getElementById('teacherView').style.display = 'none';
+        document.getElementById('parentView').style.display = 'block';
+        document.getElementById('pass').value = '';
     }
 
     function login() {
-        if(document.getElementById('pass').value == "123") {
+        if(document.getElementById('pass').value === "123") {
             document.getElementById('loginArea').style.display='none';
             document.getElementById('teacherPanel').style.display='block';
-            
-            // If we have cached data, show it immediately
-            if(db.length > 0) {
-                setMode(mode);
-                updateFilters();
-                // Fetch fresh data in background
-                fetchData(false);
-            } else {
-                fetchData(true);
-            }
-        } else alert("ޕާސްވޯޑް ނުބައި");
+            fetchData();
+        } else alert("ކުށް ޕާސްވޯޑެއް!");
     }
 
-    function fetchData(showLoader = true) {
-        if(showLoader) document.getElementById('tBody').innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;"><div class="loader"></div> ލޯޑް ވަނީ...</td></tr>';
-        
-        const cb = 'cb'+Date.now();
-        window[cb] = (data) => {
-            db = data;
-            // Update cache
-            localStorage.setItem(CACHE_KEY, JSON.stringify(db));
-            
-            setMode(mode);
+    function fetchData() {
+        document.getElementById('tBody').innerHTML = '<tr><td colspan="5"><div class="loader"></div> ލޯޑް ވަނީ...</td></tr>';
+        const cb = 'jsonp_' + Date.now();
+        window[cb] = (data) => { 
+            db = data; 
             updateFilters();
-            if(!showLoader) showToast("ޑޭޓާ އަޕްޑޭޓް ވެއްޖެ");
-            delete window[cb];
+            setMode(mode); 
+            delete window[cb]; 
         };
         const s = document.createElement('script');
-        s.src = `${API_URL}?prefix=${cb}&action=read&t=${Date.now()}`; // Add timestamp to avoid caching URL
+        s.src = `${API_URL}?prefix=${cb}&action=read&t=${Date.now()}`;
         document.body.appendChild(s);
     }
 
     function updateFilters() {
-        const grades = [...new Set(db.map(x=>x.Grade))].filter(Boolean).sort();
-        let html = `<div class="pill ${selGrade=='All'?'active':''}" onclick="selGrade='All';selClass='All';updateFilters();renderTable()">All</div>`;
+        const grades = [...new Set(db.map(s => s.Grade))].filter(Boolean).sort();
+        let gHtml = `<div class="pill ${selGrade=='All'?'active':''}" onclick="selGrade='All';selClass='All';updateFilters();renderTeacherTable()">All</div>`;
         grades.forEach(g => {
-            html += `<div class="pill ${selGrade==g?'active':''}" onclick="selGrade='${g}';selClass='All';updateFilters();renderTable()">Gr ${g}</div>`;
+            gHtml += `<div class="pill ${selGrade==g?'active':''}" onclick="selGrade='${g}';selClass='All';updateFilters();renderTeacherTable()">Gr ${g}</div>`;
         });
-        document.getElementById('gradeFilter').innerHTML = html;
+        document.getElementById('gradeFilter').innerHTML = gHtml;
 
-        // Class filters based on selected grade
         let cHtml = '';
         if(selGrade !== 'All') {
             const classes = [...new Set(db.filter(x=>x.Grade==selGrade).map(x=>x.Class))].filter(Boolean).sort();
-            cHtml = `<div class="pill ${selClass=='All'?'active':''}" onclick="selClass='All';renderTable()">All Classes</div>`;
+            cHtml = `<div class="pill ${selClass=='All'?'active':''}" onclick="selClass='All';renderTeacherTable()">All</div>`;
             classes.forEach(c => {
-                cHtml += `<div class="pill ${selClass==c?'active':''}" onclick="selClass='${c}';renderTable()">${c}</div>`;
+                cHtml += `<div class="pill ${selClass==c?'active':''}" onclick="selClass='${c}';renderTeacherTable()">${c}</div>`;
             });
         }
         document.getElementById('classFilter').innerHTML = cHtml;
     }
 
-    function setMode(m) {
-        mode = m;
-        document.querySelectorAll('.mode-pills .pill').forEach(p=>p.classList.remove('active')); // Note: pills class logic handled in HTML
-        document.querySelectorAll('#m_work, #m_test, #m_ca').forEach(p=>p.classList.remove('active'));
-        document.getElementById('m_'+m).classList.add('active');
-        
-        let sel = document.getElementById('itemSelect');
-        let currentVal = sel.value;
-        sel.innerHTML = "";
-        
-        if(m=='work') for(let i=1;i<=45;i++) sel.innerHTML += `<option value="Week ${i}">Week ${i}</option>`;
-        if(m=='test') for(let i=1;i<=10;i++) sel.innerHTML += `<option value="Unit Test ${i}">Unit Test ${i}</option>`;
-        if(m=='ca') for(let i=1;i<=4;i++) sel.innerHTML += `<option value="CA ${i}">CA ${i}</option>`;
-        
-        // Try to keep selection if switching back
-        // if(currentVal && sel.querySelector(`option[value="${currentVal}"]`)) sel.value = currentVal;
-        
-        document.getElementById('totalDiv').style.display = m=='work'?'none':'flex';
-        document.getElementById('thG').style.display = m=='work'?'none':'table-cell';
-        document.getElementById('valHead').innerText = m=='work'?'ހާލަތު':'މާކްސް';
-        renderTable();
+    function calcGrade(m, t) {
+        let p = (m/t)*100;
+        if(isNaN(p)) return {lbl:'-', cls:'', perc:'-'};
+        if(p>=90) return {lbl:'A*', cls:'g-A-star', perc:Math.round(p)+'%'};
+        if(p>=80) return {lbl:'A', cls:'g-A', perc:Math.round(p)+'%'};
+        if(p>=70) return {lbl:'B', cls:'g-B', perc:Math.round(p)+'%'};
+        if(p>=60) return {lbl:'C', cls:'g-C', perc:Math.round(p)+'%'};
+        return {lbl:'Fail', cls:'g-Fail', perc:Math.round(p)+'%'};
     }
 
     function findVal(student, key) {
@@ -261,65 +227,69 @@
         return student[key] || student[cleanKey] || "";
     }
 
-    function renderTable() {
+    function setMode(m) {
+        mode = m;
+        document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+        document.getElementById('m_'+m).classList.add('active');
+        
+        let sel = document.getElementById('itemSelect');
+        sel.innerHTML = "";
+        
+        if(m=='work') {
+            for(let i=1;i<=45;i++) sel.innerHTML += `<option value="Week ${i}">Week ${i}</option>`;
+            document.getElementById('totalDiv').style.display = 'none';
+            document.getElementById('thG').style.display = 'none';
+            document.getElementById('valHead').innerText = 'ހާލަތު';
+        } else {
+            document.getElementById('totalDiv').style.display = 'flex';
+            document.getElementById('thG').style.display = 'table-cell';
+            document.getElementById('valHead').innerText = 'މާކްސް';
+            let prefix = m=='test' ? 'Unit Test ' : 'CA';
+            let count = m=='test' ? 10 : 4;
+            for(let i=1;i<=count;i++) sel.innerHTML += `<option value="${prefix}${i}">${prefix}${i}</option>`;
+        }
+        renderTeacherTable();
+    }
+
+    function renderTeacherTable() {
         const item = document.getElementById('itemSelect').value;
         const total = document.getElementById('totalMarks').value || 100;
-        let num = item.replace(/\D/g, '');
+        let num = item.match(/\d+/)[0];
         let noteKey = mode=='work' ? 'Note'+num : (mode=='test'?'TNote'+num:'CANote'+num);
 
         let filtered = db;
-        if(selGrade !== 'All') filtered = filtered.filter(x => x.Grade == selGrade);
-        if(selClass !== 'All') filtered = filtered.filter(x => x.Class == selClass);
-        
-        // Performance: render only first 100 rows if too many to avoid UI freeze
-        // or just render all since it's local
-        let html = "";
-        if(filtered.length === 0) {
-            document.getElementById('tBody').innerHTML = "<tr><td colspan='5'>ނަތީޖާއެއް ނެތް</td></tr>";
-            return;
-        }
+        if(selGrade !== 'All') filtered = filtered.filter(s => String(s.Grade) === String(selGrade));
+        if(selClass !== 'All') filtered = filtered.filter(s => String(s.Class) === String(selClass));
 
+        let html = "";
         filtered.forEach(s => {
             let val = findVal(s, item);
             let n = findVal(s, noteKey);
             
             let input = mode=='work' 
                 ? `<select class="v-in" data-idx="${s.Index}"><option value="">-</option><option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމައެއް ނުވޭ" ${val=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމަ ނުވޭ</option></select>`
-                : `<input type="number" class="v-in" data-idx="${s.Index}" value="${val}" style="width:60px" oninput="calcRow(this, ${total})">`;
+                : `<input type="number" class="v-in" data-idx="${s.Index}" value="${val}" style="width:60px" oninput="updRow(this, ${total})">`;
             
             let gradeHtml = "";
             if(mode !== 'work') {
-                let p = val ? Math.round((val/total)*100) : 0;
-                let cls = p>=90?'g-A-star':(p>=80?'g-A':(p>=70?'g-B':(p>=60?'g-C':'g-Fail')));
-                let lbl = p>=90?'A*':(p>=80?'A':(p>=70?'B':(p>=60?'C':'Fail')));
-                gradeHtml = val ? `<span class="grade-badge ${cls}">${lbl}</span><br><small>${p}%</small>` : '-';
+                let g = calcGrade(val, total);
+                gradeHtml = val ? `<span class="grade-badge ${g.cls}">${g.lbl} (${g.perc})</span>` : '-';
             }
 
-            html += `<tr>
-                <td><b>${s.Index}</b></td>
-                <td style="text-align:right">${s.Name}<br><small style="color:#888">${s.Grade} ${s.Class}</small></td>
-                <td>${input}</td>
-                ${mode!='work' ? `<td id="g-${s.Index}">${gradeHtml}</td>` : ''}
-                <td><input type="text" class="n-in" data-idx="${s.Index}" value="${n}" placeholder="..."></td>
-            </tr>`;
+            html += `<tr><td>${s.Index}</td><td style="text-align:right">${s.Name}<br><small style="color:#888">${s.Grade} ${s.Class}</small></td><td>${input} <span id="g-${s.Index}">${gradeHtml}</span></td>${mode!='work' ? `<td></td>` : ''}<td><input type="text" class="n-in" data-idx="${s.Index}" value="${n}" placeholder="..."></td></tr>`;
         });
-        document.getElementById('tBody').innerHTML = html;
+        document.getElementById('tBody').innerHTML = html || "<tr><td colspan='5'>ޑޭޓާ އެއް ނެތް</td></tr>";
     }
 
-    function calcRow(el, t) {
-        let v = el.value;
-        let p = v ? Math.round((v/t)*100) : 0;
-        let cls = p>=90?'g-A-star':(p>=80?'g-A':(p>=70?'g-B':(p>=60?'g-C':'g-Fail')));
-        let lbl = p>=90?'A*':(p>=80?'A':(p>=70?'B':(p>=60?'C':'Fail')));
-        document.getElementById('g-'+el.dataset.idx).innerHTML = v ? `<span class="grade-badge ${cls}">${lbl}</span><br><small>${p}%</small>` : '';
+    function updRow(el, t) {
+        let g = calcGrade(el.value, t);
+        document.getElementById('g-'+el.dataset.idx).innerHTML = el.value ? `<span class="grade-badge ${g.cls}">${g.lbl} (${g.perc})</span>` : '';
     }
 
     async function saveData() {
         const btn = document.getElementById('sBtn');
         const item = document.getElementById('itemSelect').value;
-        const total = document.getElementById('totalMarks').value;
-        
-        btn.disabled = true; btn.innerHTML = '<div class="loader"></div>';
+        btn.disabled = true; btn.innerText = "ސޭވް ވަނީ...";
         
         const updates = Array.from(document.querySelectorAll('.v-in')).map((el, i) => ({
             index: el.dataset.idx,
@@ -327,89 +297,57 @@
             note: document.querySelectorAll('.n-in')[i].value
         }));
 
-        // Optimistic UI Update: Update local DB immediately
-        let num = item.replace(/\D/g, '');
-        let noteKey = mode === 'week' ? 'Note'+num : (mode === 'unit' ? 'TNote'+num : 'CANote'+num);
-        let cleanItemKey = item.toLowerCase().replace(/\s/g, '');
-        
-        updates.forEach(u => {
-             const s = db.find(x => x.Index.toString() === u.index.toString());
-             if(s) {
-                 s[item] = u.val; // Store with Original Key for display
-                 s[cleanItemKey] = u.val; // Store with Clean key just in case
-                 s[noteKey] = u.note;
-             }
-        });
-        // Save to cache so if they reload, it's still there
-        localStorage.setItem(CACHE_KEY, JSON.stringify(db));
-        
-        showToast("މަޢުލޫމާތު ވަގުތީގޮތުން ސޭވްވެއްޖެ...");
-
-        // Send to Server
         try {
-            const p = new URLSearchParams({ action:'save', item:item, mode:mode, updates:JSON.stringify(updates) });
-            await fetch(`${API_URL}?${p.toString()}`, { mode:'no-cors' });
-            showToast("✅ ސާވަރަށް ފޮނުވިއްޖެ!");
-        } catch(e) { 
-            showToast("❌ މައްސަލައެއް ޖެހިއްޖެ (އިންޓަނެޓް ޗެކްކުރައްވާ)"); 
-        }
-        btn.disabled = false; btn.innerHTML = "💾 ސޭވްކުރޭ";
+            const p = new URLSearchParams({ action:'save', item:item, mode: mode, updates:JSON.stringify(updates) });
+            await fetch(`${API_URL}?${p.toString()}`, { mode:'no-cors', method: 'POST' });
+            alert("ބަދަލުތައް ފޮނުވިއްޖެ!");
+            setTimeout(fetchData, 1500);
+        } catch(e) { alert("މައްސަލައެއް ދިމާވެއްޖެ"); }
+        btn.disabled = false; btn.innerText = "💾 ސޭވްކުރޭ";
     }
 
     function searchStudent() {
         const idx = document.getElementById('pIdx').value;
         if(!idx) return;
         const res = document.getElementById('pRes');
-        res.innerHTML = '<div style="text-align:center"><div class="loader"></div></div>'; res.style.display = 'block';
+        res.innerHTML = '<div class="loader"></div>'; res.style.display = 'block';
 
-        // Check local cache first for parent too if available, otherwise fetch
-        // Parent view usually doesn't load full DB, but let's fetch specific student
-        const cb = 's'+Date.now();
+        const cb = 'src_' + Date.now();
         window[cb] = (data) => {
             const s = data.find(x => String(x.Index) === String(idx));
             if(s) {
-                let h = `<div style="text-align:center; margin-bottom:15px;"><h2 style="color:#00796b; margin:0;">${s.Name}</h2><p style="color:#666">${s.Grade} ${s.Class} | Index: ${s.Index}</p></div>`;
+                let h = `<div class="st-header"><div><h2>${s.Name}</h2><p>ގްރޭޑް ${s.Grade} ${s.Class}</p></div><h1>${s.Index}</h1></div>`;
                 
-                // Table generator helper
-                const mkTab = (title, pre, max, isMk) => {
+                const mkSec = (title, pre, max, isMk) => {
                     let r = "";
                     for(let i=1; i<=max; i++) {
-                        let k = pre + (pre.includes('Test')?' '+i:i); // Handle space in "Unit Test 1"
+                        let k = pre + (pre.includes('Test')?' '+i:i);
                         let v = findVal(s, k);
-                        // Try various note keys
                         let n = findVal(s, (pre=='Week'?'Note':'TNote')+i) || findVal(s, (pre=='CA'?'CANote':(pre.includes('Test')?'TNote':'Note'))+i);
                         
                         if(v) {
                             let xtra = "";
                             if(isMk) {
-                                let p = calculatePercentage(v, 20); // Assuming 20 for parent view, or could just show marks
-                                // Since we don't know total marks here easily without storing it, we just show raw or simple grade
-                                let g = calcGrade(v, 20); // Default to 20
+                                let g = calcGrade(v, 20); 
                                 xtra = `<span class="grade-badge ${g.cls}">${g.lbl}</span>`;
                             }
-                            r += `<tr><td style="text-align:right; width:40%;">${k}</td><td><b>${v}</b> ${xtra}<div style="font-size:12px; color:#555; margin-top:2px;">${n}</div></td></tr>`;
+                            r += `<div class="st-row"><span>${k}</span><div style="text-align:right"><b>${v}</b> ${xtra}<br><small style="color:#666">${n}</small></div></div>`;
                         }
                     }
-                    return r ? `<tr><th colspan="2">${title}</th></tr>` + r : "";
+                    return r ? `<div class="cat-title">${title}</div>` + r : "";
                 };
 
-                let t = "<table>";
-                t += mkTab("ހަފްތާގެ މަސައްކަތް", "Week", 45, false);
-                t += mkTab("ޔުނިޓް ޓެސްޓް (20)", "Unit Test", 10, true);
-                t += mkTab("ކްލާސް އެސެސްމެންޓް", "CA", 4, true);
-                t += "</table>";
+                h += mkSec("ހަފްތާގެ މަސައްކަތް", "Week", 45, false);
+                h += mkSec("ޔުނިޓް ޓެސްޓް", "Unit Test", 10, true);
+                h += mkSec("CA (އެސެސްމަންޓް)", "CA", 4, true);
 
-                res.innerHTML = h + (t === "<table></table>" ? "<p>މަޢުލޫމާތެއް ނުފެނުނު</p>" : t);
-            } else res.innerHTML = "<p style='color:red; text-align:center'>ދަރިވަރު ނުފެނުނު</p>";
+                res.innerHTML = h || "<p>މަޢުލޫމާތެއް ނުފެނުނު</p>";
+            } else res.innerHTML = "<p style='color:red'>ދަރިވަރު ނުފެނުނު!</p>";
             delete window[cb];
         };
         const sc = document.createElement('script');
         sc.src = `${API_URL}?prefix=${cb}&action=read&t=${Date.now()}`;
         document.body.appendChild(sc);
-    }
-    
-    function calculatePercentage(marks, fullMarks) {
-        return Math.round((parseFloat(marks) / parseFloat(fullMarks)) * 100);
     }
 </script>
 </body>
