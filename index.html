@@ -6,88 +6,67 @@
     <title>އިސްލާމް ޕޯޓަލް</title>
     <style>
         @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
-        @font-face { font-family: 'MV Waheed'; src: local('MV Waheed'), url('https://fonts.cdnfonts.com/s/73114/MV_Waheed.woff') format('woff'); }
+        * { font-family: "Faruma", sans-serif; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #f0f4f8; margin: 0; padding: 10px; text-align: right; overflow-x: hidden; }
         
-        * { font-family: "Faruma", sans-serif; box-sizing: border-box; }
-        body { background-color: #f0f4f8; margin: 0; padding: 15px; text-align: right; }
-        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); position: relative; min-height: 80vh; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: relative; }
         
-        /* Main Title Styling - Reverted to MV Waheed */
-        h1 { 
-            color: #00796b; 
-            text-align: center; 
-            margin-top: 20px; 
-            margin-bottom: 40px; 
-            font-family: "MV Waheed", "Faruma", sans-serif; 
-            font-size: 2.2em;
-            text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
-        }
+        h1 { color: #00796b; text-align: center; margin-bottom: 25px; font-size: 1.8rem; }
         
-        .card { border: 1px solid #eef; padding: 30px 20px; border-radius: 15px; margin-bottom: 20px; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        /* Admin Link */
+        .admin-link { position: absolute; top: 20px; left: 20px; font-size: 12px; color: #999; cursor: pointer; background: #f5f5f5; padding: 5px 12px; border-radius: 15px; transition: 0.3s; }
+        .admin-link:hover { background: #e0e0e0; color: #333; }
         
-        input, select { width: 100%; padding: 14px; margin: 10px 0; border: 2px solid #eee; border-radius: 10px; font-size: 16px; text-align: center; transition: 0.3s; }
-        input:focus, select:focus { border-color: #00796b; outline: none; }
-        
-        .btn { width: 100%; padding: 16px; background: #00796b; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 18px; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,121,107,0.2); }
-        .btn:active { transform: scale(0.98); }
-        .btn:disabled { background: #cfd8dc; color: #90a4ae; box-shadow: none; }
+        /* Admin Input */
+        .admin-input-group { display: none; align-items: center; gap: 5px; margin-top: 5px; }
+        .mini-input { width: 100px; padding: 5px; border: 1px solid #ccc; border-radius: 15px; font-size: 12px; text-align: center; }
+        .mini-btn { padding: 5px 10px; background: #00796b; color: white; border: none; border-radius: 15px; font-size: 12px; cursor: pointer; }
+
+        .tabs { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid #eee; }
+        .tab-btn { flex: 1; padding: 15px; border: none; background: none; cursor: pointer; font-weight: bold; font-size: 16px; }
+        .tab-btn.active { color: #00796b; border-bottom: 4px solid #00796b; }
+        .card { background: #f9f9f9; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #eee; }
+        input, select { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; text-align: center; }
+        .btn { width: 100%; padding: 16px; background: #00796b; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; }
+        .btn:hover { background: #004d40; }
+        .btn:disabled { background: #ccc; }
         
         .btn-mat { background: #f57c00; color: white; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-back { background: #607d8b; width: auto; padding: 8px 20px; font-size: 14px; margin-bottom: 15px; float: left; }
         .btn-add { background: #1976d2; padding: 8px 15px; font-size: 14px; width: auto; margin-top: 0; }
         .btn-del { background: #ef5350; padding: 5px 10px; font-size: 12px; width: auto; margin: 0; }
 
-        /* Admin Corner */
-        .admin-corner {
-            position: absolute; top: 20px; left: 20px; z-index: 1000;
-            display: flex; align-items: center; gap: 5px;
-            background: #f5f5f5; padding: 5px; border-radius: 20px;
-            transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .admin-link {
-            font-size: 12px; color: #777; cursor: pointer; padding: 5px 10px;
-            border-radius: 15px; font-weight: bold;
-        }
-        .admin-link:hover { color: #333; }
-        
-        .admin-input-group {
-            display: none; align-items: center; gap: 5px;
-            animation: slideIn 0.2s ease-out;
-        }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
-        
-        .mini-input { width: 100px; padding: 5px 10px; border: 1px solid #ccc; border-radius: 15px; font-size: 12px; text-align: center; outline: none; }
-        .mini-btn { padding: 5px 12px; background: #00796b; color: white; border: none; border-radius: 15px; font-size: 12px; cursor: pointer; }
-
-        /* Table & Layout */
-        .table-container { width: 100%; overflow-x: auto; margin-top: 20px; border-radius: 12px; border: 1px solid #eee; }
+        .table-container { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 10px; border: 1px solid #ddd; }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        th, td { border-bottom: 1px solid #eee; padding: 15px; text-align: center; }
-        th { background: #e0f2f1; color: #004d40; font-size: 15px; font-weight: bold; }
+        th, td { padding: 15px; border-bottom: 1px solid #eee; text-align: center; }
+        th { background: #00796b; color: white; position: sticky; top: 0; }
         tr:nth-child(even) { background-color: #fcfcfc; }
 
         .v-in { width: 90px !important; height: 45px; font-size: 18px !important; font-weight: bold; border: 2px solid #b2dfdb !important; }
         .n-in { text-align: right !important; min-width: 150px; }
 
         .pills { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; margin-bottom: 10px; }
-        .pill { padding: 10px 20px; background: #f5f5f5; border-radius: 25px; cursor: pointer; white-space: nowrap; font-size: 14px; border: 1px solid #eee; transition: 0.2s; }
-        .pill.active { background: #00796b; color: white; border-color: #00796b; box-shadow: 0 3px 8px rgba(0,121,107,0.2); }
+        .pill { padding: 10px 20px; background: #eee; border-radius: 25px; cursor: pointer; white-space: nowrap; font-size: 14px; transition: 0.2s; }
+        .pill.active { background: #00796b; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         
         .loader { border: 3px solid #f3f3f3; border-top: 3px solid #00796b; border-radius: 50%; width: 25px; height: 25px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
         /* Student Result Styles */
-        .st-header { text-align: center; border-bottom: 2px dashed #00796b; padding-bottom: 15px; margin-bottom: 20px; }
-        .st-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0; align-items: center; }
+        .st-header { border-bottom: 2px solid #00796b; margin-bottom: 15px; padding-bottom: 10px; }
+        .st-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px dashed #eee; align-items: center; }
         .st-row:last-child { border-bottom: none; }
-        .grade-badge { padding: 4px 10px; border-radius: 6px; font-weight: bold; color: white; font-size: 13px; display: inline-block; margin-left: 5px; }
-        .g-A-star { background: #fbc02d; color: #333; } 
-        .g-A { background: #43a047; } .g-B { background: #1976d2; } .g-C { background: #fb8c00; } .g-Fail { background: #e53935; }
-        .cat-title { background: #e0f2f1; color: #00695c; padding: 8px 15px; border-radius: 8px; margin: 25px 0 10px; font-weight: bold; font-size: 15px; }
+        .grade-badge { padding: 4px 8px; border-radius: 5px; color: white; font-size: 12px; font-weight: bold; margin-left: 5px; }
+        .g-A-star { background: #ffd700; color: black; }
+        .g-A { background: #43a047; }
+        .g-B { background: #1e88e5; }
+        .g-C { background: #fb8c00; }
+        .g-Fail { background: #e53935; }
+        .cat-title { margin: 20px 0 10px; color: #00796b; font-size: 16px; font-weight: bold; background: #e0f2f1; padding: 8px; border-radius: 5px; }
 
-        /* Modal */
+        /* Materials Modal */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
-        .modal-content { background-color: #fff; margin: 10% auto; padding: 20px; border-radius: 15px; width: 90%; max-width: 500px; text-align: center; max-height: 80vh; overflow-y: auto; }
+        .modal-content { background-color: #fff; margin: 15% auto; padding: 20px; border-radius: 15px; width: 90%; max-width: 500px; text-align: center; max-height: 80vh; overflow-y: auto; }
         .mat-link { display: block; padding: 15px; margin: 10px 0; background: #e0f2f1; color: #00695c; text-decoration: none; border-radius: 8px; font-weight: bold; border: 1px solid #b2dfdb; }
         .mat-item { display: flex; justify-content: space-between; align-items: center; background: #fafafa; padding: 10px; margin-bottom: 5px; border-radius: 8px; border: 1px solid #eee; }
         .mat-input-group { display: flex; gap: 5px; margin-bottom: 10px; }
@@ -101,7 +80,7 @@
 <body>
 
 <div class="container">
-    <div class="admin-corner">
+    <div style="position:absolute; top:20px; left:20px; z-index:100;">
         <span class="admin-link" onclick="toggleAdmin()">Admin 🔒</span>
         <div id="adminInputGroup" class="admin-input-group">
             <input type="password" id="headerPass" class="mini-input" placeholder="Password">
@@ -109,9 +88,9 @@
         </div>
     </div>
 
-    <h1>އިސްލާމް ޕޯޓަލް <span style="font-size: 0.4em; color: #777; vertical-align: middle; margin-right: 5px; font-family: 'Faruma', sans-serif;">(މުއުތަމިން ސަރ)</span></h1>
+    <h1>🌙 އިސްލާމް ޕޯޓަލް</h1>
 
-    <!-- PARENT VIEW (DEFAULT) -->
+    <!-- Parent View -->
     <div id="viewParent">
         <div class="card">
             <h3 style="margin-top:0; color:#555;">ދަރިވަރުގެ މަޢުލޫމާތު ބެލުން</h3>
@@ -131,8 +110,8 @@
         <div id="pRes" class="card" style="display:none;"></div>
     </div>
 
-    <!-- TEACHER VIEW (HIDDEN) -->
-    <div id="viewTeacher" style="display: none;">
+    <!-- Teacher View -->
+    <div id="teacherView" style="display:none;">
         <div id="teacherPanel">
             <div style="text-align:left; margin-bottom:15px; display:flex; justify-content:space-between;">
                 <button class="btn btn-back" onclick="logout()">← Home</button>
@@ -209,12 +188,13 @@
 <div id="toast" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #323232; color: white; padding: 12px 24px; border-radius: 30px; font-size: 14px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 2000; box-shadow: 0 5px 15px rgba(0,0,0,0.3);"></div>
 
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbxu_1hkxXbkt7RQmNadPQMbnDV5BEiSipgbYbGhihpTIMT0mB_1vSdxvg9SPcL9dVYe/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbyq9hz26E_N1M5jnZr3cqPBUGmzdh_8m7TJbHZi3t3Eid2CBwR_hjvJHyKITMlX9t9J/exec";
     let db = [];
     let materials = [];
     let mode = 'work';
     let selGrade = 'All';
     let selClass = 'All';
+    let teacherPassword = "";
 
     // UI Functions
     function toggleAdmin() {
@@ -224,19 +204,25 @@
     }
     
     function headerLogin() {
-        if(document.getElementById('headerPass').value === "123") {
+        const pass = document.getElementById('headerPass').value;
+        if(pass === "123") {
+            teacherPassword = pass;
             document.getElementById('viewParent').style.display = 'none';
             document.getElementById('viewTeacher').style.display = 'block';
             document.getElementById('teacherPanel').style.display = 'block';
             document.getElementById('adminInputGroup').style.display = 'none';
             document.getElementById('headerPass').value = '';
             fetchData();
-        } else alert("ކުށް ޕާސްވޯޑެއް!");
+        } else {
+            alert("ކުށް ޕާސްވޯޑެއް!");
+        }
     }
 
     function logout() {
         document.getElementById('viewTeacher').style.display = 'none';
         document.getElementById('viewParent').style.display = 'block';
+        teacherPassword = "";
+        db = [];
     }
 
     function showToast(msg) {
@@ -342,7 +328,7 @@
 
     function setMode(m) {
         mode = m;
-        document.querySelectorAll('.mode-pills .pill').forEach(p=>p.classList.remove('active'));
+        document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
         document.getElementById('m_'+m).classList.add('active');
         
         let sel = document.getElementById('itemSelect');
@@ -380,7 +366,7 @@
             let n = findVal(s, noteKey);
             
             let input = mode=='work' 
-                ? `<select class="v-in" data-idx="${s.Index}"><option value="">-</option><option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމައެއް ނުވޭ" ${val=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމަ ނުވޭ</option></select>`
+                ? `<select class="v-in" data-idx="${s.Index}"><option value="">-</option><option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމައެއް ނުވޭ" ${val=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމައެއް ނުވޭ</option></select>`
                 : `<input type="number" class="v-in" data-idx="${s.Index}" value="${val}" style="width:60px" oninput="updRow(this, ${total})">`;
             
             let gradeHtml = "";
@@ -446,10 +432,9 @@
                         if(v) {
                             let xtra = "";
                             if(isMk) {
-                                let g = calcGrade(v, 20); // Default parent view total
+                                let g = calcGrade(v, 20); 
                                 xtra = `<span class="grade-badge ${g.cls}">${g.lbl}</span>`;
                             }
-                            // Status Color
                             let sStyle = "";
                             if(pre=='Week') {
                                 if(v=='ނިމިފައި') sStyle='color:#2e7d32';
@@ -467,17 +452,13 @@
                 h += mkSec("ޔުނިޓް ޓެސްޓް", "Unit Test", 10, true);
                 h += mkSec("CA (އެސެސްމަންޓް)", "CA", 4, true);
 
-                res.innerHTML = h || "<p style='text-align:center'>މަޢުލޫމާތެއް ނުފެނުނު</p>";
+                res.innerHTML = h || "<p>މަޢުލޫމާތެއް ނުފެނުނު</p>";
             } else res.innerHTML = "<p style='color:red; text-align:center; padding:20px;'>ދަރިވަރު ނުފެނުނު!</p>";
             delete window[cb];
         };
         const sc = document.createElement('script');
         sc.src = `${API_URL}?prefix=${cb}&action=read&t=${Date.now()}`;
         document.body.appendChild(sc);
-    }
-    
-    function calculatePercentage(marks, fullMarks) {
-        return Math.round((parseFloat(marks) / parseFloat(fullMarks)) * 100);
     }
 </script>
 </body>
