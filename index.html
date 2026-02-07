@@ -41,6 +41,11 @@
         /* Input styling for Teacher Table */
         .v-in { font-weight: bold; border: 2px solid #b2dfdb; }
         .v-in:focus { border-color: #00796b; outline: none; }
+        
+        /* Pills for Mode Selection */
+        .mode-pills { display: flex; gap: 5px; background: #fff; padding: 5px; border-radius: 25px; border: 1px solid #eee; display: inline-flex; margin-bottom: 10px; }
+        .mode-btn { padding: 8px 15px; border: none; background: none; cursor: pointer; border-radius: 20px; font-size: 13px; }
+        .mode-btn.active { background: #00796b; color: white; }
     </style>
 </head>
 <body>
@@ -69,34 +74,14 @@
         </div>
         <div id="teacherPanel" style="display:none;">
             <div class="card">
+                <div class="mode-pills">
+                    <button class="mode-btn active" onclick="setMode('work')" id="btn-work">ހަފްތާ</button>
+                    <button class="mode-btn" onclick="setMode('test')" id="btn-test">ޔުނިޓް ޓެސްޓް</button>
+                    <button class="mode-btn" onclick="setMode('ca')" id="btn-ca">CA</button>
+                </div>
+
                 <span class="label">ބައި:</span>
-                <select id="colSelect" onchange="renderTeacherTable()">
-                    <optgroup label="Unit Tests">
-                        <option value="Unit Test 1">Unit Test 1</option>
-                        <option value="Unit Test 2">Unit Test 2</option>
-                        <option value="Unit Test 3">Unit Test 3</option>
-                        <option value="Unit Test 4">Unit Test 4</option>
-                        <option value="Unit Test 5">Unit Test 5</option>
-                        <option value="Unit Test 6">Unit Test 6</option>
-                        <option value="Unit Test 7">Unit Test 7</option>
-                        <option value="Unit Test 8">Unit Test 8</option>
-                        <option value="Unit Test 9">Unit Test 9</option>
-                        <option value="Unit Test 10">Unit Test 10</option>
-                    </optgroup>
-                    <optgroup label="Continuous Assessment">
-                        <option value="CA1">CA1</option>
-                        <option value="CA2">CA2</option>
-                        <option value="CA3">CA3</option>
-                        <option value="CA4">CA4</option>
-                    </optgroup>
-                    <optgroup label="Weeks">
-                        <option value="Week1">Week 1</option>
-                        <option value="Week2">Week 2</option>
-                        <option value="Week3">Week 3</option>
-                        <option value="Week4">Week 4</option>
-                        <option value="Week5">Week 5</option>
-                    </optgroup>
-                </select>
+                <select id="itemSelect" onchange="renderTeacherTable()"></select>
 
                 <div class="filter-grid">
                     <div>
@@ -142,9 +127,9 @@
 
 <script>
     // މުހިންމު: ތިޔަބޭފުޅާގެ Web App URL ލައްވާ
-    const API_URL = "https://script.google.com/macros/s/AKfycbz1GRyQ8pAVZfpJ4uUrx5dPBAUMN4-VsB6YNzDEi-5RBFlYSNh-Ff13itG4Twg19XeF/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbwtH5H6xdj5-7x1X1xWBbIQrFXsxHN0E4GvFKtS43raYqD6ga7JJLrx-Y5Ja5I2EVO4/exec";
     let db = [];
-    let currentMode = 'unit'; // Default
+    let currentMode = 'work'; // 'work', 'test', 'ca'
 
     function setTab(t) {
         document.getElementById('parentView').style.display = t==='parent'?'block':'none';
@@ -166,7 +151,7 @@
         window[cb] = (data) => { 
             db = data; 
             updateFilters();
-            renderTeacherTable(); 
+            setMode(currentMode);
             delete window[cb]; 
         };
         const s = document.createElement('script');
@@ -202,35 +187,51 @@
         return student[key] || student[cleanKey] || "";
     }
 
+    function setMode(m) {
+        currentMode = m;
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-' + m).classList.add('active');
+
+        const select = document.getElementById('itemSelect');
+        let html = '';
+        if(m === 'work') {
+            for(let i=1; i<=45; i++) html += `<option value="Week${i}">Week ${i}</option>`;
+            document.getElementById('totalDiv').style.display = 'none';
+            document.getElementById('valHead').innerText = "ހާލަތު";
+            document.getElementById('thG').style.display = "none";
+        } else {
+            let prefix = m === 'test' ? 'Unit Test ' : 'CA';
+            let count = m === 'test' ? 10 : 4;
+            for(let i=1; i<=count; i++) html += `<option value="${prefix}${i}">${prefix}${i}</option>`;
+            document.getElementById('totalDiv').style.display = 'flex';
+            document.getElementById('valHead').innerText = "މާކްސް";
+            document.getElementById('thG').style.display = "table-cell";
+        }
+        select.innerHTML = html;
+        renderTeacherTable();
+    }
+
     function renderTeacherTable() {
-        const col = document.getElementById('colSelect').value;
+        const item = document.getElementById('itemSelect').value;
         const selGrade = document.getElementById('gradeFilter').value;
         const selClass = document.getElementById('classFilter').value;
         const total = document.getElementById('totalMarks').value || 100;
         
-        // Mode detection fixed: 'test' for Unit Tests
-        currentMode = col.startsWith('Week') ? 'work' : (col.startsWith('Unit') ? 'test' : 'ca');
-        
-        // UI Updates
-        document.getElementById('valHead').innerText = currentMode === 'work' ? 'ހާލަތު' : 'މާކްސް';
-        document.getElementById('thG').style.display = currentMode === 'work' ? 'none' : 'table-cell';
-        document.getElementById('totalDiv').style.display = currentMode === 'work' ? 'none' : 'flex';
-
         let filtered = db;
         if(selGrade !== 'All') filtered = filtered.filter(s => String(s.Grade) === String(selGrade));
         if(selClass !== 'All') filtered = filtered.filter(s => String(s.Class) === String(selClass));
 
-        let num = col.match(/\d+/)[0];
-        // Ensure note key uses 'TNote' for 'test' mode
+        let num = item.match(/\d+/)[0];
+        // Correctly set noteKey based on mode
         let noteKey = currentMode === 'work' ? 'Note'+num : (currentMode === 'test' ? 'TNote'+num : 'CANote'+num);
 
         let html = "";
         filtered.forEach(s => {
-            let val = findVal(s, col);
+            let val = findVal(s, item);
             let n = findVal(s, noteKey);
             
             let input = currentMode === 'work' 
-                ? `<select class="v-in" data-idx="${s.Index}"><option value="">-</option><option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމަ ނުވޭ" ${val=='ފުރިހަމަ ނުވޭ'?'selected':''}>ފުރިހަމަ ނުވޭ</option></select>`
+                ? `<select class="v-in" data-idx="${s.Index}"><option value="">-</option><option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމައެއް ނުވޭ" ${val=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމައެއް ނުވޭ</option></select>`
                 : `<input type="number" class="v-in" data-idx="${s.Index}" value="${val}" style="width:60px" oninput="updRow(this, ${total})">`;
             
             let gradeHtml = "";
@@ -251,7 +252,7 @@
 
     async function saveTeacherData() {
         const btn = document.getElementById('sBtn');
-        const item = document.getElementById('colSelect').value;
+        const item = document.getElementById('itemSelect').value;
         const total = document.getElementById('totalMarks').value;
         
         btn.disabled = true; btn.innerText = "ސޭވް ވަނީ...";
@@ -288,8 +289,7 @@
         const idx = document.getElementById('pIdx').value;
         if(!idx) return;
         const res = document.getElementById('pRes');
-        res.innerHTML = '<div class="loader"></div>'; 
-        res.style.display = 'block';
+        res.innerHTML = '<div class="loader"></div>'; res.style.display = 'block';
 
         const cb = 'src_' + Date.now();
         window[cb] = (data) => {
@@ -310,7 +310,6 @@
                 for(let i=1; i<=10; i++) {
                     let v = findVal(s, 'Unit Test '+i); 
                     let n = findVal(s, 'TNote'+i);
-                    // For student view, we can't calculate grade without total, but we can show marks
                     if(v) h += `<div class="st-row"><span>Test ${i}</span><div style="text-align:right"><b>${v}</b><br><small style="color:#666">${n}</small></div></div>`;
                 }
 
