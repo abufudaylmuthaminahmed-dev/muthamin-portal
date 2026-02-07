@@ -9,7 +9,7 @@
         * { font-family: "Faruma", sans-serif; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { background-color: #f0f4f8; margin: 0; padding: 10px; text-align: right; overflow-x: hidden; }
         
-        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: relative; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: relative; min-height: 80vh; }
         
         h1 { color: #00796b; text-align: center; margin-bottom: 25px; font-size: 1.8rem; }
         
@@ -111,7 +111,7 @@
     </div>
 
     <!-- Teacher View -->
-    <div id="teacherView" style="display:none;">
+    <div id="viewTeacher" style="display:none;">
         <div id="teacherPanel">
             <div style="text-align:left; margin-bottom:15px; display:flex; justify-content:space-between;">
                 <button class="btn btn-back" onclick="logout()">← Home</button>
@@ -188,7 +188,7 @@
 <div id="toast" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #323232; color: white; padding: 12px 24px; border-radius: 30px; font-size: 14px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 2000; box-shadow: 0 5px 15px rgba(0,0,0,0.3);"></div>
 
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbyq9hz26E_N1M5jnZr3cqPBUGmzdh_8m7TJbHZi3t3Eid2CBwR_hjvJHyKITMlX9t9J/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbyB1LWnjmsNISaH65BujkX_gUJWYkXLNG2903sUwmmZb5tro9gctFs795pcT7xQdzwb/exec";
     let db = [];
     let materials = [];
     let mode = 'work';
@@ -204,9 +204,7 @@
     }
     
     function headerLogin() {
-        const pass = document.getElementById('headerPass').value;
-        if(pass === "123") {
-            teacherPassword = pass;
+        if(document.getElementById('headerPass').value === "123") {
             document.getElementById('viewParent').style.display = 'none';
             document.getElementById('viewTeacher').style.display = 'block';
             document.getElementById('teacherPanel').style.display = 'block';
@@ -328,7 +326,9 @@
 
     function setMode(m) {
         mode = m;
-        document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+        // Fix for pill selection: remove active from all pills in the mode switcher
+        const modeBtns = document.querySelectorAll('#m_work, #m_test, #m_ca');
+        modeBtns.forEach(p => p.classList.remove('active'));
         document.getElementById('m_'+m).classList.add('active');
         
         let sel = document.getElementById('itemSelect');
@@ -366,7 +366,7 @@
             let n = findVal(s, noteKey);
             
             let input = mode=='work' 
-                ? `<select class="v-in" data-idx="${s.Index}"><option value="">-</option><option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމައެއް ނުވޭ" ${val=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމައެއް ނުވޭ</option></select>`
+                ? `<select class="v-in" data-idx="${s.Index}"><option value="">-</option><option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމައެއް ނުވޭ" ${val=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމަ ނުވޭ</option></select>`
                 : `<input type="number" class="v-in" data-idx="${s.Index}" value="${val}" style="width:60px" oninput="updRow(this, ${total})">`;
             
             let gradeHtml = "";
@@ -452,7 +452,7 @@
                 h += mkSec("ޔުނިޓް ޓެސްޓް", "Unit Test", 10, true);
                 h += mkSec("CA (އެސެސްމަންޓް)", "CA", 4, true);
 
-                res.innerHTML = h || "<p>މަޢުލޫމާތެއް ނުފެނުނު</p>";
+                res.innerHTML = h || "<p style='text-align:center'>މަޢުލޫމާތެއް ނުފެނުނު</p>";
             } else res.innerHTML = "<p style='color:red; text-align:center; padding:20px;'>ދަރިވަރު ނުފެނުނު!</p>";
             delete window[cb];
         };
