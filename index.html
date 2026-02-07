@@ -27,6 +27,8 @@
         
         .btn-mat { background: #f57c00; color: white; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-back { background: #607d8b; width: auto; padding: 8px 20px; font-size: 14px; margin-bottom: 15px; float: left; }
+        .btn-add { background: #1976d2; padding: 8px 15px; font-size: 14px; width: auto; margin-top: 0; }
+        .btn-del { background: #ef5350; padding: 5px 10px; font-size: 12px; width: auto; margin: 0; }
 
         .table-container { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 10px; border: 1px solid #ddd; }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
@@ -34,7 +36,22 @@
         th { background: #00796b; color: white; position: sticky; top: 0; }
         tr:nth-child(even) { background-color: #fcfcfc; }
 
-        .v-in { width: 90px !important; height: 45px; font-size: 18px !important; font-weight: bold; border: 2px solid #b2dfdb !important; }
+        /* Modified Input styling for Teacher Table to fit text */
+        .v-in { 
+            width: 100% !important; 
+            min-width: 140px; /* Increased width for text */
+            height: 45px; 
+            font-size: 14px !important; /* Smaller font for better fit */
+            font-weight: bold; 
+            border: 2px solid #b2dfdb !important; 
+            padding: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        input.v-in { min-width: 80px; } /* Keep number inputs smaller */
+        .v-in:focus { border-color: #00796b !important; outline: none; }
+        
         .n-in { text-align: right !important; min-width: 150px; }
 
         .pills { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; margin-bottom: 10px; }
@@ -53,8 +70,10 @@
 
         /* Materials Modal */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
-        .modal-content { background-color: #fff; margin: 15% auto; padding: 20px; border-radius: 15px; width: 90%; max-width: 500px; text-align: center; }
-        .mat-link { display: block; padding: 15px; margin: 10px 0; background: #e0f2f1; color: #00695c; text-decoration: none; border-radius: 8px; font-weight: bold; border: 1px solid #b2dfdb; }
+        .modal-content { background-color: #fff; margin: 10% auto; padding: 20px; border-radius: 15px; width: 90%; max-width: 500px; text-align: center; max-height: 80vh; overflow-y: auto; }
+        .mat-link { display: flex; align-items: center; justify-content: space-between; padding: 15px; margin: 10px 0; background: #e0f2f1; color: #00695c; text-decoration: none; border-radius: 8px; font-weight: bold; border: 1px solid #b2dfdb; }
+        .mat-item { display: flex; justify-content: space-between; align-items: center; background: #fafafa; padding: 10px; margin-bottom: 5px; border-radius: 8px; border: 1px solid #eee; }
+        .mat-input-group { display: flex; gap: 5px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -66,7 +85,7 @@
     <!-- Parent View -->
     <div id="parentView">
         <div class="card">
-            <h3 style="margin-top:0; color:#555;">ނަތީޖާ ބެލުން</h3>
+            <h3 style="margin-top:0; color:#555;">ދަރިވަރުގެ މަޢުލޫމާތު ބެލުން</h3>
             <input type="number" id="pIdx" placeholder="އިންޑެކްސް ނަންބަރު" inputmode="numeric">
             <button class="btn" id="pBtn" onclick="searchStudent()">ހޯއްދަވާ</button>
         </div>
@@ -92,8 +111,9 @@
             <button class="btn" onclick="login()">ލޮގިން</button>
         </div>
         <div id="teacherPanel" style="display:none;">
-            <div style="text-align:left; margin-bottom:15px;">
+            <div style="text-align:left; margin-bottom:15px; display:flex; justify-content:space-between;">
                 <button class="btn btn-back" onclick="logout()">← Logout</button>
+                <button class="btn btn-add" style="background:#f57c00;" onclick="openMatManager()">ފިލާވަޅު މެނޭޖް 📂</button>
             </div>
             
             <div class="card">
@@ -136,27 +156,56 @@
     </div>
 </div>
 
-<!-- Materials Modal -->
+<!-- Parent Materials Modal -->
 <div id="matModal" class="modal">
     <div class="modal-content">
         <h2 style="color:#00796b;">📚 ފިލާވަޅުތައް</h2>
-        <a href="https://drive.google.com" target="_blank" class="mat-link">📂 ގޫގުލް ޑްރައިވް ފޯލްޑަރ</a>
-        <a href="#" target="_blank" class="mat-link">📝 ވޯކްޝީޓްތައް</a>
-        <a href="#" target="_blank" class="mat-link">📘 ޓެކްސްޓް ފޮތް</a>
-        <button class="btn" style="background:#78909c; margin-top:15px;" onclick="closeMaterials()">ބަންދުކުރޭ</button>
+        <div id="matListParent">
+            <p>ލޯޑްވަނީ...</p>
+        </div>
+        <button class="btn" style="background:#78909c; margin-top:15px;" onclick="closeModal('matModal')">ބަންދުކުރޭ</button>
+    </div>
+</div>
+
+<!-- Teacher Materials Manager Modal -->
+<div id="matManagerModal" class="modal">
+    <div class="modal-content">
+        <h3 style="color:#00796b;">ފިލާވަޅު މެނޭޖްކުރުން</h3>
+        
+        <div class="mat-input-group">
+            <input type="text" id="newMatTitle" placeholder="ނަން (މިސާލު: ވޯކްޝީޓް 1)">
+            <input type="text" id="newMatLink" placeholder="ލިންކް (Google Drive Link)">
+        </div>
+        <button class="btn btn-add" onclick="addMaterial()">އިތުރުކުރޭ</button>
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
+        
+        <div id="matListTeacher" style="text-align:left; max-height: 200px; overflow-y:auto;"></div>
+        
+        <div style="margin-top:15px; display:flex; gap:10px;">
+            <button class="btn" style="background:#2e7d32; flex:1;" onclick="saveMaterials()">ސޭވް</button>
+            <button class="btn" style="background:#78909c; flex:1;" onclick="closeModal('matManagerModal')">ބަންދު</button>
+        </div>
     </div>
 </div>
 
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwyQ_JXrT6aeYhAccNbYBecUUaOb_dEfr0l-jg7gteWFRM40nKKGihWb7OyQmmQ5Pa5/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbwtH5H6xdj5-7x1X1xWBbIQrFXsxHN0E4GvFKtS43raYqD6ga7JJLrx-Y5Ja5I2EVO4/exec";
     let db = [];
+    let materials = []; // Store materials here
     let mode = 'work';
     let selGrade = 'All';
     let selClass = 'All';
 
-    function openMaterials() { document.getElementById('matModal').style.display = "block"; }
-    function closeMaterials() { document.getElementById('matModal').style.display = "none"; }
-    window.onclick = function(event) { if (event.target == document.getElementById('matModal')) closeMaterials(); }
+    // Modal Functions
+    function openMaterials() { 
+        document.getElementById('matModal').style.display = "block"; 
+        renderParentMaterials();
+    }
+    function openMatManager() { 
+        document.getElementById('matManagerModal').style.display = "block"; 
+        renderTeacherMaterials();
+    }
+    function closeModal(id) { document.getElementById(id).style.display = "none"; }
 
     function toggleAdmin() {
         document.getElementById('parentView').style.display = 'none';
@@ -183,7 +232,12 @@
         document.getElementById('tBody').innerHTML = '<tr><td colspan="5"><div class="loader"></div> ލޯޑް ވަނީ...</td></tr>';
         const cb = 'jsonp_' + Date.now();
         window[cb] = (data) => { 
-            db = data; 
+            db = data;
+            // Try to find materials row (Index = MATERIALS)
+            const matRow = db.find(r => r.Index === "MATERIALS");
+            if(matRow && matRow.Note1) {
+                try { materials = JSON.parse(matRow.Note1); } catch(e) { materials = []; }
+            }
             updateFilters();
             setMode(mode); 
             delete window[cb]; 
@@ -193,8 +247,71 @@
         document.body.appendChild(s);
     }
 
+    // Material Functions
+    function addMaterial() {
+        const t = document.getElementById('newMatTitle').value;
+        const l = document.getElementById('newMatLink').value;
+        if(t && l) {
+            materials.push({title: t, link: l});
+            document.getElementById('newMatTitle').value = "";
+            document.getElementById('newMatLink').value = "";
+            renderTeacherMaterials();
+        } else alert("ނަމާއި ލިންކު ޖައްސަވާ!");
+    }
+
+    function removeMaterial(idx) {
+        materials.splice(idx, 1);
+        renderTeacherMaterials();
+    }
+
+    function renderTeacherMaterials() {
+        const div = document.getElementById('matListTeacher');
+        div.innerHTML = materials.map((m, i) => `
+            <div class="mat-item">
+                <span>${m.title}</span>
+                <button class="btn btn-del" onclick="removeMaterial(${i})">🗑</button>
+            </div>
+        `).join('');
+    }
+
+    function renderParentMaterials() {
+        const div = document.getElementById('matListParent');
+        if(materials.length === 0) {
+            div.innerHTML = "<p>މިވަގުތު އެއްވެސް ފިލާވަޅެއް ނެތް</p>";
+        } else {
+            div.innerHTML = materials.map(m => `
+                <a href="${m.link}" target="_blank" class="mat-link">
+                    <span>${m.title}</span>
+                    <span>📥</span>
+                </a>
+            `).join('');
+        }
+    }
+
+    function saveMaterials() {
+        // We save materials to a dummy student row with Index "MATERIALS" in column Note1
+        // Make sure you create a row in the sheet with Index "MATERIALS"
+        const updates = [{
+            index: "MATERIALS",
+            val: "",
+            note: JSON.stringify(materials)
+        }];
+
+        const p = new URLSearchParams({ 
+            action:'save', 
+            item: "Week1", // Saving to Week1/Note1 columns of MATERIALS row
+            mode: 'work',
+            updates: JSON.stringify(updates) 
+        });
+        
+        fetch(`${API_URL}?${p.toString()}`, { mode:'no-cors', method: 'POST' }).then(() => {
+            alert("ފިލާވަޅުތައް ސޭވްކުރެވިއްޖެ!");
+            closeModal('matManagerModal');
+        });
+    }
+
     function updateFilters() {
-        const grades = [...new Set(db.map(s => s.Grade))].filter(Boolean).sort();
+        const grades = [...new Set(db.map(s => s.Grade))].filter(g => g && g !== "undefined").sort();
         let gHtml = `<div class="pill ${selGrade=='All'?'active':''}" onclick="selGrade='All';selClass='All';updateFilters();renderTeacherTable()">All</div>`;
         grades.forEach(g => {
             gHtml += `<div class="pill ${selGrade==g?'active':''}" onclick="selGrade='${g}';selClass='All';updateFilters();renderTeacherTable()">Gr ${g}</div>`;
@@ -257,9 +374,9 @@
         let num = item.match(/\d+/)[0];
         let noteKey = mode=='work' ? 'Note'+num : (mode=='test'?'TNote'+num:'CANote'+num);
 
-        let filtered = db;
-        if(selGrade !== 'All') filtered = filtered.filter(s => String(s.Grade) === String(selGrade));
-        if(selClass !== 'All') filtered = filtered.filter(s => String(s.Class) === String(selClass));
+        let filtered = db.filter(x => x.Index !== "MATERIALS"); // Hide materials row
+        if(selGrade !== 'All') filtered = filtered.filter(x => String(x.Grade) === String(selGrade));
+        if(selClass !== 'All') filtered = filtered.filter(x => String(x.Class) === String(selClass));
 
         let html = "";
         filtered.forEach(s => {
@@ -267,7 +384,7 @@
             let n = findVal(s, noteKey);
             
             let input = mode=='work' 
-                ? `<select class="v-in" data-idx="${s.Index}"><option value="">-</option><option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމައެއް ނުވޭ" ${val=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމަ ނުވޭ</option></select>`
+                ? `<select class="v-in" data-idx="${s.Index}"><option value="">-</option><option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމައެއް ނުވޭ" ${val=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމައެއް ނުވޭ</option></select>`
                 : `<input type="number" class="v-in" data-idx="${s.Index}" value="${val}" style="width:60px" oninput="updRow(this, ${total})">`;
             
             let gradeHtml = "";
@@ -286,16 +403,22 @@
         document.getElementById('g-'+el.dataset.idx).innerHTML = el.value ? `<span class="grade-badge ${g.cls}">${g.lbl} (${g.perc})</span>` : '';
     }
 
-    async function saveData() {
+    async function saveTeacherData() {
         const btn = document.getElementById('sBtn');
         const item = document.getElementById('itemSelect').value;
+        const total = document.getElementById('totalMarks').value;
+        
         btn.disabled = true; btn.innerText = "ސޭވް ވަނީ...";
         
-        const updates = Array.from(document.querySelectorAll('.v-in')).map((el, i) => ({
-            index: el.dataset.idx,
-            val: el.value,
-            note: document.querySelectorAll('.n-in')[i].value
-        }));
+        const updates = Array.from(document.querySelectorAll('.v-in')).map((el, i) => {
+            let val = el.value;
+            let note = document.querySelectorAll('.n-in')[i].value;
+            return {
+                index: el.dataset.idx,
+                val: val,
+                note: note
+            };
+        });
 
         try {
             const p = new URLSearchParams({ action:'save', item:item, mode: mode, updates:JSON.stringify(updates) });
@@ -312,10 +435,16 @@
         const res = document.getElementById('pRes');
         res.innerHTML = '<div class="loader"></div>'; res.style.display = 'block';
 
-        const cb = 'src_' + Date.now();
+        const cb = 's'+Date.now();
         window[cb] = (data) => {
             const s = data.find(x => String(x.Index) === String(idx));
             if(s) {
+                // Check for materials
+                const matRow = data.find(r => r.Index === "MATERIALS");
+                if(matRow && matRow.Note1) {
+                     try { materials = JSON.parse(matRow.Note1); } catch(e) {}
+                }
+
                 let h = `<div class="st-header"><div><h2>${s.Name}</h2><p>ގްރޭޑް ${s.Grade} ${s.Class}</p></div><h1>${s.Index}</h1></div>`;
                 
                 const mkSec = (title, pre, max, isMk) => {
@@ -328,7 +457,7 @@
                         if(v) {
                             let xtra = "";
                             if(isMk) {
-                                let g = calcGrade(v, 20); 
+                                let g = calcGrade(v, 20); // Default to 20 for parent view as we don't store total
                                 xtra = `<span class="grade-badge ${g.cls}">${g.lbl}</span>`;
                             }
                             r += `<div class="st-row"><span>${k}</span><div style="text-align:right"><b>${v}</b> ${xtra}<br><small style="color:#666">${n}</small></div></div>`;
