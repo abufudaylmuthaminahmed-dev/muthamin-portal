@@ -8,20 +8,24 @@
         @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
         * { font-family: "Faruma", sans-serif; box-sizing: border-box; }
         body { background-color: #f0f4f8; margin: 0; padding: 10px; text-align: right; }
-        
-        .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: relative; }
-        
-        h1 { color: #00796b; text-align: center; margin-bottom: 25px; margin-top: 10px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h1 { color: #00796b; text-align: center; margin-bottom: 25px; }
         
         /* Admin Link */
         .admin-link { position: absolute; top: 20px; left: 20px; font-size: 12px; color: #999; cursor: pointer; background: #f5f5f5; padding: 5px 12px; border-radius: 15px; transition: 0.3s; }
         .admin-link:hover { background: #e0e0e0; color: #333; }
+        
+        /* Admin Input */
+        .admin-input-group { display: none; align-items: center; gap: 5px; margin-top: 5px; }
+        .mini-input { width: 100px; padding: 5px; border: 1px solid #ccc; border-radius: 15px; font-size: 12px; text-align: center; }
+        .mini-btn { padding: 5px 10px; background: #00796b; color: white; border: none; border-radius: 15px; font-size: 12px; cursor: pointer; }
 
+        .tabs { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid #eee; }
+        .tab-btn { flex: 1; padding: 15px; border: none; background: none; cursor: pointer; font-weight: bold; font-size: 16px; }
+        .tab-btn.active { color: #00796b; border-bottom: 4px solid #00796b; }
         .card { background: #f9f9f9; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #eee; }
-        
         input, select { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; text-align: center; }
-        
-        .btn { width: 100%; padding: 16px; background: #00796b; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; transition: 0.3s; margin-top: 10px; }
+        .btn { width: 100%; padding: 16px; background: #00796b; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; transition: 0.3s; }
         .btn:hover { background: #004d40; }
         .btn:disabled { background: #ccc; }
         
@@ -36,22 +40,7 @@
         th { background: #00796b; color: white; position: sticky; top: 0; }
         tr:nth-child(even) { background-color: #fcfcfc; }
 
-        /* Modified Input styling for Teacher Table to fit text */
-        .v-in { 
-            width: 100% !important; 
-            min-width: 140px; /* Increased width for text */
-            height: 45px; 
-            font-size: 14px !important; /* Smaller font for better fit */
-            font-weight: bold; 
-            border: 2px solid #b2dfdb !important; 
-            padding: 5px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        input.v-in { min-width: 80px; } /* Keep number inputs smaller */
-        .v-in:focus { border-color: #00796b !important; outline: none; }
-        
+        .v-in { width: 90px !important; height: 45px; font-size: 18px !important; font-weight: bold; border: 2px solid #b2dfdb !important; }
         .n-in { text-align: right !important; min-width: 150px; }
 
         .pills { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; margin-bottom: 10px; }
@@ -70,7 +59,7 @@
 
         /* Materials Modal */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
-        .modal-content { background-color: #fff; margin: 10% auto; padding: 20px; border-radius: 15px; width: 90%; max-width: 500px; text-align: center; max-height: 80vh; overflow-y: auto; }
+        .modal-content { background-color: #fff; margin: 15% auto; padding: 20px; border-radius: 15px; width: 90%; max-width: 500px; text-align: center; max-height: 80vh; overflow-y: auto; }
         .mat-link { display: flex; align-items: center; justify-content: space-between; padding: 15px; margin: 10px 0; background: #e0f2f1; color: #00695c; text-decoration: none; border-radius: 8px; font-weight: bold; border: 1px solid #b2dfdb; }
         .mat-item { display: flex; justify-content: space-between; align-items: center; background: #fafafa; padding: 10px; margin-bottom: 5px; border-radius: 8px; border: 1px solid #eee; }
         .mat-input-group { display: flex; gap: 5px; margin-bottom: 10px; }
@@ -79,18 +68,24 @@
 <body>
 
 <div class="container">
-    <span class="admin-link" onclick="toggleAdmin()">Admin 🔒</span>
+    <div style="position:absolute; top:20px; left:20px; z-index:100;">
+        <span class="admin-link" onclick="toggleAdmin()">Admin 🔒</span>
+        <div id="adminInputGroup" class="admin-input-group">
+            <input type="password" id="headerPass" class="mini-input" placeholder="Password">
+            <button onclick="headerLogin()" class="mini-btn">Go</button>
+        </div>
+    </div>
+
     <h1>🌙 އިސްލާމް ޕޯޓަލް</h1>
 
     <!-- Parent View -->
-    <div id="parentView">
+    <div id="viewParent">
         <div class="card">
             <h3 style="margin-top:0; color:#555;">ދަރިވަރުގެ މަޢުލޫމާތު ބެލުން</h3>
             <input type="number" id="pIdx" placeholder="އިންޑެކްސް ނަންބަރު" inputmode="numeric">
             <button class="btn" id="pBtn" onclick="searchStudent()">ހޯއްދަވާ</button>
         </div>
 
-        <!-- Materials Section -->
         <div class="card" style="text-align:center; border: 1px dashed #f57c00; background:#fff3e0;">
             <h3 style="margin-top:0; color:#e65100;">ފިލާވަޅުތައް</h3>
             <p style="font-size:14px; color:#666;">ފޮތްތަކާއި ނޯޓްސް ޑައުންލޯޑް ކުރެއްވުމަށް</p>
@@ -103,16 +98,10 @@
     </div>
 
     <!-- Teacher View -->
-    <div id="teacherView" style="display:none;">
-        <div id="loginArea" class="card" style="max-width: 400px; margin: 0 auto; text-align: center;">
-            <button class="btn btn-back" onclick="logout()">← Home</button>
-            <h3 style="margin-top:10px;">މުދައްރިސުންގެ ލޮގިން</h3>
-            <input type="password" id="pass" placeholder="ޕާސްވޯޑް">
-            <button class="btn" onclick="login()">ލޮގިން</button>
-        </div>
-        <div id="teacherPanel" style="display:none;">
+    <div id="viewTeacher" style="display:none;">
+        <div id="teacherPanel">
             <div style="text-align:left; margin-bottom:15px; display:flex; justify-content:space-between;">
-                <button class="btn btn-back" onclick="logout()">← Logout</button>
+                <button class="btn btn-back" onclick="logout()">← Home</button>
                 <button class="btn btn-add" style="background:#f57c00;" onclick="openMatManager()">ފިލާވަޅު މެނޭޖް 📂</button>
             </div>
             
@@ -156,31 +145,26 @@
     </div>
 </div>
 
-<!-- Parent Materials Modal -->
+<!-- Materials Modal (Parent) -->
 <div id="matModal" class="modal">
     <div class="modal-content">
         <h2 style="color:#00796b;">📚 ފިލާވަޅުތައް</h2>
-        <div id="matListParent">
-            <p>ލޯޑްވަނީ...</p>
-        </div>
+        <div id="matListParent"><p>ލޯޑްވަނީ...</p></div>
         <button class="btn" style="background:#78909c; margin-top:15px;" onclick="closeModal('matModal')">ބަންދުކުރޭ</button>
     </div>
 </div>
 
-<!-- Teacher Materials Manager Modal -->
+<!-- Materials Manager (Teacher) -->
 <div id="matManagerModal" class="modal">
     <div class="modal-content">
         <h3 style="color:#00796b;">ފިލާވަޅު މެނޭޖްކުރުން</h3>
-        
         <div class="mat-input-group">
-            <input type="text" id="newMatTitle" placeholder="ނަން (މިސާލު: ވޯކްޝީޓް 1)">
-            <input type="text" id="newMatLink" placeholder="ލިންކް (Google Drive Link)">
+            <input type="text" id="newMatTitle" placeholder="ނަން">
+            <input type="text" id="newMatLink" placeholder="ލިންކް (URL)">
         </div>
-        <button class="btn btn-add" onclick="addMaterial()">އިތުރުކުރޭ</button>
+        <button class="btn btn-add" style="background:#1976d2;" onclick="addMaterial()">އިތުރުކުރޭ</button>
         <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
-        
         <div id="matListTeacher" style="text-align:left; max-height: 200px; overflow-y:auto;"></div>
-        
         <div style="margin-top:15px; display:flex; gap:10px;">
             <button class="btn" style="background:#2e7d32; flex:1;" onclick="saveMaterials()">ސޭވް</button>
             <button class="btn" style="background:#78909c; flex:1;" onclick="closeModal('matManagerModal')">ބަންދު</button>
@@ -188,15 +172,47 @@
     </div>
 </div>
 
+<div id="toast" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #323232; color: white; padding: 12px 24px; border-radius: 30px; font-size: 14px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 2000; box-shadow: 0 5px 15px rgba(0,0,0,0.3);"></div>
+
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbyI6zOoJtYlvU9OyVREfXpSovn4LmyMb-K3WvMNVcgNpak9LpqnCEUmgfY_rh0YWg6h/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbw-aVcSz5MFzzehKKZU76jRN69_KEJoumTtuOQYZg57Dl8A4lcklGfbGsJU8fHVsJpY/exec";
+    
     let db = [];
-    let materials = []; // Store materials here
+    let materials = [];
     let mode = 'work';
     let selGrade = 'All';
     let selClass = 'All';
 
-    // Modal Functions
+    // UI Functions
+    function toggleAdmin() {
+        const grp = document.getElementById('adminInputGroup');
+        if(grp.style.display === 'flex') grp.style.display = 'none';
+        else { grp.style.display = 'flex'; document.getElementById('headerPass').focus(); }
+    }
+    
+    function headerLogin() {
+        if(document.getElementById('headerPass').value === "123") {
+            document.getElementById('viewParent').style.display = 'none';
+            document.getElementById('viewTeacher').style.display = 'block';
+            document.getElementById('teacherPanel').style.display = 'block';
+            document.getElementById('adminInputGroup').style.display = 'none';
+            document.getElementById('headerPass').value = '';
+            fetchData();
+        } else alert("ކުށް ޕާސްވޯޑެއް!");
+    }
+
+    function logout() {
+        document.getElementById('viewTeacher').style.display = 'none';
+        document.getElementById('viewParent').style.display = 'block';
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.innerText = msg; t.style.opacity = '1'; t.style.bottom = '40px';
+        setTimeout(() => { t.style.opacity = '0'; t.style.bottom = '20px'; }, 3000);
+    }
+
+    // Material Functions
     function openMaterials() { 
         document.getElementById('matModal').style.display = "block"; 
         renderParentMaterials();
@@ -206,37 +222,77 @@
         renderTeacherMaterials();
     }
     function closeModal(id) { document.getElementById(id).style.display = "none"; }
-
-    function toggleAdmin() {
-        document.getElementById('parentView').style.display = 'none';
-        document.getElementById('teacherView').style.display = 'block';
-        document.getElementById('loginArea').style.display = 'block';
-        document.getElementById('teacherPanel').style.display = 'none';
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('matModal')) closeModal('matModal');
+        if (event.target == document.getElementById('matManagerModal')) closeModal('matManagerModal');
     }
 
-    function logout() {
-        document.getElementById('teacherView').style.display = 'none';
-        document.getElementById('parentView').style.display = 'block';
-        document.getElementById('pass').value = '';
+    function addMaterial() {
+        const t = document.getElementById('newMatTitle').value;
+        const l = document.getElementById('newMatLink').value;
+        if(t && l) {
+            materials.push({title: t, link: l});
+            document.getElementById('newMatTitle').value = "";
+            document.getElementById('newMatLink').value = "";
+            renderTeacherMaterials();
+        } else alert("މައުލޫމާތު ފުރިހަމަކުރައްވާ!");
+    }
+    
+    function removeMaterial(idx) { materials.splice(idx, 1); renderTeacherMaterials(); }
+    
+    function renderTeacherMaterials() {
+        document.getElementById('matListTeacher').innerHTML = materials.map((m, i) => `
+            <div class="mat-item"><span>${m.title}</span><button class="btn btn-del" onclick="removeMaterial(${i})">🗑</button></div>
+        `).join('');
+    }
+    
+    function renderParentMaterials() {
+        document.getElementById('matListParent').innerHTML = materials.length ? materials.map(m => `
+            <a href="${m.link}" target="_blank" class="mat-link"><span>${m.title}</span><span>📥</span></a>
+        `).join('') : "<p>ފިލާވަޅެއް ނެތް</p>";
     }
 
-    function login() {
-        if(document.getElementById('pass').value === "123") {
-            document.getElementById('loginArea').style.display='none';
-            document.getElementById('teacherPanel').style.display='block';
-            fetchData();
-        } else alert("ކުށް ޕާސްވޯޑެއް!");
+    async function saveMaterials() {
+        // Save materials to "Week1" of row with Index "MATERIALS" and Note1
+        const updates = [{
+            index: "MATERIALS",
+            val: "LINKS", 
+            note: JSON.stringify(materials)
+        }];
+
+        try {
+            await fetch(API_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify({
+                    action: 'save',
+                    item: "Week1", // Maps to Note1 in Code.gs
+                    mode: 'work',
+                    updates: JSON.stringify(updates)
+                })
+            });
+            alert("ފިލާވަޅުތައް ސޭވްކުރެވިއްޖެ!");
+            closeModal('matManagerModal');
+        } catch(e) {
+            alert("މައްސަލައެއް ދިމާވެއްޖެ");
+        }
     }
 
+    // Data Fetching
     function fetchData() {
         document.getElementById('tBody').innerHTML = '<tr><td colspan="5"><div class="loader"></div> ލޯޑް ވަނީ...</td></tr>';
         const cb = 'jsonp_' + Date.now();
         window[cb] = (data) => { 
             db = data;
-            // Try to find materials row (Index = MATERIALS)
+            // Load materials from DB if exists
             const matRow = db.find(r => r.Index === "MATERIALS");
-            if(matRow && matRow.Note1) {
-                try { materials = JSON.parse(matRow.Note1); } catch(e) { materials = []; }
+            if(matRow) {
+                // Try getting Note1 or note1
+                const noteVal = matRow.Note1 || matRow.note1;
+                if(noteVal) {
+                    try { materials = JSON.parse(noteVal); } catch(e) { materials = []; }
+                }
             }
             updateFilters();
             setMode(mode); 
@@ -247,84 +303,17 @@
         document.body.appendChild(s);
     }
 
-    // Material Functions
-    function addMaterial() {
-        const t = document.getElementById('newMatTitle').value;
-        const l = document.getElementById('newMatLink').value;
-        if(t && l) {
-            materials.push({title: t, link: l});
-            document.getElementById('newMatTitle').value = "";
-            document.getElementById('newMatLink').value = "";
-            renderTeacherMaterials();
-        } else alert("ނަމާއި ލިންކު ޖައްސަވާ!");
-    }
-
-    function removeMaterial(idx) {
-        materials.splice(idx, 1);
-        renderTeacherMaterials();
-    }
-
-    function renderTeacherMaterials() {
-        const div = document.getElementById('matListTeacher');
-        div.innerHTML = materials.map((m, i) => `
-            <div class="mat-item">
-                <span>${m.title}</span>
-                <button class="btn btn-del" onclick="removeMaterial(${i})">🗑</button>
-            </div>
-        `).join('');
-    }
-
-    function renderParentMaterials() {
-        const div = document.getElementById('matListParent');
-        if(materials.length === 0) {
-            div.innerHTML = "<p>މިވަގުތު އެއްވެސް ފިލާވަޅެއް ނެތް</p>";
-        } else {
-            div.innerHTML = materials.map(m => `
-                <a href="${m.link}" target="_blank" class="mat-link">
-                    <span>${m.title}</span>
-                    <span>📥</span>
-                </a>
-            `).join('');
-        }
-    }
-
-    function saveMaterials() {
-        // We save materials to a dummy student row with Index "MATERIALS" in column Note1
-        // Make sure you create a row in the sheet with Index "MATERIALS"
-        const updates = [{
-            index: "MATERIALS",
-            val: "",
-            note: JSON.stringify(materials)
-        }];
-
-        const p = new URLSearchParams({ 
-            action:'save', 
-            item: "Week1", // Saving to Week1/Note1 columns of MATERIALS row
-            mode: 'work',
-            updates: JSON.stringify(updates) 
-        });
-        
-        fetch(`${API_URL}?${p.toString()}`, { mode:'no-cors', method: 'POST' }).then(() => {
-            alert("ފިލާވަޅުތައް ސޭވްކުރެވިއްޖެ!");
-            closeModal('matManagerModal');
-        });
-    }
-
     function updateFilters() {
-        const grades = [...new Set(db.map(s => s.Grade))].filter(g => g && g !== "undefined").sort();
+        const grades = [...new Set(db.map(s => s.Grade))].filter(g => g && g!=="undefined" && g!=="MATERIALS").sort();
         let gHtml = `<div class="pill ${selGrade=='All'?'active':''}" onclick="selGrade='All';selClass='All';updateFilters();renderTeacherTable()">All</div>`;
-        grades.forEach(g => {
-            gHtml += `<div class="pill ${selGrade==g?'active':''}" onclick="selGrade='${g}';selClass='All';updateFilters();renderTeacherTable()">Gr ${g}</div>`;
-        });
+        grades.forEach(g => gHtml += `<div class="pill ${selGrade==g?'active':''}" onclick="selGrade='${g}';selClass='All';updateFilters();renderTeacherTable()">Gr ${g}</div>`);
         document.getElementById('gradeFilter').innerHTML = gHtml;
 
         let cHtml = '';
         if(selGrade !== 'All') {
             const classes = [...new Set(db.filter(x=>x.Grade==selGrade).map(x=>x.Class))].filter(Boolean).sort();
             cHtml = `<div class="pill ${selClass=='All'?'active':''}" onclick="selClass='All';renderTeacherTable()">All</div>`;
-            classes.forEach(c => {
-                cHtml += `<div class="pill ${selClass==c?'active':''}" onclick="selClass='${c}';renderTeacherTable()">${c}</div>`;
-            });
+            classes.forEach(c => cHtml += `<div class="pill ${selClass==c?'active':''}" onclick="selClass='${c}';renderTeacherTable()">${c}</div>`);
         }
         document.getElementById('classFilter').innerHTML = cHtml;
     }
@@ -374,7 +363,7 @@
         let num = item.match(/\d+/)[0];
         let noteKey = mode=='work' ? 'Note'+num : (mode=='test'?'TNote'+num:'CANote'+num);
 
-        let filtered = db.filter(x => x.Index !== "MATERIALS"); // Hide materials row
+        let filtered = db.filter(x => x.Index !== "MATERIALS");
         if(selGrade !== 'All') filtered = filtered.filter(x => String(x.Grade) === String(selGrade));
         if(selClass !== 'All') filtered = filtered.filter(x => String(x.Class) === String(selClass));
 
@@ -384,7 +373,7 @@
             let n = findVal(s, noteKey);
             
             let input = mode=='work' 
-                ? `<select class="v-in" data-idx="${s.Index}"><option value="">-</option><option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމައެއް ނުވޭ" ${val=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމައެއް ނުވޭ</option></select>`
+                ? `<select class="v-in" data-idx="${s.Index}"><option value="">-</option><option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމައެއް ނުވޭ" ${val=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމަ ނުވޭ</option></select>`
                 : `<input type="number" class="v-in" data-idx="${s.Index}" value="${val}" style="width:60px" oninput="updRow(this, ${total})">`;
             
             let gradeHtml = "";
@@ -393,7 +382,7 @@
                 gradeHtml = val ? `<span class="grade-badge ${g.cls}">${g.lbl} (${g.perc})</span>` : '-';
             }
 
-            html += `<tr><td>${s.Index}</td><td style="text-align:right">${s.Name}<br><small style="color:#888">${s.Grade} ${s.Class}</small></td><td>${input} <span id="g-${s.Index}">${gradeHtml}</span></td>${mode!='work' ? `<td></td>` : ''}<td><input type="text" class="n-in" data-idx="${s.Index}" value="${n}" placeholder="..."></td></tr>`;
+            html += `<tr><td><b>${s.Index}</b></td><td style="text-align:right">${s.Name}<br><small style="color:#888">${s.Grade} ${s.Class}</small></td><td>${input} <span id="g-${s.Index}">${gradeHtml}</span></td>${mode!='work' ? `<td></td>` : ''}<td><input type="text" class="n-in" data-idx="${s.Index}" value="${n}" placeholder="..."></td></tr>`;
         });
         document.getElementById('tBody').innerHTML = html || "<tr><td colspan='5'>ޑޭޓާ އެއް ނެތް</td></tr>";
     }
@@ -410,19 +399,24 @@
         
         btn.disabled = true; btn.innerText = "ސޭވް ވަނީ...";
         
-        const updates = Array.from(document.querySelectorAll('.v-in')).map((el, i) => {
-            let val = el.value;
-            let note = document.querySelectorAll('.n-in')[i].value;
-            return {
-                index: el.dataset.idx,
-                val: val,
-                note: note
-            };
-        });
+        const updates = Array.from(document.querySelectorAll('.v-in')).map((el, i) => ({
+            index: el.dataset.idx,
+            val: el.value,
+            note: document.querySelectorAll('.n-in')[i].value
+        }));
 
         try {
-            const p = new URLSearchParams({ action:'save', item:item, mode: mode, updates:JSON.stringify(updates) });
-            await fetch(`${API_URL}?${p.toString()}`, { mode:'no-cors', method: 'POST' });
+            await fetch(API_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify({
+                    action: 'save',
+                    item: item,
+                    mode: mode,
+                    updates: JSON.stringify(updates)
+                })
+            });
             alert("ބަދަލުތައް ފޮނުވިއްޖެ!");
             setTimeout(fetchData, 1500);
         } catch(e) { alert("މައްސަލައެއް ދިމާވެއްޖެ"); }
@@ -439,12 +433,6 @@
         window[cb] = (data) => {
             const s = data.find(x => String(x.Index) === String(idx));
             if(s) {
-                // Check for materials
-                const matRow = data.find(r => r.Index === "MATERIALS");
-                if(matRow && matRow.Note1) {
-                     try { materials = JSON.parse(matRow.Note1); } catch(e) {}
-                }
-
                 let h = `<div class="st-header"><div><h2>${s.Name}</h2><p>ގްރޭޑް ${s.Grade} ${s.Class}</p></div><h1>${s.Index}</h1></div>`;
                 
                 const mkSec = (title, pre, max, isMk) => {
@@ -457,10 +445,19 @@
                         if(v) {
                             let xtra = "";
                             if(isMk) {
-                                let g = calcGrade(v, 20); // Default to 20 for parent view as we don't store total
+                                let g = calcGrade(v, 20); // Default parent view total
                                 xtra = `<span class="grade-badge ${g.cls}">${g.lbl}</span>`;
                             }
-                            r += `<div class="st-row"><span>${k}</span><div style="text-align:right"><b>${v}</b> ${xtra}<br><small style="color:#666">${n}</small></div></div>`;
+                            
+                            // Color logic for status
+                            let sStyle = "";
+                            if(pre=='Week') {
+                                if(v=='ނިމިފައި') sStyle='color:#2e7d32';
+                                else if(v=='ނުނިމޭ') sStyle='color:#c62828';
+                                else sStyle='color:#ef6c00';
+                            }
+
+                            r += `<div class="st-row"><span>${k}</span><div style="text-align:right"><b style="${sStyle}">${v}</b> ${xtra}<br><small style="color:#666">${n}</small></div></div>`;
                         }
                     }
                     return r ? `<div class="cat-title">${title}</div>` + r : "";
