@@ -6,67 +6,88 @@
     <title>އިސްލާމް ޕޯޓަލް</title>
     <style>
         @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
-        * { font-family: "Faruma", sans-serif; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #f0f4f8; margin: 0; padding: 10px; text-align: right; overflow-x: hidden; }
+        @font-face { font-family: 'MV Waheed'; src: local('MV Waheed'), url('https://fonts.cdnfonts.com/s/73114/MV_Waheed.woff') format('woff'); }
         
-        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: relative; min-height: 80vh; }
+        * { font-family: "Faruma", "MV Waheed", sans-serif; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        h1 { color: #00796b; text-align: center; margin-bottom: 25px; font-size: 1.8rem; }
+        body { background-color: #f0f4f8; margin: 0; padding: 15px; text-align: right; overflow-x: hidden; }
         
-        /* Admin Link */
-        .admin-link { position: absolute; top: 20px; left: 20px; font-size: 12px; color: #999; cursor: pointer; background: #f5f5f5; padding: 5px 12px; border-radius: 15px; transition: 0.3s; }
-        .admin-link:hover { background: #e0e0e0; color: #333; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); position: relative; min-height: 80vh; }
         
-        /* Admin Input */
-        .admin-input-group { display: none; align-items: center; gap: 5px; margin-top: 5px; }
-        .mini-input { width: 100px; padding: 5px; border: 1px solid #ccc; border-radius: 15px; font-size: 12px; text-align: center; }
-        .mini-btn { padding: 5px 10px; background: #00796b; color: white; border: none; border-radius: 15px; font-size: 12px; cursor: pointer; }
+        h1 { 
+            color: #00796b; 
+            text-align: center; 
+            margin-top: 20px; 
+            margin-bottom: 40px; 
+            font-family: "MV Waheed", "Faruma", sans-serif; 
+            font-size: 2.2em;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+        }
 
-        .tabs { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid #eee; }
-        .tab-btn { flex: 1; padding: 15px; border: none; background: none; cursor: pointer; font-weight: bold; font-size: 16px; }
-        .tab-btn.active { color: #00796b; border-bottom: 4px solid #00796b; }
-        .card { background: #f9f9f9; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #eee; }
-        input, select { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; text-align: center; }
-        .btn { width: 100%; padding: 16px; background: #00796b; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; }
-        .btn:hover { background: #004d40; }
-        .btn:disabled { background: #ccc; }
+        .card { border: 1px solid #eef; padding: 30px 20px; border-radius: 15px; margin-bottom: 20px; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        
+        input, select { width: 100%; padding: 14px; margin: 10px 0; border: 2px solid #eee; border-radius: 10px; font-size: 16px; text-align: center; transition: 0.3s; font-family: "Faruma"; }
+        input:focus, select:focus { border-color: #00796b; outline: none; }
+        
+        .btn { width: 100%; padding: 16px; background: #00796b; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 18px; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,121,107,0.2); font-family: "Faruma"; }
+        .btn:active { transform: scale(0.98); }
+        .btn:disabled { background: #cfd8dc; color: #90a4ae; box-shadow: none; }
         
         .btn-mat { background: #f57c00; color: white; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-back { background: #607d8b; width: auto; padding: 8px 20px; font-size: 14px; margin-bottom: 15px; float: left; }
         .btn-add { background: #1976d2; padding: 8px 15px; font-size: 14px; width: auto; margin-top: 0; }
         .btn-del { background: #ef5350; padding: 5px 10px; font-size: 12px; width: auto; margin: 0; }
 
-        .table-container { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 10px; border: 1px solid #ddd; }
+        /* Admin Corner */
+        .admin-corner {
+            position: absolute; top: 20px; left: 20px; z-index: 1000;
+            display: flex; align-items: center; gap: 5px;
+            background: #f5f5f5; padding: 5px; border-radius: 20px;
+            transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .admin-link {
+            font-size: 12px; color: #777; cursor: pointer; padding: 5px 10px;
+            border-radius: 15px; font-weight: bold;
+        }
+        .admin-link:hover { color: #333; }
+        
+        .admin-input-group {
+            display: none; align-items: center; gap: 5px;
+            animation: slideIn 0.2s ease-out;
+        }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+        
+        .mini-input { width: 100px; padding: 5px 10px; border: 1px solid #ccc; border-radius: 15px; font-size: 12px; text-align: center; outline: none; }
+        .mini-btn { padding: 5px 12px; background: #00796b; color: white; border: none; border-radius: 15px; font-size: 12px; cursor: pointer; }
+
+        /* Table & Layout */
+        .table-container { width: 100%; overflow-x: auto; margin-top: 20px; border-radius: 12px; border: 1px solid #eee; }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        th, td { padding: 15px; border-bottom: 1px solid #eee; text-align: center; }
-        th { background: #00796b; color: white; position: sticky; top: 0; }
+        th, td { border-bottom: 1px solid #eee; padding: 15px; text-align: center; }
+        th { background: #e0f2f1; color: #004d40; font-size: 15px; font-weight: bold; }
         tr:nth-child(even) { background-color: #fcfcfc; }
 
         .v-in { width: 90px !important; height: 45px; font-size: 18px !important; font-weight: bold; border: 2px solid #b2dfdb !important; }
         .n-in { text-align: right !important; min-width: 150px; }
 
         .pills { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; margin-bottom: 10px; }
-        .pill { padding: 10px 20px; background: #eee; border-radius: 25px; cursor: pointer; white-space: nowrap; font-size: 14px; transition: 0.2s; }
-        .pill.active { background: #00796b; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .pill { padding: 10px 20px; background: #f5f5f5; border-radius: 25px; cursor: pointer; white-space: nowrap; font-size: 14px; border: 1px solid #eee; transition: 0.2s; }
+        .pill.active { background: #00796b; color: white; border-color: #00796b; box-shadow: 0 3px 8px rgba(0,121,107,0.2); }
         
         .loader { border: 3px solid #f3f3f3; border-top: 3px solid #00796b; border-radius: 50%; width: 25px; height: 25px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
         /* Student Result Styles */
-        .st-header { border-bottom: 2px solid #00796b; margin-bottom: 15px; padding-bottom: 10px; }
-        .st-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px dashed #eee; align-items: center; }
-        .st-row:last-child { border-bottom: none; }
-        .grade-badge { padding: 4px 8px; border-radius: 5px; color: white; font-size: 12px; font-weight: bold; margin-left: 5px; }
-        .g-A-star { background: #ffd700; color: black; }
-        .g-A { background: #43a047; }
-        .g-B { background: #1e88e5; }
-        .g-C { background: #fb8c00; }
-        .g-Fail { background: #e53935; }
-        .cat-title { margin: 20px 0 10px; color: #00796b; font-size: 16px; font-weight: bold; background: #e0f2f1; padding: 8px; border-radius: 5px; }
+        .st-header { text-align: center; border-bottom: 2px dashed #00796b; padding-bottom: 15px; margin-bottom: 20px; }
+        .st-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0; align-items: center; }
+        .grade-badge { padding: 4px 10px; border-radius: 6px; font-weight: bold; color: white; font-size: 13px; display: inline-block; margin-left: 5px; }
+        .g-A-star { background: #fbc02d; color: #333; } 
+        .g-A { background: #43a047; } .g-B { background: #1976d2; } .g-C { background: #fb8c00; } .g-Fail { background: #e53935; }
+        .cat-title { background: #e0f2f1; color: #00695c; padding: 8px 15px; border-radius: 8px; margin: 25px 0 10px; font-weight: bold; font-size: 15px; }
 
-        /* Materials Modal */
+        /* Modal */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
-        .modal-content { background-color: #fff; margin: 15% auto; padding: 20px; border-radius: 15px; width: 90%; max-width: 500px; text-align: center; max-height: 80vh; overflow-y: auto; }
+        .modal-content { background-color: #fff; margin: 10% auto; padding: 20px; border-radius: 15px; width: 90%; max-width: 500px; text-align: center; max-height: 80vh; overflow-y: auto; }
         .mat-link { display: block; padding: 15px; margin: 10px 0; background: #e0f2f1; color: #00695c; text-decoration: none; border-radius: 8px; font-weight: bold; border: 1px solid #b2dfdb; }
         .mat-item { display: flex; justify-content: space-between; align-items: center; background: #fafafa; padding: 10px; margin-bottom: 5px; border-radius: 8px; border: 1px solid #eee; }
         .mat-input-group { display: flex; gap: 5px; margin-bottom: 10px; }
@@ -80,7 +101,7 @@
 <body>
 
 <div class="container">
-    <div style="position:absolute; top:20px; left:20px; z-index:100;">
+    <div class="admin-corner">
         <span class="admin-link" onclick="toggleAdmin()">Admin 🔒</span>
         <div id="adminInputGroup" class="admin-input-group">
             <input type="password" id="headerPass" class="mini-input" placeholder="Password">
@@ -88,9 +109,9 @@
         </div>
     </div>
 
-    <h1>🌙 އިސްލާމް ޕޯޓަލް</h1>
+    <h1>🌙 އިސްލާމް ޕޯޓަލް <span style="font-size: 0.4em; color: #777; vertical-align: middle; margin-right: 5px; font-family: 'Faruma', sans-serif;">(މުއުތަމިން ސަރ)</span></h1>
 
-    <!-- Parent View -->
+    <!-- PARENT VIEW (DEFAULT) -->
     <div id="viewParent">
         <div class="card">
             <h3 style="margin-top:0; color:#555;">ދަރިވަރުގެ މަޢުލޫމާތު ބެލުން</h3>
@@ -110,8 +131,8 @@
         <div id="pRes" class="card" style="display:none;"></div>
     </div>
 
-    <!-- Teacher View -->
-    <div id="viewTeacher" style="display:none;">
+    <!-- TEACHER VIEW (HIDDEN) -->
+    <div id="viewTeacher" style="display: none;">
         <div id="teacherPanel">
             <div style="text-align:left; margin-bottom:15px; display:flex; justify-content:space-between;">
                 <button class="btn btn-back" onclick="logout()">← Home</button>
@@ -120,9 +141,9 @@
             
             <div class="card">
                 <div class="pills">
-                    <div class="pill active" id="m_work" onclick="setMode('work')">ހަފްތާ</div>
-                    <div class="pill" id="m_test" onclick="setMode('test')">ޔުނިޓް ޓެސްޓް</div>
-                    <div class="pill" id="m_ca" onclick="setMode('ca')">CA</div>
+                    <div class="pill active" id="btn-work" onclick="setMode('work')">ހަފްތާ</div>
+                    <div class="pill" id="btn-test" onclick="setMode('test')">ޔުނިޓް ޓެސްޓް</div>
+                    <div class="pill" id="btn-ca" onclick="setMode('ca')">CA</div>
                 </div>
                 
                 <div style="display:flex; gap:10px;">
@@ -143,7 +164,7 @@
                 </div>
                 
                 <div style="text-align:right;">
-                     <button onclick="fetchData()" style="background:none; border:none; color:#00695c; cursor:pointer;">🔄 Refresh</button>
+                     <button onclick="fetchData(true)" style="background:none; border:none; color:#00695c; font-size:14px; cursor:pointer; padding:5px;">🔄 Refresh Data</button>
                 </div>
             </div>
             
@@ -153,7 +174,7 @@
                     <tbody id="tBody"></tbody>
                 </table>
             </div>
-            <button class="btn btn-save" id="sBtn" onclick="saveTeacherData()">💾 ސޭވްކުރޭ</button>
+            <button class="btn btn-save" id="sBtn" onclick="saveData()">💾 ސޭވްކުރޭ</button>
         </div>
     </div>
 </div>
@@ -188,7 +209,9 @@
 <div id="toast" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #323232; color: white; padding: 12px 24px; border-radius: 30px; font-size: 14px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 2000; box-shadow: 0 5px 15px rgba(0,0,0,0.3);"></div>
 
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwdPi4eEkgNJejoIzFxQG22t_WGAuZk_FXob5Wu7sE7ERwE0UrSKxcbTxZBdjP6O0xA/exec";
+    // މުހިންމު: ތިރީގައިވާ URL އަކީ ތިޔަބޭފުޅާގެ އައު Web App URL އަށް ބަދަލުކުރަންވާނެއެވެ.
+    const API_URL = "https://script.google.com/macros/s/AKfycbwdPi4eEkgNJejoIzFxQG22t_WGAuZk_FXob5Wu7sE7ERwE0UrSKxcbTxZBdjP6O0xA/exec"; // 👈 Paste your new URL here
+    
     let db = [];
     let materials = [];
     let mode = 'work';
@@ -204,7 +227,9 @@
     }
     
     function headerLogin() {
-        if(document.getElementById('headerPass').value === "123") {
+        const pass = document.getElementById('headerPass').value;
+        if(pass === "123") {
+            teacherPassword = pass;
             document.getElementById('viewParent').style.display = 'none';
             document.getElementById('viewTeacher').style.display = 'block';
             document.getElementById('teacherPanel').style.display = 'block';
@@ -266,17 +291,45 @@
             <a href="${m.link}" target="_blank" class="mat-link"><span>${m.title}</span><span>📥</span></a>
         `).join('') : "<p>ފިލާވަޅެއް ނެތް</p>";
     }
-    function saveMaterials() {
+    async function saveMaterials() {
         const updates = [{ index: "MATERIALS", val: "", note: JSON.stringify(materials) }];
-        const p = new URLSearchParams({ action:'save', item: "Week1", mode: 'work', updates: JSON.stringify(updates) });
-        fetch(`${API_URL}?${p.toString()}`, { mode:'no-cors', method: 'POST' }).then(() => {
-            alert("ފިލާވަޅުތައް ސޭވްކުރެވިއްޖެ!"); closeModal('matManagerModal');
-        });
+        
+        const payload = {
+            action: 'save',
+            item: "Week1", // Saving to Week1/Note1 columns of MATERIALS row
+            mode: 'work',
+            updates: JSON.stringify(updates)
+        };
+        
+        // Form post to ensure delivery
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = API_URL;
+        form.target = 'hiddenFrame';
+        const input = document.createElement('input');
+        input.name = 'data';
+        input.value = JSON.stringify(payload);
+        form.appendChild(input);
+        
+        const iframe = document.createElement('iframe');
+        iframe.name = 'hiddenFrame';
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+        document.body.appendChild(form);
+        
+        form.submit();
+        
+        setTimeout(() => {
+            alert("ފިލާވަޅުތައް ސޭވްކުރެވިއްޖެ!"); 
+            closeModal('matManagerModal');
+            document.body.removeChild(form);
+            document.body.removeChild(iframe);
+        }, 2000);
     }
 
     // Data Fetching
-    function fetchData() {
-        document.getElementById('tBody').innerHTML = '<tr><td colspan="5"><div class="loader"></div> ލޯޑް ވަނީ...</td></tr>';
+    function fetchData(showLoader = true) {
+        if(showLoader) document.getElementById('tBody').innerHTML = '<tr><td colspan="5"><div class="loader"></div> ލޯޑް ވަނީ...</td></tr>';
         const cb = 'jsonp_' + Date.now();
         window[cb] = (data) => { 
             db = data;
@@ -297,7 +350,9 @@
     function updateFilters() {
         const grades = [...new Set(db.map(s => s.Grade))].filter(g => g && g!=="undefined" && g!=="MATERIALS").sort();
         let gHtml = `<div class="pill ${selGrade=='All'?'active':''}" onclick="selGrade='All';selClass='All';updateFilters();renderTeacherTable()">All</div>`;
-        grades.forEach(g => gHtml += `<div class="pill ${selGrade==g?'active':''}" onclick="selGrade='${g}';selClass='All';updateFilters();renderTeacherTable()">Gr ${g}</div>`);
+        grades.forEach(g => {
+            gHtml += `<div class="pill ${selGrade==g?'active':''}" onclick="selGrade='${g}';selClass='All';updateFilters();renderTeacherTable()">Gr ${g}</div>`;
+        });
         document.getElementById('gradeFilter').innerHTML = gHtml;
 
         let cHtml = '';
@@ -326,10 +381,13 @@
 
     function setMode(m) {
         mode = m;
-        // Fix for pill selection: remove active from all pills in the mode switcher
-        const modeBtns = document.querySelectorAll('#m_work, #m_test, #m_ca');
-        modeBtns.forEach(p => p.classList.remove('active'));
-        document.getElementById('m_'+m).classList.add('active');
+        document.querySelectorAll('.pill').forEach(b => b.classList.remove('active')); // Note: Check pill container context
+        
+        // Manually update mode buttons
+        document.getElementById('btn-work').classList.remove('active');
+        document.getElementById('btn-test').classList.remove('active');
+        document.getElementById('btn-ca').classList.remove('active');
+        document.getElementById('btn-' + m).classList.add('active');
         
         let sel = document.getElementById('itemSelect');
         sel.innerHTML = "";
@@ -385,10 +443,9 @@
         document.getElementById('g-'+el.dataset.idx).innerHTML = el.value ? `<span class="grade-badge ${g.cls}">${g.lbl} (${g.perc})</span>` : '';
     }
 
-    async function saveTeacherData() {
+    async function saveData() {
         const btn = document.getElementById('sBtn');
         const item = document.getElementById('itemSelect').value;
-        const total = document.getElementById('totalMarks').value;
         
         btn.disabled = true; btn.innerText = "ސޭވް ވަނީ...";
         
@@ -401,20 +458,46 @@
             return obj;
         });
 
-        try {
-            const p = new URLSearchParams({ action:'save', item:item, mode: mode, updates:JSON.stringify(updates) });
-            await fetch(`${API_URL}?${p.toString()}`, { mode:'no-cors', method: 'POST' });
-            alert("ބަދަލުތައް ފޮނުވިއްޖެ!");
-            setTimeout(fetchData, 1500);
-        } catch(e) { alert("މައްސަލައެއް ދިމާވެއްޖެ"); }
-        btn.disabled = false; btn.innerText = "💾 ސޭވްކުރޭ";
+        // Use Form POST for robust saving
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = API_URL;
+        form.target = 'hiddenFrame';
+
+        const input = document.createElement('input');
+        input.name = 'data';
+        input.value = JSON.stringify({
+            action: 'save',
+            item: item,
+            mode: mode,
+            updates: JSON.stringify(updates)
+        });
+        form.appendChild(input);
+
+        const iframe = document.createElement('iframe');
+        iframe.name = 'hiddenFrame';
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+        document.body.appendChild(form);
+        
+        form.submit();
+
+        setTimeout(() => {
+            showToast("ބަދަލުތައް ސޭވްކުރެވިއްޖެ!");
+            btn.disabled = false; btn.innerText = "💾 ސޭވްކުރޭ";
+            document.body.removeChild(form);
+            document.body.removeChild(iframe);
+            // Background refresh
+            fetchData(false);
+        }, 2000);
     }
 
     function searchStudent() {
         const idx = document.getElementById('pIdx').value;
         if(!idx) return;
         const res = document.getElementById('pRes');
-        res.innerHTML = '<div class="loader"></div>'; res.style.display = 'block';
+        res.innerHTML = '<div class="loader"></div>'; 
+        res.style.display = 'block';
 
         const cb = 's'+Date.now();
         window[cb] = (data) => {
@@ -432,7 +515,7 @@
                         if(v) {
                             let xtra = "";
                             if(isMk) {
-                                let g = calcGrade(v, 20); 
+                                let g = calcGrade(v, 20); // Default parent view
                                 xtra = `<span class="grade-badge ${g.cls}">${g.lbl}</span>`;
                             }
                             let sStyle = "";
@@ -441,7 +524,6 @@
                                 else if(v=='ނުނިމޭ') sStyle='color:#c62828';
                                 else sStyle='color:#ef6c00';
                             }
-                            
                             r += `<div class="st-row"><span>${k}</span><div style="text-align:right"><b style="${sStyle}">${v}</b> ${xtra}<br><small style="color:#666">${n}</small></div></div>`;
                         }
                     }
