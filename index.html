@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>އިސްލާމް ޕޯޓަލް</title>
+    <!-- SheetJS for Excel Upload -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
     <style>
         @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
         * { font-family: "Faruma", sans-serif; box-sizing: border-box; }
@@ -63,6 +66,10 @@
         .mat-link { display: flex; justify-content: space-between; align-items: center; padding: 15px; margin: 10px 0; background: #fff; color: #00695c; text-decoration: none; border-radius: 8px; font-weight: bold; border: 1px solid #b2dfdb; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: 0.2s; }
         .mat-link:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-color: #00796b; }
         
+        /* Drag Drop Zone */
+        .drop-zone { border: 2px dashed #ccc; padding: 20px; border-radius: 10px; background: #fafafa; transition: 0.3s; cursor: pointer; }
+        .drop-zone:hover { border-color: #00796b; background: #e0f2f1; }
+
         #toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 24px; border-radius: 30px; font-size: 14px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 2000; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
 
         @media (min-width: 768px) {
@@ -111,9 +118,9 @@
                 <button class="btn" style="width:auto; padding:8px 15px; margin:0; background:#78909c;" onclick="logout()">← Home</button>
                 <div style="font-weight:bold; color:#00796b;">Admin Panel</div>
                 <div style="display:flex; gap:5px;">
-                    <!-- BUTTONS -->
                     <button class="btn btn-add" style="background:#43a047;" onclick="openStudentModal()">+1</button>
-                    <button class="btn btn-add" style="background:#00897b;" onclick="openBulkModal()">Bulk 📋</button>
+                    <!-- UPDATED BULK BUTTON -->
+                    <button class="btn btn-add" style="background:#00897b;" onclick="openBulkModal()">Excel 📗</button>
                     <button class="btn btn-add" style="background:#f57c00;" onclick="openMatManager()">File 📂</button>
                 </div>
             </div>
@@ -138,6 +145,7 @@
                 
                 <div style="margin-top:15px;">
                     <small style="color:#666; font-weight:bold;">Filter Students:</small>
+                    <!-- FIXED FILTER BUTTONS -->
                     <div id="gradeFilter" class="pills" style="margin-bottom:5px;"></div>
                     <div id="classFilter" class="pills"></div>
                 </div>
@@ -168,6 +176,54 @@
     </div>
 </div>
 
+<!-- SINGLE STUDENT MODAL -->
+<div id="studentModal" class="modal">
+    <div class="modal-content">
+        <h3 style="color:#00796b;">އާ ދަރިވަރަކު އިތުރުކުރުން</h3>
+        <div class="mat-input-group">
+            <input type="number" id="newStIndex" placeholder="Index Number" style="margin-bottom:10px;">
+            <input type="text" id="newStName" placeholder="ދަރިވަރުގެ ނަން" style="margin-bottom:10px;">
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="newStGrade" placeholder="Grade" style="flex:1;">
+                <input type="text" id="newStClass" placeholder="Class" style="flex:1;">
+            </div>
+        </div>
+        <button class="btn btn-add" style="background:#2e7d32; margin-top:15px;" onclick="addNewStudent()">Save Student</button>
+        <div style="margin-top:15px;">
+            <button class="btn" style="background:#b0bec5; color:#333;" onclick="closeModal('studentModal')">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- IMPROVED BULK IMPORT MODAL (EXCEL) -->
+<div id="bulkModal" class="modal">
+    <div class="modal-content" style="max-width:600px;">
+        <h3 style="color:#00796b;">Excel File Import</h3>
+        
+        <p style="font-size:13px; color:#666;">
+            އެކްސެލް ފައިލްގައި ހުންނަންވާނީ މި ތަރުތީބުންނެވެ:<br>
+            <b>1. Index | 2. Name | 3. Grade | 4. Class</b>
+        </p>
+
+        <label for="excelFile" class="drop-zone" id="dropArea">
+            <div style="font-size:30px;">📂</div>
+            <div style="color:#00796b; font-weight:bold;">Click to Upload Excel File</div>
+            <div style="font-size:12px; color:#999;">(.xlsx or .xls)</div>
+        </label>
+        <input type="file" id="excelFile" accept=".xlsx, .xls" style="display:none;">
+
+        <div id="previewArea" style="display:none; margin-top:15px; text-align:right;">
+            <div style="font-weight:bold; margin-bottom:5px;">Preview (First 5 Rows):</div>
+            <div style="background:#f9f9f9; padding:10px; border:1px solid #eee; font-size:12px; max-height:150px; overflow:auto;" id="excelPreview"></div>
+            <button class="btn btn-add" style="background:#2e7d32; margin-top:10px;" id="btnConfirmBulk" onclick="confirmExcelUpload()">Confirm & Upload</button>
+        </div>
+        
+        <div style="margin-top:15px;">
+            <button class="btn" style="background:#b0bec5; color:#333;" onclick="closeModal('bulkModal'); resetBulk();">Cancel</button>
+        </div>
+    </div>
+</div>
+
 <!-- Materials Modals -->
 <div id="matModal" class="modal">
     <div class="modal-content">
@@ -193,45 +249,6 @@
     </div>
 </div>
 
-<!-- SINGLE STUDENT MODAL -->
-<div id="studentModal" class="modal">
-    <div class="modal-content">
-        <h3 style="color:#00796b;">އާ ދަރިވަރަކު އިތުރުކުރުން</h3>
-        <div class="mat-input-group">
-            <input type="number" id="newStIndex" placeholder="Index Number" style="margin-bottom:10px;">
-            <input type="text" id="newStName" placeholder="ދަރިވަރުގެ ނަން" style="margin-bottom:10px;">
-            <div style="display:flex; gap:10px;">
-                <input type="text" id="newStGrade" placeholder="Grade" style="flex:1;">
-                <input type="text" id="newStClass" placeholder="Class" style="flex:1;">
-            </div>
-        </div>
-        <button class="btn btn-add" style="background:#2e7d32; margin-top:15px;" onclick="addNewStudent()">Save Student</button>
-        <div style="margin-top:15px;">
-            <button class="btn" style="background:#b0bec5; color:#333;" onclick="closeModal('studentModal')">Cancel</button>
-        </div>
-    </div>
-</div>
-
-<!-- BULK IMPORT MODAL (NEW) -->
-<div id="bulkModal" class="modal">
-    <div class="modal-content" style="max-width:600px;">
-        <h3 style="color:#00796b;">ގިނަ ކުދިން އެއްފަހަރާ އެޑްކުރުން</h3>
-        <p style="font-size:13px; color:#666; text-align:right;">
-            ތިރީގައިވާ ފޯމެޓަށް ކުދިންގެ ލިސްޓު ޕޭސްޓް ކުރައްވާ:<br>
-            <b>Index, Name, Grade, Class</b><br>
-            <span style="color:#e65100;">މިސާލު:</span><br>
-            <code>1001, Ahmed Ali, 7, A</code><br>
-            <code>1002, Mariyam, 7, B</code>
-        </p>
-        <textarea id="bulkInput" style="width:100%; height:200px; padding:10px; border:1px solid #ccc; border-radius:8px; font-family:monospace;" placeholder="1001, Ahmed, 7, A&#10;1002, Ali, 7, B"></textarea>
-        
-        <button class="btn btn-add" style="background:#2e7d32; margin-top:15px;" id="btnBulk" onclick="processBulkImport()">Import Students</button>
-        <div style="margin-top:15px;">
-            <button class="btn" style="background:#b0bec5; color:#333;" onclick="closeModal('bulkModal')">Cancel</button>
-        </div>
-    </div>
-</div>
-
 <div id="toast"></div>
 
 <script type="module">
@@ -253,6 +270,7 @@
     let mode = 'work';
     let selGrade = 'All';
     let selClass = 'All';
+    let parsedExcelData = []; // Store parsed excel data
 
     try {
         const app = initializeApp(firebaseConfig);
@@ -299,7 +317,7 @@
             window.renderParentMaterials();
         } catch(e) {
             console.error(e);
-            alert("Error loading data. Check internet connection.");
+            alert("Error loading data.");
             document.getElementById('tBody').innerHTML = '<tr><td colspan="6" style="color:red">Error loading data</td></tr>';
         }
     };
@@ -327,6 +345,22 @@
             for(let i=1;i<=count;i++) sel.innerHTML += `<option value="${prefix}${i}">${label}${i}</option>`;
         }
         window.renderTeacherTable();
+    };
+
+    // --- FIX FOR GRADE FILTERING ---
+    // Instead of setting variables inside HTML (which fails in modules), we call these functions
+    window.setGradeFilter = (g) => {
+        selGrade = g;
+        selClass = 'All'; // Reset class when grade changes
+        window.updateFilters();
+        window.renderTeacherTable();
+    };
+
+    window.setClassFilter = (c) => {
+        selClass = c;
+        window.renderTeacherTable();
+        // Update UI for class pills
+        window.updateFilters(); // Re-render to highlight active class
     };
 
     window.renderTeacherTable = () => {
@@ -374,6 +408,27 @@
         document.getElementById('tBody').innerHTML = html || "<tr><td colspan='6' style='padding:20px; color:#777;'>No students found in this filter.</td></tr>";
     };
 
+    window.updateFilters = () => {
+        const grades = [...new Set(students.map(s => s.grade))].filter(Boolean).sort();
+        
+        // --- UPDATED HTML GENERATION FOR FILTERS ---
+        let gHtml = `<div class="pill ${selGrade=='All'?'active':''}" onclick="setGradeFilter('All')">All</div>`;
+        grades.forEach(g => {
+            gHtml += `<div class="pill ${selGrade==g?'active':''}" onclick="setGradeFilter('${g}')">Gr ${g}</div>`;
+        });
+        document.getElementById('gradeFilter').innerHTML = gHtml;
+        
+        let cHtml = '';
+        if(selGrade !== 'All') {
+            const classes = [...new Set(students.filter(s => s.grade == selGrade).map(s => s.class))].filter(Boolean).sort();
+            cHtml = `<div class="pill ${selClass=='All'?'active':''}" onclick="setClassFilter('All')">All</div>`;
+            classes.forEach(c => {
+                cHtml += `<div class="pill ${selClass==c?'active':''}" onclick="setClassFilter('${c}')">${c}</div>`;
+            });
+        }
+        document.getElementById('classFilter').innerHTML = cHtml;
+    };
+
     window.saveTeacherData = async () => {
         const btn = document.getElementById('sBtn');
         const item = document.getElementById('itemSelect').value;
@@ -389,7 +444,6 @@
             const id = inp.dataset.id;
             const val = inp.value;
             const origVal = inp.dataset.orig;
-            
             const noteInp = document.querySelector(`.n-in[data-id="${id}"]`);
             const note = noteInp.value;
             const origNote = noteInp.dataset.origNote;
@@ -508,48 +562,107 @@
         }
     };
 
-    window.updateFilters = () => {
-        const grades = [...new Set(students.map(s => s.grade))].filter(Boolean).sort();
-        let gHtml = `<div class="pill ${selGrade=='All'?'active':''}" onclick="selGrade='All';selClass='All';window.updateFilters();window.renderTeacherTable()">All</div>`;
-        grades.forEach(g => {
-            gHtml += `<div class="pill ${selGrade==g?'active':''}" onclick="selGrade='${g}';selClass='All';window.updateFilters();window.renderTeacherTable()">Gr ${g}</div>`;
-        });
-        document.getElementById('gradeFilter').innerHTML = gHtml;
-        
-        let cHtml = '';
-        if(selGrade !== 'All') {
-            const classes = [...new Set(students.filter(s => s.grade == selGrade).map(s => s.class))].filter(Boolean).sort();
-            cHtml = `<div class="pill ${selClass=='All'?'active':''}" onclick="selClass='All';window.renderTeacherTable()">All</div>`;
-            classes.forEach(c => {
-                cHtml += `<div class="pill ${selClass==c?'active':''}" onclick="selClass='${c}';window.renderTeacherTable()">${c}</div>`;
-            });
-        }
-        document.getElementById('classFilter').innerHTML = cHtml;
-    };
-
     window.openMaterials = () => { document.getElementById('matModal').style.display = "block"; window.renderParentMaterials(); };
     window.openMatManager = () => { document.getElementById('matManagerModal').style.display = "block"; window.renderTeacherMaterials(); };
     window.openStudentModal = () => { document.getElementById('studentModal').style.display = "block"; };
     window.openBulkModal = () => { document.getElementById('bulkModal').style.display = "block"; };
     window.closeModal = (id) => { document.getElementById(id).style.display = "none"; };
-    
-    window.addMaterial = async () => {
-        const t = document.getElementById('newMatTitle').value;
-        const l = document.getElementById('newMatLink').value;
-        if(t && l) {
-            try {
-                const docRef = await addDoc(collection(db, "materials"), { title: t, link: l, date: new Date().toISOString() });
-                materials.push({ id: docRef.id, title: t, link: l });
-                document.getElementById('newMatTitle').value = "";
-                document.getElementById('newMatLink').value = "";
-                window.renderTeacherMaterials();
-                showToast("Material added!");
-            } catch(e) { alert("Error adding material"); }
-        } else {
-            alert("Please enter title and link");
-        }
+    window.resetBulk = () => {
+        document.getElementById('excelFile').value = '';
+        document.getElementById('previewArea').style.display = 'none';
+        parsedExcelData = [];
     };
 
+    // --- NEW: EXCEL IMPORT LOGIC ---
+    // Listen for file selection
+    document.getElementById('excelFile').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if(!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, {type: 'array'});
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+            // Convert to JSON (Array of Arrays)
+            const json = XLSX.utils.sheet_to_json(sheet, {header: 1});
+            
+            // Clean Data: Expecting [Index, Name, Grade, Class]
+            parsedExcelData = [];
+            let previewHtml = '<table style="width:100%; text-align:right;"><tr><th>Index</th><th>Name</th><th>Grade</th><th>Class</th></tr>';
+            
+            // Start from row 0 (or row 1 if headers exist)
+            // We assume headers might exist, so check if row[0] is a number
+            json.forEach((row, i) => {
+                if(row.length >= 2) { // Need at least index and name
+                    // Basic validation to skip headers
+                    if(i === 0 && isNaN(row[0])) return; 
+                    
+                    parsedExcelData.push({
+                        index: row[0],
+                        name: row[1],
+                        grade: row[2] || '',
+                        class: row[3] || ''
+                    });
+
+                    // Add to preview (limit 5)
+                    if(parsedExcelData.length <= 5) {
+                        previewHtml += `<tr><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]||'-'}</td><td>${row[3]||'-'}</td></tr>`;
+                    }
+                }
+            });
+            previewHtml += '</table>';
+            
+            if(parsedExcelData.length > 5) previewHtml += `<div style="text-align:center; color:#777; padding:5px;">... and ${parsedExcelData.length - 5} more</div>`;
+
+            document.getElementById('excelPreview').innerHTML = previewHtml;
+            document.getElementById('previewArea').style.display = 'block';
+        };
+        reader.readAsArrayBuffer(file);
+    });
+
+    window.confirmExcelUpload = async () => {
+        if(parsedExcelData.length === 0) return alert("No valid data found!");
+        
+        const btn = document.getElementById('btnConfirmBulk');
+        btn.disabled = true; 
+        btn.innerText = "Uploading...";
+
+        let successCount = 0;
+        let failCount = 0;
+        let batchPromises = [];
+
+        for (let s of parsedExcelData) {
+            // Duplicate Check
+            const exists = students.some(existing => String(existing.index) === String(s.index));
+            
+            if (!exists && s.index && s.name) {
+                const p = addDoc(collection(db, "students"), {
+                    index: String(s.index), 
+                    name: String(s.name), 
+                    grade: String(s.grade), 
+                    class: String(s.class),
+                    Week1: "", UnitTest1: "", CA1: ""
+                }).then(() => successCount++).catch(() => failCount++);
+                batchPromises.push(p);
+            } else {
+                failCount++; // Duplicate or Invalid
+            }
+        }
+
+        await Promise.all(batchPromises);
+
+        window.resetBulk();
+        closeModal('bulkModal');
+        btn.disabled = false; 
+        btn.innerText = "Confirm & Upload";
+        
+        showToast(`Upload Complete! Added: ${successCount} | Skipped/Failed: ${failCount}`);
+        window.fetchData(); 
+    };
+
+    // Original add student function
     window.addNewStudent = async () => {
         const idx = document.getElementById('newStIndex').value;
         const name = document.getElementById('newStName').value;
@@ -572,62 +685,25 @@
                 closeModal('studentModal');
                 showToast("ދަރިވަރު އެޑް ކުރެވިއްޖެ!");
                 window.fetchData(false);
-            } catch(e) {
-                console.error(e);
-                alert("Error adding student: " + e.message);
-            }
-        } else {
-            alert("ހުރިހާ މަޢުލޫމާތެއް ފުރިހަމަކުރައްވާ!");
-        }
-    };
-
-    // --- NEW: BULK IMPORT LOGIC ---
-    window.processBulkImport = async () => {
-        const txt = document.getElementById('bulkInput').value;
-        if(!txt.trim()) return alert("ލިސްޓެއް ޕޭސްޓް ކުރައްވާ!");
-
-        const rows = txt.split('\n');
-        const btn = document.getElementById('btnBulk');
-        btn.disabled = true; 
-        btn.innerText = "Processing...";
-
-        let successCount = 0;
-        let failCount = 0;
-        let batchPromises = [];
-
-        for (let line of rows) {
-            line = line.trim();
-            if (!line) continue;
-            const parts = line.split(',');
-            if (parts.length >= 4) {
-                const idx = parts[0].trim();
-                const name = parts[1].trim();
-                const gr = parts[2].trim();
-                const cls = parts[3].trim();
-                
-                const exists = students.some(s => String(s.index) === String(idx));
-                if (!exists && idx && name) {
-                    const p = addDoc(collection(db, "students"), {
-                        index: idx, name: name, grade: gr, class: cls,
-                        Week1: "", UnitTest1: "", CA1: ""
-                    }).then(() => successCount++).catch(() => failCount++);
-                    batchPromises.push(p);
-                } else {
-                    failCount++;
-                }
-            } else {
-                failCount++;
-            }
-        }
-
-        await Promise.all(batchPromises);
-        document.getElementById('bulkInput').value = "";
-        closeModal('bulkModal');
-        btn.disabled = false; btn.innerText = "Import Students";
-        showToast(`ނިމިއްޖެ! އެޑްކުރެވުނީ: ${successCount} / ފެއިލްވީ: ${failCount}`);
-        window.fetchData();
+            } catch(e) { console.error(e); alert("Error"); }
+        } else { alert("ހުރިހާ މަޢުލޫމާތެއް ފުރިހަމަކުރައްވާ!"); }
     };
     
+    window.addMaterial = async () => {
+        const t = document.getElementById('newMatTitle').value;
+        const l = document.getElementById('newMatLink').value;
+        if(t && l) {
+            try {
+                const docRef = await addDoc(collection(db, "materials"), { title: t, link: l, date: new Date().toISOString() });
+                materials.push({ id: docRef.id, title: t, link: l });
+                document.getElementById('newMatTitle').value = "";
+                document.getElementById('newMatLink').value = "";
+                window.renderTeacherMaterials();
+                showToast("Material added!");
+            } catch(e) { alert("Error adding material"); }
+        } else { alert("Please enter title and link"); }
+    };
+
     window.removeMaterial = async (id) => {
         if(confirm("Delete this material?")) {
             await deleteDoc(doc(db, "materials", id));
