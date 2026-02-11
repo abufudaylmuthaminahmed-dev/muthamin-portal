@@ -15,14 +15,9 @@
         
         h1 { color: #00897b; text-align: center; margin-bottom: 25px; font-size: 1.8rem; border-bottom: 2px solid #e0f2f1; padding-bottom: 10px; }
         
-        /* HIDDEN ADMIN TRIGGER */
-        .admin-trigger { 
-            position: absolute; top: 0; left: 0; width: 50px; height: 50px; 
-            z-index: 200; cursor: default; opacity: 0; /* INVISIBLE */
-        }
+        /* ADMIN TRIGGER */
+        .admin-trigger { position: absolute; top: 0; left: 0; width: 50px; height: 50px; z-index: 200; cursor: default; opacity: 0; }
         .admin-input-group { display: none; position: absolute; top: 40px; left: 15px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); z-index: 1001; border: 1px solid #eee; }
-
-        /* Inputs & Buttons */
         .mini-input { width: 120px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; text-align: center; outline: none; }
         .mini-btn { padding: 8px 12px; background: #00796b; color: white; border: none; border-radius: 4px; cursor: pointer; }
 
@@ -31,6 +26,22 @@
         
         input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #cfd8dc; border-radius: 8px; font-size: 16px; text-align: center; outline: none; transition: 0.3s; font-family: inherit;}
         input:focus, textarea:focus { border-color: #00796b; box-shadow: 0 0 0 2px rgba(0,121,107,0.1); }
+
+        /* --- UPDATED INPUT STYLES FOR TEACHER --- */
+        .v-in { width: 100% !important; min-width: 80px; height: 38px; font-weight: bold; border: 1px solid #b2dfdb !important; padding: 5px !important; border-radius: 4px; }
+        
+        /* Specific fix for Dropdowns (Font Size Reduced) */
+        select.v-in {
+            font-size: 13px !important; /* Smaller font for dropdown */
+            padding: 0 5px !important;
+            height: 35px !important;
+        }
+        /* Specific fix for Number Inputs */
+        input[type="number"].v-in {
+            font-size: 14px !important;
+        }
+
+        .n-in { text-align: right !important; min-width: 150px; font-size: 13px !important; background: #fafafa; }
         
         .btn { width: 100%; padding: 14px; background: #00796b; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; transition: 0.2s; display:flex; align-items:center; justify-content:center; gap:8px;}
         .btn:active { transform: scale(0.98); }
@@ -39,20 +50,17 @@
         .btn-del { background: #ef5350; padding: 4px 8px; font-size: 11px; width: auto; color: white; border: none; border-radius: 4px; cursor: pointer;}
         .btn-save { position: fixed; bottom: 20px; right: 20px; left: 20px; width: calc(100% - 40px); z-index: 100; background: #2e7d32; box-shadow: 0 4px 15px rgba(46,125,50,0.4); max-width: 960px; margin: 0 auto; }
 
-        /* PARENT RESULT STYLES */
+        /* RESULT STYLES */
         .result-header { text-align: center; background: #004d40; color: white; padding: 20px; border-radius: 10px 10px 0 0; margin-bottom: 20px; }
         .result-section { margin-bottom: 25px; }
         .result-title { font-size: 16px; font-weight: bold; color: #00796b; border-bottom: 2px solid #b2dfdb; padding-bottom: 5px; margin-bottom: 10px; }
-        
         .result-item { display: flex; justify-content: space-between; align-items: center; background: white; border: 1px solid #eee; padding: 12px 15px; margin-bottom: 8px; border-radius: 8px; border-right: 4px solid #ccc; transition:0.2s; }
         .result-item:hover { transform: translateX(-3px); }
         .result-item.done { border-right-color: #2e7d32; }
         .result-item.pending { border-right-color: #f57c00; }
         .result-item.incomplete { border-right-color: #c62828; }
-
         .score-circle { width: 45px; height: 45px; background: #f0f4c3; color: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; border: 2px solid #cddc39; }
         
-        /* Grades */
         .grade-badge { padding: 3px 8px; border-radius: 4px; color: white; font-size: 12px; font-weight: bold; margin-right: 5px; }
         .g-A-star { background: #fbc02d; color: #333; } .g-A { background: #43a047; } .g-B { background: #1976d2; } .g-C { background: #fb8c00; } .g-Fail { background: #e53935; }
 
@@ -70,7 +78,6 @@
         .loader { border: 3px solid #f3f3f3; border-top: 3px solid #00796b; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Modals & Dropzone */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(2px); }
         .modal-content { background-color: #fff; margin: 10% auto; padding: 25px; border-radius: 15px; width: 90%; max-width: 500px; text-align: center; max-height: 80vh; overflow-y: auto; }
         .drop-zone { border: 2px dashed #ccc; padding: 20px; border-radius: 10px; background: #fafafa; cursor: pointer; display:block; margin:10px 0;}
@@ -82,7 +89,6 @@
 <body>
 
 <div class="container">
-    <!-- HIDDEN ADMIN TRIGGER (Top Left Corner) -->
     <div class="admin-trigger" onclick="toggleAdmin()" title="Admin Login"></div>
     <div id="adminInputGroup" class="admin-input-group">
         <p style="margin:0 0 10px 0; font-size:12px; color:#555;">Admin Login</p>
@@ -96,22 +102,16 @@
     <div id="viewParent">
         <div class="card" style="text-align:center;">
             <h3 style="margin-top:0; color:#455a64;">ދަރިވަރުގެ ނަތީޖާ ބެލުން</h3>
-            <p style="font-size:13px; color:#78909c;">އިންޑެކްސް ނަންބަރު ޖެއްސެވުމަށްފަހު "ބައްލަވާ" އަށް ފިއްތަވާލައްވާ</p>
+            <p style="font-size:13px; color:#78909c;">އިންޑެކްސް ނަންބަރު ޖައްސަވާ</p>
             <input type="number" id="pIdx" placeholder="Index Number" inputmode="numeric" style="font-size:18px; letter-spacing: 2px;">
-            <button class="btn" id="pBtn" onclick="searchStudent()">
-                <span>🔍</span> ބައްލަވާ
-            </button>
+            <button class="btn" id="pBtn" onclick="searchStudent()"><span>🔍</span> ބައްލަވާ</button>
         </div>
 
         <div class="card card-highlight">
             <h3 style="margin-top:0; color:#00695c;">ފިލާވަޅުތައް</h3>
             <p style="font-size:13px; color:#555; margin-bottom:15px;">ފޮތްތަކާއި ނޯޓްސް އަދި ވޯކްޝީޓް ޑައުންލޯޑް ކުރެއްވުމަށް</p>
-            <button class="btn btn-mat" onclick="openMaterials()">
-                <span>📥</span> ފިލާވަޅުތައް ޑައުންލޯޑް
-            </button>
+            <button class="btn btn-mat" onclick="openMaterials()"><span>📥</span> ފިލާވަޅުތައް ޑައުންލޯޑް</button>
         </div>
-
-        <!-- PARENT RESULT DISPLAY AREA -->
         <div id="pRes" style="display:none; animation: fadeIn 0.5s;"></div>
     </div>
 
@@ -140,12 +140,17 @@
                         <small style="color:#666; font-weight:bold;">Select Item:</small>
                         <div style="display:flex; gap:5px;">
                             <select id="itemSelect" onchange="renderTeacherTable()"></select>
-                            <button class="btn btn-add" style="background:#00695c; padding:0 12px; font-size:18px;" onclick="openResultModal()" title="Upload Marks for this Item">📤</button>
+                            <button class="btn btn-add" style="background:#00695c; padding:0 12px; font-size:18px;" onclick="openResultModal()" title="Upload Marks">📤</button>
                         </div>
                     </div>
-                    <div id="totalDiv" style="width:100px; display:none;">
+                    
+                    <!-- TOTAL MARKS SECTION (UPDATED with SAVE) -->
+                    <div id="totalDiv" style="width:130px; display:none; flex-direction:column;">
                         <small style="color:#666; font-weight:bold;">Total Marks:</small>
-                        <input type="number" id="totalMarks" value="20" oninput="renderTeacherTable()">
+                        <div style="display:flex; gap:2px;">
+                            <input type="number" id="totalMarks" value="20" style="padding:5px; height:35px;">
+                            <button onclick="saveTotalMark()" style="background:#2e7d32; border:none; color:white; border-radius:4px; cursor:pointer; width:35px;" title="Save Total">💾</button>
+                        </div>
                     </div>
                 </div>
                 
@@ -183,7 +188,6 @@
 </div>
 
 <!-- MODALS -->
-<!-- 1. Single Student -->
 <div id="studentModal" class="modal">
     <div class="modal-content">
         <h3 style="color:#00796b;">އާ ދަރިވަރަކު އިތުރުކުރުން</h3>
@@ -198,15 +202,11 @@
     </div>
 </div>
 
-<!-- 2. Excel Student -->
 <div id="bulkModal" class="modal">
     <div class="modal-content" style="max-width:600px;">
         <h3 style="color:#00796b;">Excel File Import</h3>
         <p style="font-size:13px; color:#666;">Format: <b>Index | Name | Grade | Class</b></p>
-        <label for="excelFile" class="drop-zone">
-            <div style="font-size:30px;">📂</div>
-            <div style="color:#00796b;">Click to Upload Excel</div>
-        </label>
+        <label for="excelFile" class="drop-zone"><div style="font-size:30px;">📂</div><div style="color:#00796b;">Click to Upload</div></label>
         <input type="file" id="excelFile" accept=".xlsx, .xls" style="display:none;">
         <div id="previewArea" style="display:none; margin-top:15px; background:#f9f9f9; padding:10px; border:1px solid #eee; text-align:right;">
             <div id="excelPreview"></div>
@@ -216,16 +216,12 @@
     </div>
 </div>
 
-<!-- 3. Excel Result -->
 <div id="resultModal" class="modal">
     <div class="modal-content" style="max-width:500px;">
         <h3 style="color:#00796b;">ނަތީޖާ އަޕްލޯޑް ކުރުން</h3>
         <p style="font-size:14px; color:#e65100; font-weight:bold;" id="resultTargetName">Target: -</p>
         <p style="font-size:12px; color:#666;">Format: <b>Index | Marks</b></p>
-        <label for="resExcelFile" class="drop-zone">
-            <div style="font-size:25px;">📊</div>
-            <div>Upload Result Excel</div>
-        </label>
+        <label for="resExcelFile" class="drop-zone"><div style="font-size:25px;">📊</div><div>Upload Excel</div></label>
         <input type="file" id="resExcelFile" accept=".xlsx, .xls" style="display:none;">
         <div id="resPreviewArea" style="display:none; margin-top:15px; background:#f9f9f9; padding:10px; border:1px solid #eee; text-align:right;">
             <div id="resExcelPreview"></div>
@@ -235,40 +231,16 @@
     </div>
 </div>
 
-<!-- 4. Materials -->
-<div id="matModal" class="modal">
-    <div class="modal-content">
-        <h2 style="color:#00796b; margin-top:0;">📚 ފިލާވަޅުތައް</h2>
-        <div id="matListParent" style="min-height:100px;"><p>Loading...</p></div>
-        <button class="btn" style="background:#b0bec5; margin-top:15px; color:#333;" onclick="closeModal('matModal')">Close</button>
-    </div>
-</div>
-<div id="matManagerModal" class="modal">
-    <div class="modal-content">
-        <h3 style="color:#00796b;">Manage Materials</h3>
-        <input type="text" id="newMatTitle" placeholder="Title">
-        <input type="text" id="newMatLink" placeholder="Link (URL)">
-        <button class="btn btn-add" style="background:#1976d2; width:100%; margin-top:5px;" onclick="addMaterial()">+ Add Item</button>
-        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
-        <div id="matListTeacher" style="text-align:left; max-height:300px; overflow-y:auto;"></div>
-        <button class="btn" style="background:#b0bec5; color:#333; margin-top:15px;" onclick="closeModal('matManagerModal')">Close</button>
-    </div>
-</div>
+<div id="matModal" class="modal"><div class="modal-content"><h2 style="color:#00796b;">📚 ފިލާވަޅުތައް</h2><div id="matListParent" style="min-height:100px;">Loading...</div><button class="btn" style="background:#b0bec5; margin-top:15px; color:#333;" onclick="closeModal('matModal')">Close</button></div></div>
+<div id="matManagerModal" class="modal"><div class="modal-content"><h3 style="color:#00796b;">Manage Materials</h3><input type="text" id="newMatTitle" placeholder="Title"><input type="text" id="newMatLink" placeholder="Link (URL)"><button class="btn btn-add" style="background:#1976d2; width:100%; margin-top:5px;" onclick="addMaterial()">+ Add Item</button><hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;"><div id="matListTeacher" style="text-align:left; max-height:300px; overflow-y:auto;"></div><button class="btn" style="background:#b0bec5; color:#333; margin-top:15px;" onclick="closeModal('matManagerModal')">Close</button></div></div>
 
-<!-- 5. Message Viewer Modal (Teacher) -->
-<div id="msgModal" class="modal">
-    <div class="modal-content">
-        <h3 style="color:#00796b;">ބެލެނިވެރިޔާގެ މެސެޖު</h3>
-        <div id="msgContent" style="text-align:right; background:#f1f8e9; padding:15px; border-radius:8px; margin-bottom:15px;"></div>
-        <button class="btn" style="background:#b0bec5; color:#333;" onclick="closeModal('msgModal')">Close</button>
-    </div>
-</div>
+<div id="msgModal" class="modal"><div class="modal-content"><h3 style="color:#00796b;">ބެލެނިވެރިޔާގެ މެސެޖު</h3><div id="msgContent" style="text-align:right; background:#f1f8e9; padding:15px; border-radius:8px; margin-bottom:15px;"></div><button class="btn" style="background:#b0bec5; color:#333;" onclick="closeModal('msgModal')">Close</button></div></div>
 
 <div id="toast"></div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, addDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, addDoc, arrayUnion, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDSEHqUQIegVjhWKpRgpJybdPaVDVroVos",
@@ -282,6 +254,7 @@
     let db;
     let students = [];
     let materials = [];
+    let examConfig = {}; // Stores total marks for items
     let mode = 'work';
     let selGrade = 'All';
     let selClass = 'All';
@@ -293,13 +266,12 @@
         db = getFirestore(app);
     } catch(e) { console.error(e); }
 
-    // --- ADMIN ACCESS ---
+    // ADMIN
     window.toggleAdmin = () => {
         const grp = document.getElementById('adminInputGroup');
         grp.style.display = grp.style.display === 'block' ? 'none' : 'block';
         if(grp.style.display === 'block') document.getElementById('headerPass').focus();
     };
-
     window.headerLogin = () => {
         if(document.getElementById('headerPass').value === "123") {
             document.getElementById('viewParent').style.display = 'none';
@@ -309,13 +281,12 @@
             window.fetchData();
         } else alert("ކުށް ޕާސްވޯޑެއް!");
     };
-
     window.logout = () => {
         document.getElementById('viewTeacher').style.display = 'none';
         document.getElementById('viewParent').style.display = 'block';
     };
 
-    // --- DATA FETCHING ---
+    // FETCH DATA
     window.fetchData = async (showLoader = true) => {
         if(!db) return alert("Database connection failed!");
         if(showLoader) document.getElementById('tBody').innerHTML = '<tr><td colspan="6" style="padding:20px;"><div class="loader"></div> Loading...</td></tr>';
@@ -328,27 +299,29 @@
             materials = [];
             mSnap.forEach((doc) => materials.push({ id: doc.id, ...doc.data() }));
 
+            // Load Config (Total Marks)
+            try {
+                const confSnap = await getDoc(doc(db, "settings", "examConfig"));
+                if(confSnap.exists()) examConfig = confSnap.data();
+            } catch(e) { console.log("Config not found, using defaults"); }
+
             window.updateFilters();
             window.setMode(mode);
             window.renderParentMaterials();
         } catch(e) { console.error(e); document.getElementById('tBody').innerHTML = '<tr><td colspan="6" style="color:red">Error</td></tr>'; }
     };
 
-    // --- PARENT SEARCH & DISPLAY (UPDATED) ---
+    // --- PARENT SEARCH ---
     window.searchStudent = () => {
         const idx = document.getElementById('pIdx').value;
         if(!idx) return showToast("Index Number ޖައްސަވާ");
-        
-        const btn = document.getElementById('pBtn');
-        btn.innerHTML = `<div class="loader" style="width:15px;height:15px;"></div>`;
-        
+        const btn = document.getElementById('pBtn'); btn.innerHTML = `<div class="loader" style="width:15px;height:15px;"></div>`;
         const s = students.find(x => String(x.index) === String(idx));
         const res = document.getElementById('pRes');
         
-        setTimeout(() => { // Fake delay for smoother UI
+        setTimeout(() => {
             btn.innerHTML = `<span>🔍</span> ބައްލަވާ`;
             if(s) {
-                // Determine CSS for Weekly Status
                 const getStatusClass = (status) => {
                     if(status === 'ނިމިފައި') return 'done';
                     if(status === 'ފުރިހަމައެއް ނުވޭ') return 'pending';
@@ -356,191 +329,68 @@
                     return '';
                 };
                 
-                // Helper to get grade for Test (out of 20) and CA (out of 100)
-                const getG = (val, total) => {
+                // Helper to get grade based on saved total marks
+                const getG = (val, itemName, defaultTotal) => {
                    if(!val) return '';
+                   // Check if we have a saved total for this item, else use default
+                   let total = examConfig[itemName] ? parseInt(examConfig[itemName]) : defaultTotal;
                    let g = window.calcGrade(val, total);
                    return `<span class="grade-badge ${g.cls}">${g.lbl}</span>`;
                 };
 
                 let html = `
-                    <div class="result-header">
-                        <h2 style="margin:0;">${s.name}</h2>
-                        <div style="opacity:0.8; margin-top:5px; font-size:14px;">Index: ${s.index} | Class: ${s.grade}${s.class}</div>
-                    </div>
-                    
+                    <div class="result-header"><h2 style="margin:0;">${s.name}</h2><div style="opacity:0.8; margin-top:5px; font-size:14px;">Index: ${s.index} | Class: ${s.grade}${s.class}</div></div>
                     <div style="padding: 0 20px 20px 20px;">
-                        
-                        <!-- 1. Weekly Work -->
-                        <div class="result-section">
-                            <div class="result-title">ހަފްތާގެ މަސައްކަތް</div>
-                            <div style="max-height:300px; overflow-y:auto; padding-right:5px;">`;
-                            
+                        <div class="result-section"><div class="result-title">ހަފްތާގެ މަސައްކަތް</div><div style="max-height:300px; overflow-y:auto; padding-right:5px;">`;
                 let hasWeek = false;
-                for(let i=45; i>=1; i--) { // Reverse order to show latest first
-                    let v = s['Week'+i];
-                    let n = s['Week'+i+'_note'];
-                    if(v) {
-                        hasWeek = true;
-                        html += `
-                        <div class="result-item ${getStatusClass(v)}">
-                            <div>
-                                <span style="font-weight:bold; color:#555;">Week ${i}</span>
-                                ${n ? `<div style="font-size:12px; color:#888; margin-top:2px;">"${n}"</div>` : ''}
-                            </div>
-                            <div style="font-weight:bold; color:#00796b;">${v}</div>
-                        </div>`;
-                    }
+                for(let i=45; i>=1; i--) { 
+                    let v = s['Week'+i]; let n = s['Week'+i+'_note'];
+                    if(v) { hasWeek = true; html += `<div class="result-item ${getStatusClass(v)}"><div><span style="font-weight:bold; color:#555;">Week ${i}</span>${n ? `<div style="font-size:12px; color:#888;">"${n}"</div>`:''}</div><div style="font-weight:bold; color:#00796b;">${v}</div></div>`; }
                 }
-                if(!hasWeek) html += `<div style="color:#999; text-align:center; padding:10px;">މަސައްކަތެއް ފެންނާކަށް ނެތް</div>`;
+                if(!hasWeek) html += `<div style="color:#999; text-align:center; padding:10px;">No records</div>`;
                 html += `</div></div>`;
 
-                // 2. Unit Tests (Assumed out of 20 for Parents)
                 html += `<div class="result-section"><div class="result-title">ޔުނިޓް ޓެސްޓް</div>`;
                 let hasTest = false;
                 for(let i=1; i<=10; i++) {
                     let v = s['UnitTest'+i];
-                    if(v) {
-                        hasTest = true;
-                        html += `
-                        <div class="result-item">
-                            <span>Unit Test ${i}</span>
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                ${getG(v, 20)}
-                                <div class="score-circle">${v}</div>
-                            </div>
-                        </div>`;
-                    }
+                    if(v) { hasTest = true; html += `<div class="result-item"><span>Unit Test ${i}</span><div style="display:flex; align-items:center; gap:10px;">${getG(v, 'UnitTest'+i, 20)}<div class="score-circle">${v}</div></div></div>`; }
                 }
-                if(!hasTest) html += `<div style="color:#999; text-align:center; padding:10px;">ޓެސްޓް ނަތީޖާއެއް ނެތް</div>`;
+                if(!hasTest) html += `<div style="color:#999; text-align:center; padding:10px;">No records</div>`;
                 html += `</div>`;
 
-                // 3. CA / Exams (Assumed out of 100 for Parents)
                 html += `<div class="result-section"><div class="result-title">CA / Exam</div>`;
                 let hasCa = false;
                 for(let i=1; i<=4; i++) {
                     let v = s['CA'+i];
-                    if(v) {
-                        hasCa = true;
-                        html += `
-                        <div class="result-item">
-                            <span>CA / Exam ${i}</span>
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                ${getG(v, 100)}
-                                <div class="score-circle" style="background:#e0f7fa; border-color:#00bcd4;">${v}</div>
-                            </div>
-                        </div>`;
-                    }
+                    if(v) { hasCa = true; html += `<div class="result-item"><span>CA / Exam ${i}</span><div style="display:flex; align-items:center; gap:10px;">${getG(v, 'CA'+i, 100)}<div class="score-circle" style="background:#e0f7fa; border-color:#00bcd4;">${v}</div></div></div>`; }
                 }
-                if(!hasCa) html += `<div style="color:#999; text-align:center; padding:10px;">ނަތީޖާއެއް ނެތް</div>`;
-                html += `</div>`;
-
-                // 4. Comment Section
-                html += `
-                    <div class="result-section" style="background:#f1f8e9; padding:15px; border-radius:10px; border:1px solid #c5e1a5;">
-                        <div style="font-weight:bold; color:#33691e; margin-bottom:10px;">މުދައްރިސަށް މެސެޖެއް ފޮނުއްވުމަށް:</div>
-                        <textarea id="parentMsgInput" placeholder="މިތަނުގައި ލިޔުއްވާ..." rows="3"></textarea>
-                        <button class="btn" style="background:#558b2f; margin-top:5px;" onclick="sendParentMsg('${s.id}')">ފޮނުއްވާ ➤</button>
-                    </div>
-                </div>`;
-
-                res.innerHTML = html;
-                res.style.display = "block";
-            } else {
-                res.innerHTML = `<div style="text-align:center; padding:30px; color:#c62828;">
-                    <h3>ނުފެނުނު!</h3><p>އިންޑެކްސް ނަންބަރު ޗެކް ކޮށްލައްވާ</p>
-                </div>`;
-                res.style.display = "block";
-            }
+                if(!hasCa) html += `<div style="color:#999; text-align:center; padding:10px;">No records</div>`;
+                html += `</div><div class="result-section" style="background:#f1f8e9; padding:15px; border-radius:10px; border:1px solid #c5e1a5;"><div style="font-weight:bold; color:#33691e; margin-bottom:10px;">Send Message to Teacher:</div><textarea id="parentMsgInput" placeholder="Write here..." rows="3"></textarea><button class="btn" style="background:#558b2f; margin-top:5px;" onclick="sendParentMsg('${s.id}')">Send ➤</button></div></div>`;
+                res.innerHTML = html; res.style.display = "block";
+            } else { res.innerHTML = `<div style="text-align:center; padding:30px; color:#c62828;"><h3>Not Found!</h3></div>`; res.style.display = "block"; }
         }, 300);
     };
 
-    // --- PARENT SEND MESSAGE ---
-    window.sendParentMsg = async (studentId) => {
+    window.sendParentMsg = async (sid) => {
         const txt = document.getElementById('parentMsgInput').value;
-        if(!txt.trim()) return alert("މެސެޖެއް ލިޔުއްވާ!");
-        
-        try {
-            await updateDoc(doc(db, "students", studentId), {
-                parentMessages: arrayUnion({
-                    text: txt,
-                    date: new Date().toISOString().split('T')[0] // Simple date YYYY-MM-DD
-                })
-            });
-            alert("މެސެޖު ފޮނުވިއްޖެ!");
-            document.getElementById('parentMsgInput').value = "";
-        } catch(e) {
-            console.error(e);
-            alert("މައްސަލައެއް ދިމާވެއްޖެ.");
-        }
+        if(!txt.trim()) return alert("Message is empty");
+        try { await updateDoc(doc(db, "students", sid), { parentMessages: arrayUnion({ text: txt, date: new Date().toISOString().split('T')[0] }) }); alert("Sent!"); document.getElementById('parentMsgInput').value = ""; } catch(e) { alert("Error"); }
     };
 
-    // --- TEACHER: VIEW MESSAGES ---
     window.viewMessages = (msgArray) => {
-        if(!msgArray || msgArray.length === 0) return alert("މެސެޖެއް ނެތް");
-        
-        // Take last message
+        if(!msgArray || msgArray.length === 0) return alert("No messages");
         const lastMsg = msgArray[msgArray.length - 1];
-        document.getElementById('msgContent').innerHTML = `
-            <small style="color:#777;">Date: ${lastMsg.date}</small><br>
-            <p style="font-size:16px;">"${lastMsg.text}"</p>
-            <hr>
-            <small>Total Messages: ${msgArray.length}</small>
-        `;
+        document.getElementById('msgContent').innerHTML = `<small style="color:#777;">Date: ${lastMsg.date}</small><br><p style="font-size:16px;">"${lastMsg.text}"</p><hr><small>Total Messages: ${msgArray.length}</small>`;
         document.getElementById('msgModal').style.display = "block";
     };
 
-    // --- TEACHER TABLE RENDER (Updated to show msg indicator) ---
-    window.renderTeacherTable = () => {
-        const item = document.getElementById('itemSelect').value;
-        const total = document.getElementById('totalMarks').value || 100;
-        
-        let filtered = students;
-        if(selGrade !== 'All') filtered = filtered.filter(s => String(s.grade) === String(selGrade));
-        if(selClass !== 'All') filtered = filtered.filter(s => String(s.class) === String(selClass));
-
-        let html = "";
-        filtered.sort((a,b) => (parseInt(a.index) || 0) - (parseInt(b.index) || 0)).forEach(s => {
-            let val = s[item] || "";
-            let note = s[item + "_note"] || "";
-            let hasMsg = s.parentMessages && s.parentMessages.length > 0;
-            
-            // Input logic
-            let input = mode === 'work' ? 
-                `<select class="v-in" data-id="${s.id}" data-orig="${val}">
-                    <option value="">-</option>
-                    <option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option>
-                    <option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option>
-                    <option value="ފުރިހަމައެއް ނުވޭ" ${val=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމަ ނުވޭ</option>
-                 </select>` : 
-                `<input type="number" class="v-in" data-id="${s.id}" data-orig="${val}" value="${val}" placeholder="0" oninput="updRow(this, ${total})">`;
-
-            let gradeHtml = mode !== 'work' && val ? window.calcGradeHtml(val, total) : '';
-            
-            // Msg Button
-            let msgBtn = hasMsg ? 
-                `<button onclick='viewMessages(${JSON.stringify(s.parentMessages)})' style="border:none; background:#ffeb3b; border-radius:50%; width:25px; height:25px; cursor:pointer;">📩</button>` : 
-                `<span style="color:#ccc;">-</span>`;
-
-            html += `<tr>
-                <td><b>${s.index}</b></td>
-                <td style="text-align:right">${s.name}<br><small style="color:#888;">${s.grade}${s.class}</small></td>
-                <td>${input} <div id="g-${s.id}" style="margin-top:2px;">${gradeHtml}</div></td>
-                ${mode!='work' ? `<td><small id="p-${s.id}">${val ? Math.round((val/total)*100)+'%' : ''}</small></td>` : ''}
-                <td><input type="text" class="n-in" data-id="${s.id}" data-orig-note="${note}" value="${note}" placeholder="..."></td>
-                <td>${msgBtn}</td>
-            </tr>`;
-        });
-        document.getElementById('tBody').innerHTML = html || "<tr><td colspan='6' style='padding:20px; color:#777;'>No Data</td></tr>";
-    };
-
-    // --- STANDARD LOGIC & HELPERS ---
+    // --- TEACHER LOGIC ---
     window.setMode = (m) => {
         mode = m;
         document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
         document.getElementById('m_'+m).classList.add('active');
-        let sel = document.getElementById('itemSelect');
-        sel.innerHTML = "";
+        let sel = document.getElementById('itemSelect'); sel.innerHTML = "";
         
         if(m=='work') {
             for(let i=1;i<=45;i++) sel.innerHTML += `<option value="Week${i}">Week ${i}</option>`;
@@ -558,15 +408,63 @@
         window.renderTeacherTable();
     };
 
+    // --- NEW: SAVE TOTAL MARKS ---
+    window.saveTotalMark = async () => {
+        const item = document.getElementById('itemSelect').value;
+        const val = document.getElementById('totalMarks').value;
+        if(!item || !val) return;
+        try {
+            await setDoc(doc(db, "settings", "examConfig"), { [item]: val }, { merge: true });
+            examConfig[item] = val; // update local
+            showToast("Total Saved!");
+            window.renderTeacherTable(); // re-calc grades
+        } catch(e) { console.error(e); alert("Error saving total"); }
+    };
+
+    window.renderTeacherTable = () => {
+        const item = document.getElementById('itemSelect').value;
+        
+        // Use saved total if exists, else default based on mode
+        let defaultTotal = mode === 'test' ? 20 : 100;
+        let currentTotal = examConfig[item] ? parseInt(examConfig[item]) : defaultTotal;
+        
+        // Update input to reflect current total
+        if(mode !== 'work') document.getElementById('totalMarks').value = currentTotal;
+
+        let filtered = students;
+        if(selGrade !== 'All') filtered = filtered.filter(s => String(s.grade) === String(selGrade));
+        if(selClass !== 'All') filtered = filtered.filter(s => String(s.class) === String(selClass));
+
+        let html = "";
+        filtered.sort((a,b) => (parseInt(a.index) || 0) - (parseInt(b.index) || 0)).forEach(s => {
+            let val = s[item] || "";
+            let note = s[item + "_note"] || "";
+            let hasMsg = s.parentMessages && s.parentMessages.length > 0;
+            
+            let input = mode === 'work' ? 
+                `<select class="v-in" data-id="${s.id}" data-orig="${val}">
+                    <option value="">-</option>
+                    <option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option>
+                    <option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option>
+                    <option value="ފުރިހަމައެއް ނުވޭ" ${val=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމަ ނުވޭ</option>
+                 </select>` : 
+                `<input type="number" class="v-in" data-id="${s.id}" data-orig="${val}" value="${val}" placeholder="0" oninput="updRow(this, ${currentTotal})">`;
+
+            let gradeHtml = mode !== 'work' && val ? window.calcGradeHtml(val, currentTotal) : '';
+            let msgBtn = hasMsg ? `<button onclick='viewMessages(${JSON.stringify(s.parentMessages)})' style="border:none; background:#ffeb3b; border-radius:50%; width:25px; height:25px; cursor:pointer;">📩</button>` : `<span style="color:#ccc;">-</span>`;
+
+            html += `<tr><td><b>${s.index}</b></td><td style="text-align:right">${s.name}<br><small style="color:#888;">${s.grade}${s.class}</small></td><td>${input} <div id="g-${s.id}" style="margin-top:2px;">${gradeHtml}</div></td>${mode!='work' ? `<td><small id="p-${s.id}">${val ? Math.round((val/currentTotal)*100)+'%' : ''}</small></td>` : ''}<td><input type="text" class="n-in" data-id="${s.id}" data-orig-note="${note}" value="${note}" placeholder="..."></td><td>${msgBtn}</td></tr>`;
+        });
+        document.getElementById('tBody').innerHTML = html || "<tr><td colspan='6' style='padding:20px; color:#777;'>No Data</td></tr>";
+    };
+
     window.setGradeFilter = (g) => { selGrade = g; selClass = 'All'; window.updateFilters(); window.renderTeacherTable(); };
     window.setClassFilter = (c) => { selClass = c; window.updateFilters(); window.renderTeacherTable(); };
-
     window.updateFilters = () => {
         const grades = [...new Set(students.map(s => s.grade))].filter(Boolean).sort();
         let gHtml = `<div class="pill ${selGrade=='All'?'active':''}" onclick="setGradeFilter('All')">All</div>`;
         grades.forEach(g => gHtml += `<div class="pill ${selGrade==g?'active':''}" onclick="setGradeFilter('${g}')">Gr ${g}</div>`);
         document.getElementById('gradeFilter').innerHTML = gHtml;
-        
         let cHtml = '';
         if(selGrade !== 'All') {
             const classes = [...new Set(students.filter(s => s.grade == selGrade).map(s => s.class))].filter(Boolean).sort();
@@ -582,27 +480,24 @@
         const inputs = document.querySelectorAll('.v-in');
         let batchPromises = [];
         let changeCount = 0;
-
         btn.disabled = true; btn.innerText = "Saving...";
         inputs.forEach((inp) => {
             const id = inp.dataset.id;
             const val = inp.value;
             const note = document.querySelector(`.n-in[data-id="${id}"]`).value;
-            
             if (val !== inp.dataset.orig || note !== document.querySelector(`.n-in[data-id="${id}"]`).dataset.origNote) {
                 let update = {}; update[item] = val; update[item + "_note"] = note;
                 batchPromises.push(updateDoc(doc(db, "students", id), update));
                 changeCount++;
             }
         });
-
         if (changeCount === 0) { showToast("No changes."); btn.disabled = false; btn.innerText = "💾 Save Changes"; return; }
         await Promise.all(batchPromises);
         showToast("Saved!"); btn.disabled = false; btn.innerText = "💾 Save Changes";
         window.fetchData(false);
     };
 
-    // --- MODALS & EXCEL ---
+    // MODALS & HELPERS
     window.openMaterials = () => { document.getElementById('matModal').style.display = "block"; window.renderParentMaterials(); };
     window.openMatManager = () => { document.getElementById('matManagerModal').style.display = "block"; window.renderTeacherMaterials(); };
     window.openStudentModal = () => { document.getElementById('studentModal').style.display = "block"; };
@@ -610,109 +505,53 @@
     window.closeModal = (id) => { document.getElementById(id).style.display = "none"; };
     window.resetBulk = () => { document.getElementById('excelFile').value = ''; document.getElementById('previewArea').style.display = 'none'; parsedExcelData = []; };
     window.resetResBulk = () => { document.getElementById('resExcelFile').value = ''; document.getElementById('resPreviewArea').style.display = 'none'; parsedResultData = []; };
-
-    // Excel Student
+    
+    // Excel handlers are same as previous, just compacted slightly
     document.getElementById('excelFile').addEventListener('change', (e) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const data = new Uint8Array(e.target.result);
-            const workbook = XLSX.read(data, {type: 'array'});
-            const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {header: 1});
-            parsedExcelData = [];
-            let html = '<table style="width:100%; font-size:12px;"><tr><th>Idx</th><th>Name</th></tr>';
-            json.forEach((row, i) => {
-                if(row.length >= 2 && (i>0 || !isNaN(row[0]))) {
-                    parsedExcelData.push({ index: row[0], name: row[1], grade: row[2]||'', class: row[3]||'' });
-                    if(parsedExcelData.length<=5) html+=`<tr><td>${row[0]}</td><td>${row[1]}</td></tr>`;
-                }
-            });
-            document.getElementById('excelPreview').innerHTML = html + "</table>";
-            document.getElementById('previewArea').style.display = 'block';
-        };
-        reader.readAsArrayBuffer(e.target.files[0]);
+        const reader = new FileReader(); reader.onload = (e) => {
+            const json = XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(e.target.result), {type: 'array'}).Sheets[XLSX.read(new Uint8Array(e.target.result), {type: 'array'}).SheetNames[0]], {header: 1});
+            parsedExcelData = []; let html = '<table style="width:100%;font-size:12px;"><tr><th>Idx</th><th>Name</th></tr>';
+            json.forEach((row, i) => { if(row.length>=2 && (i>0||!isNaN(row[0]))) { parsedExcelData.push({index:row[0], name:row[1], grade:row[2]||'', class:row[3]||''}); if(parsedExcelData.length<=5) html+=`<tr><td>${row[0]}</td><td>${row[1]}</td></tr>`; }});
+            document.getElementById('excelPreview').innerHTML = html+"</table>"; document.getElementById('previewArea').style.display='block';
+        }; reader.readAsArrayBuffer(e.target.files[0]);
     });
-
     window.confirmExcelUpload = async () => {
-        let success = 0; let promises = [];
-        for (let s of parsedExcelData) {
-            const exists = students.some(e => String(e.index) === String(s.index));
-            if (!exists && s.index) {
-                promises.push(addDoc(collection(db, "students"), {
-                    index: String(s.index), name: String(s.name), grade: String(s.grade), class: String(s.class),
-                    Week1: "", UnitTest1: "", CA1: ""
-                }).then(()=>success++));
-            }
-        }
-        await Promise.all(promises);
-        window.fetchData(); closeModal('bulkModal'); showToast(`Added: ${success}`);
+        let success=0; let promises=[];
+        for (let s of parsedExcelData) { if(!students.some(e=>String(e.index)==String(s.index)) && s.index) promises.push(addDoc(collection(db, "students"), {index:String(s.index), name:String(s.name), grade:String(s.grade), class:String(s.class)}).then(()=>success++)); }
+        await Promise.all(promises); window.fetchData(); closeModal('bulkModal'); showToast(`Added: ${success}`);
     };
-
-    // Excel Result
+    
     window.openResultModal = () => {
         if(!document.getElementById('itemSelect').value) return alert("Select Item first");
         document.getElementById('resultTargetName').innerText = "Target: " + document.getElementById('itemSelect').value;
         document.getElementById('resultModal').style.display = "block";
     };
-    
     document.getElementById('resExcelFile').addEventListener('change', (e) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
+        const reader = new FileReader(); reader.onload = (e) => {
             const json = XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(e.target.result), {type: 'array'}).Sheets[XLSX.read(new Uint8Array(e.target.result), {type: 'array'}).SheetNames[0]], {header: 1});
-            parsedResultData = [];
-            let html = '<table style="width:100%; font-size:12px;"><tr><th>Idx</th><th>Mark</th></tr>';
-            json.forEach((row, i) => {
-                if(row.length >= 2 && (i>0 || !isNaN(row[0]))) {
-                    parsedResultData.push({ index: row[0], mark: row[1] });
-                    if(parsedResultData.length<=5) html+=`<tr><td>${row[0]}</td><td>${row[1]}</td></tr>`;
-                }
-            });
-            document.getElementById('resExcelPreview').innerHTML = html + "</table>";
-            document.getElementById('resPreviewArea').style.display = 'block';
-        };
-        reader.readAsArrayBuffer(e.target.files[0]);
+            parsedResultData = []; let html = '<table style="width:100%;font-size:12px;"><tr><th>Idx</th><th>Mark</th></tr>';
+            json.forEach((row, i) => { if(row.length>=2 && (i>0||!isNaN(row[0]))) { parsedResultData.push({index:row[0], mark:row[1]}); if(parsedResultData.length<=5) html+=`<tr><td>${row[0]}</td><td>${row[1]}</td></tr>`; }});
+            document.getElementById('resExcelPreview').innerHTML = html+"</table>"; document.getElementById('resPreviewArea').style.display='block';
+        }; reader.readAsArrayBuffer(e.target.files[0]);
     });
-
     window.confirmResultUpload = async () => {
-        const item = document.getElementById('itemSelect').value;
-        let success = 0; let promises = [];
-        for(let r of parsedResultData) {
-            const s = students.find(x => String(x.index) === String(r.index));
-            if(s) {
-                let up = {}; up[item] = String(r.mark);
-                promises.push(updateDoc(doc(db, "students", s.id), up).then(()=>success++));
-            }
-        }
-        await Promise.all(promises);
-        window.fetchData(); closeModal('resultModal'); showToast(`Updated: ${success}`);
+        const item = document.getElementById('itemSelect').value; let success=0; let promises=[];
+        for(let r of parsedResultData) { const s = students.find(x=>String(x.index)==String(r.index)); if(s) promises.push(updateDoc(doc(db, "students", s.id), {[item]:String(r.mark)}).then(()=>success++)); }
+        await Promise.all(promises); window.fetchData(); closeModal('resultModal'); showToast(`Updated: ${success}`);
     };
 
-    // Single Add & Materials (Simplified to save space)
     window.addNewStudent = async () => {
-        const idx = document.getElementById('newStIndex').value;
-        const name = document.getElementById('newStName').value;
-        if(idx && name) {
-             await addDoc(collection(db, "students"), { index: idx, name: name, grade: document.getElementById('newStGrade').value, class: document.getElementById('newStClass').value });
-             window.fetchData(); closeModal('studentModal');
-        }
+        const idx = document.getElementById('newStIndex').value; const name = document.getElementById('newStName').value;
+        if(idx && name) { await addDoc(collection(db, "students"), {index:idx, name:name, grade:document.getElementById('newStGrade').value, class:document.getElementById('newStClass').value}); window.fetchData(); closeModal('studentModal'); }
     };
     window.addMaterial = async () => {
         const t = document.getElementById('newMatTitle').value; const l = document.getElementById('newMatLink').value;
         if(t && l) { await addDoc(collection(db, "materials"), {title:t, link:l}); window.renderTeacherMaterials(); }
     };
     window.removeMaterial = async (id) => { await deleteDoc(doc(db, "materials", id)); window.renderTeacherMaterials(); };
+    window.renderTeacherMaterials = () => { document.getElementById('matListTeacher').innerHTML = materials.map(m=>`<div class="mat-item"><span>${m.title}</span><button class="btn-del" onclick="removeMaterial('${m.id}')">Del</button></div>`).join(''); };
+    window.renderParentMaterials = () => { document.getElementById('matListParent').innerHTML = materials.length ? materials.map(m=>`<a href="${m.link}" target="_blank" class="mat-link"><span>${m.title}</span><span>📥</span></a>`).join('') : "<p style='text-align:center;color:#999'>No materials</p>"; };
 
-    window.renderTeacherMaterials = () => {
-        document.getElementById('matListTeacher').innerHTML = materials.map(m => 
-            `<div class="mat-item"><span>${m.title}</span><button class="btn-del" onclick="removeMaterial('${m.id}')">Del</button></div>`
-        ).join('');
-    };
-    window.renderParentMaterials = () => {
-        document.getElementById('matListParent').innerHTML = materials.length ? materials.map(m => 
-            `<a href="${m.link}" target="_blank" class="mat-link"><span>${m.title}</span><span>📥</span></a>`
-        ).join('') : "<p style='text-align:center;color:#999'>No materials</p>";
-    };
-
-    // Utils
     window.calcGrade = (m, t) => {
         let p = (m/t)*100; if(isNaN(p)) return {lbl:'-', cls:''};
         if(p>=90) return {lbl:'A*', cls:'g-A-star'};
@@ -721,10 +560,7 @@
         if(p>=60) return {lbl:'C', cls:'g-C'};
         return {lbl:'Fail', cls:'g-Fail'};
     };
-    window.calcGradeHtml = (val, total) => {
-        let g = window.calcGrade(val, total);
-        return `<span class="grade-badge ${g.cls}">${g.lbl}</span>`;
-    };
+    window.calcGradeHtml = (val, total) => { let g = window.calcGrade(val, total); return `<span class="grade-badge ${g.cls}">${g.lbl}</span>`; };
     window.updRow = (el, t) => { document.getElementById('g-'+el.dataset.id).innerHTML = window.calcGradeHtml(el.value, t); };
     function showToast(msg) { const t=document.getElementById('toast'); t.innerText=msg; t.style.opacity='1'; t.style.bottom='80px'; setTimeout(()=>t.style.opacity='0', 3000); }
 </script>
