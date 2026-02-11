@@ -8,65 +8,53 @@
         @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
         * { font-family: "Faruma", sans-serif; box-sizing: border-box; }
         body { background-color: #f0f4f8; margin: 0; padding: 10px; text-align: right; }
-        .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: relative; }
-        h1 { color: #00796b; text-align: center; margin-bottom: 25px; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: relative; min-height: 80vh; }
         
-        /* Admin Link */
+        h1 { color: #00796b; text-align: center; margin-bottom: 25px; font-size: 1.8rem; }
+        
         .admin-link { position: absolute; top: 15px; left: 15px; font-size: 12px; color: #999; cursor: pointer; background: #f5f5f5; padding: 8px 12px; border-radius: 20px; font-weight: bold; }
         .admin-input-group { display: none; position: absolute; top: 50px; left: 15px; background: white; padding: 10px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 1001; }
         .mini-input { width: 100px; padding: 5px; border: 1px solid #ccc; border-radius: 5px; font-size: 12px; text-align: center; }
         .mini-btn { padding: 5px 10px; background: #00796b; color: white; border: none; border-radius: 5px; font-size: 12px; cursor: pointer; }
 
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab-btn { flex: 1; padding: 12px; border: none; background: #eee; cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 16px; }
-        .tab-btn.active { background: #00796b; color: white; }
-        .card { border: 1px solid #ddd; padding: 15px; border-radius: 10px; margin-bottom: 15px; background: #fdfdfd; }
-        
-        /* Inputs */
+        .card { background: #f9f9f9; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #eee; }
         input, select { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; text-align: center; }
-        
-        .btn { width: 100%; padding: 14px; background: #00796b; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; }
+        .btn { width: 100%; padding: 16px; background: #00796b; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; }
         .btn:disabled { background: #b0bec5; }
         .btn-mat { background: #f57c00; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-save { position: sticky; bottom: 20px; z-index: 100; margin-top: 20px; background: #2e7d32; box-shadow: 0 4px 15px rgba(46,125,50,0.3); }
-        .btn-back { background: #607d8b; width: auto; padding: 8px 20px; font-size: 14px; margin-bottom: 15px; float: left; }
-        .btn-add { background: #1976d2; padding: 8px 15px; font-size: 14px; width: auto; margin-top: 0; }
+        .btn-add { background: #1976d2; padding: 8px 15px; font-size: 14px; width: auto; }
         .btn-del { background: #ef5350; padding: 5px 10px; font-size: 12px; width: auto; margin: 0; }
+        .btn-save { position: sticky; bottom: 20px; z-index: 100; margin-top: 20px; background: #2e7d32; box-shadow: 0 4px 15px rgba(46,125,50,0.3); }
 
-        /* Table */
         .table-container { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 10px; border: 1px solid #eee; }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        th, td { border-bottom: 1px solid #eee; padding: 12px; text-align: center; font-size: 14px; }
+        th, td { padding: 15px; border-bottom: 1px solid #eee; text-align: center; }
         th { background: #e0f2f1; color: #00796b; position: sticky; top: 0; z-index: 10; font-weight: bold; }
-        
+        tr:nth-child(even) { background-color: #fcfcfc; }
+
         .v-in { width: 90px !important; height: 40px; font-size: 14px !important; font-weight: bold; border: 2px solid #b2dfdb !important; padding: 5px !important; }
         .n-in { text-align: right !important; min-width: 150px; font-size: 14px !important; }
 
         .pills { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; margin-bottom: 10px; }
-        .pill { padding: 8px 15px; background: #eee; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 13px; transition: 0.2s; }
+        .pill { padding: 10px 20px; background: #eee; border-radius: 25px; cursor: pointer; white-space: nowrap; font-size: 14px; transition: 0.2s; }
         .pill.active { background: #00796b; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         
         .loader { border: 3px solid #f3f3f3; border-top: 3px solid #00796b; border-radius: 50%; width: 25px; height: 25px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        /* Badges & Text */
-        .st-header { text-align: center; border-bottom: 2px dashed #00796b; padding-bottom: 15px; margin-bottom: 20px; }
-        .st-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px dashed #eee; align-items: center; }
-        .st-row:last-child { border-bottom: none; }
         .grade-badge { padding: 4px 8px; border-radius: 5px; color: white; font-size: 12px; font-weight: bold; margin-left: 5px; display: inline-block; }
-        .g-A-star { background: #fbc02d; color: #333; } 
-        .g-A { background: #43a047; } .g-B { background: #1976d2; } .g-C { background: #fb8c00; } .g-Fail { background: #e53935; }
+        .g-A-star { background: #fbc02d; color: #333; } .g-A { background: #43a047; } .g-B { background: #1976d2; } .g-C { background: #fb8c00; } .g-Fail { background: #e53935; }
         .cat-title { margin: 20px 0 10px; color: #00796b; font-size: 16px; font-weight: bold; background: #e0f2f1; padding: 8px; border-radius: 5px; }
 
         /* Modal */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
         .modal-content { background-color: #fff; margin: 10% auto; padding: 20px; border-radius: 15px; width: 90%; max-width: 500px; text-align: center; max-height: 80vh; overflow-y: auto; }
-        .mat-link { display: block; padding: 15px; margin: 10px 0; background: #e0f2f1; color: #00695c; text-decoration: none; border-radius: 8px; font-weight: bold; border: 1px solid #b2dfdb; }
         .mat-item { display: flex; justify-content: space-between; align-items: center; background: #fafafa; padding: 10px; margin-bottom: 5px; border-radius: 8px; border: 1px solid #eee; }
-        .mat-input-group { display: flex; gap: 5px; margin-bottom: 10px; }
+        .mat-link { display: block; padding: 15px; margin: 10px 0; background: #e0f2f1; color: #00695c; text-decoration: none; border-radius: 8px; font-weight: bold; border: 1px solid #b2dfdb; }
+        .full-marks-area { display: flex; align-items: center; gap: 10px; background: #fffde7; padding: 10px 15px; border-radius: 8px; border: 1px solid #fff9c4; color: #f57f17; font-weight: bold; }
         
-        #fullMarksContainer { display: flex; align-items: center; gap: 10px; background: #fffde7; padding: 10px 15px; border-radius: 8px; border: 1px solid #fff9c4; color: #f57f17; font-weight: bold; }
-        #totalMarks { width: 70px; margin: 0; background: white; border: 1px solid #fbc02d; }
+        .st-header { text-align: center; border-bottom: 2px dashed #00796b; padding-bottom: 15px; margin-bottom: 20px; }
+        .st-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px dashed #eee; align-items: center; }
     </style>
 </head>
 <body>
@@ -80,9 +68,9 @@
         </div>
     </div>
 
-    <h1>🌙 އިސްލާމް ޕޯޓަލް <span style="font-size: 0.4em; color: #777; vertical-align: middle; margin-right: 5px; font-family: 'Faruma', sans-serif;">(މުއުތަމިން ސަރ)</span></h1>
+    <h1>🌙 އިސްލާމް ޕޯޓަލް <span style="font-size: 0.4em; color: #777; vertical-align: middle; margin-right: 5px;">(މުއުތަމިން ސަރ)</span></h1>
 
-    <!-- PARENT VIEW (DEFAULT) -->
+    <!-- PARENT VIEW -->
     <div id="viewParent">
         <div class="card">
             <h3 style="margin-top:0; color:#555;">ދަރިވަރުގެ މަޢުލޫމާތު ބެލުން</h3>
@@ -90,7 +78,6 @@
             <button class="btn" id="pBtn" onclick="searchStudent()">ހޯއްދަވާ</button>
         </div>
 
-        <!-- Materials Section -->
         <div class="card" style="text-align:center; border: 1px dashed #f57c00; background:#fff3e0;">
             <h3 style="margin-top:0; color:#e65100;">ފިލާވަޅުތައް</h3>
             <p style="font-size:14px; color:#666;">ފޮތްތަކާއި ނޯޓްސް ޑައުންލޯޑް ކުރެއްވުމަށް</p>
@@ -102,7 +89,7 @@
         <div id="pRes" class="card" style="display:none;"></div>
     </div>
 
-    <!-- TEACHER VIEW (HIDDEN) -->
+    <!-- TEACHER VIEW -->
     <div id="viewTeacher" style="display: none;">
         <div id="teacherPanel">
             <div style="text-align:left; margin-bottom:15px; display:flex; justify-content:space-between;">
@@ -117,25 +104,25 @@
                     <div class="pill" id="m_ca" onclick="setMode('ca')">CA</div>
                 </div>
                 
-                <div style="display:flex; gap:10px;">
-                    <div style="flex:1">
-                        <small>އައިޓަމް:</small>
+                <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end;">
+                    <div style="flex:1; min-width:150px;">
+                        <small style="color:#666; font-weight:bold;">އައިޓަމް:</small>
                         <select id="itemSelect" onchange="renderTeacherTable()"></select>
                     </div>
-                    <div id="totalDiv" style="width:80px; display:none;">
-                        <small>Out of:</small>
+                    <div id="totalDiv" style="width:100px; display:none;">
+                        <small style="color:#666; font-weight:bold;">Out of:</small>
                         <input type="number" id="totalMarks" value="20" oninput="renderTeacherTable()">
                     </div>
                 </div>
                 
                 <div style="margin-top:10px;">
-                    <small>ފިލްޓަރ:</small>
+                    <small style="color:#666; font-weight:bold;">ފިލްޓަރ:</small>
                     <div id="gradeFilter" class="pills"></div>
                     <div id="classFilter" class="pills"></div>
                 </div>
                 
                 <div style="text-align:right;">
-                     <button onclick="fetchData()" style="background:none; border:none; color:#00695c; cursor:pointer;">🔄 Refresh</button>
+                     <button onclick="fetchData()" style="background:none; border:none; color:#00695c; font-size:14px; cursor:pointer;">🔄 Refresh</button>
                 </div>
             </div>
             
@@ -145,12 +132,12 @@
                     <tbody id="tBody"></tbody>
                 </table>
             </div>
-            <button class="btn btn-save" id="sBtn" onclick="saveData()">💾 ސޭވްކުރޭ</button>
+            <button class="btn btn-save" id="sBtn" onclick="saveTeacherData()">💾 ސޭވްކުރޭ</button>
         </div>
     </div>
 </div>
 
-<!-- Materials Modal (Parent) -->
+<!-- Materials Modal -->
 <div id="matModal" class="modal">
     <div class="modal-content">
         <h2 style="color:#00796b;">📚 ފިލާވަޅުތައް</h2>
@@ -159,7 +146,7 @@
     </div>
 </div>
 
-<!-- Materials Manager (Teacher) -->
+<!-- Materials Manager -->
 <div id="matManagerModal" class="modal">
     <div class="modal-content">
         <h3 style="color:#00796b;">ފިލާވަޅު މެނޭޖްކުރުން</h3>
@@ -169,181 +156,107 @@
         </div>
         <button class="btn btn-add" style="background:#1976d2;" onclick="addMaterial()">އިތުރުކުރޭ</button>
         <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
-        <div id="matListTeacher" style="text-align:left; max-height: 200px; overflow-y:auto;"></div>
+        <div id="matListTeacher" style="text-align:left; max-height:200px; overflow-y:auto;"></div>
         <div style="margin-top:15px; display:flex; gap:10px;">
-            <button class="btn" style="background:#2e7d32; flex:1;" onclick="saveMaterials()">ސޭވް</button>
             <button class="btn" style="background:#78909c; flex:1;" onclick="closeModal('matManagerModal')">ކެންސަލް</button>
         </div>
     </div>
 </div>
 
-<div id="toast" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #323232; color: white; padding: 12px 24px; border-radius: 30px; font-size: 14px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 2000; box-shadow: 0 5px 15px rgba(0,0,0,0.3);"></div>
+<div id="toast" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #323232; color: white; padding: 12px 24px; border-radius: 30px; font-size: 14px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 2000;"></div>
 
-<script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbzKBPqBMXTBDlDehZbpbRmTVXd1HhcDAaGn7Z9Yhl-wh4FZTHEkROLXmvW7O0ABvvVH/exec";
-    let db = [];
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, addDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+    // -------------------------------------------------------------
+    // const firebaseConfig = {
+  apiKey: "AIzaSyDSEHqUQIegVjhWKpRgpJybdPaVDVroVos",
+  authDomain: "islam-portal-muthamin.firebaseapp.com",
+  projectId: "islam-portal-muthamin",
+  storageBucket: "islam-portal-muthamin.firebasestorage.app",
+  messagingSenderId: "842342714257",
+  appId: "1:842342714257:web:c5daa61eee6524e7936830"
+};
+    // -------------------------------------------------------------
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT.firebaseapp.com",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT.appspot.com",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+
+    let db;
+    let students = [];
     let materials = [];
     let mode = 'work';
     let selGrade = 'All';
     let selClass = 'All';
-    let teacherPassword = "";
-    const CACHE_KEY = 'islam_portal_cache';
 
-    // UI Functions
-    function toggleAdmin() {
+    try {
+        const app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+    } catch(e) { console.error("Firebase Config Error", e); }
+
+    // Make functions global
+    window.toggleAdmin = () => {
         const grp = document.getElementById('adminInputGroup');
-        if(grp.style.display === 'flex') grp.style.display = 'none';
-        else { grp.style.display = 'flex'; document.getElementById('headerPass').focus(); }
-    }
-    
-    function headerLogin() {
-        const pass = document.getElementById('headerPass').value;
-        if(pass === "123") {
-            teacherPassword = pass;
+        grp.style.display = grp.style.display === 'flex' ? 'none' : 'flex';
+        if(grp.style.display === 'flex') document.getElementById('headerPass').focus();
+    };
+
+    window.headerLogin = () => {
+        if(document.getElementById('headerPass').value === "123") {
             document.getElementById('viewParent').style.display = 'none';
             document.getElementById('viewTeacher').style.display = 'block';
             document.getElementById('teacherPanel').style.display = 'block';
             document.getElementById('adminInputGroup').style.display = 'none';
             document.getElementById('headerPass').value = '';
-            fetchData();
+            window.fetchData();
         } else alert("ކުށް ޕާސްވޯޑެއް!");
-    }
+    };
 
-    function logout() {
+    window.logout = () => {
         document.getElementById('viewTeacher').style.display = 'none';
         document.getElementById('viewParent').style.display = 'block';
-        teacherPassword = "";
-        db = [];
-    }
+    };
 
-    function showToast(msg) {
-        const t = document.getElementById('toast');
-        t.innerText = msg; t.style.opacity = '1'; t.style.bottom = '40px';
-        setTimeout(() => { t.style.opacity = '0'; t.style.bottom = '20px'; }, 3000);
-    }
-
-    // Material Functions
-    function openMaterials() { 
-        document.getElementById('matModal').style.display = "block"; 
-        renderParentMaterials();
-    }
-    function openMatManager() { 
-        document.getElementById('matManagerModal').style.display = "block"; 
-        renderTeacherMaterials();
-    }
-    function closeModal(id) { document.getElementById(id).style.display = "none"; }
-    window.onclick = function(event) {
-        if (event.target == document.getElementById('matModal')) closeModal('matModal');
-        if (event.target == document.getElementById('matManagerModal')) closeModal('matManagerModal');
-    }
-
-    function addMaterial() {
-        const t = document.getElementById('newMatTitle').value;
-        const l = document.getElementById('newMatLink').value;
-        if(t && l) {
-            materials.push({title: t, link: l});
-            document.getElementById('newMatTitle').value = "";
-            document.getElementById('newMatLink').value = "";
-            renderTeacherMaterials();
-        } else alert("މައުލޫމާތު ފުރިހަމަކުރައްވާ!");
-    }
-    
-    function removeMaterial(idx) { materials.splice(idx, 1); renderTeacherMaterials(); }
-    function renderTeacherMaterials() {
-        document.getElementById('matListTeacher').innerHTML = materials.map((m, i) => `
-            <div class="mat-item"><span>${m.title}</span><button class="btn btn-del" onclick="removeMaterial(${i})">🗑</button></div>
-        `).join('');
-    }
-    function renderParentMaterials() {
-        document.getElementById('matListParent').innerHTML = materials.length ? materials.map(m => `
-            <a href="${m.link}" target="_blank" class="mat-link"><span>${m.title}</span><span>📥</span></a>
-        `).join('') : "<p>ފިލާވަޅެއް ނެތް</p>";
-    }
-    
-    async function saveMaterials() {
-        const updates = [{ index: "MATERIALS", val: "", note: JSON.stringify(materials) }];
+    window.fetchData = async (showLoader = true) => {
+        if(!db) return alert("Firebase Config ނެތް!");
+        if(showLoader) document.getElementById('tBody').innerHTML = '<tr><td colspan="6"><div class="loader"></div> ލޯޑް ވަނީ...</td></tr>';
         
         try {
-            await fetch(API_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({
-                    action: 'save',
-                    item: "Week1", // Saving to Week1/Note1 columns of MATERIALS row
-                    mode: 'work',
-                    updates: JSON.stringify(updates)
-                })
-            });
-            alert("ފިލާވަޅުތައް ސޭވްކުރެވިއްޖެ!");
-            closeModal('matManagerModal');
+            // Students
+            const sSnap = await getDocs(collection(db, "students"));
+            students = [];
+            sSnap.forEach((doc) => students.push({ id: doc.id, ...doc.data() }));
+            
+            // Materials
+            const mSnap = await getDocs(collection(db, "materials"));
+            materials = [];
+            mSnap.forEach((doc) => materials.push({ id: doc.id, ...doc.data() }));
+
+            window.updateFilters();
+            window.setMode(mode);
+            window.renderParentMaterials();
         } catch(e) {
-            alert("މައްސަލައެއް ދިމާވެއްޖެ");
+            console.error(e);
+            alert("ޑޭޓާ ލޯޑްކުރުމުގައި މައްސަލައެއް ދިމާވެއްޖެ.");
         }
-    }
+    };
 
-    // Data Fetching
-    function fetchData(showLoader = true) {
-        if(showLoader) document.getElementById('tBody').innerHTML = '<tr><td colspan="5"><div class="loader"></div> ލޯޑް ވަނީ...</td></tr>';
-        const cb = 'jsonp_' + Date.now();
-        window[cb] = (data) => { 
-            db = data;
-            const matRow = db.find(r => r.Index === "MATERIALS");
-            if(matRow) {
-                const noteVal = matRow.Note1 || matRow.note1;
-                if(noteVal) { try { materials = JSON.parse(noteVal); } catch(e) { materials = []; } }
-            }
-            updateFilters();
-            setMode(mode); 
-            delete window[cb]; 
-        };
-        const s = document.createElement('script');
-        s.src = `${API_URL}?prefix=${cb}&action=read&t=${Date.now()}`;
-        document.body.appendChild(s);
-    }
-
-    function updateFilters() {
-        const grades = [...new Set(db.map(s => s.Grade))].filter(g => g && g!=="undefined" && g!=="MATERIALS").sort();
-        let gHtml = `<div class="pill ${selGrade=='All'?'active':''}" onclick="selGrade='All';selClass='All';updateFilters();renderTeacherTable()">All</div>`;
-        grades.forEach(g => {
-            gHtml += `<div class="pill ${selGrade==g?'active':''}" onclick="selGrade='${g}';selClass='All';updateFilters();renderTeacherTable()">Gr ${g}</div>`;
-        });
-        document.getElementById('gradeFilter').innerHTML = gHtml;
-
-        let cHtml = '';
-        if(selGrade !== 'All') {
-            const classes = [...new Set(db.filter(x=>x.Grade==selGrade).map(x=>x.Class))].filter(Boolean).sort();
-            cHtml = `<div class="pill ${selClass=='All'?'active':''}" onclick="selClass='All';renderTeacherTable()">All</div>`;
-            classes.forEach(c => cHtml += `<div class="pill ${selClass==c?'active':''}" onclick="selClass='${c}';renderTeacherTable()">${c}</div>`);
-        }
-        document.getElementById('classFilter').innerHTML = cHtml;
-    }
-
-    function calcGrade(m, t) {
-        let p = (m/t)*100;
-        if(isNaN(p)) return {lbl:'-', cls:'', perc:'-'};
-        if(p>=90) return {lbl:'A*', cls:'g-A-star', perc:Math.round(p)+'%'};
-        if(p>=80) return {lbl:'A', cls:'g-A', perc:Math.round(p)+'%'};
-        if(p>=70) return {lbl:'B', cls:'g-B', perc:Math.round(p)+'%'};
-        if(p>=60) return {lbl:'C', cls:'g-C', perc:Math.round(p)+'%'};
-        return {lbl:'Fail', cls:'g-Fail', perc:Math.round(p)+'%'};
-    }
-
-    function findVal(student, key) {
-        let cleanKey = key.toLowerCase().replace(/\s/g, '');
-        return student[key] || student[cleanKey] || "";
-    }
-
-    function setMode(m) {
+    window.setMode = (m) => {
         mode = m;
-        document.querySelectorAll('.pill').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn-' + m).classList.add('active');
-        
+        document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+        document.getElementById('m_'+m).classList.add('active');
+
         let sel = document.getElementById('itemSelect');
         sel.innerHTML = "";
         
         if(m=='work') {
-            for(let i=1;i<=45;i++) sel.innerHTML += `<option value="Week ${i}">Week ${i}</option>`;
+            for(let i=1;i<=45;i++) sel.innerHTML += `<option value="Week${i}">Week ${i}</option>`;
             document.getElementById('totalDiv').style.display = 'none';
             document.getElementById('thG').style.display = 'none';
             document.getElementById('valHead').innerText = 'ހާލަތު';
@@ -351,138 +264,196 @@
             document.getElementById('totalDiv').style.display = 'flex';
             document.getElementById('thG').style.display = 'table-cell';
             document.getElementById('valHead').innerText = 'މާކްސް';
-            let prefix = m=='test' ? 'Unit Test ' : 'CA';
+            let prefix = m=='test' ? 'UnitTest' : 'CA';
+            let label = m=='test' ? 'Unit Test ' : 'CA ';
             let count = m=='test' ? 10 : 4;
-            for(let i=1;i<=count;i++) sel.innerHTML += `<option value="${prefix}${i}">${prefix}${i}</option>`;
+            for(let i=1;i<=count;i++) sel.innerHTML += `<option value="${prefix}${i}">${label}${i}</option>`;
         }
-        renderTeacherTable();
-    }
+        window.renderTeacherTable();
+    };
 
-    function renderTeacherTable() {
+    window.renderTeacherTable = () => {
         const item = document.getElementById('itemSelect').value;
         const total = document.getElementById('totalMarks').value || 100;
-        let num = item.match(/\d+/)[0];
-        let noteKey = mode=='work' ? 'Note'+num : (mode=='test'?'TNote'+num:'CANote'+num);
-
-        let filtered = db.filter(x => x.Index !== "MATERIALS");
-        if(selGrade !== 'All') filtered = filtered.filter(x => String(x.Grade) === String(selGrade));
-        if(selClass !== 'All') filtered = filtered.filter(x => String(x.Class) === String(selClass));
+        
+        let filtered = students;
+        if(selGrade !== 'All') filtered = filtered.filter(s => String(s.grade) === String(selGrade));
+        if(selClass !== 'All') filtered = filtered.filter(s => String(s.class) === String(selClass));
 
         let html = "";
-        filtered.forEach(s => {
-            let val = findVal(s, item);
-            let n = findVal(s, noteKey);
+        filtered.sort((a,b) => a.index - b.index).forEach(s => {
+            let val = s[item] || "";
+            let note = s[item + "_note"] || "";
             
             let input = mode=='work' 
-                ? `<select class="v-in" data-idx="${s.Index}"><option value="">-</option><option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމައެއް ނުވޭ" ${val=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމަ ނުވޭ</option></select>`
-                : `<input type="number" class="v-in" data-idx="${s.Index}" value="${val}" style="width:60px" oninput="updRow(this, ${total})">`;
+                ? `<select class="v-in" data-id="${s.id}"><option value="">-</option><option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމައެއް ނުވޭ" ${val=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމަ ނުވޭ</option></select>`
+                : `<input type="number" class="v-in" data-id="${s.id}" value="${val}" style="width:60px" oninput="updRow(this, ${total})">`;
             
             let gradeHtml = "";
             if(mode !== 'work') {
-                let g = calcGrade(val, total);
+                let g = window.calcGrade(val, total);
                 gradeHtml = val ? `<span class="grade-badge ${g.cls}">${g.lbl} (${g.perc})</span>` : '-';
             }
 
-            html += `<tr><td><b>${s.Index}</b></td><td style="text-align:right">${s.Name}<br><small style="color:#888">${s.Grade} ${s.Class}</small></td><td>${input} <span id="g-${s.Index}">${gradeHtml}</span></td>${mode!='work' ? `<td></td>` : ''}<td><input type="text" class="n-in" data-idx="${s.Index}" value="${n}" placeholder="..."></td></tr>`;
+            html += `<tr><td><b>${s.index}</b></td><td style="text-align:right">${s.name}<br><small style="color:#888">${s.grade}${s.class}</small></td><td>${input} <span id="g-${s.id}">${gradeHtml}</span></td>${mode!='work' ? `<td></td>` : ''}<td><input type="text" class="n-in" data-id="${s.id}" value="${note}" placeholder="..."></td></tr>`;
         });
-        document.getElementById('tBody').innerHTML = html || "<tr><td colspan='5'>ޑޭޓާ އެއް ނެތް</td></tr>";
-    }
+        document.getElementById('tBody').innerHTML = html || "<tr><td colspan='6'>ދަރިވަރަކު ނެތް</td></tr>";
+    };
 
-    function updRow(el, t) {
-        let g = calcGrade(el.value, t);
-        document.getElementById('g-'+el.dataset.idx).innerHTML = el.value ? `<span class="grade-badge ${g.cls}">${g.lbl} (${g.perc})</span>` : '';
-    }
-
-    // UPDATED SAVE FUNCTION USING FETCH API
-    async function saveData() {
+    window.saveTeacherData = async () => {
         const btn = document.getElementById('sBtn');
         const item = document.getElementById('itemSelect').value;
-        
         btn.disabled = true; btn.innerText = "ސޭވް ވަނީ...";
+
+        const inputs = document.querySelectorAll('.v-in');
+        const notes = document.querySelectorAll('.n-in');
         
-        const updates = Array.from(document.querySelectorAll('.v-in')).map((el, i) => ({
-            index: el.dataset.idx,
-            val: el.value,
-            note: document.querySelectorAll('.n-in')[i].value
-        }));
+        let batchPromises = [];
+        inputs.forEach((inp, i) => {
+            const id = inp.dataset.id;
+            const val = inp.value;
+            const note = notes[i].value;
+            
+            // Only update locally if changed (Firebase handles optimization)
+            let update = {};
+            update[item] = val;
+            update[item + "_note"] = note;
+            
+            batchPromises.push(updateDoc(doc(db, "students", id), update));
+        });
 
         try {
-            await fetch(API_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({
-                    action: 'save',
-                    item: item,
-                    mode: mode,
-                    updates: JSON.stringify(updates),
-                    password: teacherPassword
-                })
-            });
-            
-            showToast("✅ ސޭވް ކުރެވިއްޖެ!");
-            // Wait 2s for Google Sheet to update then refresh
-            setTimeout(() => {
-                fetchData(false);
-            }, 2000);
-            
-        } catch(e) {
-            showToast("❌ މައްސަލައެއް ޖެހިއްޖެ");
-        } finally {
-            btn.disabled = false;
-            btn.innerText = "💾 ސޭވްކުރޭ";
-        }
-    }
+            await Promise.all(batchPromises);
+            showToast("ސޭވް ކުރެވިއްޖެ!");
+            window.fetchData(false); 
+        } catch(e) { console.error(e); alert("މައްސަލައެއް ޖެހިއްޖެ"); }
+        btn.disabled = false; btn.innerText = "💾 ސޭވްކުރޭ";
+    };
 
-    function searchStudent() {
+    window.searchStudent = () => {
         const idx = document.getElementById('pIdx').value;
         if(!idx) return;
+        const s = students.find(x => String(x.index) === String(idx));
         const res = document.getElementById('pRes');
-        res.innerHTML = '<div class="loader"></div>'; 
-        res.style.display = 'block';
+        res.style.display = "block";
+        
+        if(s) {
+            let h = `<div class="st-header"><div><h2>${s.name}</h2><p>ގްރޭޑް ${s.grade} ${s.class}</p></div><h1>${s.index}</h1></div>`;
+            
+            // Weeks
+            let weeks = '';
+            for(let i=1; i<=45; i++) {
+                let v = s['Week'+i];
+                let n = s['Week'+i+'_note'] || "";
+                if(v) {
+                    let sStyle = "";
+                    if(v=='ނިމިފައި') sStyle='color:#2e7d32';
+                    else if(v=='ނުނިމޭ') sStyle='color:#c62828';
+                    else sStyle='color:#ef6c00';
+                    weeks += `<div class="st-row"><span>Week ${i}</span><div style="text-align:right"><b style="${sStyle}">${v}</b><br><small style="color:#666">${n}</small></div></div>`;
+                }
+            }
+            if(weeks) h += `<div class="cat-title">ހަފްތާގެ މަސައްކަތް</div>` + weeks;
 
-        const cb = 's'+Date.now();
-        window[cb] = (data) => {
-            const s = data.find(x => String(x.Index) === String(idx));
-            if(s) {
-                let h = `<div class="st-header"><div><h2>${s.Name}</h2><p>ގްރޭޑް ${s.Grade} ${s.Class}</p></div><h1>${s.Index}</h1></div>`;
-                
-                const mkSec = (title, pre, max, isMk) => {
-                    let r = "";
-                    for(let i=1; i<=max; i++) {
-                        let k = pre + (pre.includes('Test')?' '+i:i);
-                        let v = findVal(s, k);
-                        let n = findVal(s, (pre=='Week'?'Note':'TNote')+i) || findVal(s, (pre=='CA'?'CANote':(pre.includes('Test')?'TNote':'Note'))+i);
-                        
-                        if(v) {
-                            let xtra = "";
-                            if(isMk) {
-                                let g = calcGrade(v, 20); // Default parent view
-                                xtra = `<span class="grade-badge ${g.cls}">${g.lbl}</span>`;
-                            }
-                            let sStyle = "";
-                            if(pre=='Week') {
-                                if(v=='ނިމިފައި') sStyle='color:#2e7d32';
-                                else if(v=='ނުނިމޭ') sStyle='color:#c62828';
-                                else sStyle='color:#ef6c00';
-                            }
-                            r += `<div class="st-row"><span>${k}</span><div style="text-align:right"><b style="${sStyle}">${v}</b> ${xtra}<br><small style="color:#666">${n}</small></div></div>`;
-                        }
-                    }
-                    return r ? `<div class="cat-title">${title}</div>` + r : "";
-                };
+            // Unit Tests
+            let tests = '';
+            for(let i=1; i<=10; i++) {
+                let v = s['UnitTest'+i];
+                let n = s['UnitTest'+i+'_note'] || "";
+                if(v) tests += `<div class="st-row"><span>Test ${i}</span><div style="text-align:right"><b>${v}</b><br><small style="color:#666">${n}</small></div></div>`;
+            }
+            if(tests) h += `<div class="cat-title">ޔުނިޓް ޓެސްޓް</div>` + tests;
+            
+            // CA
+            let ca = '';
+            for(let i=1; i<=4; i++) {
+                let v = s['CA'+i];
+                let n = s['CA'+i+'_note'] || "";
+                if(v) ca += `<div class="st-row"><span>CA ${i}</span><div style="text-align:right"><b>${v}</b><br><small style="color:#666">${n}</small></div></div>`;
+            }
+            if(ca) h += `<div class="cat-title">CA</div>` + ca;
 
-                h += mkSec("ހަފްތާގެ މަސައްކަތް", "Week", 45, false);
-                h += mkSec("ޔުނިޓް ޓެސްޓް", "Unit Test", 10, true);
-                h += mkSec("CA (އެސެސްމަންޓް)", "CA", 4, true);
+            res.innerHTML = h;
+        } else {
+            res.innerHTML = "<p style='color:red'>ދަރިވަރު ނުފެނުނު</p>";
+        }
+    };
 
-                res.innerHTML = h || "<p>މަޢުލޫމާތެއް ނުފެނުނު</p>";
-            } else res.innerHTML = "<p style='color:red; text-align:center; padding:20px;'>ދަރިވަރު ނުފެނުނު!</p>";
-            delete window[cb];
-        };
-        const sc = document.createElement('script');
-        sc.src = `${API_URL}?prefix=${cb}&action=read&t=${Date.now()}`;
-        document.body.appendChild(sc);
+    window.updateFilters = () => {
+        const grades = [...new Set(students.map(s => s.grade))].filter(Boolean).sort();
+        let gHtml = `<div class="pill ${selGrade=='All'?'active':''}" onclick="selGrade='All';selClass='All';window.updateFilters();window.renderTeacherTable()">All</div>`;
+        grades.forEach(g => {
+            gHtml += `<div class="pill ${selGrade==g?'active':''}" onclick="selGrade='${g}';selClass='All';window.updateFilters();window.renderTeacherTable()">Gr ${g}</div>`;
+        });
+        document.getElementById('gradeFilter').innerHTML = gHtml;
+        
+        let cHtml = '';
+        if(selGrade !== 'All') {
+            const classes = [...new Set(students.filter(s => s.grade == selGrade).map(s => s.class))].filter(Boolean).sort();
+            cHtml = `<div class="pill ${selClass=='All'?'active':''}" onclick="selClass='All';window.renderTeacherTable()">All</div>`;
+            classes.forEach(c => {
+                cHtml += `<div class="pill ${selClass==c?'active':''}" onclick="selClass='${c}';window.renderTeacherTable()">${c}</div>`;
+            });
+        }
+        document.getElementById('classFilter').innerHTML = cHtml;
+    };
+
+    // Other Globals
+    window.openMaterials = () => { document.getElementById('matModal').style.display = "block"; window.renderParentMaterials(); };
+    window.openMatManager = () => { document.getElementById('matManagerModal').style.display = "block"; window.renderTeacherMaterials(); };
+    window.closeModal = (id) => { document.getElementById(id).style.display = "none"; };
+    
+    window.addMaterial = async () => {
+        const t = document.getElementById('newMatTitle').value;
+        const l = document.getElementById('newMatLink').value;
+        if(t && l) {
+            await addDoc(collection(db, "materials"), { title: t, link: l });
+            document.getElementById('newMatTitle').value = "";
+            document.getElementById('newMatLink').value = "";
+            window.fetchData(false);
+        }
+    };
+    window.removeMaterial = async (id) => {
+        await deleteDoc(doc(db, "materials", id));
+        window.fetchData(false);
+    };
+    
+    window.renderTeacherMaterials = () => {
+        document.getElementById('matListTeacher').innerHTML = materials.map((m) => `
+            <div class="mat-item"><span>${m.title}</span><button class="btn btn-del" onclick="removeMaterial('${m.id}')">🗑</button></div>
+        `).join('');
+    };
+    window.renderParentMaterials = () => {
+        document.getElementById('matListParent').innerHTML = materials.length ? materials.map(m => `
+            <a href="${m.link}" target="_blank" class="mat-link"><span>${m.title}</span><span>📥</span></a>
+        `).join('') : "<p>ފިލާވަޅެއް ނެތް</p>";
+    };
+    
+    window.calcGrade = function(m, t) {
+        let p = (m/t)*100;
+        if(isNaN(p)) return {lbl:'-', cls:'', perc:'-'};
+        if(p>=90) return {lbl:'A*', cls:'g-A-star', perc:Math.round(p)+'%'};
+        if(p>=80) return {lbl:'A', cls:'g-A', perc:Math.round(p)+'%'};
+        if(p>=70) return {lbl:'B', cls:'g-B', perc:Math.round(p)+'%'};
+        if(p>=60) return {lbl:'C', cls:'g-C', perc:Math.round(p)+'%'};
+        return {lbl:'Fail', cls:'g-Fail', perc:Math.round(p)+'%'};
+    };
+    
+    window.updRow = function(el, t) {
+         let g = window.calcGrade(el.value, t);
+         document.getElementById('g-'+el.dataset.id).innerHTML = el.value ? `<span class="grade-badge ${g.cls}">${g.lbl} (${g.perc})</span>` : '';
+    };
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.innerText = msg; t.style.opacity = '1'; t.style.bottom = '40px';
+        setTimeout(() => { t.style.opacity = '0'; t.style.bottom = '20px'; }, 3000);
+    }
+    
+    // Add Dummy Student Function for testing if DB empty (Optional)
+    window.addDummy = async () => {
+        await addDoc(collection(db, "students"), { index: "1001", name: "Ahmed", grade: "7", class: "A" });
+        window.fetchData();
     }
 </script>
 </body>
