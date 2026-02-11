@@ -12,13 +12,11 @@
         
         h1 { color: #00796b; text-align: center; margin-bottom: 25px; font-size: 1.8rem; border-bottom: 2px solid #e0f2f1; padding-bottom: 10px; }
         
-        /* Admin Login Area */
         .admin-trigger { position: absolute; top: 15px; left: 15px; font-size: 12px; color: #bbb; cursor: pointer; padding: 5px; }
         .admin-input-group { display: none; position: absolute; top: 40px; left: 15px; background: white; padding: 10px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); z-index: 1001; border: 1px solid #eee; }
         .mini-input { width: 120px; padding: 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; text-align: center; outline: none; }
         .mini-btn { padding: 6px 12px; background: #00796b; color: white; border: none; border-radius: 4px; font-size: 12px; cursor: pointer; }
 
-        /* Cards & Inputs */
         .card { background: #fff; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e0e0e0; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
         .card-highlight { background: #fff8e1; border-color: #ffe082; text-align: center; }
         
@@ -33,7 +31,6 @@
         .btn-del { background: #ef5350; padding: 5px 10px; font-size: 12px; width: auto; margin: 0; color: white; border: none; border-radius: 4px; cursor: pointer;}
         .btn-save { position: fixed; bottom: 20px; right: 20px; left: 20px; width: calc(100% - 40px); z-index: 100; margin-top: 0; background: #2e7d32; box-shadow: 0 4px 15px rgba(46,125,50,0.4); max-width: 960px; margin: 0 auto; }
 
-        /* Table */
         .table-container { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 10px; border: 1px solid #eee; background: white; }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: center; font-size: 14px; }
@@ -45,26 +42,21 @@
         .n-in { text-align: right !important; min-width: 150px; font-size: 13px !important; background: #fafafa; }
         .n-in:focus { background: white; }
 
-        /* Pills & Filters */
         .pills { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; margin-bottom: 10px; -webkit-overflow-scrolling: touch; }
         .pill { padding: 8px 16px; background: #eceff1; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 13px; transition: 0.2s; color: #546e7a; font-weight: bold; border: 1px solid transparent; }
         .pill.active { background: #00796b; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); border-color: #004d40; }
         
-        /* Loader */
         .loader { border: 3px solid #f3f3f3; border-top: 3px solid #00796b; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-left: 5px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        /* Grades */
         .grade-badge { padding: 3px 8px; border-radius: 4px; color: white; font-size: 11px; font-weight: bold; margin-left: 5px; display: inline-block; min-width: 30px; text-align: center; }
         .g-A-star { background: #fbc02d; color: #333; } .g-A { background: #43a047; } .g-B { background: #1976d2; } .g-C { background: #fb8c00; } .g-Fail { background: #e53935; }
         
-        /* Student Report */
         .cat-title { margin: 25px 0 10px; color: #00796b; font-size: 15px; font-weight: bold; background: #e0f2f1; padding: 8px 15px; border-radius: 30px; display: inline-block; }
         .st-header { text-align: center; border-bottom: 2px dashed #00796b; padding-bottom: 15px; margin-bottom: 20px; background: #e0f2f1; padding: 20px; border-radius: 10px; }
         .st-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; align-items: flex-start; }
         .st-row:last-child { border-bottom: none; }
 
-        /* Modal */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(2px); }
         .modal-content { background-color: #fff; margin: 10% auto; padding: 25px; border-radius: 15px; width: 90%; max-width: 500px; text-align: center; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .mat-item { display: flex; justify-content: space-between; align-items: center; background: #fafafa; padding: 12px; margin-bottom: 8px; border-radius: 8px; border: 1px solid #eee; }
@@ -82,7 +74,6 @@
 <body>
 
 <div class="container">
-    <!-- Admin Login -->
     <div style="position:relative; z-index:200;">
         <span class="admin-trigger" onclick="toggleAdmin()">🔒</span>
         <div id="adminInputGroup" class="admin-input-group">
@@ -120,9 +111,10 @@
                 <button class="btn" style="width:auto; padding:8px 15px; margin:0; background:#78909c;" onclick="logout()">← Home</button>
                 <div style="font-weight:bold; color:#00796b;">Admin Panel</div>
                 <div style="display:flex; gap:5px;">
-                     <!-- NEW ADD STUDENT BUTTON -->
-                    <button class="btn btn-add" style="background:#43a047;" onclick="openStudentModal()">Student +</button>
-                    <button class="btn btn-add" style="background:#f57c00;" onclick="openMatManager()">Materials 📂</button>
+                    <!-- BUTTONS -->
+                    <button class="btn btn-add" style="background:#43a047;" onclick="openStudentModal()">+1</button>
+                    <button class="btn btn-add" style="background:#00897b;" onclick="openBulkModal()">Bulk 📋</button>
+                    <button class="btn btn-add" style="background:#f57c00;" onclick="openMatManager()">File 📂</button>
                 </div>
             </div>
             
@@ -170,14 +162,13 @@
                 </table>
             </div>
             
-            <!-- Floating Save Button -->
             <button class="btn btn-save" id="sBtn" onclick="saveTeacherData()">💾 Save Changes</button>
-            <div style="height:80px;"></div> <!-- Spacer for fixed button -->
+            <div style="height:80px;"></div>
         </div>
     </div>
 </div>
 
-<!-- Materials Modal (Parent) -->
+<!-- Materials Modals -->
 <div id="matModal" class="modal">
     <div class="modal-content">
         <h2 style="color:#00796b; margin-top:0;">📚 ފިލާވަޅުތައް</h2>
@@ -186,7 +177,6 @@
     </div>
 </div>
 
-<!-- Materials Manager (Teacher) -->
 <div id="matManagerModal" class="modal">
     <div class="modal-content">
         <h3 style="color:#00796b;">Manage Materials</h3>
@@ -203,7 +193,7 @@
     </div>
 </div>
 
-<!-- ADD STUDENT MODAL -->
+<!-- SINGLE STUDENT MODAL -->
 <div id="studentModal" class="modal">
     <div class="modal-content">
         <h3 style="color:#00796b;">އާ ދަރިވަރަކު އިތުރުކުރުން</h3>
@@ -211,13 +201,33 @@
             <input type="number" id="newStIndex" placeholder="Index Number" style="margin-bottom:10px;">
             <input type="text" id="newStName" placeholder="ދަރިވަރުގެ ނަން" style="margin-bottom:10px;">
             <div style="display:flex; gap:10px;">
-                <input type="text" id="newStGrade" placeholder="Grade (e.g. 7)" style="flex:1;">
-                <input type="text" id="newStClass" placeholder="Class (e.g. A)" style="flex:1;">
+                <input type="text" id="newStGrade" placeholder="Grade" style="flex:1;">
+                <input type="text" id="newStClass" placeholder="Class" style="flex:1;">
             </div>
         </div>
         <button class="btn btn-add" style="background:#2e7d32; margin-top:15px;" onclick="addNewStudent()">Save Student</button>
         <div style="margin-top:15px;">
             <button class="btn" style="background:#b0bec5; color:#333;" onclick="closeModal('studentModal')">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- BULK IMPORT MODAL (NEW) -->
+<div id="bulkModal" class="modal">
+    <div class="modal-content" style="max-width:600px;">
+        <h3 style="color:#00796b;">ގިނަ ކުދިން އެއްފަހަރާ އެޑްކުރުން</h3>
+        <p style="font-size:13px; color:#666; text-align:right;">
+            ތިރީގައިވާ ފޯމެޓަށް ކުދިންގެ ލިސްޓު ޕޭސްޓް ކުރައްވާ:<br>
+            <b>Index, Name, Grade, Class</b><br>
+            <span style="color:#e65100;">މިސާލު:</span><br>
+            <code>1001, Ahmed Ali, 7, A</code><br>
+            <code>1002, Mariyam, 7, B</code>
+        </p>
+        <textarea id="bulkInput" style="width:100%; height:200px; padding:10px; border:1px solid #ccc; border-radius:8px; font-family:monospace;" placeholder="1001, Ahmed, 7, A&#10;1002, Ali, 7, B"></textarea>
+        
+        <button class="btn btn-add" style="background:#2e7d32; margin-top:15px;" id="btnBulk" onclick="processBulkImport()">Import Students</button>
+        <div style="margin-top:15px;">
+            <button class="btn" style="background:#b0bec5; color:#333;" onclick="closeModal('bulkModal')">Cancel</button>
         </div>
     </div>
 </div>
@@ -228,8 +238,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-    // -------------------------------------------------------------
-    // CORRECT CONFIGURATION
     const firebaseConfig = {
       apiKey: "AIzaSyDSEHqUQIegVjhWKpRgpJybdPaVDVroVos",
       authDomain: "islam-portal-muthamin.firebaseapp.com",
@@ -238,7 +246,6 @@
       messagingSenderId: "842342714257",
       appId: "1:842342714257:web:c5daa61eee6524e7936830"
     };
-    // -------------------------------------------------------------
 
     let db;
     let students = [];
@@ -252,7 +259,6 @@
         db = getFirestore(app);
     } catch(e) { console.error("Firebase Config Error", e); }
 
-    // Make functions global for HTML access
     window.toggleAdmin = () => {
         const grp = document.getElementById('adminInputGroup');
         grp.style.display = grp.style.display === 'flex' ? 'none' : 'flex';
@@ -280,12 +286,10 @@
         if(showLoader) document.getElementById('tBody').innerHTML = '<tr><td colspan="6" style="padding:20px;"><div class="loader"></div> Loading data...</td></tr>';
         
         try {
-            // Students
             const sSnap = await getDocs(collection(db, "students"));
             students = [];
             sSnap.forEach((doc) => students.push({ id: doc.id, ...doc.data() }));
             
-            // Materials
             const mSnap = await getDocs(collection(db, "materials"));
             materials = [];
             mSnap.forEach((doc) => materials.push({ id: doc.id, ...doc.data() }));
@@ -309,7 +313,6 @@
         sel.innerHTML = "";
         
         if(m=='work') {
-            // Populate weeks (1 to 45)
             for(let i=1;i<=45;i++) sel.innerHTML += `<option value="Week${i}">Week ${i}</option>`;
             document.getElementById('totalDiv').style.display = 'none';
             document.getElementById('thG').style.display = 'none';
@@ -335,12 +338,10 @@
         if(selClass !== 'All') filtered = filtered.filter(s => String(s.class) === String(selClass));
 
         let html = "";
-        // Sort by index number
         filtered.sort((a,b) => (parseInt(a.index) || 0) - (parseInt(b.index) || 0)).forEach(s => {
             let val = s[item] || "";
             let note = s[item + "_note"] || "";
             
-            // Note: data-orig attribute is used to check for changes before saving
             let input = "";
             if(mode=='work') {
                 input = `<select class="v-in" data-id="${s.id}" data-orig="${val}">
@@ -376,9 +377,7 @@
     window.saveTeacherData = async () => {
         const btn = document.getElementById('sBtn');
         const item = document.getElementById('itemSelect').value;
-        
         const inputs = document.querySelectorAll('.v-in');
-        const notes = document.querySelectorAll('.n-in');
         
         let batchPromises = [];
         let changeCount = 0;
@@ -395,7 +394,6 @@
             const note = noteInp.value;
             const origNote = noteInp.dataset.origNote;
             
-            // OPTIMIZATION: Only save if data changed
             if (val !== origVal || note !== origNote) {
                 let update = {};
                 update[item] = val;
@@ -414,7 +412,6 @@
         try {
             await Promise.all(batchPromises);
             showToast(`${changeCount} records saved successfully!`);
-            // Update local data array so we don't have to refetch entire DB
             inputs.forEach(inp => {
                 let s = students.find(x => x.id === inp.dataset.id);
                 if(s) {
@@ -423,7 +420,7 @@
                     s[item + "_note"] = n;
                 }
             });
-            window.renderTeacherTable(); // Re-render to update data-orig attributes
+            window.renderTeacherTable();
         } catch(e) { 
             console.error(e); 
             alert("Error saving data!"); 
@@ -438,7 +435,6 @@
         const btn = document.getElementById('pBtn');
         btn.innerHTML = "Searching...";
         
-        // Find student in loaded array
         const s = students.find(x => String(x.index) === String(idx));
         const res = document.getElementById('pRes');
         res.style.display = "block";
@@ -453,7 +449,6 @@
                         </div>
                      </div>`;
             
-            // Weeks
             let weeks = '';
             for(let i=1; i<=45; i++) {
                 let v = s['Week'+i];
@@ -475,7 +470,6 @@
             if(weeks) h += `<div class="cat-title">Weekly Work</div>` + weeks;
             else h += `<div style="text-align:center; padding:10px; color:#999;">No weekly records found.</div>`;
 
-            // Unit Tests
             let tests = '';
             for(let i=1; i<=10; i++) {
                 let v = s['UnitTest'+i];
@@ -490,7 +484,6 @@
             }
             if(tests) h += `<div class="cat-title">Unit Tests</div>` + tests;
             
-            // CA
             let ca = '';
             for(let i=1; i<=4; i++) {
                 let v = s['CA'+i];
@@ -534,10 +527,10 @@
         document.getElementById('classFilter').innerHTML = cHtml;
     };
 
-    // --- MATERIALS LOGIC ---
     window.openMaterials = () => { document.getElementById('matModal').style.display = "block"; window.renderParentMaterials(); };
     window.openMatManager = () => { document.getElementById('matManagerModal').style.display = "block"; window.renderTeacherMaterials(); };
     window.openStudentModal = () => { document.getElementById('studentModal').style.display = "block"; };
+    window.openBulkModal = () => { document.getElementById('bulkModal').style.display = "block"; };
     window.closeModal = (id) => { document.getElementById(id).style.display = "none"; };
     
     window.addMaterial = async () => {
@@ -557,7 +550,6 @@
         }
     };
 
-    // --- NEW: ADD STUDENT LOGIC ---
     window.addNewStudent = async () => {
         const idx = document.getElementById('newStIndex').value;
         const name = document.getElementById('newStName').value;
@@ -566,29 +558,20 @@
 
         if(idx && name && gr && cls) {
             try {
-                // Check if Index already exists locally to avoid duplicates
                 const exists = students.some(s => String(s.index) === String(idx));
                 if(exists) return alert("މި އިންޑެކްސް ނަންބަރު އެހެން ކުއްޖަކަށް ދީފައިވޭ!");
 
                 await addDoc(collection(db, "students"), {
-                    index: idx,
-                    name: name,
-                    grade: gr,
-                    class: cls,
-                    // Initialize empty fields
+                    index: idx, name: name, grade: gr, class: cls,
                     Week1: "", UnitTest1: "", CA1: "" 
                 });
-
-                // Clear inputs
                 document.getElementById('newStIndex').value = "";
                 document.getElementById('newStName').value = "";
                 document.getElementById('newStGrade').value = "";
                 document.getElementById('newStClass').value = "";
-
                 closeModal('studentModal');
                 showToast("ދަރިވަރު އެޑް ކުރެވިއްޖެ!");
-                window.fetchData(false); // Reload data to show new student
-
+                window.fetchData(false);
             } catch(e) {
                 console.error(e);
                 alert("Error adding student: " + e.message);
@@ -596,6 +579,53 @@
         } else {
             alert("ހުރިހާ މަޢުލޫމާތެއް ފުރިހަމަކުރައްވާ!");
         }
+    };
+
+    // --- NEW: BULK IMPORT LOGIC ---
+    window.processBulkImport = async () => {
+        const txt = document.getElementById('bulkInput').value;
+        if(!txt.trim()) return alert("ލިސްޓެއް ޕޭސްޓް ކުރައްވާ!");
+
+        const rows = txt.split('\n');
+        const btn = document.getElementById('btnBulk');
+        btn.disabled = true; 
+        btn.innerText = "Processing...";
+
+        let successCount = 0;
+        let failCount = 0;
+        let batchPromises = [];
+
+        for (let line of rows) {
+            line = line.trim();
+            if (!line) continue;
+            const parts = line.split(',');
+            if (parts.length >= 4) {
+                const idx = parts[0].trim();
+                const name = parts[1].trim();
+                const gr = parts[2].trim();
+                const cls = parts[3].trim();
+                
+                const exists = students.some(s => String(s.index) === String(idx));
+                if (!exists && idx && name) {
+                    const p = addDoc(collection(db, "students"), {
+                        index: idx, name: name, grade: gr, class: cls,
+                        Week1: "", UnitTest1: "", CA1: ""
+                    }).then(() => successCount++).catch(() => failCount++);
+                    batchPromises.push(p);
+                } else {
+                    failCount++;
+                }
+            } else {
+                failCount++;
+            }
+        }
+
+        await Promise.all(batchPromises);
+        document.getElementById('bulkInput').value = "";
+        closeModal('bulkModal');
+        btn.disabled = false; btn.innerText = "Import Students";
+        showToast(`ނިމިއްޖެ! އެޑްކުރެވުނީ: ${successCount} / ފެއިލްވީ: ${failCount}`);
+        window.fetchData();
     };
     
     window.removeMaterial = async (id) => {
@@ -628,7 +658,6 @@
         `).join('');
     };
     
-    // --- HELPER FUNCTIONS ---
     window.calcGrade = function(m, t) {
         if(!m) return {lbl:'', cls:'', perc:''};
         let p = (m/t)*100;
