@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>އިސްލާމް ޕޯޓަލް</title>
-    <!-- SheetJS for Excel Upload -->
+    <!-- SheetJS for Excel Processing -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     
     <style>
@@ -15,11 +15,13 @@
         
         h1 { color: #00796b; text-align: center; margin-bottom: 25px; font-size: 1.8rem; border-bottom: 2px solid #e0f2f1; padding-bottom: 10px; }
         
+        /* Admin Login */
         .admin-trigger { position: absolute; top: 15px; left: 15px; font-size: 12px; color: #bbb; cursor: pointer; padding: 5px; }
         .admin-input-group { display: none; position: absolute; top: 40px; left: 15px; background: white; padding: 10px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); z-index: 1001; border: 1px solid #eee; }
         .mini-input { width: 120px; padding: 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; text-align: center; outline: none; }
         .mini-btn { padding: 6px 12px; background: #00796b; color: white; border: none; border-radius: 4px; font-size: 12px; cursor: pointer; }
 
+        /* UI Elements */
         .card { background: #fff; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e0e0e0; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
         .card-highlight { background: #fff8e1; border-color: #ffe082; text-align: center; }
         
@@ -30,10 +32,15 @@
         .btn:hover { background: #00695c; }
         .btn:disabled { background: #cfd8dc; cursor: not-allowed; }
         .btn-mat { background: #f57c00; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        
+        /* Small buttons */
         .btn-add { background: #1976d2; padding: 8px 15px; font-size: 14px; width: auto; color: white; border: none; border-radius: 6px; cursor: pointer;}
         .btn-del { background: #ef5350; padding: 5px 10px; font-size: 12px; width: auto; margin: 0; color: white; border: none; border-radius: 4px; cursor: pointer;}
+        
+        /* Floating Save */
         .btn-save { position: fixed; bottom: 20px; right: 20px; left: 20px; width: calc(100% - 40px); z-index: 100; margin-top: 0; background: #2e7d32; box-shadow: 0 4px 15px rgba(46,125,50,0.4); max-width: 960px; margin: 0 auto; }
 
+        /* Table */
         .table-container { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 10px; border: 1px solid #eee; background: white; }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: center; font-size: 14px; }
@@ -45,29 +52,33 @@
         .n-in { text-align: right !important; min-width: 150px; font-size: 13px !important; background: #fafafa; }
         .n-in:focus { background: white; }
 
+        /* Pills */
         .pills { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; margin-bottom: 10px; -webkit-overflow-scrolling: touch; }
         .pill { padding: 8px 16px; background: #eceff1; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 13px; transition: 0.2s; color: #546e7a; font-weight: bold; border: 1px solid transparent; }
         .pill.active { background: #00796b; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); border-color: #004d40; }
         
+        /* Loader */
         .loader { border: 3px solid #f3f3f3; border-top: 3px solid #00796b; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-left: 5px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
         .grade-badge { padding: 3px 8px; border-radius: 4px; color: white; font-size: 11px; font-weight: bold; margin-left: 5px; display: inline-block; min-width: 30px; text-align: center; }
         .g-A-star { background: #fbc02d; color: #333; } .g-A { background: #43a047; } .g-B { background: #1976d2; } .g-C { background: #fb8c00; } .g-Fail { background: #e53935; }
         
+        /* Report */
         .cat-title { margin: 25px 0 10px; color: #00796b; font-size: 15px; font-weight: bold; background: #e0f2f1; padding: 8px 15px; border-radius: 30px; display: inline-block; }
         .st-header { text-align: center; border-bottom: 2px dashed #00796b; padding-bottom: 15px; margin-bottom: 20px; background: #e0f2f1; padding: 20px; border-radius: 10px; }
         .st-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; align-items: flex-start; }
         .st-row:last-child { border-bottom: none; }
 
+        /* Modal */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(2px); }
         .modal-content { background-color: #fff; margin: 10% auto; padding: 25px; border-radius: 15px; width: 90%; max-width: 500px; text-align: center; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .mat-item { display: flex; justify-content: space-between; align-items: center; background: #fafafa; padding: 12px; margin-bottom: 8px; border-radius: 8px; border: 1px solid #eee; }
         .mat-link { display: flex; justify-content: space-between; align-items: center; padding: 15px; margin: 10px 0; background: #fff; color: #00695c; text-decoration: none; border-radius: 8px; font-weight: bold; border: 1px solid #b2dfdb; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: 0.2s; }
         .mat-link:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-color: #00796b; }
         
-        /* Drag Drop Zone */
-        .drop-zone { border: 2px dashed #ccc; padding: 20px; border-radius: 10px; background: #fafafa; transition: 0.3s; cursor: pointer; }
+        /* Drop Zone */
+        .drop-zone { border: 2px dashed #ccc; padding: 20px; border-radius: 10px; background: #fafafa; transition: 0.3s; cursor: pointer; display:block; margin:10px 0;}
         .drop-zone:hover { border-color: #00796b; background: #e0f2f1; }
 
         #toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 24px; border-radius: 30px; font-size: 14px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 2000; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
@@ -81,6 +92,7 @@
 <body>
 
 <div class="container">
+    <!-- Login Trigger -->
     <div style="position:relative; z-index:200;">
         <span class="admin-trigger" onclick="toggleAdmin()">🔒</span>
         <div id="adminInputGroup" class="admin-input-group">
@@ -118,10 +130,9 @@
                 <button class="btn" style="width:auto; padding:8px 15px; margin:0; background:#78909c;" onclick="logout()">← Home</button>
                 <div style="font-weight:bold; color:#00796b;">Admin Panel</div>
                 <div style="display:flex; gap:5px;">
-                    <button class="btn btn-add" style="background:#43a047;" onclick="openStudentModal()">+1</button>
-                    <!-- UPDATED BULK BUTTON -->
-                    <button class="btn btn-add" style="background:#00897b;" onclick="openBulkModal()">Excel 📗</button>
-                    <button class="btn btn-add" style="background:#f57c00;" onclick="openMatManager()">File 📂</button>
+                    <button class="btn btn-add" style="background:#43a047;" onclick="openStudentModal()" title="Add Single Student">+1</button>
+                    <button class="btn btn-add" style="background:#00897b;" onclick="openBulkModal()" title="Import from Excel">Excel 📗</button>
+                    <button class="btn btn-add" style="background:#f57c00;" onclick="openMatManager()" title="Manage Files">File 📂</button>
                 </div>
             </div>
             
@@ -135,7 +146,11 @@
                 <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-top:15px;">
                     <div style="flex:1; min-width:150px;">
                         <small style="color:#666; font-weight:bold;">Select Item:</small>
-                        <select id="itemSelect" onchange="renderTeacherTable()"></select>
+                        <div style="display:flex; gap:5px;">
+                            <select id="itemSelect" onchange="renderTeacherTable()"></select>
+                            <!-- RESULT UPLOAD BUTTON -->
+                            <button class="btn btn-add" style="background:#00695c; padding:0 12px; font-size:18px;" onclick="openResultModal()" title="Upload Marks for this Item">📤</button>
+                        </div>
                     </div>
                     <div id="totalDiv" style="width:100px; display:none;">
                         <small style="color:#666; font-weight:bold;">Total Marks:</small>
@@ -145,7 +160,6 @@
                 
                 <div style="margin-top:15px;">
                     <small style="color:#666; font-weight:bold;">Filter Students:</small>
-                    <!-- FIXED FILTER BUTTONS -->
                     <div id="gradeFilter" class="pills" style="margin-bottom:5px;"></div>
                     <div id="classFilter" class="pills"></div>
                 </div>
@@ -195,36 +209,58 @@
     </div>
 </div>
 
-<!-- IMPROVED BULK IMPORT MODAL (EXCEL) -->
+<!-- EXCEL STUDENT IMPORT MODAL -->
 <div id="bulkModal" class="modal">
     <div class="modal-content" style="max-width:600px;">
         <h3 style="color:#00796b;">Excel File Import</h3>
-        
         <p style="font-size:13px; color:#666;">
             އެކްސެލް ފައިލްގައި ހުންނަންވާނީ މި ތަރުތީބުންނެވެ:<br>
             <b>1. Index | 2. Name | 3. Grade | 4. Class</b>
         </p>
-
-        <label for="excelFile" class="drop-zone" id="dropArea">
+        <label for="excelFile" class="drop-zone">
             <div style="font-size:30px;">📂</div>
             <div style="color:#00796b; font-weight:bold;">Click to Upload Excel File</div>
-            <div style="font-size:12px; color:#999;">(.xlsx or .xls)</div>
         </label>
         <input type="file" id="excelFile" accept=".xlsx, .xls" style="display:none;">
 
         <div id="previewArea" style="display:none; margin-top:15px; text-align:right;">
-            <div style="font-weight:bold; margin-bottom:5px;">Preview (First 5 Rows):</div>
+            <div style="font-weight:bold; margin-bottom:5px;">Preview:</div>
             <div style="background:#f9f9f9; padding:10px; border:1px solid #eee; font-size:12px; max-height:150px; overflow:auto;" id="excelPreview"></div>
             <button class="btn btn-add" style="background:#2e7d32; margin-top:10px;" id="btnConfirmBulk" onclick="confirmExcelUpload()">Confirm & Upload</button>
         </div>
-        
         <div style="margin-top:15px;">
             <button class="btn" style="background:#b0bec5; color:#333;" onclick="closeModal('bulkModal'); resetBulk();">Cancel</button>
         </div>
     </div>
 </div>
 
-<!-- Materials Modals -->
+<!-- EXCEL RESULT IMPORT MODAL -->
+<div id="resultModal" class="modal">
+    <div class="modal-content" style="max-width:500px;">
+        <h3 style="color:#00796b;">ނަތީޖާ އަޕްލޯޑް ކުރުން</h3>
+        <p style="font-size:14px; color:#e65100; font-weight:bold;" id="resultTargetName">Target: -</p>
+        <p style="font-size:12px; color:#666;">
+            އެކްސެލް ފައިލްގައި ހުންނަންވާނީ:<br>
+            <b>Column A: Index | Column B: Marks/Status</b>
+        </p>
+        <label for="resExcelFile" class="drop-zone">
+            <div style="font-size:25px;">📊</div>
+            <div>Upload Result Excel</div>
+        </label>
+        <input type="file" id="resExcelFile" accept=".xlsx, .xls" style="display:none;">
+
+        <div id="resPreviewArea" style="display:none; margin-top:15px; text-align:right;">
+            <div style="font-size:12px; margin-bottom:5px;">Preview:</div>
+            <div style="background:#f9f9f9; padding:10px; border:1px solid #eee; font-size:12px; max-height:150px; overflow:auto;" id="resExcelPreview"></div>
+            <button class="btn btn-add" style="background:#2e7d32; margin-top:10px;" id="btnConfirmRes" onclick="confirmResultUpload()">Upload Marks</button>
+        </div>
+        <div style="margin-top:15px;">
+            <button class="btn" style="background:#b0bec5; color:#333;" onclick="closeModal('resultModal'); resetResBulk();">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Material Modals -->
 <div id="matModal" class="modal">
     <div class="modal-content">
         <h2 style="color:#00796b; margin-top:0;">📚 ފިލާވަޅުތައް</h2>
@@ -232,7 +268,6 @@
         <button class="btn" style="background:#b0bec5; margin-top:15px; color:#333;" onclick="closeModal('matModal')">Close</button>
     </div>
 </div>
-
 <div id="matManagerModal" class="modal">
     <div class="modal-content">
         <h3 style="color:#00796b;">Manage Materials</h3>
@@ -270,7 +305,8 @@
     let mode = 'work';
     let selGrade = 'All';
     let selClass = 'All';
-    let parsedExcelData = []; // Store parsed excel data
+    let parsedExcelData = [];
+    let parsedResultData = [];
 
     try {
         const app = initializeApp(firebaseConfig);
@@ -348,10 +384,9 @@
     };
 
     // --- FIX FOR GRADE FILTERING ---
-    // Instead of setting variables inside HTML (which fails in modules), we call these functions
     window.setGradeFilter = (g) => {
         selGrade = g;
-        selClass = 'All'; // Reset class when grade changes
+        selClass = 'All'; 
         window.updateFilters();
         window.renderTeacherTable();
     };
@@ -359,8 +394,26 @@
     window.setClassFilter = (c) => {
         selClass = c;
         window.renderTeacherTable();
-        // Update UI for class pills
-        window.updateFilters(); // Re-render to highlight active class
+        window.updateFilters(); 
+    };
+
+    window.updateFilters = () => {
+        const grades = [...new Set(students.map(s => s.grade))].filter(Boolean).sort();
+        let gHtml = `<div class="pill ${selGrade=='All'?'active':''}" onclick="setGradeFilter('All')">All</div>`;
+        grades.forEach(g => {
+            gHtml += `<div class="pill ${selGrade==g?'active':''}" onclick="setGradeFilter('${g}')">Gr ${g}</div>`;
+        });
+        document.getElementById('gradeFilter').innerHTML = gHtml;
+        
+        let cHtml = '';
+        if(selGrade !== 'All') {
+            const classes = [...new Set(students.filter(s => s.grade == selGrade).map(s => s.class))].filter(Boolean).sort();
+            cHtml = `<div class="pill ${selClass=='All'?'active':''}" onclick="setClassFilter('All')">All</div>`;
+            classes.forEach(c => {
+                cHtml += `<div class="pill ${selClass==c?'active':''}" onclick="setClassFilter('${c}')">${c}</div>`;
+            });
+        }
+        document.getElementById('classFilter').innerHTML = cHtml;
     };
 
     window.renderTeacherTable = () => {
@@ -406,27 +459,6 @@
                      </tr>`;
         });
         document.getElementById('tBody').innerHTML = html || "<tr><td colspan='6' style='padding:20px; color:#777;'>No students found in this filter.</td></tr>";
-    };
-
-    window.updateFilters = () => {
-        const grades = [...new Set(students.map(s => s.grade))].filter(Boolean).sort();
-        
-        // --- UPDATED HTML GENERATION FOR FILTERS ---
-        let gHtml = `<div class="pill ${selGrade=='All'?'active':''}" onclick="setGradeFilter('All')">All</div>`;
-        grades.forEach(g => {
-            gHtml += `<div class="pill ${selGrade==g?'active':''}" onclick="setGradeFilter('${g}')">Gr ${g}</div>`;
-        });
-        document.getElementById('gradeFilter').innerHTML = gHtml;
-        
-        let cHtml = '';
-        if(selGrade !== 'All') {
-            const classes = [...new Set(students.filter(s => s.grade == selGrade).map(s => s.class))].filter(Boolean).sort();
-            cHtml = `<div class="pill ${selClass=='All'?'active':''}" onclick="setClassFilter('All')">All</div>`;
-            classes.forEach(c => {
-                cHtml += `<div class="pill ${selClass==c?'active':''}" onclick="setClassFilter('${c}')">${c}</div>`;
-            });
-        }
-        document.getElementById('classFilter').innerHTML = cHtml;
     };
 
     window.saveTeacherData = async () => {
@@ -475,10 +507,7 @@
                 }
             });
             window.renderTeacherTable();
-        } catch(e) { 
-            console.error(e); 
-            alert("Error saving data!"); 
-        }
+        } catch(e) { console.error(e); alert("Error saving data!"); }
         btn.disabled = false; btn.innerText = "💾 Save Changes";
     };
 
@@ -573,8 +602,7 @@
         parsedExcelData = [];
     };
 
-    // --- NEW: EXCEL IMPORT LOGIC ---
-    // Listen for file selection
+    // --- NEW: STUDENT EXCEL IMPORT ---
     document.getElementById('excelFile').addEventListener('change', (e) => {
         const file = e.target.files[0];
         if(!file) return;
@@ -583,39 +611,28 @@
         reader.onload = (e) => {
             const data = new Uint8Array(e.target.result);
             const workbook = XLSX.read(data, {type: 'array'});
-            const sheetName = workbook.SheetNames[0];
-            const sheet = workbook.Sheets[sheetName];
-            // Convert to JSON (Array of Arrays)
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
             const json = XLSX.utils.sheet_to_json(sheet, {header: 1});
             
-            // Clean Data: Expecting [Index, Name, Grade, Class]
             parsedExcelData = [];
             let previewHtml = '<table style="width:100%; text-align:right;"><tr><th>Index</th><th>Name</th><th>Grade</th><th>Class</th></tr>';
             
-            // Start from row 0 (or row 1 if headers exist)
-            // We assume headers might exist, so check if row[0] is a number
             json.forEach((row, i) => {
-                if(row.length >= 2) { // Need at least index and name
-                    // Basic validation to skip headers
+                if(row.length >= 2) { 
                     if(i === 0 && isNaN(row[0])) return; 
-                    
                     parsedExcelData.push({
                         index: row[0],
                         name: row[1],
                         grade: row[2] || '',
                         class: row[3] || ''
                     });
-
-                    // Add to preview (limit 5)
                     if(parsedExcelData.length <= 5) {
                         previewHtml += `<tr><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]||'-'}</td><td>${row[3]||'-'}</td></tr>`;
                     }
                 }
             });
             previewHtml += '</table>';
-            
             if(parsedExcelData.length > 5) previewHtml += `<div style="text-align:center; color:#777; padding:5px;">... and ${parsedExcelData.length - 5} more</div>`;
-
             document.getElementById('excelPreview').innerHTML = previewHtml;
             document.getElementById('previewArea').style.display = 'block';
         };
@@ -626,17 +643,14 @@
         if(parsedExcelData.length === 0) return alert("No valid data found!");
         
         const btn = document.getElementById('btnConfirmBulk');
-        btn.disabled = true; 
-        btn.innerText = "Uploading...";
+        btn.disabled = true; btn.innerText = "Uploading...";
 
         let successCount = 0;
         let failCount = 0;
         let batchPromises = [];
 
         for (let s of parsedExcelData) {
-            // Duplicate Check
             const exists = students.some(existing => String(existing.index) === String(s.index));
-            
             if (!exists && s.index && s.name) {
                 const p = addDoc(collection(db, "students"), {
                     index: String(s.index), 
@@ -646,20 +660,87 @@
                     Week1: "", UnitTest1: "", CA1: ""
                 }).then(() => successCount++).catch(() => failCount++);
                 batchPromises.push(p);
-            } else {
-                failCount++; // Duplicate or Invalid
-            }
+            } else { failCount++; }
         }
 
         await Promise.all(batchPromises);
-
         window.resetBulk();
         closeModal('bulkModal');
-        btn.disabled = false; 
-        btn.innerText = "Confirm & Upload";
-        
-        showToast(`Upload Complete! Added: ${successCount} | Skipped/Failed: ${failCount}`);
+        btn.disabled = false; btn.innerText = "Confirm & Upload";
+        showToast(`Upload Complete! Added: ${successCount} | Skipped: ${failCount}`);
         window.fetchData(); 
+    };
+
+    // --- NEW: RESULT UPLOAD LOGIC ---
+    window.openResultModal = () => {
+        const item = document.getElementById('itemSelect').value;
+        if(!item) return alert("Please select an item first (Test, Week, etc)");
+        document.getElementById('resultTargetName').innerText = `Uploading for: ${item}`;
+        document.getElementById('resultModal').style.display = "block";
+    };
+
+    window.resetResBulk = () => {
+        document.getElementById('resExcelFile').value = '';
+        document.getElementById('resPreviewArea').style.display = 'none';
+        parsedResultData = [];
+    };
+
+    document.getElementById('resExcelFile').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if(!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, {type: 'array'});
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            const json = XLSX.utils.sheet_to_json(sheet, {header: 1});
+            
+            parsedResultData = [];
+            let html = '<table style="width:100%; text-align:right;"><tr><th>Idx</th><th>Mark</th></tr>';
+            
+            json.forEach((row, i) => {
+                if(row.length >= 2) { 
+                    if(i === 0 && isNaN(row[0])) return;
+                    parsedResultData.push({ index: row[0], mark: row[1] });
+                    if(parsedResultData.length <= 5) {
+                        html += `<tr><td>${row[0]}</td><td>${row[1]}</td></tr>`;
+                    }
+                }
+            });
+            html += '</table>';
+            document.getElementById('resExcelPreview').innerHTML = html;
+            document.getElementById('resPreviewArea').style.display = 'block';
+        };
+        reader.readAsArrayBuffer(file);
+    });
+
+    window.confirmResultUpload = async () => {
+        if(parsedResultData.length === 0) return alert("No data found!");
+        const item = document.getElementById('itemSelect').value;
+        const btn = document.getElementById('btnConfirmRes');
+        btn.disabled = true; btn.innerText = "Updating...";
+
+        let success = 0;
+        let notFound = 0;
+        let batchPromises = [];
+
+        for(let r of parsedResultData) {
+            const student = students.find(s => String(s.index) === String(r.index));
+            if(student) {
+                let update = {};
+                update[item] = String(r.mark); 
+                const p = updateDoc(doc(db, "students", student.id), update).then(() => success++).catch((e) => console.error(e));
+                batchPromises.push(p);
+            } else { notFound++; }
+        }
+
+        await Promise.all(batchPromises);
+        window.resetResBulk();
+        closeModal('resultModal');
+        btn.disabled = false; btn.innerText = "Upload Marks";
+        showToast(`Updated: ${success} students. (Not found: ${notFound})`);
+        window.fetchData();
     };
 
     // Original add student function
@@ -673,7 +754,6 @@
             try {
                 const exists = students.some(s => String(s.index) === String(idx));
                 if(exists) return alert("މި އިންޑެކްސް ނަންބަރު އެހެން ކުއްޖަކަށް ދީފައިވޭ!");
-
                 await addDoc(collection(db, "students"), {
                     index: idx, name: name, grade: gr, class: cls,
                     Week1: "", UnitTest1: "", CA1: "" 
