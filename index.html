@@ -3,260 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>އިސްލާމް ޕޯޓަލް - Students</title>
+    <title>އިސްލާމް ޕޯޓަލް</title>
     <style>
-    /* --- FONTS & RESETS --- */
-    @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
-    
-    :root {
-        --primary: #10b981;       /* Modern Emerald Green */
-        --primary-dark: #059669;  /* Darker Green for hover */
-        --accent: #f59e0b;        /* Amber for actions */
-        --danger: #ef4444;        /* Red for delete/fail */
-        --bg-body: #ecfdf5;       /* Very light mint background */
-        --bg-card: #ffffff;
-        --text-main: #1f2937;
-        --text-light: #6b7280;
-        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        --radius: 12px;
-    }
+        /* CSS (Keep previous CSS here) */
+        @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
+        * { font-family: "Faruma", sans-serif; box-sizing: border-box; }
+        body { background-color: #ecfdf5; margin: 0; padding: 10px; text-align: right; color: #1f2937; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); min-height: 85vh; border-top: 5px solid #10b981; }
+        h1 { color: #059669; text-align: center; margin-bottom: 30px; font-size: 1.8rem; border-bottom: 2px dashed #a7f3d0; padding-bottom: 15px; }
+        
+        .card { background: #fff; padding: 25px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .card-highlight { background: linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%); border: 1px solid #10b981; text-align: center; }
+        
+        input { width: 100%; padding: 12px 15px; margin: 8px 0; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 16px; text-align: center; outline: none; transition: 0.3s; background: #f9fafb; }
+        input:focus { border-color: #10b981; background: #fff; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
+        
+        .btn { width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; margin-top: 10px; transition: 0.2s; display: flex; justify-content: center; gap: 8px; }
+        .btn:hover { background: #059669; transform: translateY(-1px); }
+        .btn-mat { background: linear-gradient(45deg, #f59e0b, #d97706); }
 
-    * { box-sizing: border-box; font-family: "Faruma", sans-serif; }
-
-    body {
-        background-color: var(--bg-body);
-        margin: 0;
-        padding: 20px 10px;
-        text-align: right;
-        color: var(--text-main);
-        line-height: 1.6;
-    }
-
-    /* --- LAYOUT --- */
-    .container {
-        max-width: 1000px;
-        margin: 0 auto;
-        background: var(--bg-card);
-        padding: 30px;
-        border-radius: 20px;
-        box-shadow: var(--shadow);
-        position: relative;
-        min-height: 85vh;
-        border-top: 5px solid var(--primary);
-    }
-
-    h1 {
-        color: var(--primary-dark);
-        text-align: center;
-        margin-bottom: 30px;
-        font-size: 2rem;
-        border-bottom: 2px dashed #a7f3d0;
-        padding-bottom: 15px;
-    }
-
-    /* --- CARDS --- */
-    .card {
-        background: #fff;
-        padding: 25px;
-        border-radius: var(--radius);
-        margin-bottom: 20px;
-        border: 1px solid #e5e7eb;
-        box-shadow: var(--shadow);
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-    
-    .card:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-hover);
-    }
-
-    .card-highlight {
-        background: linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%);
-        border: 1px solid #10b981;
-        text-align: center;
-    }
-
-    /* --- INPUTS & FORMS --- */
-    input, select, textarea {
-        width: 100%;
-        padding: 12px 15px;
-        margin: 8px 0;
-        border: 2px solid #e5e7eb;
-        border-radius: 8px;
-        font-size: 16px;
-        text-align: center;
-        outline: none;
-        transition: 0.3s;
-        background: #f9fafb;
-    }
-
-    input:focus, select:focus, textarea:focus {
-        border-color: var(--primary);
-        background: #fff;
-        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
-    }
-
-    /* --- BUTTONS --- */
-    .btn {
-        width: 100%;
-        padding: 12px 20px;
-        background: var(--primary);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: bold;
-        font-size: 15px;
-        margin-top: 10px;
-        transition: all 0.2s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .btn:hover { background: var(--primary-dark); transform: translateY(-1px); }
-    .btn:active { transform: translateY(0); }
-    .btn:disabled { background: #9ca3af; cursor: not-allowed; }
-
-    .btn-mat { background: linear-gradient(45deg, #f59e0b, #d97706); }
-    .btn-add { width: auto; padding: 8px 16px; background: #3b82f6; font-size: 13px; }
-    .btn-save { position: fixed; bottom: 30px; right: 20px; left: 20px; width: calc(100% - 40px); z-index: 100; max-width: 960px; margin: 0 auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-    .btn-del { width:auto; padding: 5px 10px; background: #ef4444; font-size: 12px; border-radius: 4px; }
-    .btn-edit { background: #f59e0b; padding: 5px 10px; border-radius: 4px; width: auto; }
-
-    /* --- TABLES --- */
-    .table-container {
-        width: 100%;
-        overflow-x: auto;
-        margin-top: 20px;
-        border-radius: var(--radius);
-        border: 1px solid #e5e7eb;
-        background: white;
-    }
-
-    table { width: 100%; border-collapse: collapse; min-width: 700px; }
-    
-    th {
-        background: #065f46;
-        color: white;
-        padding: 15px;
-        text-align: center;
-        font-weight: normal;
-        position: sticky;
-        top: 0;
-    }
-
-    td { padding: 12px; border-bottom: 1px solid #f3f4f6; text-align: center; font-size: 14px; }
-    tr:nth-child(even) { background-color: #f9fafb; }
-    tr:hover { background-color: #f0fdf4; }
-
-    /* --- TEACHER INPUTS IN TABLE --- */
-    .v-in {
-        border: 1px solid #d1d5db !important;
-        background: white !important;
-        font-weight: bold;
-        color: #374151;
-        border-radius: 6px;
-        box-shadow: none;
-    }
-    .v-in:focus { border-color: var(--primary) !important; }
-
-    /* --- PILLS & FILTERS --- */
-    .pills { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; margin-bottom: 15px; scrollbar-width: none; }
-    .pill {
-        padding: 8px 18px;
-        background: #e5e7eb;
-        border-radius: 20px;
-        cursor: pointer;
-        white-space: nowrap;
-        font-size: 13px;
-        color: #4b5563;
-        font-weight: bold;
-        transition: 0.3s;
-        border: 1px solid transparent;
-    }
-    .pill:hover { background: #d1d5db; }
-    .pill.active { background: var(--primary); color: white; border-color: var(--primary-dark); box-shadow: 0 2px 5px rgba(16, 185, 129, 0.3); }
-
-    /* --- PARENT RESULT VIEW --- */
-    .result-header {
-        background: linear-gradient(to right, #065f46, #10b981);
-        color: white;
-        padding: 25px;
-        border-radius: var(--radius) var(--radius) 0 0;
-        margin-bottom: 20px;
-        text-align: center;
-    }
-    
-    .result-section { margin-bottom: 30px; }
-    .result-title { 
-        font-size: 18px; font-weight: bold; color: var(--primary-dark); 
-        border-bottom: 2px solid #a7f3d0; padding-bottom: 8px; margin-bottom: 15px; 
-    }
-
-    .result-item {
-        display: flex; justify-content: space-between; align-items: center;
-        background: white; border: 1px solid #e5e7eb;
-        padding: 15px; margin-bottom: 10px; border-radius: 10px;
-        border-right: 5px solid #d1d5db;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-    .result-item.done { border-right-color: #10b981; background: #ecfdf5; }
-    .result-item.pending { border-right-color: #f59e0b; background: #fffbeb; }
-    .result-item.incomplete { border-right-color: #ef4444; background: #fef2f2; }
-
-    .score-circle {
-        width: 40px; height: 40px;
-        background: var(--primary); color: white;
-        border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        font-weight: bold; font-size: 14px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    /* --- MODALS --- */
-    .modal {
-        display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
-        background-color: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
-        animation: fadeIn 0.3s;
-    }
-    
-    .modal-content {
-        background-color: #fff; margin: 5% auto; padding: 30px;
-        border-radius: 20px; width: 90%; max-width: 500px;
-        text-align: center; max-height: 85vh; overflow-y: auto;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        border-top: 5px solid var(--primary);
-    }
-
-    /* --- UTILS --- */
-    .drop-zone { border: 2px dashed #9ca3af; padding: 30px; border-radius: 10px; background: #f9fafb; cursor: pointer; transition: 0.3s; }
-    .drop-zone:hover { border-color: var(--primary); background: #ecfdf5; }
-    
-    .admin-trigger { position: absolute; top: 0; left: 0; width: 60px; height: 60px; z-index: 200; cursor: default; opacity: 0; }
-    .admin-input-group { display: none; position: absolute; top: 50px; left: 20px; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); z-index: 1001; border: 1px solid #eee; }
-
-    .grade-badge { padding: 4px 10px; border-radius: 6px; color: white; font-size: 12px; font-weight: bold; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-    .g-A-star { background: #f59e0b; color:black; } .g-A { background: #10b981; } .g-B { background: #3b82f6; } .g-C { background: #f97316; } .g-Fail { background: #ef4444; }
-
-    .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--primary); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-    #toast { 
-        position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); 
-        background: #1f2937; color: white; padding: 12px 24px; 
-        border-radius: 50px; font-size: 14px; opacity: 0; transition: 0.3s; 
-        pointer-events: none; z-index: 2000; box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
-    }
-
-    @media (min-width: 768px) {
-        .btn-save { width: auto; right: 40px; left: auto; padding: 15px 40px; }
-    }
-</style>
+        /* Result Styles */
+        .result-header { background: linear-gradient(to right, #065f46, #10b981); color: white; padding: 25px; border-radius: 12px 12px 0 0; text-align: center; }
+        .result-item { display: flex; justify-content: space-between; align-items: center; background: white; border: 1px solid #e5e7eb; padding: 15px; margin-bottom: 10px; border-radius: 10px; border-right: 5px solid #d1d5db; }
+        .result-item.done { border-right-color: #10b981; background: #ecfdf5; }
+        .result-item.pending { border-right-color: #f59e0b; background: #fffbeb; }
+        .result-item.incomplete { border-right-color: #ef4444; background: #fef2f2; }
+        .score-circle { width: 40px; height: 40px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; }
+        .grade-badge { padding: 4px 10px; border-radius: 6px; color: white; font-size: 12px; font-weight: bold; }
+        .g-A-star { background: #f59e0b; color:black; } .g-A { background: #10b981; } .g-B { background: #3b82f6; } .g-C { background: #f97316; } .g-Fail { background: #ef4444; }
+        
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
+        .modal-content { background-color: #fff; margin: 10% auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 500px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); border-top: 5px solid #10b981; }
+        .mat-link { display: flex; justify-content: space-between; align-items: center; padding: 15px; margin: 10px 0; background: #fff; color: #00695c; text-decoration: none; border-radius: 8px; font-weight: bold; border: 1px solid #b2dfdb; transition: 0.2s; }
+        #toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #1f2937; color: white; padding: 12px 24px; border-radius: 50px; font-size: 14px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 2000; }
+    </style>
 </head>
 <body>
 
@@ -265,36 +45,46 @@
 
     <div id="viewParent">
         <div class="card" style="text-align:center;">
-            <h3 style="margin-top:0; color:#455a64;">ދަރިވަރުގެ ނަތީޖާ ބެލުން</h3>
-            <p style="font-size:13px; color:#78909c;">އިންޑެކްސް ނަންބަރު ޖައްސަވާ</p>
-            <input type="number" id="pIdx" placeholder="Index Number" inputmode="numeric" style="font-size:18px; letter-spacing: 2px;">
-            <button class="btn" id="pBtn" onclick="searchStudent()"><span>🔍</span> ބައްލަވާ</button>
+            <h3 style="margin-top:0; color:#1f2937;">ދަރިވަރުގެ ނަތީޖާ ބެލުން</h3>
+            <p style="font-size:13px; color:#6b7280;">އިންޑެކްސް އަދި ޕާސްވޯޑް ޖައްސަވާ</p>
+            
+            <input type="number" id="pIdx" placeholder="Index Number" inputmode="numeric">
+            <!-- NEW PASSWORD FIELD -->
+            <input type="password" id="pPass" placeholder="Password (e.g. 1234)">
+            
+            <button class="btn" id="pBtn" onclick="searchStudent()">
+                <span>🔐</span> ލޮގިން
+            </button>
         </div>
 
         <div class="card card-highlight">
-            <h3 style="margin-top:0; color:#00695c;">ފިލާވަޅުތައް</h3>
-            <p style="font-size:13px; color:#555; margin-bottom:15px;">ފޮތްތަކާއި ނޯޓްސް އަދި ވޯކްޝީޓް ޑައުންލޯޑް ކުރެއްވުމަށް</p>
-            <button class="btn btn-mat" onclick="openMaterials()"><span>📥</span> ފިލާވަޅުތައް ޑައުންލޯޑް</button>
+            <h3 style="margin-top:0; color:#059669;">ފިލާވަޅުތައް</h3>
+            <p style="font-size:13px; color:#555; margin-bottom:15px;">ފޮތްތަކާއި ނޯޓްސް ޑައުންލޯޑް ކުރެއްވުމަށް</p>
+            <button class="btn btn-mat" onclick="openMaterials()">
+                <span>📥</span> ފިލާވަޅުތައް
+            </button>
         </div>
-        <div id="pRes" style="display:none; animation: fadeIn 0.5s;"></div>
+
+        <div id="pRes" style="display:none;"></div>
     </div>
 </div>
 
 <!-- Materials Modal -->
-<div id="matModal" class="modal"><div class="modal-content"><h2 style="color:#00796b;">📚 ފިލާވަޅުތައް</h2><div id="matListParent" style="min-height:100px;">Loading...</div><button class="btn" style="background:#b0bec5; margin-top:15px; color:#333;" onclick="document.getElementById('matModal').style.display='none'">Close</button></div></div>
+<div id="matModal" class="modal"><div class="modal-content"><h2 style="color:#10b981;">📚 ފިލާވަޅުތައް</h2><div id="matListParent" style="min-height:100px;">Loading...</div><button class="btn" style="background:#9ca3af; margin-top:15px;" onclick="document.getElementById('matModal').style.display='none'">Close</button></div></div>
 <div id="toast"></div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getFirestore, collection, getDocs, doc, updateDoc, getDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
+    // PASTE YOUR FIREBASE CONFIG HERE
     const firebaseConfig = {
-      apiKey: "AIzaSyDSEHqUQIegVjhWKpRgpJybdPaVDVroVos",
-      authDomain: "islam-portal-muthamin.firebaseapp.com",
-      projectId: "islam-portal-muthamin",
-      storageBucket: "islam-portal-muthamin.firebasestorage.app",
-      messagingSenderId: "842342714257",
-      appId: "1:842342714257:web:c5daa61eee6524e7936830"
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "SENDER_ID",
+      appId: "APP_ID"
     };
 
     let db;
@@ -305,7 +95,7 @@
     try {
         const app = initializeApp(firebaseConfig);
         db = getFirestore(app);
-        fetchData(); // Load data immediately for parents
+        fetchData();
     } catch(e) { console.error(e); }
 
     async function fetchData() {
@@ -323,36 +113,55 @@
         } catch(e) { console.error(e); }
     }
 
+    // --- UPDATED SEARCH FUNCTION WITH PASSWORD CHECK ---
     window.searchStudent = () => {
         const idx = document.getElementById('pIdx').value;
-        if(!idx) return showToast("Index Required");
-        const btn = document.getElementById('pBtn'); btn.innerHTML = `<div class="loader" style="width:15px;height:15px;"></div>`;
+        const pass = document.getElementById('pPass').value; // Get Password
+
+        if(!idx || !pass) return showToast("Index & Password Required");
+        
+        const btn = document.getElementById('pBtn'); 
+        btn.innerHTML = `Checking...`;
+        
+        // Check Index AND Password
         const s = students.find(x => String(x.index) === String(idx));
-        const res = document.getElementById('pRes');
         
         setTimeout(() => {
-            btn.innerHTML = `<span>🔍</span> ބައްލަވާ`;
-            if(s) {
+            btn.innerHTML = `<span>🔐</span> ލޮގިން`;
+            const res = document.getElementById('pRes');
+            
+            // Validate Logic
+            if(s && String(s.password) === String(pass)) {
+                // ... (Show Results - Same code as before) ...
                 const getStatusClass = (status) => { if(status === 'ނިމިފައި') return 'done'; if(status === 'ފުރިހަމައެއް ނުވޭ') return 'pending'; if(status === 'ނުނިމޭ') return 'incomplete'; return ''; };
                 const getG = (val, itemName, defaultTotal) => { if(!val) return ''; let total = examConfig[itemName] ? parseInt(examConfig[itemName]) : defaultTotal; let g = calcGrade(val, total); return `<span class="grade-badge ${g.cls}">${g.lbl}</span>`; };
 
                 let html = `
                     <div class="result-header"><h2 style="margin:0;">${s.name}</h2><div style="opacity:0.8; margin-top:5px; font-size:14px;">Index: ${s.index} | Class: ${s.grade}${s.class}</div></div>
-                    <div style="padding: 0 20px 20px 20px;">
-                        <div class="result-section"><div class="result-title">ހަފްތާގެ މަސައްކަތް</div><div style="max-height:300px; overflow-y:auto; padding-right:5px;">`;
-                let hasWeek = false; for(let i=45; i>=1; i--) { let v = s['Week'+i]; let n = s['Week'+i+'_note']; if(v) { hasWeek = true; html += `<div class="result-item ${getStatusClass(v)}"><div><span style="font-weight:bold; color:#555;">Week ${i}</span>${n ? `<div style="font-size:12px; color:#888;">"${n}"</div>`:''}</div><div style="font-weight:bold; color:#00796b;">${v}</div></div>`; } }
-                if(!hasWeek) html += `<div style="color:#999; text-align:center; padding:10px;">No records</div>`; html += `</div></div>`;
+                    <div style="padding: 20px;">
+                        <div style="margin-bottom:30px;"><div style="font-size:18px;font-weight:bold;color:#059669;border-bottom:2px solid #a7f3d0;margin-bottom:15px;">ހަފްތާގެ މަސައްކަތް</div><div style="max-height:300px; overflow-y:auto; padding-right:5px;">`;
+                let hasWeek = false; for(let i=45; i>=1; i--) { let v = s['Week'+i]; let n = s['Week'+i+'_note']; if(v) { hasWeek = true; html += `<div class="result-item ${getStatusClass(v)}"><div><span style="font-weight:bold; color:#555;">Week ${i}</span>${n ? `<div style="font-size:12px; color:#888;">"${n}"</div>`:''}</div><div style="font-weight:bold; color:#10b981;">${v}</div></div>`; } }
+                if(!hasWeek) html += `<div style="color:#999; text-align:center;">No records</div>`; html += `</div></div>`;
 
-                html += `<div class="result-section"><div class="result-title">ޔުނިޓް ޓެސްޓް</div>`;
+                html += `<div style="margin-bottom:30px;"><div style="font-size:18px;font-weight:bold;color:#059669;border-bottom:2px solid #a7f3d0;margin-bottom:15px;">ޔުނިޓް ޓެސްޓް</div>`;
                 let hasTest = false; for(let i=1; i<=10; i++) { let v = s['UnitTest'+i]; if(v) { hasTest = true; html += `<div class="result-item"><span>Unit Test ${i}</span><div style="display:flex; align-items:center; gap:10px;">${getG(v, 'UnitTest'+i, 20)}<div class="score-circle">${v}</div></div></div>`; } }
-                if(!hasTest) html += `<div style="color:#999; text-align:center; padding:10px;">No records</div>`; html += `</div>`;
+                if(!hasTest) html += `<div style="color:#999; text-align:center;">No records</div>`; html += `</div>`;
 
-                html += `<div class="result-section"><div class="result-title">CA / Exam</div>`;
-                let hasCa = false; for(let i=1; i<=4; i++) { let v = s['CA'+i]; if(v) { hasCa = true; html += `<div class="result-item"><span>CA / Exam ${i}</span><div style="display:flex; align-items:center; gap:10px;">${getG(v, 'CA'+i, 100)}<div class="score-circle" style="background:#e0f7fa; border-color:#00bcd4;">${v}</div></div></div>`; } }
-                if(!hasCa) html += `<div style="color:#999; text-align:center; padding:10px;">No records</div>`; html += `</div><div class="result-section" style="background:#f1f8e9; padding:15px; border-radius:10px; border:1px solid #c5e1a5;"><div style="font-weight:bold; color:#33691e; margin-bottom:10px;">Send Message to Teacher:</div><textarea id="parentMsgInput" placeholder="Write here..." rows="3"></textarea><button class="btn" style="background:#558b2f; margin-top:5px;" onclick="sendParentMsg('${s.id}')">Send ➤</button></div></div>`;
+                html += `<div style="margin-bottom:30px;"><div style="font-size:18px;font-weight:bold;color:#059669;border-bottom:2px solid #a7f3d0;margin-bottom:15px;">CA / Exam</div>`;
+                let hasCa = false; for(let i=1; i<=4; i++) { let v = s['CA'+i]; if(v) { hasCa = true; html += `<div class="result-item"><span>CA / Exam ${i}</span><div style="display:flex; align-items:center; gap:10px;">${getG(v, 'CA'+i, 100)}<div class="score-circle" style="background:#e0f7fa; border-color:#00bcd4;color:#006064">${v}</div></div></div>`; } }
+                if(!hasCa) html += `<div style="color:#999; text-align:center;">No records</div>`; html += `</div>`;
+                
+                // Comment Box
+                html += `<div style="background:#f0fdf4; padding:15px; border-radius:10px; border:1px solid #bbf7d0;"><div style="font-weight:bold; color:#166534; margin-bottom:10px;">Send Message to Teacher:</div><textarea id="parentMsgInput" placeholder="Write here..." rows="3"></textarea><button class="btn" style="background:#15803d; margin-top:5px;" onclick="sendParentMsg('${s.id}')">Send ➤</button></div></div>`;
+                
                 res.innerHTML = html; res.style.display = "block";
-            } else { res.innerHTML = `<div style="text-align:center; padding:30px; color:#c62828;"><h3>Not Found!</h3></div>`; res.style.display = "block"; }
-        }, 300);
+                document.getElementById('pIdx').value = ""; // Clear for security
+                document.getElementById('pPass').value = "";
+            } else {
+                res.innerHTML = `<div style="text-align:center; padding:30px; color:#ef4444;"><h3>Invalid Credentials!</h3><p>Please check Index Number and Password.</p></div>`;
+                res.style.display = "block";
+            }
+        }, 500);
     };
 
     window.sendParentMsg = async (sid) => {
@@ -370,6 +179,7 @@
         if(p>=90) return {lbl:'A*', cls:'g-A-star'}; if(p>=80) return {lbl:'A', cls:'g-A'}; if(p>=70) return {lbl:'B', cls:'g-B'}; if(p>=60) return {lbl:'C', cls:'g-C'}; return {lbl:'Fail', cls:'g-Fail'};
     }
     function showToast(msg) { const t=document.getElementById('toast'); t.innerText=msg; t.style.opacity='1'; t.style.bottom='80px'; setTimeout(()=>t.style.opacity='0', 3000); }
+    window.sendParentMsg = sendParentMsg; // Make global
 </script>
 </body>
 </html>
