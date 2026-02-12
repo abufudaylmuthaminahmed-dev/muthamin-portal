@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>އިސްލާމް ޕޯޓަލް - ބެލެނިވެރިން</title>
+    <title>އިސްލާމް ޕޯޓަލް</title>
     <style>
         @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
         * { font-family: "Faruma", sans-serif; box-sizing: border-box; }
@@ -11,48 +11,36 @@
         .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); min-height: 85vh; border-top: 5px solid #10b981; }
         h1 { color: #059669; text-align: center; margin-bottom: 20px; font-size: 1.8rem; border-bottom: 2px dashed #a7f3d0; padding-bottom: 15px; }
         
-        /* NOTICE BOARD */
-        .notice-board {
-            background-color: #fffbeb; 
-            border: 2px solid #fcd34d;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 25px;
-            display: none; /* Hidden until loaded */
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        .notice-title { font-weight: bold; color: #d97706; margin-bottom: 5px; font-size: 16px; display: flex; align-items: center; gap: 5px; }
+        /* Notice Board */
+        .notice-board { background-color: #fffbeb; border: 2px solid #fcd34d; border-radius: 12px; padding: 15px; margin-bottom: 25px; display: none; }
+        .notice-title { font-weight: bold; color: #d97706; margin-bottom: 5px; font-size: 16px; }
         
-        /* UI ELEMENTS */
+        /* Cards & Inputs */
         .card { background: #fff; padding: 25px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .card-highlight { background: linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%); border: 1px solid #10b981; text-align: center; }
-        
         input, textarea { width: 100%; padding: 12px 15px; margin: 8px 0; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 16px; text-align: center; outline: none; transition: 0.3s; background: #f9fafb; }
         input:focus { border-color: #10b981; background: #fff; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
         
+        /* Buttons */
         .btn { width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; margin-top: 10px; transition: 0.2s; display: flex; justify-content: center; gap: 8px; align-items: center; }
         .btn:hover { background: #059669; transform: translateY(-1px); }
         .btn-mat { background: linear-gradient(45deg, #f59e0b, #d97706); }
         .btn-blue { background: #3b82f6; } 
         .btn-logout { background: #ef4444; margin-top: 15px; }
+        .btn-upload { background: #0891b2; padding: 6px 12px; font-size: 12px; width: auto; margin: 0; border-radius: 6px; }
 
-        /* RESULTS STYLING */
+        /* Results */
         .result-header { background: linear-gradient(to right, #065f46, #10b981); color: white; padding: 25px; border-radius: 12px 12px 0 0; text-align: center; }
         .result-section-title { font-size: 18px; font-weight: bold; color: #059669; border-bottom: 2px solid #a7f3d0; margin-bottom: 15px; margin-top: 25px; }
         .result-item { display: flex; justify-content: space-between; align-items: center; background: white; border: 1px solid #e5e7eb; padding: 15px; margin-bottom: 10px; border-radius: 10px; border-right: 5px solid #d1d5db; }
         .result-item.done { border-right-color: #10b981; background: #ecfdf5; }
-        .result-item.pending { border-right-color: #f59e0b; background: #fffbeb; }
-        .result-item.incomplete { border-right-color: #ef4444; background: #fef2f2; }
         .score-circle { width: 40px; height: 40px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; }
         .grade-badge { padding: 4px 10px; border-radius: 6px; color: white; font-size: 12px; font-weight: bold; }
+        .g-A-star { background: #f59e0b; color:black; } .g-A { background: #10b981; color:white; } .g-B { background: #3b82f6; color:white; } .g-Fail { background: #ef4444; color:white; }
         
-        .g-A-star { background: #f59e0b; color:black; } 
-        .g-A { background: #10b981; color:white; } 
-        .g-B { background: #3b82f6; color:white; } 
-        .g-C { background: #f97316; color:white; } 
-        .g-Fail { background: #ef4444; color:white; }
-        
-        /* MODALS */
+        .submitted-badge { background: #f59e0b; color: white; font-size: 11px; padding: 4px 8px; border-radius: 20px; display: inline-block; }
+
+        /* Modals */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
         .modal-content { background-color: #fff; margin: 10% auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 500px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); border-top: 5px solid #10b981; }
         .mat-link { display: flex; justify-content: space-between; align-items: center; padding: 15px; margin: 10px 0; background: #fff; color: #00695c; text-decoration: none; border-radius: 8px; font-weight: bold; border: 1px solid #b2dfdb; transition: 0.2s; }
@@ -64,39 +52,31 @@
 <div class="container">
     <h1>🌙 އިސްލާމް ޕޯޓަލް</h1>
 
-    <!-- NOTICE BOARD (Visible to all) -->
     <div id="noticeBoard" class="notice-board">
         <div class="notice-title">📢 އެންގުން</div>
-        <p id="noticeText" style="margin:0; font-size:14px; color:#4b5563; line-height:1.6;">Loading notice...</p>
+        <p id="noticeText" style="margin:0; font-size:14px; color:#4b5563; line-height:1.6;">Loading...</p>
     </div>
 
-    <!-- 1. LOGIN SECTION -->
+    <!-- LOGIN -->
     <div id="loginSection">
         <div class="card" style="text-align:center;">
             <h3 style="margin-top:0; color:#1f2937;">ބެލެނިވެރިންގެ ޕޯޓަލް</h3>
             <p style="font-size:13px; color:#6b7280; margin-bottom:20px;">ކުއްޖާގެ އިންޑެކްސް އަދި ޕާސްވޯޑް ޖައްސަވާ</p>
-            
             <input type="number" id="pIdx" placeholder="Index Number" inputmode="numeric">
             <input type="password" id="pPass" placeholder="Password">
-            
-            <button class="btn" id="pBtn" onclick="loginParent()">
-                <span>🔐</span> ލޮގިން
-            </button>
+            <button class="btn" id="pBtn" onclick="loginParent()"><span>🔐</span> ލޮގިން</button>
         </div>
-        
-        <p style="text-align:center; font-size:12px; color:#9ca3af;">ފުރަތަމަ ފަހަރަށް ވަންނަ ނަމަ ޕާސްވޯޑް ޖަހާކަށް ނުޖެހޭނެ!</p>
+        <p style="text-align:center; font-size:12px; color:#9ca3af;">ފުރަތަމަ ފަހަރު ނަމަ ޕާސްވޯޑް ހުސްކޮށް ބަހައްޓަވާ</p>
     </div>
 
-    <!-- 2. DASHBOARD SECTION -->
+    <!-- DASHBOARD -->
     <div id="dashboardSection" style="display:none;">
         <div id="studentHeader"></div>
 
         <div class="card card-highlight">
             <h3 style="margin-top:0; color:#059669;">ފިލާވަޅުތައް</h3>
             <p style="font-size:13px; color:#555; margin-bottom:15px;">ފޮތްތަކާއި ނޯޓްސް ޑައުންލޯޑް ކުރެއްވުމަށް</p>
-            <button class="btn btn-mat" onclick="openMaterials()">
-                <span>📥</span> ފިލާވަޅުތައް
-            </button>
+            <button class="btn btn-mat" onclick="openMaterials()"><span>📥</span> ފިލާވަޅުތައް</button>
         </div>
 
         <div id="resultsArea" class="card" style="padding:0; overflow:hidden;"></div>
@@ -106,19 +86,26 @@
     </div>
 </div>
 
-<!-- Materials Modal -->
-<div id="matModal" class="modal"><div class="modal-content"><h2 style="color:#10b981;">📚 ފިލާވަޅުތައް</h2><div id="matListParent" style="min-height:100px;">Loading...</div><button class="btn" style="background:#9ca3af; margin-top:15px;" onclick="document.getElementById('matModal').style.display='none'">Close</button></div></div>
-
-<!-- Password Change Modal -->
-<div id="pwdModal" class="modal">
+<!-- Upload Modal -->
+<div id="uploadModal" class="modal">
     <div class="modal-content">
-        <h3 style="color:#3b82f6;">ޕާސްވޯޑް ސެޓްކުރުން</h3>
-        <p style="font-size:13px; color:#666;" id="pwdModalMsg">އާ ޕާސްވޯޑެއް ޖައްސަވާ</p>
-        <input type="text" id="newParentPass" placeholder="New Password">
-        <button class="btn btn-blue" onclick="saveNewPassword()">💾 Save Password</button>
-        <button class="btn" id="btnClosePwd" style="background:#9ca3af; margin-top:10px;" onclick="document.getElementById('pwdModal').style.display='none'">Cancel</button>
+        <h3 style="color:#0891b2;">📷 މަސައްކަތް ހުށަހެޅުން</h3>
+        <p id="uploadWeekName" style="font-weight:bold; color:#555;"></p>
+        <div style="border:2px dashed #ccc; padding:20px; border-radius:10px; margin:15px 0;">
+            <input type="file" id="homeworkFile" accept="image/*" style="display:none" onchange="previewImage()">
+            <button class="btn" style="background:#eee; color:#333;" onclick="document.getElementById('homeworkFile').click()">ފޮޓޯ ނެގުން / ހޮވުން</button>
+            <img id="imgPreview" style="max-width:100%; margin-top:10px; display:none; border-radius:8px;">
+        </div>
+        <button class="btn" id="btnSendWork" onclick="uploadWork()">🚀 ފޮނުއްވާ</button>
+        <button class="btn" style="background:#9ca3af; margin-top:10px;" onclick="document.getElementById('uploadModal').style.display='none'">Cancel</button>
     </div>
 </div>
+
+<!-- Password Modal -->
+<div id="pwdModal" class="modal"><div class="modal-content"><h3 style="color:#3b82f6;">ޕާސްވޯޑް ސެޓްކުރުން</h3><p style="font-size:13px; color:#666;" id="pwdModalMsg">އާ ޕާސްވޯޑެއް ޖައްސަވާ</p><input type="text" id="newParentPass" placeholder="New Password"><button class="btn btn-blue" onclick="saveNewPassword()">💾 Save Password</button><button class="btn" id="btnClosePwd" style="background:#9ca3af; margin-top:10px;" onclick="document.getElementById('pwdModal').style.display='none'">Cancel</button></div></div>
+
+<!-- Materials Modal -->
+<div id="matModal" class="modal"><div class="modal-content"><h2 style="color:#10b981;">📚 ފިލާވަޅުތައް</h2><div id="matListParent" style="min-height:100px;">Loading...</div><button class="btn" style="background:#9ca3af; margin-top:15px;" onclick="document.getElementById('matModal').style.display='none'">Close</button></div></div>
 
 <div id="toast"></div>
 
@@ -126,7 +113,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getFirestore, collection, getDocs, doc, updateDoc, getDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-    // --- PASTE YOUR FIREBASE CONFIG HERE ---
+    // --- FIREBASE CONFIG ---
     const firebaseConfig = {
       apiKey: "AIzaSyDSEHqUQIegVjhWKpRgpJybdPaVDVroVos",
   authDomain: "islam-portal-muthamin.firebaseapp.com",
@@ -141,6 +128,7 @@
     let materials = [];
     let examConfig = {};
     let currentStudent = null;
+    let currentUploadWeek = null;
 
     try {
         const app = initializeApp(firebaseConfig);
@@ -151,66 +139,35 @@
     async function fetchData() {
         if(!db) return;
         try {
-            // Get Students
             const sSnap = await getDocs(collection(db, "students"));
-            students = [];
-            sSnap.forEach((doc) => students.push({ id: doc.id, ...doc.data() }));
-            
-            // Get Materials
+            students = []; sSnap.forEach((doc) => students.push({ id: doc.id, ...doc.data() }));
             const mSnap = await getDocs(collection(db, "materials"));
-            materials = [];
-            mSnap.forEach((doc) => materials.push({ id: doc.id, ...doc.data() }));
-
-            // Get Settings (Grades & Notice)
-            const examSnap = await getDoc(doc(db, "settings", "examConfig"));
-            if(examSnap.exists()) examConfig = examSnap.data();
-
-            // GET NOTICE
+            materials = []; mSnap.forEach((doc) => materials.push({ id: doc.id, ...doc.data() }));
+            try { const confSnap = await getDoc(doc(db, "settings", "examConfig")); if(confSnap.exists()) examConfig = confSnap.data(); } catch(e) {}
             const noticeSnap = await getDoc(doc(db, "settings", "notice"));
             if(noticeSnap.exists() && noticeSnap.data().text) {
                 document.getElementById('noticeText').innerText = noticeSnap.data().text;
                 document.getElementById('noticeBoard').style.display = 'block';
             }
-
         } catch(e) { console.error(e); }
     }
 
-    // --- SMART LOGIN LOGIC ---
+    // LOGIN
     window.loginParent = () => {
-        const idx = document.getElementById('pIdx').value;
-        const pass = document.getElementById('pPass').value; 
-
+        const idx = document.getElementById('pIdx').value; const pass = document.getElementById('pPass').value; 
         if(!idx) return showToast("Index Required");
-        
-        const btn = document.getElementById('pBtn'); 
-        btn.innerHTML = `Checking...`;
-        
+        const btn = document.getElementById('pBtn'); btn.innerHTML = `Checking...`;
         const s = students.find(x => String(x.index) === String(idx));
         
         setTimeout(() => {
             btn.innerHTML = `<span>🔐</span> ލޮގިން`;
-            
             if(s) {
-                // SCENARIO 1: FIRST TIME (Password is '1234' OR Empty)
-                // Allow login with empty password OR '1234'
                 if ( (s.password === "1234" || !s.password) && (pass === "" || pass === "1234") ) {
-                    currentStudent = s;
-                    loadDashboard(s);
-                    // FORCE PASSWORD CHANGE
-                    forcePasswordChange();
-                    return;
+                    currentStudent = s; loadDashboard(s); forcePasswordChange(); return;
                 }
-
-                // SCENARIO 2: NORMAL LOGIN
-                if (String(s.password) === String(pass)) {
-                    currentStudent = s;
-                    loadDashboard(s);
-                } else {
-                    showToast("❌ ނުބައި ޕާސްވޯޑެއް!");
-                }
-            } else {
-                showToast("❌ ދަރިވަރު ނުފެނުނު!");
-            }
+                if (String(s.password) === String(pass)) { currentStudent = s; loadDashboard(s); } 
+                else { showToast("❌ ނުބައި ޕާސްވޯޑެއް!"); }
+            } else { showToast("❌ ދަރިވަރު ނުފެނުނު!"); }
         }, 500);
     };
 
@@ -218,46 +175,51 @@
         document.getElementById('pwdModal').style.display = 'block';
         document.getElementById('pwdModalMsg').innerText = "⚠️ ފުރަތަމަ ފަހަރު ކަމުން، އާ ޕާސްވޯޑެއް ހަދަންޖެހޭނެއެވެ.";
         document.getElementById('pwdModalMsg').style.color = "#d97706";
-        document.getElementById('btnClosePwd').style.display = 'none'; // Hide Cancel Button
+        document.getElementById('btnClosePwd').style.display = 'none';
     }
 
     function loadDashboard(s) {
         document.getElementById('loginSection').style.display = 'none';
         document.getElementById('dashboardSection').style.display = 'block';
-
-        // Header
-        document.getElementById('studentHeader').innerHTML = `
-            <div class="result-header">
-                <h2 style="margin:0;">${s.name}</h2>
-                <div style="opacity:0.8; margin-top:5px; font-size:14px;">Index: ${s.index} | Class: ${s.grade}${s.class}</div>
-            </div>`;
+        document.getElementById('studentHeader').innerHTML = `<div class="result-header"><h2 style="margin:0;">${s.name}</h2><div style="opacity:0.8; margin-top:5px; font-size:14px;">Index: ${s.index} | Class: ${s.grade}${s.class}</div></div>`;
 
         let html = '<div style="padding:20px;">';
-        
-        // Helpers
-        const getStatusClass = (status) => { if(status === 'ނިމިފައި') return 'done'; if(status === 'ފުރިހަމައެއް ނުވޭ') return 'pending'; if(status === 'ނުނިމޭ') return 'incomplete'; return ''; };
-        const getG = (val, itemName, defaultTotal) => { 
-            if(!val) return ''; 
-            let total = examConfig[itemName] ? parseInt(examConfig[itemName]) : defaultTotal; 
-            let g = calcGrade(val, total); 
-            return `<span class="grade-badge ${g.cls}">${g.lbl}</span>`; 
-        };
+        const getG = (val, itemName, defaultTotal) => { if(!val) return ''; let total = examConfig[itemName] ? parseInt(examConfig[itemName]) : defaultTotal; let g = calcGrade(val, total); return `<span class="grade-badge ${g.cls}">${g.lbl}</span>`; };
 
-        // WEEKLY WORK
+        // WEEKLY WORK WITH UPLOAD
         html += `<div class="result-section-title">ހަފްތާގެ މަސައްކަތް</div><div style="max-height:300px; overflow-y:auto; padding-right:5px;">`;
-        let hasWeek = false; 
         for(let i=45; i>=1; i--) { 
-            let v = s['Week'+i]; let n = s['Week'+i+'_note']; 
-            if(v) { hasWeek = true; html += `<div class="result-item ${getStatusClass(v)}"><div><span style="font-weight:bold; color:#555;">Week ${i}</span>${n ? `<div style="font-size:12px; color:#888;">"${n}"</div>`:''}</div><div style="font-weight:bold; color:#10b981;">${v}</div></div>`; } 
+            let submission = s.submissions && s.submissions['Week'+i];
+            let status = s['Week'+i];
+            let btnHtml = '';
+            let statusHtml = '';
+
+            if(status === 'ނިމިފައި') {
+                statusHtml = `<div style="color:#10b981; font-weight:bold;">✅ ނިމިއްޖެ</div>`;
+            } else {
+                if(submission) {
+                    statusHtml = `<span class="submitted-badge">⏳ Submitted</span>`;
+                } else {
+                    btnHtml = `<button class="btn btn-upload" onclick="openUploadModal('Week${i}')">📷 ފޮޓޯ</button>`;
+                }
+                if(status === 'ނުނިމޭ') statusHtml += `<div style="color:#ef4444;font-size:11px">ނުނިމޭ</div>`;
+                if(status === 'ފުރިހަމައެއް ނުވޭ') statusHtml += `<div style="color:#f59e0b;font-size:11px">އިސްލާޙްކުރޭ</div>`;
+            }
+
+            if(status || submission || i < 5) { // Show recent weeks or ones with data
+                 html += `<div class="result-item ${status==='ނިމިފައި'?'done':''}">
+                            <div><span style="font-weight:bold; color:#555;">Week ${i}</span>${s['Week'+i+'_note'] ? `<div style="font-size:12px; color:#888;">"${s['Week'+i+'_note']}"</div>`:''}</div>
+                            <div style="text-align:right;">${statusHtml} ${btnHtml}</div>
+                         </div>`;
+            }
         }
-        if(!hasWeek) html += `<div style="color:#999; text-align:center;">No records</div>`; html += `</div>`;
+        html += `</div>`;
 
         // UNIT TESTS
         html += `<div class="result-section-title">ޔުނިޓް ޓެސްޓް</div>`;
         let hasTest = false; 
         for(let i=1; i<=10; i++) { 
-            let v = s['UnitTest'+i]; 
-            if(v) { hasTest = true; html += `<div class="result-item"><span>Unit Test ${i}</span><div style="display:flex; align-items:center; gap:10px;">${getG(v, 'UnitTest'+i, 20)}<div class="score-circle">${v}</div></div></div>`; } 
+            let v = s['UnitTest'+i]; if(v) { hasTest = true; html += `<div class="result-item"><span>Unit Test ${i}</span><div style="display:flex; align-items:center; gap:10px;">${getG(v, 'UnitTest'+i, 20)}<div class="score-circle">${v}</div></div></div>`; } 
         }
         if(!hasTest) html += `<div style="color:#999; text-align:center;">No records</div>`;
 
@@ -265,75 +227,96 @@
         html += `<div class="result-section-title">CA / Exam</div>`;
         let hasCa = false; 
         for(let i=1; i<=4; i++) { 
-            let v = s['CA'+i]; 
-            if(v) { hasCa = true; html += `<div class="result-item"><span>CA / Exam ${i}</span><div style="display:flex; align-items:center; gap:10px;">${getG(v, 'CA'+i, 100)}<div class="score-circle" style="background:#e0f7fa; border-color:#00bcd4;color:#006064">${v}</div></div></div>`; } 
+            let v = s['CA'+i]; if(v) { hasCa = true; html += `<div class="result-item"><span>CA / Exam ${i}</span><div style="display:flex; align-items:center; gap:10px;">${getG(v, 'CA'+i, 100)}<div class="score-circle" style="background:#e0f7fa; border-color:#00bcd4;color:#006064">${v}</div></div></div>`; } 
         }
         if(!hasCa) html += `<div style="color:#999; text-align:center;">No records</div>`;
 
-        // MESSAGE BOX
+        // MSG
         html += `<div style="margin-top:30px; background:#f0fdf4; padding:15px; border-radius:10px; border:1px solid #bbf7d0;">
-                    <div style="font-weight:bold; color:#166534; margin-bottom:10px;">މުދައްރިސަށް މެސެޖެއް ފޮނުއްވުމަށް:</div>
-                    <textarea id="parentMsgInput" placeholder="މިތަނުގައި ލިޔުއްވާ..." rows="3"></textarea>
+                    <div style="font-weight:bold; color:#166534; margin-bottom:10px;">މުދައްރިސަށް މެސެޖެއް:</div>
+                    <textarea id="parentMsgInput" placeholder="ލިޔުއްވާ..." rows="3"></textarea>
                     <button class="btn" style="background:#15803d; margin-top:5px;" onclick="sendParentMsg()">ފޮނުއްވާ ➤</button>
                  </div></div>`;
 
         document.getElementById('resultsArea').innerHTML = html;
     }
 
-    // --- PASSWORD MANAGEMENT ---
-    window.openPwdModal = () => { 
-        document.getElementById('pwdModal').style.display = "block";
-        document.getElementById('pwdModalMsg').innerText = "އާ ޕާސްވޯޑެއް ޖައްސަވާ";
-        document.getElementById('pwdModalMsg').style.color = "#666";
-        document.getElementById('btnClosePwd').style.display = "block"; 
+    // --- UPLOAD LOGIC ---
+    window.openUploadModal = (weekId) => {
+        currentUploadWeek = weekId;
+        document.getElementById('uploadWeekName').innerText = weekId;
+        document.getElementById('imgPreview').style.display = 'none';
+        document.getElementById('homeworkFile').value = ''; 
+        document.getElementById('uploadModal').style.display = 'block';
     };
-    
-    window.saveNewPassword = async () => {
-        const newP = document.getElementById('newParentPass').value;
-        if(!newP || newP.length < 3) return alert("Password too short");
-        if(!currentStudent) return;
 
-        const btn = document.querySelector('#pwdModal .btn-blue');
-        btn.innerText = "Saving...";
+    window.previewImage = () => {
+        const file = document.getElementById('homeworkFile').files[0];
+        if(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = document.getElementById('imgPreview');
+                img.src = e.target.result;
+                img.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    window.uploadWork = async () => {
+        const fileInput = document.getElementById('homeworkFile');
+        if(fileInput.files.length === 0) return alert("Please select an image");
         
-        try {
-            await updateDoc(doc(db, "students", currentStudent.id), { password: newP });
-            showToast("✅ Password Updated!");
-            document.getElementById('pwdModal').style.display = 'none';
-            currentStudent.password = newP;
-            const idx = students.findIndex(s => s.id === currentStudent.id);
-            if(idx !== -1) students[idx].password = newP;
-        } catch(e) { console.error(e); alert("Error"); }
-        btn.innerText = "💾 Save Password";
+        const btn = document.getElementById('btnSendWork'); btn.innerText = "Uploading..."; btn.disabled = true;
+        
+        // Resize Image Logic
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image(); img.src = e.target.result;
+            img.onload = async () => {
+                const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+                const scaleFactor = 800 / img.width;
+                canvas.width = 800; canvas.height = img.height * scaleFactor;
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                const compressedBase64 = canvas.toDataURL('image/jpeg', 0.6); 
+
+                try {
+                    await updateDoc(doc(db, "students", currentStudent.id), {
+                        [`submissions.${currentUploadWeek}`]: { image: compressedBase64, date: new Date().toLocaleDateString('en-GB') }
+                    });
+                    showToast("✅ Submitted Successfully!");
+                    document.getElementById('uploadModal').style.display = 'none';
+                    // Refresh data
+                    const snap = await getDoc(doc(db, "students", currentStudent.id));
+                    currentStudent = { id: snap.id, ...snap.data() };
+                    loadDashboard(currentStudent);
+                } catch(err) { console.error(err); alert("Error uploading"); }
+                btn.innerText = "🚀 ފޮނުއްވާ"; btn.disabled = false;
+            };
+        };
+        reader.readAsDataURL(fileInput.files[0]);
     };
 
-    // --- FEATURES ---
+    // --- OTHER FEATURES ---
     window.sendParentMsg = async () => {
-        if(!currentStudent) return;
-        const txt = document.getElementById('parentMsgInput').value;
+        if(!currentStudent) return; const txt = document.getElementById('parentMsgInput').value;
         if(!txt.trim()) return alert("Message is empty");
         try { await updateDoc(doc(db, "students", currentStudent.id), { parentMessages: arrayUnion({ text: txt, date: new Date().toISOString().split('T')[0] }) }); alert("Sent!"); document.getElementById('parentMsgInput').value = ""; } catch(e) { alert("Error"); }
     };
 
-    window.logout = () => {
-        currentStudent = null;
-        document.getElementById('dashboardSection').style.display = 'none';
-        document.getElementById('loginSection').style.display = 'block';
-        document.getElementById('pPass').value = "";
-        document.getElementById('pIdx').value = "";
+    window.openPwdModal = () => { document.getElementById('pwdModal').style.display = "block"; document.getElementById('pwdModalMsg').innerText = "އާ ޕާސްވޯޑެއް ޖައްސަވާ"; document.getElementById('btnClosePwd').style.display = "block"; };
+    window.saveNewPassword = async () => {
+        const newP = document.getElementById('newParentPass').value; if(newP.length<3) return alert("Too short");
+        try { await updateDoc(doc(db, "students", currentStudent.id), { password: newP }); showToast("Updated!"); document.getElementById('pwdModal').style.display = 'none'; currentStudent.password = newP; } catch(e) { alert("Error"); }
     };
 
-    window.openMaterials = () => { document.getElementById('matModal').style.display = "block"; 
-        document.getElementById('matListParent').innerHTML = materials.length ? materials.map(m=>`<a href="${m.link}" target="_blank" class="mat-link"><span>${m.title}</span><span>📥</span></a>`).join('') : "<p style='text-align:center;color:#999'>No materials</p>"; 
-    };
-
-    function calcGrade(m, t) {
-        let p = (m/t)*100; if(isNaN(p)) return {lbl:'-', cls:''};
-        if(p>=90) return {lbl:'A*', cls:'g-A-star'}; if(p>=80) return {lbl:'A', cls:'g-A'}; if(p>=70) return {lbl:'B', cls:'g-B'}; if(p>=60) return {lbl:'C', cls:'g-C'}; return {lbl:'Fail', cls:'g-Fail'};
-    }
+    window.logout = () => { currentStudent = null; document.getElementById('dashboardSection').style.display = 'none'; document.getElementById('loginSection').style.display = 'block'; document.getElementById('pPass').value = ""; };
+    window.openMaterials = () => { document.getElementById('matModal').style.display = "block"; document.getElementById('matListParent').innerHTML = materials.length ? materials.map(m=>`<a href="${m.link}" target="_blank" class="mat-link"><span>${m.title}</span><span>📥</span></a>`).join('') : "<p style='text-align:center;color:#999'>No materials</p>"; };
+    
+    function calcGrade(m, t) { let p = (m/t)*100; if(isNaN(p)) return {lbl:'-', cls:''}; if(p>=90) return {lbl:'A*', cls:'g-A-star'}; if(p>=80) return {lbl:'A', cls:'g-A'}; if(p>=70) return {lbl:'B', cls:'g-B'}; return {lbl:'F', cls:'g-Fail'}; }
     function showToast(msg) { const t=document.getElementById('toast'); t.innerText=msg; t.style.opacity='1'; t.style.bottom='80px'; setTimeout(()=>t.style.opacity='0', 3000); }
     
-    window.sendParentMsg = sendParentMsg; window.saveNewPassword = saveNewPassword; window.logout = logout;
+    window.sendParentMsg=sendParentMsg; window.saveNewPassword=saveNewPassword; window.logout=logout; window.openUploadModal=openUploadModal; window.previewImage=previewImage; window.uploadWork=uploadWork;
 </script>
 </body>
 </html>
