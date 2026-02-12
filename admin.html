@@ -2,128 +2,246 @@
 <html lang="dv" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Teacher Admin Panel</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
-        /* (Use the same CSS styles as previous for consistency, specifically fonts and rtl) */
         @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
         * { box-sizing: border-box; font-family: "Faruma", sans-serif; }
         body { background-color: #f0fdfa; margin: 0; padding: 20px; text-align: right; color: #333; }
         .container { max-width: 1100px; margin: 0 auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         
-        h1 { color: #0d9488; text-align: center; border-bottom: 2px solid #e0f2f1; padding-bottom: 10px; }
-        .nav-menu { display: flex; gap: 10px; margin-bottom: 20px; background: #ccfbf1; padding: 10px; border-radius: 10px; overflow-x:auto;}
-        .nav-btn { flex: 1; padding: 10px; border: none; background: white; border-radius: 8px; cursor: pointer; color: #0f766e; font-weight: bold; white-space: nowrap;}
-        .nav-btn.active { background: #0d9488; color: white; }
-
-        .section { display: none; }
-        .section.active { display: block; animation: fadeIn 0.3s; }
-
-        .card { border: 1px solid #eee; padding: 15px; border-radius: 10px; margin-bottom: 10px; background: #fff; }
+        h1 { color: #0d9488; text-align: center; border-bottom: 2px solid #e0f2f1; padding-bottom: 10px; margin-top: 0; }
         
-        /* Table Styles */
+        /* Navigation Tabs */
+        .nav-menu { display: flex; gap: 10px; margin-bottom: 20px; background: #ccfbf1; padding: 10px; border-radius: 10px; overflow-x: auto; }
+        .nav-btn { flex: 1; padding: 12px; border: none; background: white; border-radius: 8px; cursor: pointer; color: #0f766e; font-weight: bold; font-size: 14px; white-space: nowrap; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .nav-btn.active { background: #0d9488; color: white; transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+
+        /* Filter Section */
+        .filter-section { background: #f0fdfa; padding: 15px; border-radius: 10px; border: 1px dashed #0d9488; margin-bottom: 20px; }
+        .pills { display: flex; gap: 8px; overflow-x: auto; padding: 5px 0; }
+        .pill { padding: 6px 14px; background: white; border: 1px solid #ddd; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 12px; font-weight: bold; color: #555; }
+        .pill.active { background: #0d9488; color: white; border-color: #0d9488; }
+
+        .section { display: none; animation: fadeIn 0.3s; }
+        .section.active { display: block; }
+
+        /* Tables & Cards */
+        .card { border: 1px solid #eee; padding: 15px; border-radius: 10px; margin-bottom: 10px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 10px; border-bottom: 1px solid #eee; text-align: center; font-size: 14px; }
-        th { background: #0d9488; color: white; position:sticky; top:0;}
+        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: center; font-size: 14px; }
+        th { background: #0d9488; color: white; position: sticky; top: 0; }
         tr:hover { background: #f9fafb; }
 
-        input, select, textarea { padding: 8px; border: 1px solid #ccc; border-radius: 5px; width: 100%; text-align: center; margin: 2px 0; }
-        .btn { padding: 10px; background: #0d9488; color: white; border: none; border-radius: 5px; cursor: pointer; width: 100%; margin-top:5px;}
+        /* Inputs & Buttons */
+        input, select, textarea { padding: 10px; border: 1px solid #ccc; border-radius: 6px; width: 100%; text-align: center; margin: 2px 0; outline: none; }
+        .v-in { font-weight: bold; border-color: #b2dfdb; background: white; }
+        select.v-in { font-size: 13px; height: 38px; }
+        
+        .btn { padding: 10px 20px; background: #0d9488; color: white; border: none; border-radius: 6px; cursor: pointer; margin-top: 5px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .btn:hover { background: #0f766e; }
         .btn-red { background: #ef4444; }
         .btn-orange { background: #f97316; }
+        .btn-save { position: fixed; bottom: 20px; right: 20px; left: 20px; width: calc(100% - 40px); z-index: 100; max-width: 1060px; margin: 0 auto; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 
-        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; }
-        .modal-content { background:white; margin:5% auto; padding:20px; width:90%; max-width:500px; border-radius:10px; }
+        /* Login & Modals */
+        #loginOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background: #004d40; z-index: 5000; display: flex; align-items: center; justify-content: center; }
+        .login-box { background: white; padding: 30px; border-radius: 10px; width: 300px; text-align: center; }
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; backdrop-filter: blur(2px); }
+        .modal-content { background:white; margin:5% auto; padding:25px; width:90%; max-width:500px; border-radius:15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .drop-zone { border: 2px dashed #ccc; padding: 20px; border-radius: 10px; background: #fafafa; cursor: pointer; display:block; margin:10px 0; text-align: center;}
 
-        @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+        @keyframes fadeIn { from {opacity:0; transform: translateY(5px);} to {opacity:1; transform: translateY(0);} }
+        #toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 24px; border-radius: 30px; opacity: 0; pointer-events: none; z-index: 2000; transition: 0.3s; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Admin Dashboard</h1>
+<!-- LOGIN -->
+<div id="loginOverlay">
+    <div class="login-box">
+        <h2 style="color:#00796b; margin-top:0;">Admin Login</h2>
+        <input type="password" id="adminPass" placeholder="Password">
+        <button onclick="checkLogin()" class="btn">Login</button>
+    </div>
+</div>
+
+<div class="container" id="mainContainer" style="display:none;">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h1 style="border:none; margin:0;">Admin Dashboard</h1>
+        <button onclick="location.reload()" style="background:none; border:none; color:#ef4444; font-weight:bold; cursor:pointer;">🔒 Logout</button>
+    </div>
     
+    <!-- MAIN TABS -->
     <div class="nav-menu">
-        <button class="nav-btn active" onclick="switchTab('students')">👨‍🎓 Students</button>
-        <button class="nav-btn" onclick="switchTab('marks')">📊 Marks</button>
-        <button class="nav-btn" onclick="switchTab('notice')">📢 Notice</button>
-        <button class="nav-btn" onclick="location.reload()">🔒 Logout</button>
+        <button class="nav-btn active" onclick="switchTab('db')">📁 ދަރިވަރުންގެ ޑޭޓާބޭސް</button>
+        <button class="nav-btn" onclick="switchTab('marks')">📝 މަސައްކަތް & ޓެސްޓް</button>
+        <button class="nav-btn" onclick="switchTab('notice')">📢 ނޯޓިސް ބޯޑު</button>
     </div>
 
-    <!-- 1. STUDENT MANAGER -->
-    <div id="tab-students" class="section active">
+    <!-- GLOBAL FILTER BAR (Applies to both sections) -->
+    <div class="filter-section">
+        <small style="color:#0f766e; font-weight:bold;">ފިލްޓަރ (ގްރޭޑް / ކްލާސް):</small>
+        <div id="gradeFilter" class="pills" style="margin-bottom:5px;"></div>
+        <div id="classFilter" class="pills"></div>
+    </div>
+
+    <!-- SECTION 1: STUDENT DATABASE -->
+    <div id="tab-db" class="section active">
         <div style="display:flex; gap:10px; margin-bottom:15px;">
-            <button class="btn" style="flex:1" onclick="document.getElementById('modalAdd').style.display='block'">+ New Student</button>
-            <button class="btn btn-orange" style="flex:1" onclick="document.getElementById('modalBulk').style.display='block'">📗 Excel Import</button>
+            <button class="btn" style="flex:1; background:#43a047;" onclick="openStudentModal()">+ ކުއްޖަކު އިތުރުކުރަން</button>
+            <button class="btn btn-orange" style="flex:1;" onclick="openBulkModal()">📗 Excel އިމްޕޯޓް</button>
         </div>
-        <div style="overflow-x:auto;">
-            <table id="studentTable">
-                <thead><tr><th>Index</th><th>Name</th><th>Grade</th><th>Password</th><th>Action</th></tr></thead>
-                <tbody><tr><td colspan="5">Loading...</td></tr></tbody>
-            </table>
+        
+        <div class="card" style="padding:0; overflow:hidden;">
+            <div style="overflow-x:auto;">
+                <table id="studentTable">
+                    <thead><tr><th>Index</th><th>Name</th><th>Grade</th><th>Password</th><th>Action</th></tr></thead>
+                    <tbody><tr><td colspan="5">Loading...</td></tr></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <!-- 2. MARKS ENTRY -->
+    <!-- SECTION 2: MARKS & WORK -->
     <div id="tab-marks" class="section">
+        <!-- Controls -->
         <div class="card" style="background:#f0fdfa;">
-            <label>Select Item:</label>
-            <select id="markItemSelect" onchange="renderMarksTable()">
-                <option value="Week1">Week 1</option>
-                <option value="Week2">Week 2</option>
-                <option value="UnitTest1">Unit Test 1</option>
-                <option value="CA1">CA 1</option>
-            </select>
+            <div class="pills" style="margin-bottom:10px; justify-content:center;">
+                <div class="pill active" id="m_work" onclick="setMode('work')">Weekly Work</div>
+                <div class="pill" id="m_test" onclick="setMode('test')">Unit Tests</div>
+                <div class="pill" id="m_ca" onclick="setMode('ca')">CA / Exams</div>
+            </div>
+            
+            <div style="display:flex; gap:10px; align-items:flex-end;">
+                <div style="flex:1;">
+                    <small>Select Item:</small>
+                    <div style="display:flex; gap:5px;">
+                        <select id="itemSelect" onchange="renderMarksTable()"></select>
+                        <button class="btn" style="width:auto; margin:0; padding:0 12px; background:#00695c;" onclick="openResultModal()" title="Upload Excel Marks">📤</button>
+                    </div>
+                </div>
+                <div id="totalDiv" style="width:100px; display:none;">
+                    <small>Total Marks:</small>
+                    <div style="display:flex; gap:2px;">
+                        <input type="number" id="totalMarks" value="20" style="padding:8px;">
+                        <button onclick="saveTotalMark()" style="width:auto; padding:0 10px; margin:0;" title="Save Total">💾</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div style="overflow-x:auto;">
-            <table id="marksTable">
-                <thead><tr><th>Index</th><th>Name</th><th>Mark / Status</th><th>Save</th></tr></thead>
-                <tbody id="marksBody"></tbody>
-            </table>
+
+        <!-- Marks Table -->
+        <div class="card" style="padding:0; overflow:hidden;">
+            <div style="overflow-x:auto;">
+                <table id="marksTable">
+                    <thead><tr><th>Index</th><th>Name</th><th>Mark / Status</th><th>Save</th></tr></thead>
+                    <tbody id="marksBody"></tbody>
+                </table>
+            </div>
         </div>
+        
+        <!-- Floating Save Button -->
+        <button class="btn btn-save" id="sBtn" onclick="saveTeacherData()">💾 Save All Changes</button>
+        <div style="height:60px;"></div>
     </div>
 
-    <!-- 3. NOTICE MANAGER -->
+    <!-- SECTION 3: NOTICE -->
     <div id="tab-notice" class="section">
         <div class="card">
             <h3>Update Notice Board</h3>
-            <textarea id="adminNoticeText" rows="5" placeholder="Type notice here..."></textarea>
+            <textarea id="adminNoticeText" rows="6" placeholder="Write notice here..."></textarea>
             <button class="btn" onclick="saveNotice()">Publish Notice</button>
+        </div>
+        <div class="card">
+            <h3>Manage Materials (Files)</h3>
+            <div style="display:flex; gap:5px;">
+                <input id="matTitle" placeholder="Title">
+                <input id="matLink" placeholder="Link">
+            </div>
+            <button class="btn" onclick="addMaterial()">+ Add Material</button>
+            <hr>
+            <div id="matList"></div>
         </div>
     </div>
 
 </div>
 
-<!-- MODAL: ADD STUDENT -->
+<!-- MODALS -->
+<!-- 1. Add Student -->
 <div id="modalAdd" class="modal">
     <div class="modal-content">
         <h3>Add Student</h3>
-        <input id="newIdx" type="number" placeholder="Index">
+        <input type="number" id="newIdx" placeholder="Index">
         <input id="newNam" placeholder="Name">
-        <input id="newGrd" placeholder="Grade">
-        <input id="newCls" placeholder="Class">
+        <div style="display:flex; gap:5px;">
+            <input id="newGrd" placeholder="Grade">
+            <input id="newCls" placeholder="Class">
+        </div>
         <input id="newPwd" placeholder="Password (Default 1234)" value="1234">
-        <button class="btn" onclick="addSingleStudent()">Add</button>
-        <button class="btn btn-red" onclick="this.parentElement.parentElement.style.display='none'">Cancel</button>
+        <button class="btn" onclick="addSingleStudent()">Add Student</button>
+        <button class="btn btn-red" onclick="closeModal('modalAdd')">Cancel</button>
     </div>
 </div>
 
-<!-- MODAL: BULK IMPORT (FIXED) -->
-<div id="modalBulk" class="modal">
+<!-- 2. Edit Student -->
+<div id="modalEdit" class="modal">
     <div class="modal-content">
-        <h3>Excel Import</h3>
-        <p style="font-size:12px; color:#666;">Columns: <b>Index | Name | Grade | Class</b></p>
-        <input type="file" id="excelFile" accept=".xlsx,.xls">
-        <div id="bulkPreview" style="max-height:150px; overflow:auto; margin:10px 0; border:1px solid #eee;"></div>
-        <button class="btn" onclick="processBulk()">Upload</button>
-        <button class="btn btn-red" onclick="this.parentElement.parentElement.style.display='none'">Cancel</button>
+        <h3>Edit Student</h3>
+        <input type="hidden" id="editId">
+        <input id="editIdx" placeholder="Index">
+        <input id="editNam" placeholder="Name">
+        <input id="editPwd" placeholder="Password">
+        <div style="display:flex; gap:5px;">
+            <input id="editGrd" placeholder="Grade">
+            <input id="editCls" placeholder="Class">
+        </div>
+        <button class="btn" onclick="saveEditStudent()">Update</button>
+        <hr>
+        <button class="btn btn-red" onclick="delStudent()">Delete Student</button>
+        <button class="btn" style="background:#ccc; color:#333;" onclick="closeModal('modalEdit')">Close</button>
     </div>
 </div>
+
+<!-- 3. Excel Import -->
+<div id="modalBulk" class="modal">
+    <div class="modal-content">
+        <h3>Import Students (Excel)</h3>
+        <p style="font-size:12px; color:#666;">Columns: <b>Index | Name | Grade | Class</b></p>
+        <label class="drop-zone">
+            📂 Click to Upload Excel
+            <input type="file" id="excelFile" accept=".xlsx,.xls" style="display:none;">
+        </label>
+        <div id="bulkPreview" style="max-height:100px; overflow:auto; font-size:12px; margin-bottom:10px;"></div>
+        <button class="btn" onclick="processBulk()">Confirm Upload</button>
+        <button class="btn btn-red" onclick="closeModal('modalBulk')">Cancel</button>
+    </div>
+</div>
+
+<!-- 4. Result Import -->
+<div id="modalResult" class="modal">
+    <div class="modal-content">
+        <h3>Import Marks (Excel)</h3>
+        <p style="font-size:12px; color:#00695c; font-weight:bold;" id="resTarget"></p>
+        <p style="font-size:12px; color:#666;">Columns: <b>Index | Mark</b></p>
+        <label class="drop-zone">
+            📊 Click to Upload Excel
+            <input type="file" id="resFile" accept=".xlsx,.xls" style="display:none;">
+        </label>
+        <div id="resPreview" style="max-height:100px; overflow:auto; font-size:12px; margin-bottom:10px;"></div>
+        <button class="btn" onclick="processResultBulk()">Upload Marks</button>
+        <button class="btn btn-red" onclick="closeModal('modalResult')">Cancel</button>
+    </div>
+</div>
+
+<div id="toast"></div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
+    // --- YOUR FIREBASE CONFIG ---
     const firebaseConfig = {
       apiKey: "AIzaSyDSEHqUQIegVjhWKpRgpJybdPaVDVroVos",
   authDomain: "islam-portal-muthamin.firebaseapp.com",
@@ -135,145 +253,258 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    
     let students = [];
+    let materials = [];
+    let examConfig = {};
+    let mode = 'work';
+    let selGrade = 'All';
+    let selClass = 'All';
     let parsedData = [];
+    let parsedResData = [];
 
-    // INIT
-    fetchStudents();
+    // --- LOGIN ---
+    window.checkLogin = () => {
+        if(document.getElementById('adminPass').value === "123") {
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('mainContainer').style.display = 'block';
+            fetchData();
+        } else alert("Wrong Password");
+    }
 
-    // NAVIGATION
+    // --- DATA ---
+    async function fetchData() {
+        // Show loading
+        try {
+            const sSnap = await getDocs(collection(db, "students"));
+            students = []; sSnap.forEach(d => students.push({id: d.id, ...d.data()}));
+            
+            const mSnap = await getDocs(collection(db, "materials"));
+            materials = []; mSnap.forEach(d => materials.push({id: d.id, ...d.data()}));
+            
+            try { const c = await getDoc(doc(db, "settings", "examConfig")); if(c.exists()) examConfig = c.data(); } catch(e){}
+            
+            updateFilters(); // Setup Global Filters
+            
+            // Refresh current active view
+            if(document.getElementById('tab-db').classList.contains('active')) renderStudentTable();
+            if(document.getElementById('tab-marks').classList.contains('active')) renderMarksTable();
+            renderMaterials();
+
+        } catch(e) { console.error(e); alert("Connection Error"); }
+    }
+
+    // --- NAVIGATION & TABS ---
     window.switchTab = (id) => {
         document.querySelectorAll('.section').forEach(d => d.classList.remove('active'));
         document.getElementById('tab-'+id).classList.add('active');
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         event.target.classList.add('active');
+        
+        if(id === 'db') renderStudentTable();
         if(id === 'marks') renderMarksTable();
     };
 
-    // FETCH LOGIC
-    async function fetchStudents() {
-        const snap = await getDocs(collection(db, "students"));
-        students = [];
-        snap.forEach(d => students.push({id: d.id, ...d.data()}));
-        renderStudentTable();
+    // --- GLOBAL FILTERS ---
+    window.setGradeFilter = (g) => { selGrade = g; selClass = 'All'; updateFilters(); refreshActiveView(); };
+    window.setClassFilter = (c) => { selClass = c; updateFilters(); refreshActiveView(); };
+
+    function refreshActiveView() {
+        if(document.getElementById('tab-db').classList.contains('active')) renderStudentTable();
+        else renderMarksTable();
     }
 
-    // --- STUDENT MANAGER ---
-    function renderStudentTable() {
-        const tbody = document.querySelector('#studentTable tbody');
-        tbody.innerHTML = students.map(s => `
+    function updateFilters() {
+        const gs = [...new Set(students.map(s => s.grade))].filter(Boolean).sort();
+        document.getElementById('gradeFilter').innerHTML = `<div class="pill ${selGrade=='All'?'active':''}" onclick="setGradeFilter('All')">All</div>` + 
+            gs.map(g => `<div class="pill ${selGrade==g?'active':''}" onclick="setGradeFilter('${g}')">Gr ${g}</div>`).join('');
+        
+        let cHtml = '';
+        if(selGrade !== 'All') {
+            const cs = [...new Set(students.filter(s => s.grade == selGrade).map(s => s.class))].filter(Boolean).sort();
+            cHtml = `<div class="pill ${selClass=='All'?'active':''}" onclick="setClassFilter('All')">All</div>` +
+                cs.map(c => `<div class="pill ${selClass==c?'active':''}" onclick="setClassFilter('${c}')">${c}</div>`).join('');
+        }
+        document.getElementById('classFilter').innerHTML = cHtml;
+    }
+
+    function getFilteredStudents() {
+        let list = students;
+        if(selGrade !== 'All') list = list.filter(s => String(s.grade) === String(selGrade));
+        if(selClass !== 'All') list = list.filter(s => String(s.class) === String(selClass));
+        return list.sort((a,b) => (parseInt(a.index)||0) - (parseInt(b.index)||0));
+    }
+
+    // --- SECTION 1: STUDENT DATABASE ---
+    window.renderStudentTable = () => {
+        const list = getFilteredStudents();
+        document.querySelector('#studentTable tbody').innerHTML = list.length ? list.map(s => `
             <tr>
                 <td>${s.index}</td>
                 <td>${s.name}</td>
                 <td>${s.grade}${s.class}</td>
-                <td>${s.password || '1234'}</td>
-                <td><button style="background:red; color:white; border:none; border-radius:4px; cursor:pointer;" onclick="delStudent('${s.id}')">X</button></td>
+                <td>${s.password||'1234'}</td>
+                <td><button class="btn btn-orange" style="padding:5px 10px; width:auto; margin:0;" onclick="openEdit('${s.id}')">✏️</button></td>
             </tr>
+        `).join('') : '<tr><td colspan="5">No students found</td></tr>';
+    };
+
+    window.openStudentModal = () => document.getElementById('modalAdd').style.display='block';
+    window.addSingleStudent = async () => {
+        let idx = document.getElementById('newIdx').value;
+        if(students.some(s=>String(s.index)==String(idx))) return alert("Index exists");
+        await setDoc(doc(collection(db,"students")), {
+            index:idx, name:document.getElementById('newNam').value,
+            grade:document.getElementById('newGrd').value, class:document.getElementById('newCls').value,
+            password:document.getElementById('newPwd').value || "1234"
+        });
+        closeModal('modalAdd'); fetchData();
+    };
+
+    window.openEdit = (id) => {
+        let s = students.find(x => x.id === id);
+        if(s) {
+            document.getElementById('editId').value = s.id;
+            document.getElementById('editIdx').value = s.index;
+            document.getElementById('editNam').value = s.name;
+            document.getElementById('editPwd').value = s.password || "1234";
+            document.getElementById('editGrd').value = s.grade;
+            document.getElementById('editCls').value = s.class;
+            document.getElementById('modalEdit').style.display='block';
+        }
+    };
+    window.saveEditStudent = async () => {
+        let id = document.getElementById('editId').value;
+        await updateDoc(doc(db,"students",id), {
+            index:document.getElementById('editIdx').value, name:document.getElementById('editNam').value,
+            password:document.getElementById('editPwd').value, grade:document.getElementById('editGrd').value,
+            class:document.getElementById('editCls').value
+        });
+        closeModal('modalEdit'); fetchData();
+    };
+    window.delStudent = async () => {
+        if(confirm("Delete?")) { await deleteDoc(doc(db,"students",document.getElementById('editId').value)); closeModal('modalEdit'); fetchData(); }
+    };
+
+    // --- SECTION 2: MARKS ---
+    window.setMode = (m) => {
+        mode = m;
+        document.querySelectorAll('.card .pill').forEach(p => p.classList.remove('active'));
+        document.getElementById('m_'+m).classList.add('active');
+        let sel = document.getElementById('itemSelect'); sel.innerHTML = "";
+        
+        if(m=='work') {
+            for(let i=1;i<=45;i++) sel.innerHTML += `<option value="Week${i}">Week ${i}</option>`;
+            document.getElementById('totalDiv').style.display = 'none';
+        } else {
+            document.getElementById('totalDiv').style.display = 'flex';
+            let p = m=='test' ? 'UnitTest' : 'CA'; let c = m=='test' ? 10 : 4;
+            for(let i=1;i<=c;i++) sel.innerHTML += `<option value="${p}${i}">${m=='test'?'Unit Test':'CA'} ${i}</option>`;
+        }
+        renderMarksTable();
+    };
+
+    window.renderMarksTable = () => {
+        const item = document.getElementById('itemSelect').value;
+        let def = mode === 'test' ? 20 : 100;
+        let tot = examConfig[item] ? parseInt(examConfig[item]) : def;
+        if(mode !== 'work') document.getElementById('totalMarks').value = tot;
+
+        const list = getFilteredStudents();
+        document.getElementById('marksBody').innerHTML = list.length ? list.map(s => {
+            let val = s[item] || "";
+            let input = mode === 'work' ? 
+                `<select class="v-in" data-id="${s.id}" data-orig="${val}"><option value="">-</option><option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމައެއް ނުވޭ" ${val=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމަ ނުވޭ</option></select>` :
+                `<input type="number" class="v-in" data-id="${s.id}" data-orig="${val}" value="${val}" placeholder="0">`;
+            
+            return `<tr>
+                <td>${s.index}</td><td>${s.name}</td>
+                <td>${input}</td>
+                <td><button class="btn" style="width:auto; padding:5px; margin:0;" onclick="saveSingle('${s.id}')">💾</button></td>
+            </tr>`;
+        }).join('') : '<tr><td colspan="4">No students</td></tr>';
+    };
+
+    window.saveSingle = async (id) => {
+        const item = document.getElementById('itemSelect').value;
+        const val = document.querySelector(`.v-in[data-id="${id}"]`).value;
+        await updateDoc(doc(db,"students",id), {[item]: val});
+        showToast("Saved");
+    };
+
+    window.saveTeacherData = async () => {
+        const item = document.getElementById('itemSelect').value;
+        const inputs = document.querySelectorAll('.v-in');
+        let promises = [];
+        document.getElementById('sBtn').innerText = "Saving...";
+        inputs.forEach(inp => {
+            if(inp.value !== inp.dataset.orig) promises.push(updateDoc(doc(db,"students",inp.dataset.id), {[item]:inp.value}));
+        });
+        await Promise.all(promises);
+        document.getElementById('sBtn').innerText = "💾 Save All Changes";
+        fetchData(); showToast("Bulk Saved!");
+    };
+
+    window.saveTotalMark = async () => {
+        const item = document.getElementById('itemSelect').value;
+        const val = document.getElementById('totalMarks').value;
+        await setDoc(doc(db, "settings", "examConfig"), { [item]: val }, { merge: true });
+        examConfig[item] = val; showToast("Total Saved");
+    };
+
+    // --- NOTICE & MATERIALS ---
+    window.saveNotice = async () => {
+        await setDoc(doc(db, "settings", "notice"), { text: document.getElementById('adminNoticeText').value });
+        showToast("Notice Published");
+    };
+    window.addMaterial = async () => {
+        await addDoc(collection(db,"materials"), {title:document.getElementById('matTitle').value, link:document.getElementById('matLink').value});
+        fetchData();
+    };
+    function renderMaterials() {
+        document.getElementById('matList').innerHTML = materials.map(m => `
+            <div class="mat-item"><span>${m.title}</span><button class="btn btn-red" style="width:auto; padding:5px;" onclick="delMat('${m.id}')">Del</button></div>
         `).join('');
     }
+    window.delMat = async (id) => { if(confirm("Delete?")) { await deleteDoc(doc(db,"materials",id)); fetchData(); } };
 
-    window.addSingleStudent = async () => {
-        const idx = document.getElementById('newIdx').value;
-        const name = document.getElementById('newNam').value;
-        if(!idx || !name) return alert("Required fields missing");
-
-        // Check Duplicate
-        if(students.some(s => String(s.index) === String(idx))) return alert("Index exists!");
-
-        await setDoc(doc(collection(db, "students")), {
-            index: idx, name: name, 
-            grade: document.getElementById('newGrd').value,
-            class: document.getElementById('newCls').value,
-            password: document.getElementById('newPwd').value
-        });
-        alert("Added");
-        document.getElementById('modalAdd').style.display='none';
-        fetchStudents();
+    // --- EXCEL LOGIC ---
+    window.openBulkModal = () => document.getElementById('modalBulk').style.display='block';
+    window.openResultModal = () => {
+        document.getElementById('resTarget').innerText = "Target Item: " + document.getElementById('itemSelect').value;
+        document.getElementById('modalResult').style.display='block';
     };
+    window.closeModal = (id) => document.getElementById(id).style.display='none';
 
-    window.delStudent = async (id) => {
-        if(confirm("Delete student?")) {
-            await deleteDoc(doc(db, "students", id));
-            fetchStudents();
-        }
-    };
-
-    // --- BULK UPLOAD (FIXED DATA LOSS ISSUE) ---
-    document.getElementById('excelFile').addEventListener('change', (e) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const data = new Uint8Array(e.target.result);
-            const workbook = XLSX.read(data, {type: 'array'});
-            const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {header: 1});
-            
-            parsedData = [];
-            json.forEach((row, i) => {
-                // Ensure row has index and name, skip header if it says 'Index'
-                if(row.length >= 2 && row[0] !== 'Index') {
-                    parsedData.push({
-                        index: String(row[0]), 
-                        name: String(row[1]), 
-                        grade: String(row[2]||''), 
-                        class: String(row[3]||'')
-                    });
-                }
-            });
-            document.getElementById('bulkPreview').innerText = `Found ${parsedData.length} students. Ready to upload.`;
-        };
-        reader.readAsArrayBuffer(e.target.files[0]);
+    // Student Excel
+    document.getElementById('excelFile').addEventListener('change', e => {
+        const r=new FileReader(); r.onload=e=>{
+            const j=XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(e.target.result),{type:'array'}).Sheets[XLSX.read(new Uint8Array(e.target.result),{type:'array'}).SheetNames[0]],{header:1});
+            parsedData=[]; let h='<table>'; j.forEach((r,i)=>{ if(r.length>=2 && (i>0||!isNaN(r[0]))) { parsedData.push({index:r[0],name:r[1],grade:r[2],class:r[3]}); h+=`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`; }});
+            document.getElementById('bulkPreview').innerHTML=h+"</table>";
+        }; r.readAsArrayBuffer(e.target.files[0]);
     });
-
     window.processBulk = async () => {
-        if(parsedData.length === 0) return alert("No data");
-        let count = 0;
-        
-        for(let s of parsedData) {
-            // CRITICAL FIX: Check if index exists in current list
-            const exists = students.some(cur => String(cur.index) === String(s.index));
-            
-            if(!exists) {
-                // Only ADD if not exists. Do NOT overwrite.
-                await setDoc(doc(collection(db, "students")), {
-                    index: s.index, name: s.name, grade: s.grade, class: s.class, password: "1234"
-                });
-                count++;
-            }
-        }
-        alert(`Uploaded ${count} new students. (Duplicates skipped)`);
-        document.getElementById('modalBulk').style.display='none';
-        fetchStudents();
+        let c=0; for(let s of parsedData){ if(!students.some(e=>String(e.index)==String(s.index))) { await setDoc(doc(collection(db,"students")),{index:String(s.index),name:String(s.name),grade:String(s.grade||''),class:String(s.class||''),password:"1234"}); c++; }}
+        closeModal('modalBulk'); fetchData(); showToast(`Added ${c} students`);
     };
 
-    // --- MARKS MANAGER ---
-    window.renderMarksTable = () => {
-        const item = document.getElementById('markItemSelect').value;
-        const tbody = document.getElementById('marksBody');
-        tbody.innerHTML = students.map(s => `
-            <tr>
-                <td>${s.index}</td>
-                <td>${s.name}</td>
-                <td><input class="mark-in" id="m_${s.id}" value="${s[item] || ''}" placeholder="-"></td>
-                <td><button onclick="saveMark('${s.id}')">💾</button></td>
-            </tr>
-        `).join('');
+    // Marks Excel
+    document.getElementById('resFile').addEventListener('change', e => {
+        const r=new FileReader(); r.onload=e=>{
+            const j=XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(e.target.result),{type:'array'}).Sheets[XLSX.read(new Uint8Array(e.target.result),{type:'array'}).SheetNames[0]],{header:1});
+            parsedResData=[]; let h='<table>'; j.forEach((r,i)=>{ if(r.length>=2 && (i>0||!isNaN(r[0]))) { parsedResData.push({index:r[0],mark:r[1]}); h+=`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`; }});
+            document.getElementById('resPreview').innerHTML=h+"</table>";
+        }; r.readAsArrayBuffer(e.target.files[0]);
+    });
+    window.processResultBulk = async () => {
+        let item=document.getElementById('itemSelect').value; let c=0;
+        for(let r of parsedResData){ const s=students.find(x=>String(x.index)==String(r.index)); if(s){ await updateDoc(doc(db,"students",s.id),{[item]:String(r.mark)}); c++; }}
+        closeModal('modalResult'); fetchData(); showToast(`Updated ${c} records`);
     };
 
-    window.saveMark = async (id) => {
-        const item = document.getElementById('markItemSelect').value;
-        const val = document.getElementById(`m_${id}`).value;
-        await updateDoc(doc(db, "students", id), { [item]: val });
-        // Optional: Auto badge logic here (e.g., if val > 90 add badge)
-    };
-
-    // --- NOTICE MANAGER ---
-    window.saveNotice = async () => {
-        const txt = document.getElementById('adminNoticeText').value;
-        await setDoc(doc(db, "settings", "notice"), { text: txt });
-        alert("Notice Updated");
-    };
-
-    // Make functions global
-    window.delStudent = delStudent; window.saveMark = saveMark;
+    function showToast(m){let t=document.getElementById('toast');t.innerText=m;t.style.opacity=1;t.style.bottom='80px';setTimeout(()=>t.style.opacity=0,3000);}
+    window.delMat = delMat; // Global
 </script>
 </body>
 </html>
