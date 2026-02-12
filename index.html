@@ -45,6 +45,26 @@
         .modal-content { background-color: #fff; margin: 10% auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 500px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); border-top: 5px solid #10b981; }
         .mat-link { display: flex; justify-content: space-between; align-items: center; padding: 15px; margin: 10px 0; background: #fff; color: #00695c; text-decoration: none; border-radius: 8px; font-weight: bold; border: 1px solid #b2dfdb; transition: 0.2s; }
         #toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #1f2937; color: white; padding: 12px 24px; border-radius: 50px; font-size: 14px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 2000; }
+
+        /* Upload Modal Image Fix */
+#imgPreview {
+    max-width: 100%;       /* ފުޅާމިން ކޮންޓްރޯލް ކުރަން */
+    max-height: 250px;     /* އުސްމިން ވަކިވަރަކަށްވުރެ ބޮޑުވިޔަ ނުދިނުމަށް */
+    width: auto;           /* ރޭޝިއޯ ހިފެހެއްޓުމަށް */
+    object-fit: contain;   /* ފޮޓޯ ނުފުއްޕާ ރީތިކޮށް ދެއްކުމަށް */
+    display: none;         /* ފުރަތަމަ ފޮރުވާފައި ބެހެއްޓުމަށް */
+    margin: 10px auto;     /* މެދަށް ގެނައުމަށް */
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+/* Modal Content Scroll Fix */
+.modal-content {
+    max-height: 80vh;      /* ސްކްރީންގެ 80% އަށްވުރެ ބޮޑު ނުވާނެ */
+    overflow-y: auto;      /* ބޮޑުވެއްޖެނަމަ ސްކްރޯލް ކުރެވޭނެ */
+    display: flex;
+    flex-direction: column;
+}
     </style>
 </head>
 <body>
