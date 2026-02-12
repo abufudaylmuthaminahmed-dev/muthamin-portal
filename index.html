@@ -9,7 +9,19 @@
         * { font-family: "Faruma", sans-serif; box-sizing: border-box; }
         body { background-color: #ecfdf5; margin: 0; padding: 10px; text-align: right; color: #1f2937; }
         .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); min-height: 85vh; border-top: 5px solid #10b981; }
-        h1 { color: #059669; text-align: center; margin-bottom: 30px; font-size: 1.8rem; border-bottom: 2px dashed #a7f3d0; padding-bottom: 15px; }
+        h1 { color: #059669; text-align: center; margin-bottom: 20px; font-size: 1.8rem; border-bottom: 2px dashed #a7f3d0; padding-bottom: 15px; }
+        
+        /* NOTICE BOARD */
+        .notice-board {
+            background-color: #fffbeb; 
+            border: 2px solid #fcd34d;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            display: none; /* Hidden until loaded */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .notice-title { font-weight: bold; color: #d97706; margin-bottom: 5px; font-size: 16px; display: flex; align-items: center; gap: 5px; }
         
         /* UI ELEMENTS */
         .card { background: #fff; padding: 25px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
@@ -33,7 +45,12 @@
         .result-item.incomplete { border-right-color: #ef4444; background: #fef2f2; }
         .score-circle { width: 40px; height: 40px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; }
         .grade-badge { padding: 4px 10px; border-radius: 6px; color: white; font-size: 12px; font-weight: bold; }
-        .g-A-star { background: #f59e0b; color:black; } .g-A { background: #10b981; } .g-B { background: #3b82f6; } .g-C { background: #f97316; } .g-Fail { background: #ef4444; }
+        
+        .g-A-star { background: #f59e0b; color:black; } 
+        .g-A { background: #10b981; color:white; } 
+        .g-B { background: #3b82f6; color:white; } 
+        .g-C { background: #f97316; color:white; } 
+        .g-Fail { background: #ef4444; color:white; }
         
         /* MODALS */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
@@ -46,6 +63,12 @@
 
 <div class="container">
     <h1>🌙 އިސްލާމް ޕޯޓަލް</h1>
+
+    <!-- NOTICE BOARD (Visible to all) -->
+    <div id="noticeBoard" class="notice-board">
+        <div class="notice-title">📢 އެންގުން</div>
+        <p id="noticeText" style="margin:0; font-size:14px; color:#4b5563; line-height:1.6;">Loading notice...</p>
+    </div>
 
     <!-- 1. LOGIN SECTION -->
     <div id="loginSection">
@@ -128,11 +151,27 @@
     async function fetchData() {
         if(!db) return;
         try {
+            // Get Students
             const sSnap = await getDocs(collection(db, "students"));
-            students = []; sSnap.forEach((doc) => students.push({ id: doc.id, ...doc.data() }));
+            students = [];
+            sSnap.forEach((doc) => students.push({ id: doc.id, ...doc.data() }));
+            
+            // Get Materials
             const mSnap = await getDocs(collection(db, "materials"));
-            materials = []; mSnap.forEach((doc) => materials.push({ id: doc.id, ...doc.data() }));
-            try { const confSnap = await getDoc(doc(db, "settings", "examConfig")); if(confSnap.exists()) examConfig = confSnap.data(); } catch(e) {}
+            materials = [];
+            mSnap.forEach((doc) => materials.push({ id: doc.id, ...doc.data() }));
+
+            // Get Settings (Grades & Notice)
+            const examSnap = await getDoc(doc(db, "settings", "examConfig"));
+            if(examSnap.exists()) examConfig = examSnap.data();
+
+            // GET NOTICE
+            const noticeSnap = await getDoc(doc(db, "settings", "notice"));
+            if(noticeSnap.exists() && noticeSnap.data().text) {
+                document.getElementById('noticeText').innerText = noticeSnap.data().text;
+                document.getElementById('noticeBoard').style.display = 'block';
+            }
+
         } catch(e) { console.error(e); }
     }
 
@@ -153,7 +192,7 @@
             
             if(s) {
                 // SCENARIO 1: FIRST TIME (Password is '1234' OR Empty)
-                // We allow them to enter if they typed nothing OR typed '1234'
+                // Allow login with empty password OR '1234'
                 if ( (s.password === "1234" || !s.password) && (pass === "" || pass === "1234") ) {
                     currentStudent = s;
                     loadDashboard(s);
@@ -246,7 +285,7 @@
         document.getElementById('pwdModal').style.display = "block";
         document.getElementById('pwdModalMsg').innerText = "އާ ޕާސްވޯޑެއް ޖައްސަވާ";
         document.getElementById('pwdModalMsg').style.color = "#666";
-        document.getElementById('btnClosePwd').style.display = "block"; // Show cancel for normal change
+        document.getElementById('btnClosePwd').style.display = "block"; 
     };
     
     window.saveNewPassword = async () => {
@@ -261,9 +300,7 @@
             await updateDoc(doc(db, "students", currentStudent.id), { password: newP });
             showToast("✅ Password Updated!");
             document.getElementById('pwdModal').style.display = 'none';
-            // Update local object
             currentStudent.password = newP;
-            // Update global list
             const idx = students.findIndex(s => s.id === currentStudent.id);
             if(idx !== -1) students[idx].password = newP;
         } catch(e) { console.error(e); alert("Error"); }
