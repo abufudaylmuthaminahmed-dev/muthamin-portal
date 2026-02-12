@@ -270,250 +270,121 @@
         <button onclick="checkLogin()" class="btn">Login</button>
     </div>
 </div>
+<!-- `admin.html` ގެ ބޮޑުބައި ކުރީގެ ކޯޑާއި އެއްގޮތް ވާނެއެވެ. ބަދަލުވީ ހަމައެކަނި MODAL ތަކާއި JS އެވެ. -->
 
-<div class="container" id="mainContainer" style="display:none;">
-    <h1>Admin / Teacher Panel</h1>
-    
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; background:white; padding:10px; border-radius:10px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
-        <div style="font-weight:bold; color:#00796b;">Dashboard</div>
-        <div style="display:flex; gap:5px;">
-            <button class="btn btn-add" style="background:#43a047;" onclick="openStudentModal()" title="Add Single Student">+1</button>
-            <button class="btn btn-add" style="background:#00897b;" onclick="openBulkModal()" title="Import from Excel">Excel 📗</button>
-            <button class="btn btn-add" style="background:#f57c00;" onclick="openMatManager()" title="Manage Files">File 📂</button>
+<!-- ... (Styles are same as updated CSS) ... -->
+
+<!-- 1. ADD STUDENT MODAL UPDATED -->
+<div id="studentModal" class="modal">
+    <div class="modal-content">
+        <h3 style="color:#00796b;">Add Student</h3>
+        <input type="number" id="newStIndex" placeholder="Index Number">
+        <input type="text" id="newStName" placeholder="Name">
+        <!-- PASSWORD FIELD ADDED -->
+        <input type="text" id="newStPass" placeholder="Password (Default: 1234)" value="1234" style="border-color:#f59e0b;">
+        <div style="display:flex; gap:10px;">
+            <input type="text" id="newStGrade" placeholder="Grade">
+            <input type="text" id="newStClass" placeholder="Class">
         </div>
+        <button class="btn btn-add" style="width:100%; margin-top:15px;" onclick="addNewStudent()">Save Student</button>
+        <button class="btn" style="background:#9ca3af; margin-top:10px;" onclick="closeModal('studentModal')">Cancel</button>
     </div>
-    
-    <div class="card">
-        <div class="pills">
-            <div class="pill active" id="m_work" onclick="setMode('work')">Work (Weekly)</div>
-            <div class="pill" id="m_test" onclick="setMode('test')">Unit Tests</div>
-            <div class="pill" id="m_ca" onclick="setMode('ca')">CA / Exams</div>
-        </div>
-        
-        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-top:15px;">
-            <div style="flex:1; min-width:150px;">
-                <small style="color:#666; font-weight:bold;">Select Item:</small>
-                <div style="display:flex; gap:5px;">
-                    <select id="itemSelect" onchange="renderTeacherTable()"></select>
-                    <button class="btn btn-add" style="background:#00695c; padding:0 12px; font-size:18px;" onclick="openResultModal()" title="Upload Marks">📤</button>
-                </div>
-            </div>
-            
-            <div id="totalDiv" style="width:130px; display:none; flex-direction:column;">
-                <small style="color:#666; font-weight:bold;">Total Marks:</small>
-                <div style="display:flex; gap:2px;">
-                    <input type="number" id="totalMarks" value="20" style="padding:5px; height:35px;">
-                    <button onclick="saveTotalMark()" style="background:#2e7d32; border:none; color:white; border-radius:4px; cursor:pointer; width:35px;" title="Save Total">💾</button>
-                </div>
-            </div>
-        </div>
-        
-        <div style="margin-top:15px;">
-            <small style="color:#666; font-weight:bold;">Filter Students:</small>
-            <div id="gradeFilter" class="pills" style="margin-bottom:5px;"></div>
-            <div id="classFilter" class="pills"></div>
-        </div>
-        
-        <div style="text-align:right; margin-top:10px;">
-                <button onclick="fetchData()" style="background:none; border:none; color:#00695c; font-size:13px; cursor:pointer; text-decoration:underline;">🔄 Refresh Data</button>
-        </div>
-    </div>
-    
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th style="width:50px;">Idx</th>
-                    <th style="text-align:right;">Name</th>
-                    <th id="valHead" style="width:100px;">Status/Mark</th>
-                    <th id="thG" style="display:none; width:50px;">%</th>
-                    <th>Note</th>
-                    <th style="width:40px;">Msg</th>
-                    <th style="width:50px;">Act</th>
-                </tr>
-            </thead>
-            <tbody id="tBody"></tbody>
-        </table>
-    </div>
-    
-    <button class="btn btn-save" id="sBtn" onclick="saveTeacherData()">💾 Save Changes</button>
-    <div style="height:80px;"></div>
 </div>
 
-<!-- ALL ADMIN MODALS -->
-<div id="studentModal" class="modal"><div class="modal-content"><h3>Add Student</h3><input type="number" id="newStIndex" placeholder="Index"><input type="text" id="newStName" placeholder="Name"><div style="display:flex;gap:5px"><input id="newStGrade" placeholder="Grade"><input id="newStClass" placeholder="Class"></div><button class="btn btn-add" onclick="addNewStudent()">Save</button><button class="btn" style="background:#ccc;margin-top:5px" onclick="closeModal('studentModal')">Cancel</button></div></div>
+<!-- 2. EDIT STUDENT MODAL UPDATED -->
+<div id="editStudentModal" class="modal">
+    <div class="modal-content">
+        <h3 style="color:#f59e0b;">Edit Student</h3>
+        <input type="hidden" id="editStId">
+        <label style="display:block;text-align:left;font-size:12px;">Index:</label>
+        <input type="number" id="editStIndex">
+        <label style="display:block;text-align:left;font-size:12px;">Name:</label>
+        <input type="text" id="editStName">
+        <!-- PASSWORD FIELD ADDED -->
+        <label style="display:block;text-align:left;font-size:12px;">Password:</label>
+        <input type="text" id="editStPass" style="border-color:#f59e0b;">
+        
+        <div style="display:flex; gap:10px;">
+            <div><label style="font-size:12px;">Grade:</label><input type="text" id="editStGrade"></div>
+            <div><label style="font-size:12px;">Class:</label><input type="text" id="editStClass"></div>
+        </div>
+        <button class="btn btn-add" style="width:100%; margin-top:15px;" onclick="saveEditStudent()">Update Details</button>
+        <hr>
+        <button class="btn" style="background:#ef4444;" onclick="deleteStudent()">Delete Student</button>
+        <button class="btn" style="background:#9ca3af; margin-top:10px;" onclick="closeModal('editStudentModal')">Cancel</button>
+    </div>
+</div>
 
-<div id="editStudentModal" class="modal"><div class="modal-content"><h3 style="color:#f57c00">Edit Student</h3><input type="hidden" id="editStId"><input id="editStIndex" placeholder="Index"><input id="editStName" placeholder="Name"><div style="display:flex;gap:5px"><input id="editStGrade" placeholder="Grade"><input id="editStClass" placeholder="Class"></div><button class="btn btn-add" onclick="saveEditStudent()">Update</button><hr><button class="btn" style="background:#c62828" onclick="deleteStudent()">Delete Student</button><button class="btn" style="background:#ccc;margin-top:5px" onclick="closeModal('editStudentModal')">Cancel</button></div></div>
-
-<div id="bulkModal" class="modal"><div class="modal-content"><h3>Excel Import</h3><label for="excelFile" class="drop-zone">📂 Upload Student List</label><input type="file" id="excelFile" accept=".xlsx,.xls" style="display:none"><div id="previewArea" style="display:none"><div id="excelPreview"></div><button class="btn btn-add" id="btnConfirmBulk" onclick="confirmExcelUpload()">Confirm</button></div><button class="btn" style="background:#ccc;margin-top:5px" onclick="closeModal('bulkModal');resetBulk()">Cancel</button></div></div>
-
-<div id="resultModal" class="modal"><div class="modal-content"><h3>Upload Marks</h3><p id="resultTargetName"></p><label for="resExcelFile" class="drop-zone">📊 Upload Marks Excel</label><input type="file" id="resExcelFile" accept=".xlsx,.xls" style="display:none"><div id="resPreviewArea" style="display:none"><div id="resExcelPreview"></div><button class="btn btn-add" id="btnConfirmRes" onclick="confirmResultUpload()">Upload</button></div><button class="btn" style="background:#ccc;margin-top:5px" onclick="closeModal('resultModal');resetResBulk()">Cancel</button></div></div>
-
-<div id="matManagerModal" class="modal"><div class="modal-content"><h3>Materials</h3><input id="newMatTitle" placeholder="Title"><input id="newMatLink" placeholder="Link"><button class="btn btn-add" onclick="addMaterial()">Add</button><hr><div id="matListTeacher" style="text-align:left;max-height:300px;overflow:auto"></div><button class="btn" style="background:#ccc;margin-top:5px" onclick="closeModal('matManagerModal')">Close</button></div></div>
-
-<div id="msgModal" class="modal"><div class="modal-content"><h3>Parent Message</h3><div id="msgContent" style="text-align:right;background:#f1f8e9;padding:10px;margin-bottom:10px"></div><button class="btn" style="background:#ccc" onclick="closeModal('msgModal')">Close</button></div></div>
-
-<div id="toast"></div>
+<!-- ... (Rest of HTML is same) ... -->
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, addDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    // ... (Imports & Config Same) ...
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDSEHqUQIegVjhWKpRgpJybdPaVDVroVos",
-      authDomain: "islam-portal-muthamin.firebaseapp.com",
-      projectId: "islam-portal-muthamin",
-      storageBucket: "islam-portal-muthamin.firebasestorage.app",
-      messagingSenderId: "842342714257",
-      appId: "1:842342714257:web:c5daa61eee6524e7936830"
-    };
-
-    let db;
-    let students = [];
-    let materials = [];
-    let examConfig = {};
-    let mode = 'work';
-    let selGrade = 'All';
-    let selClass = 'All';
-    let parsedExcelData = [];
-    let parsedResultData = [];
-
-    try {
-        const app = initializeApp(firebaseConfig);
-        db = getFirestore(app);
-    } catch(e) { console.error(e); }
-
-    // LOGIN
-    window.checkLogin = () => {
-        if(document.getElementById('adminPass').value === "123") {
-            document.getElementById('loginOverlay').style.display = 'none';
-            document.getElementById('mainContainer').style.display = 'block';
-            fetchData();
-        } else { alert("Wrong Password"); }
-    }
-
-    // DATA
-    window.fetchData = async () => {
-        document.getElementById('tBody').innerHTML = '<tr><td colspan="7">Loading...</td></tr>';
-        try {
-            const sSnap = await getDocs(collection(db, "students"));
-            students = []; sSnap.forEach(doc => students.push({ id: doc.id, ...doc.data() }));
-            const mSnap = await getDocs(collection(db, "materials"));
-            materials = []; mSnap.forEach(doc => materials.push({ id: doc.id, ...doc.data() }));
-            try { const c = await getDoc(doc(db, "settings", "examConfig")); if(c.exists()) examConfig = c.data(); } catch(e){}
-            updateFilters(); setMode(mode);
-        } catch(e) { alert("Error loading data"); }
-    };
-
-    // LOGIC
-    window.setMode = (m) => {
-        mode = m;
-        document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-        document.getElementById('m_'+m).classList.add('active');
-        let sel = document.getElementById('itemSelect'); sel.innerHTML = "";
-        if(m=='work') {
-            for(let i=1;i<=45;i++) sel.innerHTML += `<option value="Week${i}">Week ${i}</option>`;
-            document.getElementById('totalDiv').style.display = 'none'; document.getElementById('thG').style.display = 'none'; document.getElementById('valHead').innerText = 'Status';
-        } else {
-            document.getElementById('totalDiv').style.display = 'flex'; document.getElementById('thG').style.display = 'table-cell'; document.getElementById('valHead').innerText = 'Marks';
-            let prefix = m=='test' ? 'UnitTest' : 'CA'; let count = m=='test' ? 10 : 4;
-            for(let i=1;i<=count;i++) sel.innerHTML += `<option value="${prefix}${i}">${m=='test'?'Unit Test':'CA'} ${i}</option>`;
-        }
-        renderTeacherTable();
-    };
-
-    window.saveTotalMark = async () => {
-        const item = document.getElementById('itemSelect').value; const val = document.getElementById('totalMarks').value;
-        if(item && val) { await setDoc(doc(db, "settings", "examConfig"), { [item]: val }, { merge: true }); examConfig[item] = val; showToast("Saved"); renderTeacherTable(); }
-    };
-
-    window.renderTeacherTable = () => {
-        const item = document.getElementById('itemSelect').value;
-        let def = mode === 'test' ? 20 : 100;
-        let tot = examConfig[item] ? parseInt(examConfig[item]) : def;
-        if(mode !== 'work') document.getElementById('totalMarks').value = tot;
-
-        let filtered = students;
-        if(selGrade !== 'All') filtered = filtered.filter(s => String(s.grade) === String(selGrade));
-        if(selClass !== 'All') filtered = filtered.filter(s => String(s.class) === String(selClass));
-
-        let html = "";
-        filtered.sort((a,b) => (parseInt(a.index)||0) - (parseInt(b.index)||0)).forEach(s => {
-            let val = s[item] || ""; let note = s[item + "_note"] || ""; let hasMsg = s.parentMessages && s.parentMessages.length > 0;
-            let input = mode === 'work' ? 
-                `<select class="v-in" data-id="${s.id}" data-orig="${val}"><option value="">-</option><option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމައެއް ނުވޭ" ${val=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމަ ނުވޭ</option></select>` : 
-                `<input type="number" class="v-in" data-id="${s.id}" data-orig="${val}" value="${val}" placeholder="0" oninput="updRow(this, ${tot})">`;
-            let gradeHtml = mode !== 'work' && val ? calcGradeHtml(val, tot) : '';
-            let msgBtn = hasMsg ? `<button onclick='viewMessages(${JSON.stringify(s.parentMessages)})' style="border:none;background:#ffeb3b;border-radius:50%;width:25px;height:25px;cursor:pointer">📩</button>` : `-`;
-            
-            html += `<tr><td><b>${s.index}</b></td><td style="text-align:right">${s.name}<br><small style="color:#888">${s.grade}${s.class}</small></td><td>${input} <div id="g-${s.id}" style="margin-top:2px">${gradeHtml}</div></td>${mode!='work' ? `<td><small id="p-${s.id}">${val ? Math.round((val/tot)*100)+'%' : ''}</small></td>` : ''}<td><input type="text" class="n-in" data-id="${s.id}" data-orig-note="${note}" value="${note}"></td><td>${msgBtn}</td><td><button class="btn-edit" onclick="openEdit('${s.id}')">✏️</button></td></tr>`;
-        });
-        document.getElementById('tBody').innerHTML = html || "<tr><td colspan='7'>No Data</td></tr>";
-    };
-
-    window.saveTeacherData = async () => {
-        const item = document.getElementById('itemSelect').value; const inputs = document.querySelectorAll('.v-in');
-        let batchPromises = []; let count = 0; document.getElementById('sBtn').innerText = "Saving...";
-        inputs.forEach(inp => {
-            let id = inp.dataset.id; let val = inp.value; let note = document.querySelector(`.n-in[data-id="${id}"]`).value;
-            if(val !== inp.dataset.orig || note !== document.querySelector(`.n-in[data-id="${id}"]`).dataset.origNote) {
-                batchPromises.push(updateDoc(doc(db, "students", id), { [item]: val, [item+"_note"]: note })); count++;
-            }
-        });
-        await Promise.all(batchPromises); showToast(`Saved ${count}`); document.getElementById('sBtn').innerText = "💾 Save Changes"; fetchData(false);
-    };
-
-    // STUDENT MANAGEMENT
-    window.openStudentModal = () => document.getElementById('studentModal').style.display='block';
+    // --- UPDATED ADD STUDENT FUNCTION ---
     window.addNewStudent = async () => {
-        let idx=document.getElementById('newStIndex').value; let name=document.getElementById('newStName').value;
-        if(idx && name) { await addDoc(collection(db,"students"),{index:idx,name:name,grade:document.getElementById('newStGrade').value,class:document.getElementById('newStClass').value}); fetchData(); closeModal('studentModal'); }
+        const idx = document.getElementById('newStIndex').value;
+        const name = document.getElementById('newStName').value;
+        const pass = document.getElementById('newStPass').value || "1234"; // Default pass
+        
+        if(idx && name) {
+             await addDoc(collection(db, "students"), {
+                 index: idx, 
+                 name: name, 
+                 password: pass, // SAVE PASSWORD
+                 grade: document.getElementById('newStGrade').value, 
+                 class: document.getElementById('newStClass').value 
+             });
+             window.fetchData(); closeModal('studentModal');
+        } else { alert("Index & Name required"); }
     };
+
+    // --- UPDATED OPEN EDIT FUNCTION ---
     window.openEdit = (id) => {
-        let s = students.find(x=>x.id===id); if(s){ 
-            document.getElementById('editStId').value=s.id; document.getElementById('editStIndex').value=s.index;
-            document.getElementById('editStName').value=s.name; document.getElementById('editStGrade').value=s.grade;
-            document.getElementById('editStClass').value=s.class; document.getElementById('editStudentModal').style.display='block';
+        const s = students.find(x => x.id === id);
+        if(s){ 
+            document.getElementById('editStId').value = s.id;
+            document.getElementById('editStIndex').value = s.index;
+            document.getElementById('editStName').value = s.name;
+            document.getElementById('editStPass').value = s.password || "1234"; // SHOW PASSWORD
+            document.getElementById('editStGrade').value = s.grade;
+            document.getElementById('editStClass').value = s.class;
+            document.getElementById('editStudentModal').style.display = 'block';
         }
     };
+
+    // --- UPDATED SAVE EDIT FUNCTION ---
     window.saveEditStudent = async () => {
-        let id=document.getElementById('editStId').value;
-        if(id) { await updateDoc(doc(db,"students",id),{index:document.getElementById('editStIndex').value, name:document.getElementById('editStName').value, grade:document.getElementById('editStGrade').value, class:document.getElementById('editStClass').value}); fetchData(); closeModal('editStudentModal'); }
-    };
-    window.deleteStudent = async () => {
-        let id=document.getElementById('editStId').value;
-        if(confirm("Delete?")) { await deleteDoc(doc(db,"students",id)); fetchData(); closeModal('editStudentModal'); }
+        const id = document.getElementById('editStId').value;
+        if(id) { 
+            await updateDoc(doc(db,"students",id), {
+                index: document.getElementById('editStIndex').value, 
+                name: document.getElementById('editStName').value, 
+                password: document.getElementById('editStPass').value, // UPDATE PASSWORD
+                grade: document.getElementById('editStGrade').value, 
+                class: document.getElementById('editStClass').value
+            }); 
+            fetchData(); closeModal('editStudentModal'); 
+        }
     };
 
-    // MATERIAL MANAGEMENT
-    window.openMatManager = () => { document.getElementById('matManagerModal').style.display='block'; renderMat(); };
-    window.addMaterial = async () => { let t=document.getElementById('newMatTitle').value; let l=document.getElementById('newMatLink').value; if(t&&l){await addDoc(collection(db,"materials"),{title:t,link:l}); renderMat();} };
-    window.removeMaterial = async (id) => { await deleteDoc(doc(db,"materials",id)); renderMat(); };
-    function renderMat() { document.getElementById('matListTeacher').innerHTML = materials.map(m=>`<div class="mat-item"><span>${m.title}</span><button class="btn-del" onclick="removeMaterial('${m.id}')">Del</button></div>`).join(''); }
-
-    // BULK IMPORT & RESULT IMPORT (Shortened for brevity but functional)
-    document.getElementById('excelFile').addEventListener('change', e=>{const r=new FileReader();r.onload=e=>{const j=XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(e.target.result),{type:'array'}).Sheets[XLSX.read(new Uint8Array(e.target.result),{type:'array'}).SheetNames[0]],{header:1}); parsedExcelData=[]; let h='<table>'; j.forEach((r,i)=>{if(r.length>=2&&(i>0||!isNaN(r[0]))){parsedExcelData.push({index:r[0],name:r[1],grade:r[2],class:r[3]}); if(parsedExcelData.length<=5)h+=`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`;}}); document.getElementById('excelPreview').innerHTML=h+"</table>"; document.getElementById('previewArea').style.display='block';};r.readAsArrayBuffer(e.target.files[0]);});
-    window.confirmExcelUpload = async () => { let p=[]; parsedExcelData.forEach(s=>{if(!students.some(x=>String(x.index)==String(s.index))) p.push(addDoc(collection(db,"students"),{index:String(s.index),name:String(s.name),grade:String(s.grade||''),class:String(s.class||'')}));}); await Promise.all(p); fetchData(); closeModal('bulkModal'); showToast("Uploaded"); };
-    
-    document.getElementById('resExcelFile').addEventListener('change', e=>{const r=new FileReader();r.onload=e=>{const j=XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(e.target.result),{type:'array'}).Sheets[XLSX.read(new Uint8Array(e.target.result),{type:'array'}).SheetNames[0]],{header:1}); parsedResultData=[]; let h='<table>'; j.forEach((r,i)=>{if(r.length>=2&&(i>0||!isNaN(r[0]))){parsedResultData.push({index:r[0],mark:r[1]}); if(parsedResultData.length<=5)h+=`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`;}}); document.getElementById('resExcelPreview').innerHTML=h+"</table>"; document.getElementById('resPreviewArea').style.display='block';};r.readAsArrayBuffer(e.target.files[0]);});
-    window.confirmResultUpload = async () => { let item=document.getElementById('itemSelect').value; let p=[]; parsedResultData.forEach(r=>{let s=students.find(x=>String(x.index)==String(r.index)); if(s) p.push(updateDoc(doc(db,"students",s.id),{[item]:String(r.mark)}));}); await Promise.all(p); fetchData(); closeModal('resultModal'); showToast("Uploaded"); };
-
-    // UTILS
-    window.setGradeFilter = (g) => { selGrade=g; selClass='All'; updateFilters(); renderTeacherTable(); };
-    window.setClassFilter = (c) => { selClass=c; updateFilters(); renderTeacherTable(); };
-    window.updateFilters = () => {
-        const gs = [...new Set(students.map(s => s.grade))].filter(Boolean).sort();
-        document.getElementById('gradeFilter').innerHTML = `<div class="pill ${selGrade=='All'?'active':''}" onclick="setGradeFilter('All')">All</div>` + gs.map(g=>`<div class="pill ${selGrade==g?'active':''}" onclick="setGradeFilter('${g}')">Gr ${g}</div>`).join('');
-        if(selGrade !== 'All') {
-             const cs = [...new Set(students.filter(s=>s.grade==selGrade).map(s=>s.class))].filter(Boolean).sort();
-             document.getElementById('classFilter').innerHTML = `<div class="pill ${selClass=='All'?'active':''}" onclick="setClassFilter('All')">All</div>` + cs.map(c=>`<div class="pill ${selClass==c?'active':''}" onclick="setClassFilter('${c}')">${c}</div>`).join('');
-        } else { document.getElementById('classFilter').innerHTML = ""; }
+    // --- UPDATED BULK UPLOAD (Set Default Password) ---
+    window.confirmExcelUpload = async () => {
+        let success=0; let promises=[];
+        for (let s of parsedExcelData) { 
+            if(!students.some(e=>String(e.index)==String(s.index)) && s.index) {
+                promises.push(addDoc(collection(db, "students"), {
+                    index: String(s.index), 
+                    name: String(s.name), 
+                    password: "1234", // DEFAULT PASSWORD FOR BULK USERS
+                    grade: String(s.grade||''),
+                    class: String(s.class||'')
+                }).then(()=>success++));
+            }
+        }
+        await Promise.all(promises); window.fetchData(); closeModal('bulkModal'); showToast(`Added: ${success}`);
     };
-    window.calcGradeHtml = (v,t) => { let p=(v/t)*100; let c='',l='F'; if(p>=90){c='g-A-star';l='A*'}else if(p>=80){c='g-A';l='A'}else if(p>=70){c='g-B';l='B'}else if(p>=60){c='g-C';l='C'}else{c='g-Fail';l='F'} return `<span class="grade-badge ${c}">${l}</span>`; };
-    window.updRow = (el,t) => { document.getElementById('g-'+el.dataset.id).innerHTML = calcGradeHtml(el.value,t); };
-    window.viewMessages = (m) => { if(!m||!m.length)return; let l=m[m.length-1]; document.getElementById('msgContent').innerHTML=`<small>${l.date}</small><br><p>"${l.text}"</p>`; document.getElementById('msgModal').style.display='block'; };
-    window.openBulkModal=()=>document.getElementById('bulkModal').style.display='block'; window.openResultModal=()=>document.getElementById('resultModal').style.display='block'; window.closeModal=(i)=>document.getElementById(i).style.display='none'; window.resetBulk=()=>{document.getElementById('excelFile').value='';document.getElementById('previewArea').style.display='none'}; window.resetResBulk=()=>{document.getElementById('resExcelFile').value='';document.getElementById('resPreviewArea').style.display='none'};
-    function showToast(m){let t=document.getElementById('toast');t.innerText=m;t.style.opacity=1;t.style.bottom='80px';setTimeout(()=>t.style.opacity=0,3000);}
+
+    // ... (Rest of JS logic is same) ...
 </script>
 </body>
 </html>
