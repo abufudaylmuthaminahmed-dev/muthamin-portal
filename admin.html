@@ -5,7 +5,7 @@
     <title>Teacher Admin Panel</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
-        /* Styles from previous admin file */
+        /* (Styles remain same as before) */
         @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
         * { box-sizing: border-box; font-family: "Faruma", sans-serif; }
         body { background-color: #f0fdfa; margin: 0; padding: 20px; text-align: right; color: #333; }
@@ -39,6 +39,9 @@
         .sub-card { border: 1px solid #b2dfdb; padding: 15px; border-radius: 8px; margin-bottom: 10px; background: #f0fdfa; display: flex; align-items: center; justify-content: space-between; }
         .sub-img { width: 50px; height: 50px; object-fit: cover; border-radius: 5px; border: 1px solid #ccc; cursor: pointer; }
         
+        /* Notice List Style */
+        .notice-item { background: #fffbeb; border: 1px solid #fcd34d; padding: 10px; border-radius: 8px; margin-bottom: 5px; display:flex; justify-content:space-between; align-items:center; text-align:left;}
+
         @keyframes fadeIn { from {opacity:0; transform: translateY(5px);} to {opacity:1; transform: translateY(0);} }
         #toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 24px; border-radius: 30px; opacity: 0; pointer-events: none; z-index: 2000; transition: 0.3s; }
     </style>
@@ -55,9 +58,9 @@
     
     <div class="nav-menu">
         <button class="nav-btn active" onclick="switchTab('db')">📁 Students</button>
-        <button class="nav-btn" onclick="switchTab('marks')">📝 Marks</button>
+        <button class="nav-btn" onclick="switchTab('marks')">📝 Marks/Status</button>
         <button class="nav-btn" onclick="switchTab('subs')" id="btnSubs">🔔 Submissions <span class="badge-count" id="subCount">0</span></button>
-        <button class="nav-btn" onclick="switchTab('notice')">📢 Notice</button>
+        <button class="nav-btn" onclick="switchTab('notice')">📢 Notice Board</button>
     </div>
 
     <!-- FILTER -->
@@ -101,10 +104,10 @@
         </div>
     </div>
 
-    <!-- 4. NOTICE -->
+    <!-- 4. NOTICE (UPDATED) -->
     <div id="tab-notice" class="section">
         <div class="card">
-            <h3>Update Notice Board</h3>
+            <h3>Add New Notice</h3>
             <label style="display:block; text-align:left; font-size:12px; margin-bottom:5px;">Type:</label>
             <select id="noticeType" style="margin-bottom:10px; font-weight:bold;">
                 <option value="normal">📢 Normal</option>
@@ -112,14 +115,20 @@
                 <option value="event">🎉 Event</option>
                 <option value="quote">💡 Quote</option>
             </select>
-            <textarea id="adminNoticeText" rows="6" placeholder="Write notice here..."></textarea>
+            <textarea id="adminNoticeText" rows="4" placeholder="Write notice here..."></textarea>
             <button class="btn" onclick="saveNotice()">Publish Notice</button>
         </div>
+        
+        <div class="card">
+            <h3>Active Notices</h3>
+            <div id="activeNoticesList">Loading...</div>
+        </div>
+
         <div class="card"><h3>Materials</h3><div style="display:flex; gap:5px;"><input id="matTitle" placeholder="Title"><input id="matLink" placeholder="Link"></div><button class="btn" onclick="addMaterial()">+ Add</button><hr><div id="matList"></div></div>
     </div>
 </div>
 
-<!-- MODALS (Simplified) -->
+<!-- MODALS (Simplified for brevity) -->
 <div id="modalAdd" class="modal"><div class="modal-content"><h3>Add Student</h3><input id="newIdx" placeholder="Index"><input id="newNam" placeholder="Name"><div style="display:flex;gap:5px"><input id="newGrd" placeholder="Grade"><input id="newCls" placeholder="Class"></div><input id="newPwd" value="1234"><button class="btn" onclick="addSingleStudent()">Add</button><button class="btn btn-red" onclick="closeModal('modalAdd')">Cancel</button></div></div>
 <div id="modalEdit" class="modal"><div class="modal-content"><h3>Edit</h3><input type="hidden" id="editId"><input id="editIdx"><input id="editNam"><input id="editPwd"><div style="display:flex;gap:5px"><input id="editGrd"><input id="editCls"></div><button class="btn" onclick="saveEditStudent()">Update</button><hr><button class="btn btn-red" onclick="delStudent()">Delete</button><button class="btn" style="background:#ccc;color:#333" onclick="closeModal('modalEdit')">Close</button></div></div>
 <div id="modalBulk" class="modal"><div class="modal-content"><h3>Excel Import</h3><input type="file" id="excelFile"><div id="bulkPreview" style="height:100px;overflow:auto;"></div><button class="btn" onclick="processBulk()">Confirm</button><button class="btn btn-red" onclick="closeModal('modalBulk')">Cancel</button></div></div>
@@ -131,7 +140,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, deleteField } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, deleteField, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
     // --- CONFIG ---
     const firebaseConfig = {
@@ -140,12 +149,12 @@
   projectId: "islam-portal-muthamin",
   storageBucket: "islam-portal-muthamin.firebasestorage.app",
   messagingSenderId: "842342714257",
-  appId: "1:842342714257:web:c5daa61eee6524e7936830"
+  appId: "1:842342714257:web:2f839d6bf92dda92936830"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    let students = []; let materials = []; let examConfig = {}; let mode = 'work'; let selGrade = 'All'; let selClass = 'All'; let parsedData = []; let parsedResData = [];
+    let students = []; let materials = []; let notices = []; let examConfig = {}; let mode = 'work'; let selGrade = 'All'; let selClass = 'All'; let parsedData = []; let parsedResData = [];
 
     // --- LOGIN ---
     window.checkLogin = () => { if(document.getElementById('adminPass').value === "123") { document.getElementById('loginOverlay').style.display='none'; document.getElementById('mainContainer').style.display='block'; fetchData(); } else alert("Wrong Password"); };
@@ -155,50 +164,67 @@
         try {
             const sSnap = await getDocs(collection(db, "students")); students = []; sSnap.forEach(d => students.push({id: d.id, ...d.data()}));
             const mSnap = await getDocs(collection(db, "materials")); materials = []; mSnap.forEach(d => materials.push({id: d.id, ...d.data()}));
+            const nSnap = await getDocs(collection(db, "notices")); notices = []; nSnap.forEach(d => notices.push({id: d.id, ...d.data()}));
+            
             try { const c = await getDoc(doc(db, "settings", "examConfig")); if(c.exists()) examConfig = c.data(); } catch(e){}
             updateFilters(); refreshActiveView(); updateSubCount();
         } catch(e) { console.error(e); }
     }
-
-    // --- SUBMISSIONS LOGIC ---
-    function updateSubCount() {
-        let count = 0; students.forEach(s => { if(s.submissions) count += Object.keys(s.submissions).length; });
-        const badge = document.getElementById('subCount'); badge.innerText = count; badge.style.display = count > 0 ? 'inline-block' : 'none';
-    }
-
-    window.renderSubmissions = () => {
-        const list = document.getElementById('subsList');
-        let html = ''; let hasData = false;
-        students.forEach(s => {
-            if(s.submissions) {
-                Object.keys(s.submissions).forEach(week => {
-                    hasData = true; const sub = s.submissions[week];
-                    html += `<div class="sub-card"><div style="display:flex;gap:10px;align-items:center;"><img src="${sub.image}" class="sub-img" onclick="showImg('${sub.image}')"><div style="text-align:left;"><strong>${s.name}</strong> (${s.index})<br><span style="font-size:12px;color:#666;">${week} - ${sub.date}</span></div></div><button class="btn" style="width:auto;padding:5px 15px;" onclick="acceptSubmission('${s.id}','${week}')">✅ Accept</button></div>`;
-                });
-            }
-        });
-        list.innerHTML = hasData ? html : `<p style="text-align:center; color:#999;">No pending submissions</p>`;
-    };
-
-    window.showImg = (src) => { document.getElementById('fullImg').src = src; document.getElementById('modalImg').style.display='block'; };
-    window.acceptSubmission = async (sid, week) => {
-        if(confirm("Mark as Done and remove?")) {
-            try { await updateDoc(doc(db, "students", sid), { [week]: 'ނިމިފައި', [`submissions.${week}`]: deleteField() }); showToast("Accepted!"); fetchData(); } catch(e) { console.error(e); alert("Error"); }
-        }
-    };
 
     // --- NOTICE (UPDATED) ---
     window.saveNotice = async () => {
         const txt = document.getElementById('adminNoticeText').value;
         const type = document.getElementById('noticeType').value;
         if(!txt) return alert("Write something");
-        await setDoc(doc(db, "settings", "notice"), { text: txt, type: type, date: new Date().toLocaleDateString('dv-MV') });
+        await addDoc(collection(db, "notices"), { text: txt, type: type, date: new Date().toLocaleDateString('dv-MV'), timestamp: Date.now() });
+        document.getElementById('adminNoticeText').value = "";
         showToast("Published!");
+        fetchData();
     };
 
-    // --- STANDARD FUNCTIONS (Identical to previous logic) ---
-    window.switchTab = (id) => { document.querySelectorAll('.section').forEach(d => d.classList.remove('active')); document.getElementById('tab-'+id).classList.add('active'); document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); event.target.classList.add('active'); refreshActiveView(); };
-    function refreshActiveView() { if(document.getElementById('tab-db').classList.contains('active')) renderStudentTable(); if(document.getElementById('tab-marks').classList.contains('active')) renderMarksTable(); if(document.getElementById('tab-subs').classList.contains('active')) renderSubmissions(); }
+    window.deleteNotice = async (id) => {
+        if(confirm("Delete this notice?")) {
+            await deleteDoc(doc(db, "notices", id));
+            fetchData();
+        }
+    };
+
+    function renderNotices() {
+        // Sort by timestamp desc
+        notices.sort((a,b) => b.timestamp - a.timestamp);
+        document.getElementById('activeNoticesList').innerHTML = notices.length ? notices.map(n => `
+            <div class="notice-item">
+                <div style="font-size:12px;">
+                    <b style="color:${n.type=='urgent'?'red':'#00796b'}">[${n.type.toUpperCase()}]</b> ${n.text} <br>
+                    <span style="color:#888; font-size:10px;">${n.date}</span>
+                </div>
+                <button class="btn btn-red" style="width:auto; padding:5px 10px; margin:0;" onclick="deleteNotice('${n.id}')">Del</button>
+            </div>
+        `).join('') : '<p style="text-align:center;color:#999">No active notices</p>';
+    }
+
+    // --- STANDARD FUNCTIONS ---
+    window.switchTab = (id) => { 
+        document.querySelectorAll('.section').forEach(d => d.classList.remove('active')); 
+        document.getElementById('tab-'+id).classList.add('active'); 
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); 
+        event.target.classList.add('active'); 
+        refreshActiveView(); 
+    };
+
+    function refreshActiveView() {
+        if(document.getElementById('tab-db').classList.contains('active')) renderStudentTable();
+        if(document.getElementById('tab-marks').classList.contains('active')) renderMarksTable();
+        if(document.getElementById('tab-subs').classList.contains('active')) renderSubmissions();
+        if(document.getElementById('tab-notice').classList.contains('active')) { renderNotices(); renderMaterials(); }
+    }
+
+    // (Keeping previous logic for submissions, table renders, etc.)
+    function updateSubCount() { let count = 0; students.forEach(s => { if(s.submissions) count += Object.keys(s.submissions).length; }); const badge = document.getElementById('subCount'); badge.innerText = count; badge.style.display = count > 0 ? 'inline-block' : 'none'; }
+    window.renderSubmissions = () => { const list = document.getElementById('subsList'); let html = ''; let hasData = false; students.forEach(s => { if(s.submissions) { Object.keys(s.submissions).forEach(week => { hasData = true; const sub = s.submissions[week]; html += `<div class="sub-card"><div style="display:flex;gap:10px;align-items:center;"><img src="${sub.image}" class="sub-img" onclick="showImg('${sub.image}')"><div style="text-align:left;"><strong>${s.name}</strong> (${s.index})<br><span style="font-size:12px;color:#666;">${week} - ${sub.date}</span></div></div><button class="btn" style="width:auto;padding:5px 15px;" onclick="acceptSubmission('${s.id}','${week}')">✅ Accept</button></div>`; }); } }); list.innerHTML = hasData ? html : `<p style="text-align:center; color:#999;">No pending submissions</p>`; };
+    window.showImg = (src) => { document.getElementById('fullImg').src = src; document.getElementById('modalImg').style.display='block'; };
+    window.acceptSubmission = async (sid, week) => { if(confirm("Mark as Done and remove?")) { try { await updateDoc(doc(db, "students", sid), { [week]: 'ނިމިފައި', [`submissions.${week}`]: deleteField() }); showToast("Accepted!"); fetchData(); } catch(e) { console.error(e); alert("Error"); } } };
+
     window.setGradeFilter=(g)=>{selGrade=g;selClass='All';updateFilters();refreshActiveView();}; window.setClassFilter=(c)=>{selClass=c;updateFilters();refreshActiveView();};
     function updateFilters(){const gs=[...new Set(students.map(s=>s.grade))].filter(Boolean).sort(); document.getElementById('gradeFilter').innerHTML=`<button style="padding:5px;border:1px solid #ccc;background:${selGrade=='All'?'#0d9488':'#fff'};color:${selGrade=='All'?'#fff':'#333'};border-radius:10px;cursor:pointer" onclick="setGradeFilter('All')">All</button>`+gs.map(g=>`<button style="padding:5px;border:1px solid #ccc;background:${selGrade==g?'#0d9488':'#fff'};color:${selGrade==g?'#fff':'#333'};border-radius:10px;cursor:pointer" onclick="setGradeFilter('${g}')">${g}</button>`).join(''); if(selGrade!=='All'){const cs=[...new Set(students.filter(s=>s.grade==selGrade).map(s=>s.class))].filter(Boolean).sort(); document.getElementById('classFilter').innerHTML=`<button style="padding:5px;border:1px solid #ccc;background:${selClass=='All'?'#0d9488':'#fff'};color:${selClass=='All'?'#fff':'#333'};border-radius:10px;cursor:pointer" onclick="setClassFilter('All')">All</button>`+cs.map(c=>`<button style="padding:5px;border:1px solid #ccc;background:${selClass==c?'#0d9488':'#fff'};color:${selClass==c?'#fff':'#333'};border-radius:10px;cursor:pointer" onclick="setClassFilter('${c}')">${c}</button>`).join('');}else document.getElementById('classFilter').innerHTML="";}
     function getFiltered(){let l=students;if(selGrade!=='All')l=l.filter(s=>String(s.grade)==String(selGrade));if(selClass!=='All')l=l.filter(s=>String(s.class)==String(selClass));return l.sort((a,b)=>(parseInt(a.index)||0)-(parseInt(b.index)||0));}
@@ -207,10 +233,14 @@
     window.saveTotalMark=async()=>{const i=document.getElementById('itemSelect').value,v=document.getElementById('totalMarks').value;if(i&&v){await setDoc(doc(db,"settings","examConfig"),{[i]:v},{merge:true});examConfig[i]=v;showToast("Saved");renderMarksTable();}};
     window.saveTeacherData=async()=>{const i=document.getElementById('itemSelect').value,inputs=document.querySelectorAll('.v-in');let p=[];document.getElementById('sBtn').innerText="Saving...";inputs.forEach(n=>{if(n.value!==n.dataset.orig)p.push(updateDoc(doc(db,"students",n.dataset.id),{[i]:n.value}));});await Promise.all(p);document.getElementById('sBtn').innerText="💾 Save All";fetchData();showToast("Saved");};
     window.setMode=(m)=>{mode=m;let s=document.getElementById('itemSelect');s.innerHTML="";if(m=='work'){for(let i=1;i<=45;i++)s.innerHTML+=`<option value="Week${i}">Week ${i}</option>`;document.getElementById('totalDiv').style.display='none';}else{document.getElementById('totalDiv').style.display='flex';let p=m=='test'?'UnitTest':'CA',c=m=='test'?10:4;for(let i=1;i<=c;i++)s.innerHTML+=`<option value="${p}${i}">${m=='test'?'Unit Test':'CA'} ${i}</option>`;}renderMarksTable();};
-    window.processBulk=async()=>{for(let s of parsedData){if(!students.some(e=>String(e.index)==String(s.index))){await setDoc(doc(collection(db,"students")),{index:String(s.index),name:String(s.name),grade:String(s.grade||''),class:String(s.class||''),password:"1234"});}} closeModal('modalBulk');fetchData();};
+    
+    // EXCEL & MODALS
+    window.processBulk=async()=>{for(let s of parsedData){if(!students.some(e=>String(e.index)==String(s.index))){await addDoc(collection(db,"students"),{index:String(s.index),name:String(s.name),grade:String(s.grade||''),class:String(s.class||''),password:"1234"});}} closeModal('modalBulk');fetchData();};
     window.processResultBulk=async()=>{let i=document.getElementById('itemSelect').value;for(let r of parsedResData){const s=students.find(x=>String(x.index)==String(r.index));if(s)await updateDoc(doc(db,"students",s.id),{[i]:String(r.mark)});} closeModal('modalResult');fetchData();};
     document.getElementById('excelFile').addEventListener('change',e=>{const r=new FileReader();r.onload=e=>{const j=XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(e.target.result),{type:'array'}).Sheets[XLSX.read(new Uint8Array(e.target.result),{type:'array'}).SheetNames[0]],{header:1});parsedData=[];let h='<table>';j.forEach((r,i)=>{if(r.length>=2&&row[0]!=='Index'){parsedData.push({index:r[0],name:r[1],grade:r[2],class:r[3]});if(parsedData.length<=5)h+=`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`;}});document.getElementById('bulkPreview').innerHTML=h+"</table>";};r.readAsArrayBuffer(e.target.files[0]);});
     document.getElementById('resFile').addEventListener('change',e=>{const r=new FileReader();r.onload=e=>{const j=XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(e.target.result),{type:'array'}).Sheets[XLSX.read(new Uint8Array(e.target.result),{type:'array'}).SheetNames[0]],{header:1});parsedResData=[];let h='<table>';j.forEach((r,i)=>{if(r.length>=2){parsedResData.push({index:r[0],mark:r[1]});if(parsedResData.length<=5)h+=`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`;}});document.getElementById('resPreview').innerHTML=h+"</table>";};r.readAsArrayBuffer(e.target.files[0]);});
+
+    // HELPERS
     window.calcGradeHtml=(v,t)=>{let p=(v/t)*100,c='',l='F';if(p>=90){c='g-A-star';l='A*'}else if(p>=80){c='g-A';l='A'}else if(p>=70){c='g-B';l='B'}else if(p>=60){c='g-C';l='C'}else{c='g-Fail';l='F'} return `<span class="grade-badge ${c}">${l}</span>`;};
     window.updRow=(e,t)=>{e.nextElementSibling.innerHTML=calcGradeHtml(e.value,t);};
     function showToast(m){let t=document.getElementById('toast');t.innerText=m;t.style.opacity=1;t.style.bottom='80px';setTimeout(()=>t.style.opacity=0,3000);}
@@ -221,12 +251,15 @@
     window.openEdit=(id)=>{let s=students.find(x=>x.id==id);if(s){document.getElementById('editId').value=s.id;document.getElementById('editIdx').value=s.index;document.getElementById('editNam').value=s.name;document.getElementById('editPwd').value=s.password;document.getElementById('editGrd').value=s.grade;document.getElementById('editCls').value=s.class;document.getElementById('modalEdit').style.display='block';}};
     window.saveEditStudent=async()=>{let id=document.getElementById('editId').value;await updateDoc(doc(db,"students",id),{index:document.getElementById('editIdx').value,name:document.getElementById('editNam').value,password:document.getElementById('editPwd').value,grade:document.getElementById('editGrd').value,class:document.getElementById('editCls').value});closeModal('modalEdit');fetchData();};
     window.delStudent=async()=>{if(confirm("Delete?"))await deleteDoc(doc(db,"students",document.getElementById('editId').value));closeModal('modalEdit');fetchData();};
-    window.addSingleStudent=async()=>{let i=document.getElementById('newIdx').value;if(students.some(s=>s.index==i))return alert("Index exists");await setDoc(doc(collection(db,"students")),{index:i,name:document.getElementById('newNam').value,grade:document.getElementById('newGrd').value,class:document.getElementById('newCls').value,password:document.getElementById('newPwd').value||"1234"});closeModal('modalAdd');fetchData();};
+    window.addSingleStudent=async()=>{let i=document.getElementById('newIdx').value;if(students.some(s=>s.index==i))return alert("Index exists");await addDoc(collection(db,"students"),{index:i,name:document.getElementById('newNam').value,grade:document.getElementById('newGrd').value,class:document.getElementById('newCls').value,password:document.getElementById('newPwd').value||"1234"});closeModal('modalAdd');fetchData();};
     window.saveSingle=async(id)=>{const i=document.getElementById('itemSelect').value,v=document.querySelector(`.v-in[data-id="${id}"]`).value;await updateDoc(doc(db,"students",id),{[i]:v});showToast("Saved");};
     window.addMaterial=async()=>{await addDoc(collection(db,"materials"),{title:document.getElementById('matTitle').value,link:document.getElementById('matLink').value});fetchData();};
     window.closeModal=(i)=>document.getElementById(i).style.display='none';
     window.resetBulk=()=>{document.getElementById('excelFile').value='';document.getElementById('bulkPreview').innerHTML='';parsedData=[];};
     window.resetResBulk=()=>{document.getElementById('resFile').value='';document.getElementById('resPreview').innerHTML='';parsedResData=[];};
+    
+    // EXPORT
+    window.saveNotice = saveNotice; window.deleteNotice = deleteNotice;
 </script>
 </body>
 </html>
