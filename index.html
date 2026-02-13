@@ -11,60 +11,41 @@
         .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); min-height: 85vh; border-top: 5px solid #10b981; }
         h1 { color: #059669; text-align: center; margin-bottom: 20px; font-size: 1.8rem; border-bottom: 2px dashed #a7f3d0; padding-bottom: 15px; }
         
-        /* Notice Board */
         .notice-board { background-color: #fffbeb; border: 2px solid #fcd34d; border-radius: 12px; padding: 15px; margin-bottom: 25px; display: none; }
         .notice-title { font-weight: bold; color: #d97706; margin-bottom: 5px; font-size: 16px; }
         
-        /* Cards & Inputs */
         .card { background: #fff; padding: 25px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .card-highlight { background: linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%); border: 1px solid #10b981; text-align: center; }
+        
         input, textarea { width: 100%; padding: 12px 15px; margin: 8px 0; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 16px; text-align: center; outline: none; transition: 0.3s; background: #f9fafb; }
         input:focus { border-color: #10b981; background: #fff; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
         
-        /* Buttons */
         .btn { width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; margin-top: 10px; transition: 0.2s; display: flex; justify-content: center; gap: 8px; align-items: center; }
-        .btn:hover { background: #059669; transform: translateY(-1px); }
         .btn-mat { background: linear-gradient(45deg, #f59e0b, #d97706); }
-        .btn-blue { background: #3b82f6; } 
-        .btn-logout { background: #ef4444; margin-top: 15px; }
-        .btn-upload { background: #0891b2; padding: 6px 12px; font-size: 12px; width: auto; margin: 0; border-radius: 6px; }
-
-        /* Results */
-        .result-header { background: linear-gradient(to right, #065f46, #10b981); color: white; padding: 25px; border-radius: 12px 12px 0 0; text-align: center; }
-        .result-section-title { font-size: 18px; font-weight: bold; color: #059669; border-bottom: 2px solid #a7f3d0; margin-bottom: 15px; margin-top: 25px; }
-        .result-item { display: flex; justify-content: space-between; align-items: center; background: white; border: 1px solid #e5e7eb; padding: 15px; margin-bottom: 10px; border-radius: 10px; border-right: 5px solid #d1d5db; }
-        .result-item.done { border-right-color: #10b981; background: #ecfdf5; }
-        .score-circle { width: 40px; height: 40px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; }
-        .grade-badge { padding: 4px 10px; border-radius: 6px; color: white; font-size: 12px; font-weight: bold; }
-        .g-A-star { background: #f59e0b; color:black; } .g-A { background: #10b981; color:white; } .g-B { background: #3b82f6; color:white; } .g-Fail { background: #ef4444; color:white; }
+        .btn-blue { background: #3b82f6; } .btn-logout { background: #ef4444; margin-top: 15px; }
         
-        .submitted-badge { background: #f59e0b; color: white; font-size: 11px; padding: 4px 8px; border-radius: 20px; display: inline-block; }
+        /* New Button Styles */
+        .btn-upload { background: #0891b2; padding: 5px 10px; font-size: 12px; width: auto; margin: 0; border-radius: 6px; color:white; border:none; cursor:pointer;}
+        .btn-view { background: #6366f1; padding: 5px 10px; font-size: 12px; width: auto; margin: 0; border-radius: 6px; color:white; border:none; cursor:pointer;}
 
-        /* Modals */
+        .result-item { display: flex; justify-content: space-between; align-items: center; background: white; border: 1px solid #e5e7eb; padding: 15px; margin-bottom: 10px; border-radius: 10px; border-right: 5px solid #d1d5db; }
+        .result-item.done { border-right-color: #10b981; background: #ecfdf5; } /* Green for Done */
+        .result-item.checking { border-right-color: #f59e0b; background: #fffbeb; } /* Yellow for Teacher Checking */
+        
+        /* Modals & Images */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
-        .modal-content { background-color: #fff; margin: 10% auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 500px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); border-top: 5px solid #10b981; }
-        .mat-link { display: flex; justify-content: space-between; align-items: center; padding: 15px; margin: 10px 0; background: #fff; color: #00695c; text-decoration: none; border-radius: 8px; font-weight: bold; border: 1px solid #b2dfdb; transition: 0.2s; }
+        .modal-content { background-color: #fff; margin: 10% auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 500px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); border-top: 5px solid #10b981; display:flex; flex-direction:column; max-height:85vh; overflow-y:auto;}
+        
+        /* Fix for Image Preview */
+        #imgPreview, #viewSubmissionImg { max-width: 100%; max-height: 250px; width: auto; object-fit: contain; display: none; margin: 10px auto; border-radius: 8px; border: 1px solid #ddd; }
+        
+        /* Status Badges */
+        .status-badge { font-size: 11px; padding: 4px 8px; border-radius: 20px; display: inline-block; font-weight: bold;}
+        .st-done { background: #dcfce7; color: #166534; }
+        .st-pending { background: #fef9c3; color: #854d0e; }
+        .st-fail { background: #fee2e2; color: #991b1b; }
+
         #toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #1f2937; color: white; padding: 12px 24px; border-radius: 50px; font-size: 14px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 2000; }
-
-        /* Upload Modal Image Fix */
-#imgPreview {
-    max-width: 100%;       /* ފުޅާމިން ކޮންޓްރޯލް ކުރަން */
-    max-height: 250px;     /* އުސްމިން ވަކިވަރަކަށްވުރެ ބޮޑުވިޔަ ނުދިނުމަށް */
-    width: auto;           /* ރޭޝިއޯ ހިފެހެއްޓުމަށް */
-    object-fit: contain;   /* ފޮޓޯ ނުފުއްޕާ ރީތިކޮށް ދެއްކުމަށް */
-    display: none;         /* ފުރަތަމަ ފޮރުވާފައި ބެހެއްޓުމަށް */
-    margin: 10px auto;     /* މެދަށް ގެނައުމަށް */
-    border-radius: 8px;
-    border: 1px solid #ddd;
-}
-
-/* Modal Content Scroll Fix */
-.modal-content {
-    max-height: 80vh;      /* ސްކްރީންގެ 80% އަށްވުރެ ބޮޑު ނުވާނެ */
-    overflow-y: auto;      /* ބޮޑުވެއްޖެނަމަ ސްކްރޯލް ކުރެވޭނެ */
-    display: flex;
-    flex-direction: column;
-}
     </style>
 </head>
 <body>
@@ -107,51 +88,36 @@
 </div>
 
 <!-- Upload Modal -->
-    <!-- Upload Modal -->
 <div id="uploadModal" class="modal">
     <div class="modal-content">
         <h3 style="color:#0891b2; margin-top:0;">📷 މަސައްކަތް ހުށަހެޅުން</h3>
         <p id="uploadWeekName" style="font-weight:bold; color:#555; margin-bottom:10px;"></p>
-        
-        <!-- Photo Preview Area -->
         <div style="border:2px dashed #ccc; padding:10px; border-radius:10px; margin-bottom:15px; text-align:center; background:#fafafa;">
             <input type="file" id="homeworkFile" accept="image/*" style="display:none" onchange="previewImage()">
-            
-            <button class="btn" style="background:#fff; color:#333; border:1px solid #ccc; width:auto; font-size:12px;" onclick="document.getElementById('homeworkFile').click()">
-                ފޮޓޯ ނެގުން / ގެލެރީން ނެގުން
-            </button>
-            
-            <!-- The Image Preview -->
-            <div style="text-align:center;">
-                <img id="imgPreview">
-            </div>
+            <button class="btn" style="background:#fff; color:#333; border:1px solid #ccc; width:auto; font-size:12px;" onclick="document.getElementById('homeworkFile').click()">ފޮޓޯ ނެގުން / ހޮވުން</button>
+            <div style="text-align:center;"><img id="imgPreview"></div>
         </div>
-        
-        <!-- Action Buttons -->
         <div style="margin-top:auto;">
-            <button class="btn" id="btnSendWork" onclick="uploadWork()" style="background:#0891b2;">🚀 ފޮނުއްވާ</button>
+            <button class="btn" id="btnSendWork" onclick="uploadWork()">🚀 ފޮނުއްވާ</button>
             <button class="btn" style="background:#9ca3af; margin-top:10px;" onclick="document.getElementById('uploadModal').style.display='none'">ކެންސަލް</button>
         </div>
     </div>
 </div>
-<div id="uploadModal" class="modal">
+
+<!-- View Submission Modal -->
+<div id="viewSubModal" class="modal">
     <div class="modal-content">
-        <h3 style="color:#0891b2;">📷 މަސައްކަތް ހުށަހެޅުން</h3>
-        <p id="uploadWeekName" style="font-weight:bold; color:#555;"></p>
-        <div style="border:2px dashed #ccc; padding:20px; border-radius:10px; margin:15px 0;">
-            <input type="file" id="homeworkFile" accept="image/*" style="display:none" onchange="previewImage()">
-            <button class="btn" style="background:#eee; color:#333;" onclick="document.getElementById('homeworkFile').click()">ފޮޓޯ ނެގުން / ހޮވުން</button>
-            <img id="imgPreview" style="max-width:100%; margin-top:10px; display:none; border-radius:8px;">
+        <h3 style="color:#6366f1; margin-top:0;">ހުށަހަޅާފައިވާ މަސައްކަތް</h3>
+        <p id="viewSubDate" style="color:#666; font-size:12px;"></p>
+        <div style="text-align:center; margin-bottom:15px;">
+            <img id="viewSubmissionImg">
         </div>
-        <button class="btn" id="btnSendWork" onclick="uploadWork()">🚀 ފޮނުއްވާ</button>
-        <button class="btn" style="background:#9ca3af; margin-top:10px;" onclick="document.getElementById('uploadModal').style.display='none'">Cancel</button>
+        <button class="btn" style="background:#9ca3af;" onclick="document.getElementById('viewSubModal').style.display='none'">ލައްޕާލާ</button>
     </div>
 </div>
 
-<!-- Password Modal -->
+<!-- Other Modals -->
 <div id="pwdModal" class="modal"><div class="modal-content"><h3 style="color:#3b82f6;">ޕާސްވޯޑް ސެޓްކުރުން</h3><p style="font-size:13px; color:#666;" id="pwdModalMsg">އާ ޕާސްވޯޑެއް ޖައްސަވާ</p><input type="text" id="newParentPass" placeholder="New Password"><button class="btn btn-blue" onclick="saveNewPassword()">💾 Save Password</button><button class="btn" id="btnClosePwd" style="background:#9ca3af; margin-top:10px;" onclick="document.getElementById('pwdModal').style.display='none'">Cancel</button></div></div>
-
-<!-- Materials Modal -->
 <div id="matModal" class="modal"><div class="modal-content"><h2 style="color:#10b981;">📚 ފިލާވަޅުތައް</h2><div id="matListParent" style="min-height:100px;">Loading...</div><button class="btn" style="background:#9ca3af; margin-top:15px;" onclick="document.getElementById('matModal').style.display='none'">Close</button></div></div>
 
 <div id="toast"></div>
@@ -160,9 +126,8 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getFirestore, collection, getDocs, doc, updateDoc, getDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-    // --- FIREBASE CONFIG ---
     const firebaseConfig = {
-      apiKey: "AIzaSyDSEHqUQIegVjhWKpRgpJybdPaVDVroVos",
+      piKey: "AIzaSyDSEHqUQIegVjhWKpRgpJybdPaVDVroVos",
   authDomain: "islam-portal-muthamin.firebaseapp.com",
   projectId: "islam-portal-muthamin",
   storageBucket: "islam-portal-muthamin.firebasestorage.app",
@@ -225,60 +190,85 @@
         document.getElementById('btnClosePwd').style.display = 'none';
     }
 
+    // DASHBOARD
     function loadDashboard(s) {
         document.getElementById('loginSection').style.display = 'none';
         document.getElementById('dashboardSection').style.display = 'block';
-        document.getElementById('studentHeader').innerHTML = `<div class="result-header"><h2 style="margin:0;">${s.name}</h2><div style="opacity:0.8; margin-top:5px; font-size:14px;">Index: ${s.index} | Class: ${s.grade}${s.class}</div></div>`;
+        document.getElementById('studentHeader').innerHTML = `
+            <div style="text-align:center; background: linear-gradient(to right, #065f46, #10b981); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
+                <h2 style="margin:0;">${s.name}</h2>
+                <div style="opacity:0.8; font-size:14px;">Index: ${s.index} | ${s.grade}${s.class}</div>
+            </div>`;
 
         let html = '<div style="padding:20px;">';
-        const getG = (val, itemName, defaultTotal) => { if(!val) return ''; let total = examConfig[itemName] ? parseInt(examConfig[itemName]) : defaultTotal; let g = calcGrade(val, total); return `<span class="grade-badge ${g.cls}">${g.lbl}</span>`; };
-
-        // WEEKLY WORK WITH UPLOAD
-        html += `<div class="result-section-title">ހަފްތާގެ މަސައްކަތް</div><div style="max-height:300px; overflow-y:auto; padding-right:5px;">`;
+        
+        // --- WEEKLY WORK SECTION ---
+        html += `<div style="font-size:18px;font-weight:bold;color:#059669;border-bottom:2px solid #a7f3d0;margin-bottom:15px;margin-top:10px;">ހަފްތާގެ މަސައްކަތް</div><div style="max-height:350px; overflow-y:auto; padding-right:5px;">`;
+        
         for(let i=45; i>=1; i--) { 
             let submission = s.submissions && s.submissions['Week'+i];
-            let status = s['Week'+i];
-            let btnHtml = '';
-            let statusHtml = '';
+            let status = s['Week'+i]; // Teacher's mark (e.g. 'ނިމިފައި')
+            
+            // Logic for visibility & buttons
+            let actionArea = '';
+            let itemClass = '';
 
+            // 1. Teacher Marked as Done
             if(status === 'ނިމިފައި') {
-                statusHtml = `<div style="color:#10b981; font-weight:bold;">✅ ނިމިއްޖެ</div>`;
-            } else {
-                if(submission) {
-                    statusHtml = `<span class="submitted-badge">⏳ Submitted</span>`;
-                } else {
-                    btnHtml = `<button class="btn btn-upload" onclick="openUploadModal('Week${i}')">📷 ފޮޓޯ</button>`;
+                itemClass = 'done';
+                actionArea = `<span class="status-badge st-done">✅ ނިމިއްޖެ</span>`;
+                // If there is a photo, let them see it too
+                if(submission) actionArea += ` <button class="btn-view" onclick="viewWork('Week${i}')">👁️ ބަލާލަން</button>`;
+            } 
+            // 2. Student Submitted (Waiting for Teacher)
+            else if(submission) {
+                itemClass = 'checking'; // Yellow background
+                actionArea = `<span class="status-badge st-pending">⏳ ޓީޗަރު ޗެކްކުރަނީ</span> 
+                              <button class="btn-view" onclick="viewWork('Week${i}')">👁️ ބަލާލަން</button>`;
+            }
+            // 3. Not Submitted / Incomplete
+            else {
+                // If teacher marked as 'incomplete', show red
+                if(status === 'ނުނިމޭ') {
+                    actionArea = `<span class="status-badge st-fail">❌ ނުނިމޭ</span> `;
+                } else if(status === 'ފުރިހަމައެއް ނުވޭ') {
+                    actionArea = `<span class="status-badge st-pending">⚠️ އިސްލާޙްކުރޭ</span> `;
                 }
-                if(status === 'ނުނިމޭ') statusHtml += `<div style="color:#ef4444;font-size:11px">ނުނިމޭ</div>`;
-                if(status === 'ފުރިހަމައެއް ނުވޭ') statusHtml += `<div style="color:#f59e0b;font-size:11px">އިސްލާޙްކުރޭ</div>`;
+                // Show Upload Button
+                actionArea += `<button class="btn-upload" onclick="openUploadModal('Week${i}')">📷 ފޮޓޯލާން</button>`;
             }
 
-            if(status || submission || i < 5) { // Show recent weeks or ones with data
-                 html += `<div class="result-item ${status==='ނިމިފައި'?'done':''}">
-                            <div><span style="font-weight:bold; color:#555;">Week ${i}</span>${s['Week'+i+'_note'] ? `<div style="font-size:12px; color:#888;">"${s['Week'+i+'_note']}"</div>`:''}</div>
-                            <div style="text-align:right;">${statusHtml} ${btnHtml}</div>
+            // Show item if it has status, submission, or is within last 5 weeks
+            if(status || submission || i < 5) {
+                 html += `<div class="result-item ${itemClass}">
+                            <div><span style="font-weight:bold; color:#555;">Week ${i}</span>
+                            ${s['Week'+i+'_note'] ? `<div style="font-size:12px; color:#888;">"${s['Week'+i+'_note']}"</div>`:''}</div>
+                            <div style="text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:5px;">${actionArea}</div>
                          </div>`;
             }
         }
-        html += `</div>`;
+        html += `</div>`; // End Weekly
 
-        // UNIT TESTS
-        html += `<div class="result-section-title">ޔުނިޓް ޓެސްޓް</div>`;
-        let hasTest = false; 
+        // --- EXAMS SECTION ---
+        html += `<div style="font-size:18px;font-weight:bold;color:#059669;border-bottom:2px solid #a7f3d0;margin-bottom:15px;margin-top:30px;">ޓެސްޓް & އެގްޒާމް</div>`;
+        // Helper
+        const getG = (val, total) => { 
+            if(!val) return ''; let g = calcGrade(val, total); 
+            return `<div style="display:flex;align-items:center;gap:5px;"><span style="font-size:12px;font-weight:bold;color:${g.col}">${g.lbl}</span><div class="score-circle">${val}</div></div>`; 
+        };
+
+        // Tests
         for(let i=1; i<=10; i++) { 
-            let v = s['UnitTest'+i]; if(v) { hasTest = true; html += `<div class="result-item"><span>Unit Test ${i}</span><div style="display:flex; align-items:center; gap:10px;">${getG(v, 'UnitTest'+i, 20)}<div class="score-circle">${v}</div></div></div>`; } 
+            let v = s['UnitTest'+i]; 
+            if(v) html += `<div class="result-item"><span>Unit Test ${i}</span>${getG(v, 20)}</div>`; 
         }
-        if(!hasTest) html += `<div style="color:#999; text-align:center;">No records</div>`;
-
-        // CA / EXAMS
-        html += `<div class="result-section-title">CA / Exam</div>`;
-        let hasCa = false; 
+        // CA
         for(let i=1; i<=4; i++) { 
-            let v = s['CA'+i]; if(v) { hasCa = true; html += `<div class="result-item"><span>CA / Exam ${i}</span><div style="display:flex; align-items:center; gap:10px;">${getG(v, 'CA'+i, 100)}<div class="score-circle" style="background:#e0f7fa; border-color:#00bcd4;color:#006064">${v}</div></div></div>`; } 
+            let v = s['CA'+i]; 
+            if(v) html += `<div class="result-item"><span>CA / Exam ${i}</span>${getG(v, 100)}</div>`; 
         }
-        if(!hasCa) html += `<div style="color:#999; text-align:center;">No records</div>`;
 
-        // MSG
+        // --- MESSAGE BOX ---
         html += `<div style="margin-top:30px; background:#f0fdf4; padding:15px; border-radius:10px; border:1px solid #bbf7d0;">
                     <div style="font-weight:bold; color:#166534; margin-bottom:10px;">މުދައްރިސަށް މެސެޖެއް:</div>
                     <textarea id="parentMsgInput" placeholder="ލިޔުއްވާ..." rows="3"></textarea>
@@ -314,9 +304,8 @@
         const fileInput = document.getElementById('homeworkFile');
         if(fileInput.files.length === 0) return alert("Please select an image");
         
-        const btn = document.getElementById('btnSendWork'); btn.innerText = "Uploading..."; btn.disabled = true;
+        const btn = document.getElementById('btnSendWork'); btn.innerText = "ފޮނުވަނީ..."; btn.disabled = true;
         
-        // Resize Image Logic
         const reader = new FileReader();
         reader.onload = (e) => {
             const img = new Image(); img.src = e.target.result;
@@ -331,17 +320,28 @@
                     await updateDoc(doc(db, "students", currentStudent.id), {
                         [`submissions.${currentUploadWeek}`]: { image: compressedBase64, date: new Date().toLocaleDateString('en-GB') }
                     });
-                    showToast("✅ Submitted Successfully!");
+                    showToast("✅ ހުށަހެޅިއްޖެ!");
                     document.getElementById('uploadModal').style.display = 'none';
                     // Refresh data
                     const snap = await getDoc(doc(db, "students", currentStudent.id));
                     currentStudent = { id: snap.id, ...snap.data() };
                     loadDashboard(currentStudent);
-                } catch(err) { console.error(err); alert("Error uploading"); }
+                } catch(err) { console.error(err); alert("Error"); }
                 btn.innerText = "🚀 ފޮނުއްވާ"; btn.disabled = false;
             };
         };
         reader.readAsDataURL(fileInput.files[0]);
+    };
+
+    // --- VIEW SUBMISSION LOGIC ---
+    window.viewWork = (weekId) => {
+        if(currentStudent.submissions && currentStudent.submissions[weekId]) {
+            const sub = currentStudent.submissions[weekId];
+            document.getElementById('viewSubmissionImg').src = sub.image;
+            document.getElementById('viewSubDate').innerText = "Uploaded: " + sub.date;
+            document.getElementById('viewSubmissionImg').style.display = "block";
+            document.getElementById('viewSubModal').style.display = "block";
+        }
     };
 
     // --- OTHER FEATURES ---
@@ -357,13 +357,17 @@
         try { await updateDoc(doc(db, "students", currentStudent.id), { password: newP }); showToast("Updated!"); document.getElementById('pwdModal').style.display = 'none'; currentStudent.password = newP; } catch(e) { alert("Error"); }
     };
 
-    window.logout = () => { currentStudent = null; document.getElementById('dashboardSection').style.display = 'none'; document.getElementById('loginSection').style.display = 'block'; document.getElementById('pPass').value = ""; };
+    window.logout = () => { currentStudent = null; document.getElementById('dashboardSection').style.display = 'none'; document.getElementById('loginSection').style.display = 'block'; document.getElementById('pPass').value = ""; document.getElementById('pIdx').value = ""; };
     window.openMaterials = () => { document.getElementById('matModal').style.display = "block"; document.getElementById('matListParent').innerHTML = materials.length ? materials.map(m=>`<a href="${m.link}" target="_blank" class="mat-link"><span>${m.title}</span><span>📥</span></a>`).join('') : "<p style='text-align:center;color:#999'>No materials</p>"; };
     
-    function calcGrade(m, t) { let p = (m/t)*100; if(isNaN(p)) return {lbl:'-', cls:''}; if(p>=90) return {lbl:'A*', cls:'g-A-star'}; if(p>=80) return {lbl:'A', cls:'g-A'}; if(p>=70) return {lbl:'B', cls:'g-B'}; return {lbl:'F', cls:'g-Fail'}; }
+    function calcGrade(m, t) {
+        let p = (m/t)*100; if(isNaN(p)) return {lbl:'-', col:'#ccc'};
+        if(p>=90) return {lbl:'A*', col:'#f59e0b'}; if(p>=80) return {lbl:'A', col:'#10b981'}; if(p>=70) return {lbl:'B', col:'#3b82f6'}; return {lbl:'F', col:'#ef4444'};
+    }
     function showToast(msg) { const t=document.getElementById('toast'); t.innerText=msg; t.style.opacity='1'; t.style.bottom='80px'; setTimeout(()=>t.style.opacity='0', 3000); }
     
-    window.sendParentMsg=sendParentMsg; window.saveNewPassword=saveNewPassword; window.logout=logout; window.openUploadModal=openUploadModal; window.previewImage=previewImage; window.uploadWork=uploadWork;
+    // EXPORT
+    window.sendParentMsg=sendParentMsg; window.saveNewPassword=saveNewPassword; window.logout=logout; window.openUploadModal=openUploadModal; window.previewImage=previewImage; window.uploadWork=uploadWork; window.viewWork=viewWork;
 </script>
 </body>
 </html>
