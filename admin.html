@@ -3,143 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Teacher Admin</title>
+    <title>Teacher Admin Panel</title>
+    <!-- SheetJS for Excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
         * { box-sizing: border-box; font-family: "Faruma", sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #f0fdfa; margin: 0; padding: 15px; text-align: right; color: #333; font-size: 16px; }
+        body { background-color: #f0fdfa; margin: 0; padding: 20px; text-align: right; color: #333; }
+        .container { max-width: 1100px; margin: 0 auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        h1 { color: #0d9488; text-align: center; border-bottom: 2px solid #e0f2f1; padding-bottom: 10px; margin-top: 0; }
         
-        /* Layout */
-        .container { max-width: 1100px; margin: 0 auto; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); padding-bottom: 80px; }
-        h1 { color: #0d9488; text-align: center; border-bottom: 2px solid #e0f2f1; padding-bottom: 10px; margin-top: 0; font-size: 1.4rem; }
-        
-        /* Navigation Tabs (Scrollable on mobile) */
-        .nav-menu { display: flex; gap: 8px; margin-bottom: 20px; background: #ccfbf1; padding: 8px; border-radius: 12px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
-        .nav-btn { flex: 0 0 auto; padding: 10px 20px; border: none; background: rgba(255,255,255,0.8); border-radius: 8px; cursor: pointer; color: #0f766e; font-weight: bold; font-size: 14px; }
-        .nav-btn.active { background: #0d9488; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .badge-count { background: #ef4444; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; position: absolute; top: 0; right: 0; }
+        /* Navigation */
+        .nav-menu { display: flex; gap: 10px; margin-bottom: 20px; background: #ccfbf1; padding: 10px; border-radius: 10px; overflow-x: auto; }
+        .nav-btn { flex: 1; padding: 12px; border: none; background: white; border-radius: 8px; cursor: pointer; color: #0f766e; font-weight: bold; font-size: 14px; white-space: nowrap; transition: 0.2s; position: relative;}
+        .nav-btn.active { background: #0d9488; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .badge-count { background: #ef4444; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; position: absolute; top: 5px; right: 5px; display: none; }
 
-        /* Sections & Cards */
         .section { display: none; animation: fadeIn 0.3s; }
         .section.active { display: block; }
-        .card { border: 1px solid #f1f5f9; padding: 15px; border-radius: 12px; margin-bottom: 15px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
-
-        /* --- TABLE & INPUT FIXES FOR MOBILE --- */
-        .table-container { overflow-x: auto; border-radius: 10px; border: 1px solid #e2e8f0; margin-top: 10px; -webkit-overflow-scrolling: touch; }
-        table { width: 100%; border-collapse: collapse; min-width: 100%; }
+        .card { border: 1px solid #eee; padding: 15px; border-radius: 10px; margin-bottom: 10px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
         
-        th { background: #0f766e; color: white; padding: 12px 8px; position: sticky; top: 0; font-size: 14px; white-space: nowrap; z-index: 10; }
-        td { padding: 8px; border-bottom: 1px solid #f1f5f9; text-align: center; vertical-align: middle; }
-        tr:nth-child(even) { background-color: #f8fafc; }
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: center; font-size: 14px; }
+        th { background: #0d9488; color: white; position: sticky; top: 0; }
+        tr:hover { background: #f9fafb; }
 
-        /* Fix Inputs inside table */
-        input, select, textarea { 
-            padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; 
-            width: 100%; text-align: center; margin: 0; outline: none; 
-            font-size: 14px; height: 40px; background: #fff; 
-        }
+        /* Inputs & Buttons */
+        input, select, textarea { padding: 10px; border: 1px solid #ccc; border-radius: 6px; width: 100%; text-align: center; margin: 2px 0; outline: none; font-family: inherit; }
+        .v-in { font-weight: bold; border-color: #b2dfdb; background: white; }
         
-        /* Important: Ensure dropdowns/inputs are wide enough to see text */
-        .v-in { 
-            min-width: 140px; /* Minimum width for status dropdown */
-            font-weight: bold; 
-            color: #334155;
-        }
-        input.v-in { min-width: 80px; } /* Marks input can be smaller */
-        .n-in { min-width: 150px; text-align: right; } /* Note input */
-
-        /* Buttons */
-        .btn { padding: 12px; background: #0d9488; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; font-size: 14px; display:flex; justify-content:center; align-items:center; gap:5px; }
-        .btn-orange { background: #f97316; } .btn-red { background: #ef4444; }
-        .btn-save { position: fixed; bottom: 20px; right: 20px; left: 20px; width: calc(100% - 40px); z-index: 100; max-width: 1060px; margin: 0 auto; box-shadow: 0 5px 20px rgba(0,0,0,0.3); border-radius: 50px; height: 50px; font-size: 16px; }
+        .btn { padding: 10px 20px; background: #0d9488; color: white; border: none; border-radius: 6px; cursor: pointer; margin-top: 5px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .btn-red { background: #ef4444; } .btn-orange { background: #f97316; } .btn-save { position: fixed; bottom: 20px; right: 20px; left: 20px; width: calc(100% - 40px); z-index: 100; max-width: 1060px; margin: 0 auto; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 
         /* Login & Modals */
-        #loginOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background: #0f766e; z-index: 5000; display: flex; align-items: center; justify-content: center; }
-        .login-box { background: white; padding: 30px; border-radius: 15px; width: 85%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; backdrop-filter: blur(3px); }
-        .modal-content { background:white; margin:10% auto; padding:20px; width:90%; max-width:500px; border-radius: 15px; max-height: 80vh; overflow-y: auto; }
-
-        /* Submissions */
-        .sub-card { border: 1px solid #e2e8f0; padding: 12px; border-radius: 10px; margin-bottom: 10px; background: #fff; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-        .sub-img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd; background: #eee; }
+        #loginOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background: #004d40; z-index: 5000; display: flex; align-items: center; justify-content: center; }
+        .login-box { background: white; padding: 30px; border-radius: 10px; width: 300px; text-align: center; }
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; backdrop-filter: blur(2px); }
+        .modal-content { background:white; margin:5% auto; padding:25px; width:90%; max-width:500px; border-radius:15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 90vh; overflow-y:auto;}
+        
+        .sub-card { border: 1px solid #b2dfdb; padding: 15px; border-radius: 8px; margin-bottom: 10px; background: #f0fdfa; display: flex; align-items: center; justify-content: space-between; }
+        .sub-img { width: 50px; height: 50px; object-fit: cover; border-radius: 5px; border: 1px solid #ccc; cursor: pointer; }
+        
+        /* Notice Items */
+        .notice-item { background: #fffbeb; border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #0d9488; display:flex; justify-content:space-between; align-items:flex-start; text-align:left; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
 
         @keyframes fadeIn { from {opacity:0; transform: translateY(5px);} to {opacity:1; transform: translateY(0);} }
-        #toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: #334155; color: white; padding: 10px 20px; border-radius: 30px; opacity: 0; pointer-events: none; z-index: 2000; transition: 0.3s; font-size: 13px; }
+        #toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 24px; border-radius: 30px; opacity: 0; pointer-events: none; z-index: 2000; transition: 0.3s; }
     </style>
 </head>
 <body>
 
-<div id="loginOverlay"><div class="login-box"><h2 style="color:#0d9488;">Admin Login</h2><input type="password" id="adminPass" placeholder="Password"><button onclick="checkLogin()" class="btn">Login</button></div></div>
+<!-- LOGIN -->
+<div id="loginOverlay"><div class="login-box"><h2 style="color:#00796b;">Admin Login</h2><input type="password" id="adminPass" placeholder="Password"><button onclick="checkLogin()" class="btn">Login</button></div></div>
 
 <div class="container" id="mainContainer" style="display:none;">
     <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h1 style="border:none; margin:0; font-size:1.3rem;">Admin Dashboard</h1>
-        <button onclick="location.reload()" style="background:none; border:none; color:#ef4444; font-weight:bold; cursor:pointer;">🔒</button>
+        <h1 style="border:none; margin:0;">Admin Dashboard</h1>
+        <button onclick="location.reload()" style="background:none; border:none; color:#ef4444; font-weight:bold; cursor:pointer;">🔒 Logout</button>
     </div>
     
     <div class="nav-menu">
         <button class="nav-btn active" onclick="switchTab('db')">📁 Students</button>
         <button class="nav-btn" onclick="switchTab('marks')">📝 Marks</button>
-        <button class="nav-btn" onclick="switchTab('subs')" id="btnSubs" style="position:relative">🔔 Subs <span class="badge-count" id="subCount">0</span></button>
+        <button class="nav-btn" onclick="switchTab('subs')" id="btnSubs">🔔 Submissions <span class="badge-count" id="subCount">0</span></button>
         <button class="nav-btn" onclick="switchTab('notice')">📢 Notice</button>
     </div>
 
-    <!-- 1. DB -->
-    <div id="tab-db" class="section active">
-        <div style="display:flex; gap:10px; margin-bottom:10px;">
-            <button class="btn" style="flex:1; background:#43a047;" onclick="openStudentModal()">+ Add</button>
-            <button class="btn btn-orange" style="flex:1;" onclick="openBulkModal()">📗 Excel</button>
-        </div>
-        
-        <!-- Filter -->
-        <div style="background:#f1f5f9; padding:10px; border-radius:10px; margin-bottom:10px;">
-            <small style="font-weight:bold; color:#64748b;">Filter:</small>
-            <div id="gradeFilter" style="display:flex; gap:5px; overflow-x:auto; padding-bottom:5px;"></div>
-            <div id="classFilter" style="display:flex; gap:5px; overflow-x:auto;"></div>
-        </div>
+    <!-- FILTER -->
+    <div class="filter-section" style="background:#f0fdfa; padding:15px; border-radius:10px; border:1px dashed #0d9488; margin-bottom:20px;">
+        <small style="color:#0f766e; font-weight:bold;">Filter:</small>
+        <div id="gradeFilter" style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:5px;"></div>
+        <div id="classFilter" style="display:flex; gap:5px; flex-wrap:wrap;"></div>
+    </div>
 
-        <div class="table-container">
-            <table id="studentTable">
-                <thead><tr><th>Idx</th><th>Name</th><th>Cls</th><th>Pass</th><th>Act</th></tr></thead>
-                <tbody><tr><td colspan="5">Loading...</td></tr></tbody>
-            </table>
+    <!-- 1. DB (STUDENTS) -->
+    <div id="tab-db" class="section active">
+        <div style="display:flex; gap:10px; margin-bottom:15px;">
+            <button class="btn" style="flex:1; background:#43a047;" onclick="openStudentModal()">+ Add Student</button>
+            <button class="btn btn-orange" style="flex:1;" onclick="openBulkModal()">📗 Excel Import</button>
         </div>
+        <div class="card" style="padding:0; overflow:hidden;"><div style="overflow-x:auto;"><table id="studentTable"><thead><tr><th>Index</th><th>Name</th><th>Grade</th><th>Password</th><th>Action</th></tr></thead><tbody><tr><td colspan="5">Loading...</td></tr></tbody></table></div></div>
     </div>
 
     <!-- 2. MARKS -->
     <div id="tab-marks" class="section">
-        <div class="card" style="background:#f8fafc;">
-            <div style="display:flex; gap:5px; overflow-x:auto; margin-bottom:10px; padding-bottom:5px;">
-                <button class="btn" style="width:auto; padding:8px 15px; font-size:12px; margin:0;" onclick="setMode('work')">Weekly</button>
-                <button class="btn" style="width:auto; padding:8px 15px; font-size:12px; margin:0;" onclick="setMode('test')">Tests</button>
-                <button class="btn" style="width:auto; padding:8px 15px; font-size:12px; margin:0;" onclick="setMode('ca')">CA</button>
+        <div class="card" style="background:#f0fdfa;">
+            <div style="display:flex; gap:10px; overflow-x:auto; margin-bottom:10px;">
+                <button class="btn" style="width:auto; padding:5px 15px;" onclick="setMode('work')">Weekly</button>
+                <button class="btn" style="width:auto; padding:5px 15px;" onclick="setMode('test')">Unit Tests</button>
+                <button class="btn" style="width:auto; padding:5px 15px;" onclick="setMode('ca')">CA</button>
             </div>
-            
-            <div style="display:flex; flex-direction:column; gap:5px;">
-                <label style="font-size:12px; font-weight:bold; color:#64748b;">Select Item:</label>
-                <div style="display:flex; gap:5px;">
-                    <select id="itemSelect" onchange="renderMarksTable()" style="flex:1;"></select>
-                    <button class="btn" style="width:auto; margin:0; padding:0 12px; background:#00695c;" onclick="openResultModal()">📤</button>
-                </div>
-                
-                <div id="totalDiv" style="display:none; align-items:center; gap:5px; margin-top:5px;">
-                    <span style="font-size:12px;">Total:</span>
-                    <input type="number" id="totalMarks" value="20" style="padding:5px; width:60px; height:35px;">
-                    <button onclick="saveTotalMark()" style="width:auto; padding:5px 10px; margin:0; height:35px;">💾</button>
-                </div>
+            <div style="display:flex; gap:10px; align-items:flex-end;">
+                <div style="flex:1;"><small>Item:</small><div style="display:flex; gap:5px;"><select id="itemSelect" onchange="renderMarksTable()"></select><button class="btn" style="width:auto; margin:0; padding:0 12px; background:#00695c;" onclick="openResultModal()">📤</button></div></div>
+                <div id="totalDiv" style="width:100px; display:none;"><small>Total:</small><div style="display:flex; gap:2px;"><input type="number" id="totalMarks" value="20" style="padding:8px;"><button onclick="saveTotalMark()" style="width:auto; padding:0 10px; margin:0;">💾</button></div></div>
             </div>
         </div>
-
-        <div class="table-container">
-            <table id="marksTable">
-                <thead><tr><th>Idx</th><th>Name</th><th>Mark/Status</th><th>Msg</th><th>Save</th></tr></thead>
-                <tbody id="marksBody"></tbody>
-            </table>
-        </div>
-        
-        <button class="btn btn-save" id="sBtn" onclick="saveTeacherData()">💾 Save All Changes</button>
-        <div style="height:60px;"></div>
+        <div class="card" style="padding:0; overflow:hidden;"><div style="overflow-x:auto;"><table id="marksTable"><thead><tr><th>Index</th><th>Name</th><th>Mark / Status</th><th>Save</th></tr></thead><tbody id="marksBody"></tbody></table></div></div>
+        <button class="btn btn-save" id="sBtn" onclick="saveTeacherData()">💾 Save All Changes</button><div style="height:60px;"></div>
     </div>
 
     <!-- 3. SUBMISSIONS -->
@@ -150,30 +111,46 @@
         </div>
     </div>
 
-    <!-- 4. NOTICE -->
+    <!-- 4. NOTICE BOARD (IMPROVED) -->
     <div id="tab-notice" class="section">
         <div class="card">
-            <h3>Update Notice</h3>
-            <select id="noticeType" style="margin-bottom:5px; font-weight:bold;">
+            <h3 style="margin-top:0;">Update Notice Board</h3>
+            
+            <!-- Hidden ID field for Editing -->
+            <input type="hidden" id="noticeId">
+
+            <label style="display:block; text-align:left; font-size:12px; margin-bottom:5px;">Type:</label>
+            <select id="noticeType" style="margin-bottom:10px; font-weight:bold;">
                 <option value="normal">📢 Normal</option>
                 <option value="urgent">🚨 Urgent</option>
                 <option value="event">🎉 Event</option>
                 <option value="quote">💡 Quote</option>
             </select>
+
             <textarea id="adminNoticeText" rows="4" placeholder="Write notice here..."></textarea>
-            <button class="btn" onclick="saveNotice()">Publish</button>
+            
+            <div style="display:flex; gap:5px;">
+                <button class="btn" id="btnSaveNotice" onclick="saveNotice()">Publish Notice</button>
+                <button class="btn btn-red" id="btnCancelNotice" onclick="cancelNoticeEdit()" style="display:none;">Cancel</button>
+            </div>
         </div>
-        <div class="card"><h3>Materials</h3><div style="display:flex;gap:5px"><input id="matTitle" placeholder="Title"><input id="matLink" placeholder="Link"></div><button class="btn" onclick="addMaterial()">+ Add</button><hr><div id="matList"></div></div>
+        
+        <div class="card">
+            <h3 style="margin-top:0;">Active Notices</h3>
+            <div id="activeNoticesList">Loading...</div>
+        </div>
+
+        <div class="card"><h3>Materials</h3><div style="display:flex; gap:5px;"><input id="matTitle" placeholder="Title"><input id="matLink" placeholder="Link"></div><button class="btn" onclick="addMaterial()">+ Add</button><hr><div id="matList"></div></div>
     </div>
 </div>
 
 <!-- MODALS -->
-<div id="modalAdd" class="modal"><div class="modal-content"><h3>Add Student</h3><input id="newIdx" type="number" placeholder="Index"><input id="newNam" placeholder="Name"><div style="display:flex;gap:5px"><input id="newGrd" placeholder="Grade"><input id="newCls" placeholder="Class"></div><input id="newPwd" value="1234"><button class="btn" onclick="addSingleStudent()">Add</button><button class="btn btn-red" onclick="closeModal('modalAdd')">Cancel</button></div></div>
+<div id="modalAdd" class="modal"><div class="modal-content"><h3>Add Student</h3><input id="newIdx" placeholder="Index"><input id="newNam" placeholder="Name"><div style="display:flex;gap:5px"><input id="newGrd" placeholder="Grade"><input id="newCls" placeholder="Class"></div><input id="newPwd" value="1234"><button class="btn" onclick="addSingleStudent()">Add</button><button class="btn btn-red" onclick="closeModal('modalAdd')">Cancel</button></div></div>
 <div id="modalEdit" class="modal"><div class="modal-content"><h3>Edit</h3><input type="hidden" id="editId"><input id="editIdx"><input id="editNam"><input id="editPwd"><div style="display:flex;gap:5px"><input id="editGrd"><input id="editCls"></div><button class="btn" onclick="saveEditStudent()">Update</button><hr><button class="btn btn-red" onclick="delStudent()">Delete</button><button class="btn" style="background:#ccc;color:#333" onclick="closeModal('modalEdit')">Close</button></div></div>
 <div id="modalBulk" class="modal"><div class="modal-content"><h3>Excel Import</h3><input type="file" id="excelFile"><div id="bulkPreview" style="height:100px;overflow:auto;"></div><button class="btn" onclick="processBulk()">Confirm</button><button class="btn btn-red" onclick="closeModal('modalBulk')">Cancel</button></div></div>
 <div id="modalResult" class="modal"><div class="modal-content"><h3>Marks Excel</h3><p id="resTarget"></p><input type="file" id="resFile"><div id="resPreview" style="height:100px;overflow:auto;"></div><button class="btn" onclick="processResultBulk()">Upload</button><button class="btn btn-red" onclick="closeModal('modalResult')">Cancel</button></div></div>
-<div id="modalImg" class="modal" onclick="this.style.display='none'"><div style="display:flex;justify-content:center;align-items:center;height:100%;"><img id="fullImg" style="max-width:90%;max-height:80%;border-radius:10px;"></div></div>
-<div id="msgModal" class="modal"><div class="modal-content"><h3>Message</h3><div id="msgContent" style="text-align:right;background:#f1f8e9;padding:10px;border-radius:8px;"></div><button class="btn" style="background:#ccc;color:#333" onclick="closeModal('msgModal')">Close</button></div></div>
+<div id="modalImg" class="modal" onclick="this.style.display='none'"><div style="display:flex;justify-content:center;align-items:center;height:100%;"><img id="fullImg" style="max-width:90%;max-height:90%;border-radius:10px;"></div></div>
+<div id="msgModal" class="modal"><div class="modal-content"><h3>Message</h3><div id="msgContent" style="text-align:right;background:#f1f8e9;padding:10px;"></div><button class="btn" style="background:#ccc" onclick="closeModal('msgModal')">Close</button></div></div>
 
 <div id="toast"></div>
 
@@ -181,6 +158,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, deleteField, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
+    // --- CONFIG (REPLACE WITH YOUR KEYS) ---
     const firebaseConfig = {
       apiKey: "AIzaSyDSEHqUQIegVjhWKpRgpJybdPaVDVroVos",
   authDomain: "islam-portal-muthamin.firebaseapp.com",
@@ -197,71 +175,125 @@
     // --- LOGIN ---
     window.checkLogin = () => { if(document.getElementById('adminPass').value === "123") { document.getElementById('loginOverlay').style.display='none'; document.getElementById('mainContainer').style.display='block'; fetchData(); } else alert("Wrong Password"); };
 
+    // --- DATA FETCHING ---
     async function fetchData() {
         try {
             const sSnap = await getDocs(collection(db, "students")); students = []; sSnap.forEach(d => students.push({id: d.id, ...d.data()}));
             const mSnap = await getDocs(collection(db, "materials")); materials = []; mSnap.forEach(d => materials.push({id: d.id, ...d.data()}));
+            
+            // Fetch Notices (New Collection)
+            const nSnap = await getDocs(collection(db, "notices")); 
+            notices = []; 
+            nSnap.forEach(d => notices.push({id: d.id, ...d.data()}));
+            
             try { const c = await getDoc(doc(db, "settings", "examConfig")); if(c.exists()) examConfig = c.data(); } catch(e){}
             updateFilters(); refreshActiveView(); updateSubCount();
         } catch(e) { console.error(e); }
     }
 
-    // --- RENDER TABLE ---
-    window.renderMarksTable = () => {
-        const item = document.getElementById('itemSelect').value;
-        let tot = examConfig[item] ? parseInt(examConfig[item]) : (mode==='test'?20:100);
-        if(mode !== 'work') document.getElementById('totalMarks').value = tot;
+    // --- NOTICE BOARD FUNCTIONS (FIXED) ---
+    window.saveNotice = async () => {
+        const id = document.getElementById('noticeId').value;
+        const txt = document.getElementById('adminNoticeText').value;
+        const type = document.getElementById('noticeType').value;
 
-        const list = getFiltered();
-        document.getElementById('marksBody').innerHTML = list.length ? list.map(s => {
-            let val = s[item] || "";
-            let note = s[item + "_note"] || "";
-            let hasMsg = s.parentMessages && s.parentMessages.length > 0;
-            
-            // Fixed width inputs for mobile
-            let input = mode === 'work' ? 
-                `<select class="v-in" data-id="${s.id}" data-orig="${val}">
-                    <option value="">-</option>
-                    <option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option>
-                    <option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option>
-                    <option value="ފުރިހަމައެއް ނުވޭ" ${val=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމައެއް ނުވޭ</option>
-                 </select>` : 
-                `<input type="number" class="v-in" data-id="${s.id}" data-orig="${val}" value="${val}" placeholder="0" oninput="updRow(this,${tot})">`;
+        if(!txt.trim()) return alert("Write something");
+        const btn = document.getElementById('btnSaveNotice'); btn.innerText = "Saving...";
 
-            let msgBtn = hasMsg ? `<button onclick='viewMessages(${JSON.stringify(s.parentMessages)})' style="border:none;background:#ffeb3b;border-radius:50%;width:25px;height:25px;cursor:pointer">📩</button>` : `-`;
-            
-            return `<tr>
-                <td>${s.index}</td>
-                <td><div style="font-size:13px;line-height:1.2;white-space:normal;max-width:100px;margin:0 auto;">${s.name}</div></td>
-                <td>${input}</td>
-                <td>${msgBtn}</td>
-                <td><button class="btn" style="width:auto;padding:5px;margin:0;font-size:16px;" onclick="saveSingle('${s.id}')">💾</button></td>
-            </tr>`;
-        }).join('') : '<tr><td colspan="5">No data</td></tr>';
+        try {
+            if(id) {
+                // Update
+                await updateDoc(doc(db, "notices", id), { text: txt, type: type, date: new Date().toLocaleDateString('dv-MV') });
+                showToast("Updated!");
+            } else {
+                // Add New
+                await addDoc(collection(db, "notices"), { text: txt, type: type, date: new Date().toLocaleDateString('dv-MV'), timestamp: Date.now() });
+                showToast("Published!");
+            }
+            cancelNoticeEdit();
+            fetchData();
+        } catch(e) { console.error(e); alert("Error"); }
+        btn.innerText = "Publish Notice";
     };
 
-    // --- OTHER LOGIC (Keep previous functional logic) ---
-    function updateSubCount() { let count = 0; students.forEach(s => { if(s.submissions) count += Object.keys(s.submissions).length; }); const badge = document.getElementById('subCount'); badge.innerText = count; badge.style.display = count > 0 ? 'inline-block' : 'none'; }
-    window.renderSubmissions = () => { const list = document.getElementById('subsList'); let html = ''; let hasData = false; students.forEach(s => { if(s.submissions) { Object.keys(s.submissions).forEach(week => { hasData = true; const sub = s.submissions[week]; html += `<div class="sub-card"><div style="display:flex;gap:10px;align-items:center;"><img src="${sub.image}" class="sub-img" onclick="showImg('${sub.image}')"><div style="text-align:left;"><strong>${s.name}</strong> (${s.index})<br><span style="font-size:12px;color:#666;">${week} - ${sub.date}</span></div></div><button class="btn" style="width:auto;padding:5px 15px;" onclick="acceptSubmission('${s.id}','${week}')">✅</button></div>`; }); } }); list.innerHTML = hasData ? html : `<p style="text-align:center; color:#999;">No pending submissions</p>`; };
-    window.showImg = (src) => { document.getElementById('fullImg').src = src; document.getElementById('modalImg').style.display='block'; };
-    window.acceptSubmission = async (sid, week) => { if(confirm("Accept & Mark as Done?")) { try { await updateDoc(doc(db, "students", sid), { [week]: 'ނިމިފައި', [`submissions.${week}`]: deleteField() }); showToast("Accepted!"); fetchData(); } catch(e) { console.error(e); } } };
-    window.saveNotice = async () => { const txt = document.getElementById('adminNoticeText').value; if(!txt) return alert("Empty"); await addDoc(collection(db, "notices"), { text: txt, type: document.getElementById('noticeType').value, date: new Date().toLocaleDateString('dv-MV'), timestamp: Date.now() }); showToast("Published"); };
+    window.editNotice = (id, text, type) => {
+        document.getElementById('noticeId').value = id;
+        document.getElementById('adminNoticeText').value = text;
+        document.getElementById('noticeType').value = type;
+        document.getElementById('btnSaveNotice').innerText = "Update Notice";
+        document.getElementById('btnSaveNotice').style.background = "#f97316";
+        document.getElementById('btnCancelNotice').style.display = "block";
+        document.getElementById('tab-notice').scrollIntoView({behavior:'smooth'});
+    };
+
+    window.cancelNoticeEdit = () => {
+        document.getElementById('noticeId').value = "";
+        document.getElementById('adminNoticeText').value = "";
+        document.getElementById('noticeType').value = "normal";
+        document.getElementById('btnSaveNotice').innerText = "Publish Notice";
+        document.getElementById('btnSaveNotice').style.background = "#0d9488";
+        document.getElementById('btnCancelNotice').style.display = "none";
+    };
+
+    window.deleteNotice = async (id) => {
+        if(confirm("Delete Notice?")) {
+            await deleteDoc(doc(db, "notices", id));
+            showToast("Deleted");
+            fetchData();
+        }
+    };
+
+    function renderNotices() {
+        notices.sort((a,b) => b.timestamp - a.timestamp);
+        const list = document.getElementById('activeNoticesList');
+        if(!list) return;
+        
+        list.innerHTML = notices.length ? notices.map(n => `
+            <div class="notice-item" style="border-left-color:${getColorByType(n.type)}">
+                <div style="flex:1;">
+                    <div style="font-size:12px;font-weight:bold;color:${getColorByType(n.type)};margin-bottom:4px;">
+                        ${getIconByType(n.type)} ${n.type.toUpperCase()} <span style="color:#999;font-weight:normal;">- ${n.date}</span>
+                    </div>
+                    <div style="font-size:13px;line-height:1.4;white-space:pre-wrap;">${n.text}</div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:5px;margin-left:10px;">
+                    <button class="btn btn-orange" style="width:auto;padding:5px 10px;margin:0;font-size:12px;" onclick='editNotice("${n.id}", ${JSON.stringify(n.text)}, "${n.type}")'>✏️</button>
+                    <button class="btn btn-red" style="width:auto;padding:5px 10px;margin:0;font-size:12px;" onclick="deleteNotice('${n.id}')">🗑️</button>
+                </div>
+            </div>
+        `).join('') : '<p style="text-align:center;color:#999">No active notices</p>';
+    }
+
+    function getColorByType(t) { return t=='urgent'?'#ef4444':(t=='event'?'#9333ea':(t=='quote'?'#22c55e':'#0d9488')); }
+    function getIconByType(t) { return t=='urgent'?'🚨':(t=='event'?'🎉':(t=='quote'?'💡':'📢')); }
+
+    // --- OTHER STANDARD FUNCTIONS ---
     window.switchTab = (id) => { document.querySelectorAll('.section').forEach(d => d.classList.remove('active')); document.getElementById('tab-'+id).classList.add('active'); document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); event.target.classList.add('active'); refreshActiveView(); };
-    function refreshActiveView() { if(document.getElementById('tab-db').classList.contains('active')) renderStudentTable(); if(document.getElementById('tab-marks').classList.contains('active')) renderMarksTable(); if(document.getElementById('tab-subs').classList.contains('active')) renderSubmissions(); if(document.getElementById('tab-notice').classList.contains('active')) renderMaterials(); }
+    function refreshActiveView() { if(document.getElementById('tab-db').classList.contains('active')) renderStudentTable(); if(document.getElementById('tab-marks').classList.contains('active')) renderMarksTable(); if(document.getElementById('tab-subs').classList.contains('active')) renderSubmissions(); if(document.getElementById('tab-notice').classList.contains('active')) {renderNotices(); renderMaterials();} }
+    
+    // (Filters, Tables, Excel, Submissions logic same as before)
     window.setGradeFilter=(g)=>{selGrade=g;selClass='All';updateFilters();refreshActiveView();}; window.setClassFilter=(c)=>{selClass=c;updateFilters();refreshActiveView();};
     function updateFilters(){const gs=[...new Set(students.map(s=>s.grade))].filter(Boolean).sort(); document.getElementById('gradeFilter').innerHTML=`<button style="padding:5px 10px;border:1px solid #b2dfdb;background:${selGrade=='All'?'#0d9488':'#fff'};color:${selGrade=='All'?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setGradeFilter('All')">All</button>`+gs.map(g=>`<button style="padding:5px 10px;border:1px solid #b2dfdb;background:${selGrade==g?'#0d9488':'#fff'};color:${selGrade==g?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setGradeFilter('${g}')">${g}</button>`).join(''); if(selGrade!=='All'){const cs=[...new Set(students.filter(s=>s.grade==selGrade).map(s=>s.class))].filter(Boolean).sort(); document.getElementById('classFilter').innerHTML=`<button style="padding:5px 10px;border:1px solid #b2dfdb;background:${selClass=='All'?'#0d9488':'#fff'};color:${selClass=='All'?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setClassFilter('All')">All</button>`+cs.map(c=>`<button style="padding:5px 10px;border:1px solid #b2dfdb;background:${selClass==c?'#0d9488':'#fff'};color:${selClass==c?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setClassFilter('${c}')">${c}</button>`).join('');}else document.getElementById('classFilter').innerHTML="";}
     function getFiltered(){let l=students;if(selGrade!=='All')l=l.filter(s=>String(s.grade)==String(selGrade));if(selClass!=='All')l=l.filter(s=>String(s.class)==String(selClass));return l.sort((a,b)=>(parseInt(a.index)||0)-(parseInt(b.index)||0));}
     window.renderStudentTable=()=>{const l=getFiltered();document.querySelector('#studentTable tbody').innerHTML=l.length?l.map(s=>`<tr><td>${s.index}</td><td>${s.name}</td><td>${s.grade}${s.class}</td><td>${s.password||'1234'}</td><td><button class="btn btn-orange" style="padding:5px;width:auto;margin:0" onclick="openEdit('${s.id}')">✏️</button></td></tr>`).join(''):'<tr><td colspan="5">No data</td></tr>';};
+    window.renderMarksTable=()=>{const item=document.getElementById('itemSelect').value; let tot=examConfig[item]?parseInt(examConfig[item]):(mode==='test'?20:100); if(mode!=='work')document.getElementById('totalMarks').value=tot; document.getElementById('marksBody').innerHTML=getFiltered().map(s=>{let v=s[item]||"",n=s[item+"_note"]||"",hasMsg=s.parentMessages&&s.parentMessages.length>0; let inp=mode==='work'?`<select class="v-in" data-id="${s.id}" data-orig="${v}"><option value="">-</option><option value="ނިމިފައި" ${v=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${v=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމައެއް ނުވޭ" ${v=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމަ ނުވޭ</option></select>`:`<input type="number" class="v-in" data-id="${s.id}" data-orig="${v}" value="${v}" placeholder="0" oninput="updRow(this,${tot})">`; let gh=mode!=='work'&&v?calcGradeHtml(v,tot):''; let mb=hasMsg?`<button onclick='viewMessages(${JSON.stringify(s.parentMessages)})' style="border:none;background:#ffeb3b;border-radius:50%;width:20px;height:20px;cursor:pointer">📩</button>`:'-'; return `<tr><td>${s.index}</td><td>${s.name}</td><td>${inp} ${gh}</td><td><button class="btn" style="width:auto;padding:5px;margin:0" onclick="saveSingle('${s.id}')">💾</button></td></tr>`;}).join('');};
     window.saveTotalMark=async()=>{const i=document.getElementById('itemSelect').value,v=document.getElementById('totalMarks').value;if(i&&v){await setDoc(doc(db,"settings","examConfig"),{[i]:v},{merge:true});examConfig[i]=v;showToast("Saved");renderMarksTable();}};
     window.saveTeacherData=async()=>{const i=document.getElementById('itemSelect').value,inputs=document.querySelectorAll('.v-in');let p=[];document.getElementById('sBtn').innerText="Saving...";inputs.forEach(n=>{if(n.value!==n.dataset.orig)p.push(updateDoc(doc(db,"students",n.dataset.id),{[i]:n.value}));});await Promise.all(p);document.getElementById('sBtn').innerText="💾 Save All Changes";fetchData();showToast("Saved");};
     window.setMode=(m)=>{mode=m;let s=document.getElementById('itemSelect');s.innerHTML="";if(m=='work'){for(let i=1;i<=45;i++)s.innerHTML+=`<option value="Week${i}">Week ${i}</option>`;document.getElementById('totalDiv').style.display='none';}else{document.getElementById('totalDiv').style.display='flex';let p=m=='test'?'UnitTest':'CA',c=m=='test'?10:4;for(let i=1;i<=c;i++)s.innerHTML+=`<option value="${p}${i}">${m=='test'?'Unit Test':'CA'} ${i}</option>`;}renderMarksTable();};
-    window.saveSingle=async(id)=>{const i=document.getElementById('itemSelect').value,v=document.querySelector(`.v-in[data-id="${id}"]`).value;await updateDoc(doc(db,"students",id),{[i]:v});showToast("Saved");};
-    window.addMaterial=async()=>{await addDoc(collection(db,"materials"),{title:document.getElementById('matTitle').value,link:document.getElementById('matLink').value});fetchData();};
-    window.closeModal=(i)=>document.getElementById(i).style.display='none';
+    
+    // Submissions
+    function updateSubCount() { let count = 0; students.forEach(s => { if(s.submissions) count += Object.keys(s.submissions).length; }); const badge = document.getElementById('subCount'); badge.innerText = count; badge.style.display = count > 0 ? 'inline-block' : 'none'; }
+    window.renderSubmissions = () => { const list = document.getElementById('subsList'); let html = ''; let hasData = false; students.forEach(s => { if(s.submissions) { Object.keys(s.submissions).forEach(week => { hasData = true; const sub = s.submissions[week]; html += `<div class="sub-card"><div style="display:flex;gap:10px;align-items:center;"><img src="${sub.image}" class="sub-img" onclick="showImg('${sub.image}')"><div style="text-align:left;"><strong>${s.name}</strong> (${s.index})<br><span style="font-size:12px;color:#666;">${week} - ${sub.date}</span></div></div><button class="btn" style="width:auto;padding:5px 15px;" onclick="acceptSubmission('${s.id}','${week}')">✅ Accept</button></div>`; }); } }); list.innerHTML = hasData ? html : `<p style="text-align:center; color:#999;">No pending submissions</p>`; };
+    window.showImg = (src) => { document.getElementById('fullImg').src = src; document.getElementById('modalImg').style.display='block'; };
+    window.acceptSubmission = async (sid, week) => { if(confirm("Mark as Done and remove?")) { try { await updateDoc(doc(db, "students", sid), { [week]: 'ނިމިފައި', [`submissions.${week}`]: deleteField() }); showToast("Accepted!"); fetchData(); } catch(e) { console.error(e); alert("Error"); } } };
+
+    // Other Modals & Logic
     window.processBulk=async()=>{for(let s of parsedData){if(!students.some(e=>String(e.index)==String(s.index))){await addDoc(collection(db,"students"),{index:String(s.index),name:String(s.name),grade:String(s.grade||''),class:String(s.class||''),password:"1234"});}} closeModal('modalBulk');fetchData();};
     window.processResultBulk=async()=>{let i=document.getElementById('itemSelect').value;for(let r of parsedResData){const s=students.find(x=>String(x.index)==String(r.index));if(s)await updateDoc(doc(db,"students",s.id),{[i]:String(r.mark)});} closeModal('modalResult');fetchData();};
     document.getElementById('excelFile').addEventListener('change',e=>{const r=new FileReader();r.onload=e=>{const j=XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(e.target.result),{type:'array'}).Sheets[XLSX.read(new Uint8Array(e.target.result),{type:'array'}).SheetNames[0]],{header:1});parsedData=[];let h='<table>';j.forEach((r,i)=>{if(r.length>=2&&row[0]!=='Index'){parsedData.push({index:r[0],name:r[1],grade:r[2],class:r[3]});if(parsedData.length<=5)h+=`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`;}});document.getElementById('bulkPreview').innerHTML=h+"</table>";};r.readAsArrayBuffer(e.target.files[0]);});
     document.getElementById('resFile').addEventListener('change',e=>{const r=new FileReader();r.onload=e=>{const j=XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(e.target.result),{type:'array'}).Sheets[XLSX.read(new Uint8Array(e.target.result),{type:'array'}).SheetNames[0]],{header:1});parsedResData=[];let h='<table>';j.forEach((r,i)=>{if(r.length>=2){parsedResData.push({index:r[0],mark:r[1]});if(parsedResData.length<=5)h+=`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`;}});document.getElementById('resPreview').innerHTML=h+"</table>";};r.readAsArrayBuffer(e.target.files[0]);});
+    window.calcGradeHtml=(v,t)=>{let p=(v/t)*100,c='',l='F';if(p>=90){c='g-A-star';l='A*'}else if(p>=80){c='g-A';l='A'}else if(p>=70){c='g-B';l='B'}else if(p>=60){c='g-C';l='C'}else{c='g-Fail';l='F'} return `<span class="grade-badge ${c}">${l}</span>`;};
+    window.updRow=(e,t)=>{e.nextElementSibling.innerHTML=calcGradeHtml(e.value,t);};
     function showToast(m){let t=document.getElementById('toast');t.innerText=m;t.style.opacity=1;t.style.bottom='80px';setTimeout(()=>t.style.opacity=0,3000);}
     window.viewMessages=(m)=>{if(!m||!m.length)return;let l=m[m.length-1];document.getElementById('msgContent').innerHTML=`<small>${l.date}</small><br><p>"${l.text}"</p>`;document.getElementById('msgModal').style.display='block';};
     window.openStudentModal=()=>document.getElementById('modalAdd').style.display='block'; window.openBulkModal=()=>document.getElementById('modalBulk').style.display='block'; window.openResultModal=()=>document.getElementById('modalResult').style.display='block';
@@ -269,11 +301,16 @@
     window.saveEditStudent=async()=>{let id=document.getElementById('editId').value;await updateDoc(doc(db,"students",id),{index:document.getElementById('editIdx').value,name:document.getElementById('editNam').value,password:document.getElementById('editPwd').value,grade:document.getElementById('editGrd').value,class:document.getElementById('editCls').value});closeModal('modalEdit');fetchData();};
     window.delStudent=async()=>{if(confirm("Delete?"))await deleteDoc(doc(db,"students",document.getElementById('editId').value));closeModal('modalEdit');fetchData();};
     window.addSingleStudent=async()=>{let i=document.getElementById('newIdx').value;if(students.some(s=>s.index==i))return alert("Index exists");await addDoc(collection(db,"students"),{index:i,name:document.getElementById('newNam').value,grade:document.getElementById('newGrd').value,class:document.getElementById('newCls').value,password:document.getElementById('newPwd').value||"1234"});closeModal('modalAdd');fetchData();};
+    window.saveSingle=async(id)=>{const i=document.getElementById('itemSelect').value,v=document.querySelector(`.v-in[data-id="${id}"]`).value;await updateDoc(doc(db,"students",id),{[i]:v});showToast("Saved");};
+    window.addMaterial=async()=>{await addDoc(collection(db,"materials"),{title:document.getElementById('matTitle').value,link:document.getElementById('matLink').value});fetchData();};
     window.closeModal=(i)=>document.getElementById(i).style.display='none';
     window.resetBulk=()=>{document.getElementById('excelFile').value='';document.getElementById('bulkPreview').innerHTML='';parsedData=[];};
     window.resetResBulk=()=>{document.getElementById('resFile').value='';document.getElementById('resPreview').innerHTML='';parsedResData=[];};
-    window.renderMaterials=()=>{document.getElementById('matList').innerHTML = materials.map(m=>`<div style="display:flex;justify-content:space-between;border-bottom:1px solid #eee;padding:5px;"><span>${m.title}</span><button onclick="delMat('${m.id}')" style="border:none;background:none;color:red;">X</button></div>`).join('');};
+    window.renderMaterials=()=>{document.getElementById('matList').innerHTML = materials.map(m=>`<div class="mat-item"><span>${m.title}</span><button class="btn btn-red" style="width:auto; padding:5px; margin:0;" onclick="delMat('${m.id}')">Del</button></div>`).join('');};
     window.delMat=async(id)=>{if(confirm("Del?"))await deleteDoc(doc(db,"materials",id));fetchData();};
+
+    // EXPORT
+    window.saveNotice = saveNotice; window.deleteNotice = deleteNotice; window.editNotice = editNotice; window.cancelNoticeEdit = cancelNoticeEdit;
 </script>
 </body>
 </html>
