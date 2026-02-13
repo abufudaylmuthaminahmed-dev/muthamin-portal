@@ -4,63 +4,274 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>އިސްލާމް ޕޯޓަލް</title>
-    <!-- Same CSS as before -->
     <style>
-       /* ... (Paste previous CSS here) ... */
-       /* ADD THIS NEW CSS FOR STATUS */
-       .st-done { background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: bold; }
-       .st-fail { background: #fee2e2; color: #991b1b; padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: bold; }
-       .st-fix { background: #fef9c3; color: #854d0e; padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: bold; }
-       .st-pending { background: #e0f2f1; color: #00695c; padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+        @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
+        * { font-family: "Faruma", sans-serif; box-sizing: border-box; }
+        body { background-color: #ecfdf5; margin: 0; padding: 10px; text-align: right; color: #1f2937; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); min-height: 85vh; border-top: 5px solid #10b981; }
+        h1 { color: #059669; text-align: center; margin-bottom: 20px; font-size: 1.8rem; border-bottom: 2px dashed #a7f3d0; padding-bottom: 15px; }
+        
+        /* Notice Board */
+        .notice-board { 
+            padding: 20px; border-radius: 15px; margin-bottom: 25px; display: none; 
+            position: relative; border-left: 6px solid #06b6d4; background: #ecfeff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .notice-board.urgent { background: #fef2f2; border-color: #ef4444; }
+        
+        .notice-title { font-weight: bold; font-size: 18px; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; color: #155e75; }
+        .notice-body { font-size: 15px; line-height: 1.6; white-space: pre-wrap; }
+
+        /* UI Elements */
+        .card { background: #fff; padding: 25px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .card-highlight { background: linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%); border: 1px solid #10b981; text-align: center; }
+        
+        input, textarea { width: 100%; padding: 12px 15px; margin: 8px 0; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 16px; text-align: center; outline: none; transition: 0.3s; background: #f9fafb; }
+        input:focus { border-color: #10b981; background: #fff; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
+        
+        .btn { width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; margin-top: 10px; transition: 0.2s; display: flex; justify-content: center; gap: 8px; align-items: center; }
+        .btn:hover { background: #059669; transform: translateY(-1px); }
+        .btn-mat { background: linear-gradient(45deg, #f59e0b, #d97706); }
+        .btn-blue { background: #3b82f6; } 
+        .btn-logout { background: #ef4444; margin-top: 15px; }
+        .btn-upload { background: #0891b2; padding: 6px 12px; font-size: 12px; width: auto; margin: 0; border-radius: 6px; color: white; border: none; cursor: pointer; }
+        .btn-view { background: #6366f1; padding: 6px 12px; font-size: 12px; width: auto; margin: 0; border-radius: 6px; color: white; border: none; cursor: pointer; }
+
+        /* Results Styling */
+        .result-header { background: linear-gradient(to right, #065f46, #10b981); color: white; padding: 25px; border-radius: 12px 12px 0 0; text-align: center; }
+        .result-section-title { font-size: 18px; font-weight: bold; color: #059669; border-bottom: 2px solid #a7f3d0; margin-bottom: 15px; margin-top: 25px; }
+        .result-item { display: flex; justify-content: space-between; align-items: center; background: white; border: 1px solid #e5e7eb; padding: 15px; margin-bottom: 10px; border-radius: 10px; border-right: 5px solid #d1d5db; }
+        
+        /* Status Borders */
+        .result-item.done { border-right-color: #10b981; background: #ecfdf5; }
+        .result-item.pending { border-right-color: #f59e0b; background: #fffbeb; }
+        .result-item.incomplete { border-right-color: #ef4444; background: #fef2f2; }
+        
+        /* Status Badges */
+        .status-badge { font-size: 11px; padding: 4px 8px; border-radius: 20px; display: inline-block; font-weight: bold; }
+        .st-done { background: #dcfce7; color: #166534; }
+        .st-pending { background: #fef9c3; color: #854d0e; }
+        .st-fail { background: #fee2e2; color: #991b1b; }
+        .st-fix { background: #ffedd5; color: #9a3412; }
+
+        .score-circle { width: 40px; height: 40px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; }
+        .grade-badge { padding: 4px 10px; border-radius: 6px; color: white; font-size: 12px; font-weight: bold; }
+        .g-A-star { background: #f59e0b; color:black; } .g-A { background: #10b981; color:white; } .g-B { background: #3b82f6; color:white; } .g-C { background: #f97316; color:white; } .g-Fail { background: #ef4444; color:white; }
+        
+        /* Modals */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
+        .modal-content { background-color: #fff; margin: 10% auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 500px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); border-top: 5px solid #10b981; max-height: 85vh; overflow-y: auto; display: flex; flex-direction: column; }
+        #imgPreview, #viewSubmissionImg { max-width: 100%; max-height: 250px; width: auto; object-fit: contain; display: none; margin: 10px auto; border-radius: 8px; border: 1px solid #ddd; }
+        
+        .mat-link { display: flex; justify-content: space-between; align-items: center; padding: 15px; margin: 10px 0; background: #fff; color: #00695c; text-decoration: none; border-radius: 8px; font-weight: bold; border: 1px solid #b2dfdb; transition: 0.2s; }
+        #toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #1f2937; color: white; padding: 12px 24px; border-radius: 50px; font-size: 14px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 2000; }
     </style>
 </head>
 <body>
-    <!-- (HTML Body Structure same as before) -->
-    <!-- ... -->
+
+<div class="container">
+    <h1>🌙 އިސްލާމް ޕޯޓަލް</h1>
+
+    <!-- NOTICE BOARD -->
+    <div id="noticeBoard" class="notice-board">
+        <div class="notice-title"><span id="nIcon">📢</span> <span id="nTitle">އެންގުން</span></div>
+        <p id="noticeText" class="notice-body">Loading...</p>
+        <div style="text-align:left; font-size:10px; opacity:0.6; margin-top:5px;" id="nDate"></div>
+    </div>
+
+    <!-- 1. LOGIN SECTION -->
+    <div id="loginSection">
+        <div class="card" style="text-align:center;">
+            <h3 style="margin-top:0; color:#1f2937;">ބެލެނިވެރިންގެ ޕޯޓަލް</h3>
+            <p style="font-size:13px; color:#6b7280; margin-bottom:20px;">ކުއްޖާގެ އިންޑެކްސް އަދި ޕާސްވޯޑް ޖައްސަވާ</p>
+            <input type="number" id="pIdx" placeholder="Index Number" inputmode="numeric">
+            <input type="password" id="pPass" placeholder="Password">
+            <button class="btn" id="pBtn" onclick="loginParent()"><span>🔐</span> ލޮގިން</button>
+        </div>
+        <p style="text-align:center; font-size:12px; color:#9ca3af;">ފުރަތަމަ ފަހަރު ނަމަ ޕާސްވޯޑް ހުސްކޮށް ބަހައްޓަވާ</p>
+    </div>
+
+    <!-- 2. DASHBOARD SECTION -->
+    <div id="dashboardSection" style="display:none;">
+        <div id="studentHeader"></div>
+
+        <div class="card card-highlight">
+            <h3 style="margin-top:0; color:#059669;">ފިލާވަޅުތައް</h3>
+            <p style="font-size:13px; color:#555; margin-bottom:15px;">ފޮތްތަކާއި ނޯޓްސް ޑައުންލޯޑް ކުރެއްވުމަށް</p>
+            <button class="btn btn-mat" onclick="openMaterials()"><span>📥</span> ފިލާވަޅުތައް</button>
+        </div>
+
+        <div id="resultsArea" class="card" style="padding:0; overflow:hidden;"></div>
+
+        <button class="btn btn-blue" onclick="openPwdModal()">🔑 ޕާސްވޯޑް ބަދަލުކުރަން</button>
+        <button class="btn btn-logout" onclick="logout()">🔒 ލޮގްއައުޓް</button>
+    </div>
+</div>
+
+<!-- Upload Modal -->
+<div id="uploadModal" class="modal">
+    <div class="modal-content">
+        <h3 style="color:#0891b2; margin-top:0;">📷 މަސައްކަތް ހުށަހެޅުން</h3>
+        <p id="uploadWeekName" style="font-weight:bold; color:#555; margin-bottom:10px;"></p>
+        <div style="border:2px dashed #ccc; padding:10px; border-radius:10px; margin-bottom:15px; text-align:center; background:#fafafa;">
+            <input type="file" id="homeworkFile" accept="image/*" style="display:none" onchange="previewImage()">
+            <button class="btn" style="background:#fff; color:#333; border:1px solid #ccc; width:auto; font-size:12px;" onclick="document.getElementById('homeworkFile').click()">ފޮޓޯ ނެގުން / ހޮވުން</button>
+            <div style="text-align:center;"><img id="imgPreview"></div>
+        </div>
+        <div style="margin-top:auto;">
+            <button class="btn" id="btnSendWork" onclick="uploadWork()">🚀 ފޮނުއްވާ</button>
+            <button class="btn" style="background:#9ca3af; margin-top:10px;" onclick="document.getElementById('uploadModal').style.display='none'">ކެންސަލް</button>
+        </div>
+    </div>
+</div>
+
+<!-- View Submission Modal -->
+<div id="viewSubModal" class="modal"><div class="modal-content"><h3 style="color:#6366f1;margin-top:0">ހުށަހެޅި މަސައްކަތް</h3><p id="viewSubDate" style="color:#666;font-size:12px"></p><div style="text-align:center;margin-bottom:15px"><img id="viewSubmissionImg"></div><button class="btn" style="background:#9ca3af" onclick="document.getElementById('viewSubModal').style.display='none'">ލައްޕާލާ</button></div></div>
+
+<!-- Other Modals -->
+<div id="pwdModal" class="modal"><div class="modal-content"><h3 style="color:#3b82f6;">ޕާސްވޯޑް ސެޓްކުރުން</h3><p style="font-size:13px; color:#666;" id="pwdModalMsg">އާ ޕާސްވޯޑެއް ޖައްސަވާ</p><input type="text" id="newParentPass" placeholder="New Password"><button class="btn btn-blue" onclick="saveNewPassword()">💾 Save Password</button><button class="btn" id="btnClosePwd" style="background:#9ca3af; margin-top:10px;" onclick="document.getElementById('pwdModal').style.display='none'">Cancel</button></div></div>
+<div id="matModal" class="modal"><div class="modal-content"><h2 style="color:#10b981;">📚 ފިލާވަޅުތައް</h2><div id="matListParent" style="min-height:100px;">Loading...</div><button class="btn" style="background:#9ca3af; margin-top:15px;" onclick="document.getElementById('matModal').style.display='none'">Close</button></div></div>
+
+<div id="toast"></div>
 
 <script type="module">
-    // ... (Imports & Config) ...
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, doc, updateDoc, getDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+    // --- MUAZ: Paste your Firebase Config here ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyDSEHqUQIegVjhWKpRgpJybdPaVDVroVos",
+  authDomain: "islam-portal-muthamin.firebaseapp.com",
+  projectId: "islam-portal-muthamin",
+  storageBucket: "islam-portal-muthamin.firebasestorage.app",
+  messagingSenderId: "842342714257",
+  appId: "1:842342714257:web:2f839d6bf92dda92936830"
+    };
+
+    let db;
+    let students = [];
+    let materials = [];
+    let examConfig = {};
+    let currentStudent = null;
+    let currentUploadWeek = null;
+
+    try {
+        const app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        fetchData();
+    } catch(e) { console.error(e); }
+
+    async function fetchData() {
+        if(!db) return;
+        try {
+            const sSnap = await getDocs(collection(db, "students"));
+            students = []; sSnap.forEach((doc) => students.push({ id: doc.id, ...doc.data() }));
+            const mSnap = await getDocs(collection(db, "materials"));
+            materials = []; mSnap.forEach((doc) => materials.push({ id: doc.id, ...doc.data() }));
+            try { const confSnap = await getDoc(doc(db, "settings", "examConfig")); if(confSnap.exists()) examConfig = confSnap.data(); } catch(e) {}
+            
+            // NOTICE FETCH
+            const noticeSnap = await getDoc(doc(db, "settings", "notice"));
+            if(noticeSnap.exists()) {
+                const data = noticeSnap.data();
+                if(data.text) {
+                    const board = document.getElementById('noticeBoard');
+                    document.getElementById('noticeText').innerText = data.text;
+                    document.getElementById('nDate').innerText = data.date || '';
+                    
+                    // Reset class
+                    board.className = 'notice-board';
+                    let title = "އެންގުން", icon = "📢";
+
+                    if (data.type === 'urgent') {
+                        board.classList.add('urgent');
+                        title = "މުހިންމު އެންގުން"; icon = "🚨";
+                        board.style.borderColor = "#ef4444"; board.style.backgroundColor = "#fef2f2";
+                    } else if (data.type === 'event') {
+                        title = "ޚާއްޞަ ހަރަކާތް"; icon = "🎉";
+                        board.style.borderColor = "#9333ea"; board.style.backgroundColor = "#faf5ff";
+                    } else if (data.type === 'quote') {
+                        title = "ނަސޭހަތް"; icon = "💡";
+                        board.style.borderColor = "#22c55e"; board.style.backgroundColor = "#f0fdf4";
+                    }
+
+                    document.getElementById('nTitle').innerText = title;
+                    document.getElementById('nIcon').innerText = icon;
+                    board.style.display = 'block';
+                }
+            }
+        } catch(e) { console.error(e); }
+    }
+
+    // LOGIN
+    window.loginParent = () => {
+        const idx = document.getElementById('pIdx').value; const pass = document.getElementById('pPass').value; 
+        if(!idx) return showToast("Index Required");
+        const btn = document.getElementById('pBtn'); btn.innerHTML = `Checking...`;
+        const s = students.find(x => String(x.index) === String(idx));
+        
+        setTimeout(() => {
+            btn.innerHTML = `<span>🔐</span> ލޮގިން`;
+            if(s) {
+                if ( (s.password === "1234" || !s.password) && (pass === "" || pass === "1234") ) {
+                    currentStudent = s; loadDashboard(s); forcePasswordChange(); return;
+                }
+                if (String(s.password) === String(pass)) { currentStudent = s; loadDashboard(s); } 
+                else { showToast("❌ ނުބައި ޕާސްވޯޑެއް!"); }
+            } else { showToast("❌ ދަރިވަރު ނުފެނުނު!"); }
+        }, 500);
+    };
+
+    function forcePasswordChange() {
+        document.getElementById('pwdModal').style.display = 'block';
+        document.getElementById('pwdModalMsg').innerText = "⚠️ ފުރަތަމަ ފަހަރު ކަމުން، އާ ޕާސްވޯޑެއް ހަދަންޖެހޭނެއެވެ.";
+        document.getElementById('pwdModalMsg').style.color = "#d97706";
+        document.getElementById('btnClosePwd').style.display = 'none';
+    }
 
     function loadDashboard(s) {
-        // ... (Header code) ...
+        document.getElementById('loginSection').style.display = 'none';
+        document.getElementById('dashboardSection').style.display = 'block';
+        document.getElementById('studentHeader').innerHTML = `<div class="result-header"><h2 style="margin:0;">${s.name}</h2><div style="opacity:0.8; margin-top:5px; font-size:14px;">Index: ${s.index} | Class: ${s.grade}${s.class}</div></div>`;
 
         let html = '<div style="padding:20px;">';
-        
-        // --- WEEKLY WORK LOGIC UPDATED ---
+        const getG = (val, itemName, defaultTotal) => { if(!val) return ''; let total = examConfig[itemName] ? parseInt(examConfig[itemName]) : defaultTotal; let g = calcGrade(val, total); return `<span class="grade-badge ${g.cls}">${g.lbl}</span>`; };
+
+        // WEEKLY WORK LOGIC
         html += `<div class="result-section-title">ހަފްތާގެ މަސައްކަތް</div><div style="max-height:350px; overflow-y:auto; padding-right:5px;">`;
-        
         for(let i=45; i>=1; i--) { 
             let submission = s.submissions && s.submissions['Week'+i];
-            let status = s['Week'+i]; // Teacher's entry
+            let status = s['Week'+i];
             let actionArea = '', itemClass = '';
 
-            // 1. TEACHER MARKED AS DONE
+            // 1. Teacher Marked DONE
             if(status === 'ނިމިފައި') {
                 itemClass = 'done';
-                actionArea = `<span class="st-done">✅ ނިމިއްޖެ</span>`;
+                actionArea = `<span class="status-badge st-done">✅ ނިމިއްޖެ</span>`;
                 if(submission) actionArea += ` <button class="btn-view" onclick="viewWork('Week${i}')">👁️</button>`;
             } 
-            // 2. TEACHER MARKED AS NOT DONE
-            else if(status === 'ނުނިމޭ') {
-                itemClass = 'incomplete';
-                actionArea = `<span class="st-fail">❌ ނުނިމޭ</span> <button class="btn-upload" onclick="openUploadModal('Week${i}')">📷</button>`;
-            }
-            // 3. TEACHER MARKED AS INCOMPLETE
-            else if(status === 'ފުރިހަމައެއް ނުވޭ') {
-                itemClass = 'pending';
-                actionArea = `<span class="st-fix">⚠️ ފުރިހަމައެއް ނުވޭ</span> <button class="btn-upload" onclick="openUploadModal('Week${i}')">📷</button>`;
-            }
-            // 4. STUDENT SUBMITTED (Waiting for Teacher)
-            else if(submission) {
-                itemClass = 'pending';
-                actionArea = `<span class="st-pending">⏳ ޗެކްކުރަނީ</span> <button class="btn-view" onclick="viewWork('Week${i}')">👁️</button>`;
-            }
-            // 5. NO STATUS (Show Upload)
+            // 2. Not Done / Incomplete
             else {
-                actionArea += `<button class="btn-upload" onclick="openUploadModal('Week${i}')">📷 ފޮޓޯލާން</button>`;
+                let badge = '';
+                if(status === 'ނުނިމޭ') {
+                    itemClass = 'incomplete';
+                    badge = `<span class="status-badge st-fail">❌ ނުނިމޭ</span> `;
+                } else if(status === 'ފުރިހަމައެއް ނުވޭ') {
+                    itemClass = 'pending';
+                    badge = `<span class="status-badge st-fix">⚠️ ފުރިހަމައެއް ނުވޭ</span> `;
+                }
+
+                if(submission) {
+                    // Submitted, waiting check
+                    itemClass = 'pending';
+                    actionArea = `${badge} <span class="status-badge st-pending">⏳ ޗެކްކުރަނީ</span> <button class="btn-view" onclick="viewWork('Week${i}')">👁️</button>`;
+                } else {
+                    // Not submitted
+                    actionArea = `${badge} <button class="btn-upload" onclick="openUploadModal('Week${i}')">📷 ފޮޓޯ</button>`;
+                }
             }
 
-            // Show item logic
+            // Show item if it has status, submission or recent
             if(status || submission || i < 5) {
                  html += `<div class="result-item ${itemClass}">
                             <div><span style="font-weight:bold; color:#334155;">Week ${i}</span>
@@ -69,13 +280,132 @@
                          </div>`;
             }
         }
-        html += `</div>`; // End Weekly
+        html += `</div>`;
 
-        // ... (Rest of code for Exams, etc.) ...
+        // UNIT TESTS
+        html += `<div class="result-section-title">ޔުނިޓް ޓެސްޓް</div>`;
+        let hasTest = false; 
+        for(let i=1; i<=10; i++) { 
+            let v = s['UnitTest'+i]; if(v) { hasTest = true; html += `<div class="result-item"><span>Unit Test ${i}</span><div style="display:flex; align-items:center; gap:10px;">${getG(v, 'UnitTest'+i, 20)}<div class="score-circle">${v}</div></div></div>`; } 
+        }
+        if(!hasTest) html += `<div style="color:#999; text-align:center;">No records</div>`;
+
+        // CA
+        html += `<div class="result-section-title">CA / Exam</div>`;
+        let hasCa = false; 
+        for(let i=1; i<=4; i++) { 
+            let v = s['CA'+i]; if(v) { hasCa = true; html += `<div class="result-item"><span>CA / Exam ${i}</span><div style="display:flex; align-items:center; gap:10px;">${getG(v, 'CA'+i, 100)}<div class="score-circle" style="background:#e0f7fa; border-color:#00bcd4;color:#006064">${v}</div></div></div>`; } 
+        }
+        if(!hasCa) html += `<div style="color:#999; text-align:center;">No records</div>`;
+
+        // MSG
+        html += `<div style="margin-top:30px; background:#f0fdf4; padding:15px; border-radius:10px; border:1px solid #bbf7d0;">
+                    <div style="font-weight:bold; color:#166534; margin-bottom:10px;">މުދައްރިސަށް މެސެޖެއް:</div>
+                    <textarea id="parentMsgInput" placeholder="ލިޔުއްވާ..." rows="3"></textarea>
+                    <button class="btn" style="background:#15803d; margin-top:5px;" onclick="sendParentMsg()">ފޮނުއްވާ ➤</button>
+                 </div></div>`;
+
         document.getElementById('resultsArea').innerHTML = html;
     }
+
+    // --- UPLOAD LOGIC ---
+    window.openUploadModal = (weekId) => {
+        currentUploadWeek = weekId;
+        document.getElementById('uploadWeekName').innerText = weekId;
+        document.getElementById('imgPreview').style.display = 'none';
+        document.getElementById('homeworkFile').value = ''; 
+        document.getElementById('uploadModal').style.display = 'block';
+    };
+
+    window.previewImage = () => {
+        const file = document.getElementById('homeworkFile').files[0];
+        if(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = document.getElementById('imgPreview');
+                img.src = e.target.result;
+                img.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    window.uploadWork = async () => {
+        const fileInput = document.getElementById('homeworkFile');
+        if(fileInput.files.length === 0) return alert("Select image");
+        
+        const btn = document.getElementById('btnSendWork'); btn.innerText = "ފޮނުވަނީ..."; btn.disabled = true;
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image(); img.src = e.target.result;
+            img.onload = async () => {
+                const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+                // Resize to max width 800px
+                const scaleFactor = 800 / img.width;
+                canvas.width = 800; canvas.height = img.height * scaleFactor;
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                const compressedBase64 = canvas.toDataURL('image/jpeg', 0.6); 
+
+                try {
+                    await updateDoc(doc(db, "students", currentStudent.id), {
+                        [`submissions.${currentUploadWeek}`]: { image: compressedBase64, date: new Date().toLocaleDateString('en-GB') }
+                    });
+                    showToast("✅ ހުށަހެޅިއްޖެ!");
+                    document.getElementById('uploadModal').style.display = 'none';
+                    // Refresh
+                    const snap = await getDoc(doc(db, "students", currentStudent.id));
+                    currentStudent = { id: snap.id, ...snap.data() };
+                    loadDashboard(currentStudent);
+                } catch(err) { alert("Error"); }
+                btn.innerText = "🚀 ފޮނުއްވާ"; btn.disabled = false;
+            };
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+    };
+
+    window.viewWork = (weekId) => {
+        if(currentStudent.submissions && currentStudent.submissions[weekId]) {
+            const sub = currentStudent.submissions[weekId];
+            document.getElementById('viewSubmissionImg').src = sub.image;
+            document.getElementById('viewSubDate').innerText = "Uploaded: " + sub.date;
+            document.getElementById('viewSubmissionImg').style.display = "block";
+            document.getElementById('viewSubModal').style.display = "block";
+        }
+    };
+
+    // --- OTHER ---
+    window.sendParentMsg = async () => {
+        if(!currentStudent) return; const txt = document.getElementById('parentMsgInput').value;
+        if(!txt.trim()) return alert("Message is empty");
+        try { await updateDoc(doc(db, "students", currentStudent.id), { parentMessages: arrayUnion({ text: txt, date: new Date().toISOString().split('T')[0] }) }); alert("Sent!"); document.getElementById('parentMsgInput').value = ""; } catch(e) { alert("Error"); }
+    };
+
+    window.openPwdModal = () => { document.getElementById('pwdModal').style.display = "block"; document.getElementById('pwdModalMsg').innerText = "އާ ޕާސްވޯޑެއް ޖައްސަވާ"; document.getElementById('btnClosePwd').style.display = "block"; };
+    window.saveNewPassword = async () => {
+        const newP = document.getElementById('newParentPass').value; if(newP.length<3) return alert("Too short");
+        try { await updateDoc(doc(db, "students", currentStudent.id), { password: newP }); showToast("Updated!"); document.getElementById('pwdModal').style.display = 'none'; currentStudent.password = newP; } catch(e) { alert("Error"); }
+    };
+
+    window.logout = () => {
+        currentStudent = null;
+        document.getElementById('dashboardSection').style.display = 'none';
+        document.getElementById('loginSection').style.display = 'block';
+        document.getElementById('pPass').value = ""; document.getElementById('pIdx').value = "";
+    };
+
+    window.openMaterials = () => { document.getElementById('matModal').style.display = "block"; 
+        document.getElementById('matListParent').innerHTML = materials.length ? materials.map(m=>`<a href="${m.link}" target="_blank" class="mat-link"><span>${m.title}</span><span>📥</span></a>`).join('') : "<p style='text-align:center;color:#999'>No materials</p>"; 
+    };
+
+    function calcGrade(m, t) {
+        let p = (m/t)*100; if(isNaN(p)) return {lbl:'-', cls:''};
+        if(p>=90) return {lbl:'A*', cls:'g-A-star'}; if(p>=80) return {lbl:'A', cls:'g-A'}; if(p>=70) return {lbl:'B', cls:'g-B'}; if(p>=60) return {lbl:'C', cls:'g-C'}; return {lbl:'Fail', cls:'g-Fail'};
+    }
+    function showToast(msg) { const t=document.getElementById('toast'); t.innerText=msg; t.style.opacity='1'; t.style.bottom='80px'; setTimeout(()=>t.style.opacity='0', 3000); }
     
-    // ... (Rest of JS) ...
+    // EXPORT
+    window.sendParentMsg=sendParentMsg; window.saveNewPassword=saveNewPassword; window.logout=logout; window.openUploadModal=openUploadModal; window.previewImage=previewImage; window.uploadWork=uploadWork; window.viewWork=viewWork;
 </script>
 </body>
 </html>
