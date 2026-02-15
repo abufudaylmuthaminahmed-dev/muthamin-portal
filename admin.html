@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Teacher Admin</title>
+    <!-- SheetJS for Excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
@@ -12,21 +13,30 @@
         .container { max-width: 1100px; margin: 0 auto; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); padding-bottom: 80px; }
         h1 { color: #0d9488; text-align: center; border-bottom: 2px solid #e0f2f1; padding-bottom: 10px; margin-top: 0; font-size: 1.4rem; }
         
+        /* Navigation */
         .nav-menu { display: flex; gap: 8px; margin-bottom: 20px; background: #ccfbf1; padding: 8px; border-radius: 12px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
         .nav-btn { flex: 0 0 auto; padding: 10px 20px; border: none; background: rgba(255,255,255,0.8); border-radius: 8px; cursor: pointer; color: #0f766e; font-weight: bold; font-size: 14px; }
         .nav-btn.active { background: #0d9488; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .badge-count { background: #ef4444; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; position: absolute; top: 0; right: 0; }
+        .badge-count { background: #ef4444; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; position: absolute; top: 0; right: 0; display: none; }
 
         .section { display: none; animation: fadeIn 0.3s; }
         .section.active { display: block; }
         .card { border: 1px solid #f1f5f9; padding: 15px; border-radius: 12px; margin-bottom: 15px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
 
+        /* Tables */
         .table-container { overflow-x: auto; border-radius: 10px; border: 1px solid #e2e8f0; margin-top: 10px; -webkit-overflow-scrolling: touch; }
         table { width: 100%; border-collapse: collapse; min-width: 100%; }
         th { background: #0f766e; color: white; padding: 12px 8px; position: sticky; top: 0; font-size: 14px; white-space: nowrap; z-index: 10; }
         td { padding: 8px; border-bottom: 1px solid #f1f5f9; text-align: center; vertical-align: middle; }
         tr:nth-child(even) { background-color: #f8fafc; }
 
+        /* Pagination Controls */
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 15px; padding: 10px; }
+        .page-btn { background: #fff; border: 1px solid #ccc; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; color: #555; }
+        .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .page-info { font-size: 14px; color: #0d9488; font-weight: bold; }
+
+        /* Inputs & Buttons */
         input, select, textarea { padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; width: 100%; text-align: center; margin: 0; outline: none; font-size: 14px; height: 40px; background: #fff; }
         .v-in { min-width: 140px; font-weight: bold; color: #334155; }
         input.v-in { min-width: 80px; } 
@@ -40,17 +50,20 @@
         .login-box { background: white; padding: 30px; border-radius: 15px; width: 85%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; backdrop-filter: blur(3px); }
         .modal-content { background:white; margin:10% auto; padding:20px; width:90%; max-width:500px; border-radius: 15px; max-height: 80vh; overflow-y: auto; }
+        
+        /* Badges */
+        .grade-badge { padding: 3px 8px; border-radius: 4px; color: white; font-size: 12px; font-weight: bold; margin-right: 5px; }
+        .g-A-star { background: #f59e0b; color: #000; } /* Gold */
+        .g-A { background: #10b981; } /* Green */
+        .g-B { background: #3b82f6; } /* Blue */
+        .g-C { background: #f97316; } /* Orange */
+        .g-Fail { background: #ef4444; } /* Red */
 
+        /* Submissions & Gallery */
         .sub-card { border: 1px solid #e2e8f0; padding: 12px; border-radius: 10px; margin-bottom: 10px; background: #fff; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
         .sub-img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd; background: #eee; }
-        
-        .modal-gallery { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
         .modal-gallery img { max-width: 100%; max-height: 80vh; border-radius: 8px; border: 2px solid #333; margin-bottom: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .notice-item { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px; border-radius: 8px; margin-bottom: 10px; display:flex; justify-content:space-between; align-items:flex-start; text-align:left; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
-        
-        /* Updated Grade Badges in Admin */
-        .grade-badge { padding: 3px 8px; border-radius: 4px; color: white; font-size: 12px; font-weight: bold; margin-right: 5px; }
-        .g-A { background: #10b981; } .g-B { background: #3b82f6; } .g-C { background: #f97316; } .g-Fail { background: #ef4444; }
 
         @keyframes fadeIn { from {opacity:0; transform: translateY(5px);} to {opacity:1; transform: translateY(0);} }
         #toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: #334155; color: white; padding: 10px 20px; border-radius: 30px; opacity: 0; pointer-events: none; z-index: 2000; transition: 0.3s; font-size: 13px; }
@@ -73,18 +86,30 @@
         <button class="nav-btn" onclick="switchTab('notice')">📢 Notice</button>
     </div>
 
-    <!-- 1. DB -->
+    <!-- FILTER -->
+    <div class="filter-section" style="background:#f0fdfa; padding:15px; border-radius:10px; border:1px dashed #0d9488; margin-bottom:20px;">
+        <small style="color:#0f766e; font-weight:bold;">Filter Results:</small>
+        <div id="gradeFilter" style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:5px;"></div>
+        <div id="classFilter" style="display:flex; gap:5px; flex-wrap:wrap;"></div>
+    </div>
+
+    <!-- 1. DB (Student List) -->
     <div id="tab-db" class="section active">
-        <div style="display:flex; gap:10px; margin-bottom:10px;">
-            <button class="btn" style="flex:1; background:#43a047;" onclick="openStudentModal()">+ Add</button>
-            <button class="btn btn-orange" style="flex:1;" onclick="openBulkModal()">📗 Excel</button>
+        <div style="display:flex; gap:10px; margin-bottom:15px;">
+            <button class="btn" style="flex:1; background:#43a047;" onclick="openStudentModal()">+ Add Student</button>
+            <button class="btn btn-orange" style="flex:1;" onclick="openBulkModal()">📗 Excel Import</button>
         </div>
-        <div style="background:#f1f5f9; padding:10px; border-radius:10px; margin-bottom:10px;">
-            <small style="font-weight:bold; color:#64748b;">Filter:</small>
-            <div id="gradeFilter" style="display:flex; gap:5px; overflow-x:auto; padding-bottom:5px;"></div>
-            <div id="classFilter" style="display:flex; gap:5px; overflow-x:auto;"></div>
+        <div class="card" style="padding:0; overflow:hidden;">
+            <div style="overflow-x:auto;">
+                <table id="studentTable"><thead><tr><th>Index</th><th>Name</th><th>Grade</th><th>Password</th><th>Action</th></tr></thead><tbody><tr><td colspan="5">Loading...</td></tr></tbody></table>
+            </div>
+            <!-- Pagination Controls -->
+            <div class="pagination" id="pag-db">
+                <button class="page-btn" onclick="changePage('db', -1)">Previous</button>
+                <span class="page-info" id="page-info-db">Page 1</span>
+                <button class="page-btn" onclick="changePage('db', 1)">Next</button>
+            </div>
         </div>
-        <div class="table-container"><table id="studentTable"><thead><tr><th>Idx</th><th>Name</th><th>Cls</th><th>Pass</th><th>Act</th></tr></thead><tbody><tr><td colspan="5">Loading...</td></tr></tbody></table></div>
     </div>
 
     <!-- 2. MARKS -->
@@ -108,14 +133,25 @@
                 </div>
             </div>
         </div>
-        <div class="table-container"><table id="marksTable"><thead><tr><th>Idx</th><th>Name</th><th>Mark/Status</th><th>Msg</th><th>Save</th></tr></thead><tbody id="marksBody"></tbody></table></div>
+        <div class="card" style="padding:0; overflow:hidden;">
+            <div style="overflow-x:auto;">
+                <table id="marksTable"><thead><tr><th>Idx</th><th>Name</th><th>Mark/Status</th><th>Msg</th><th>Save</th></tr></thead><tbody id="marksBody"></tbody></table>
+            </div>
+            <!-- Pagination Controls -->
+            <div class="pagination" id="pag-marks">
+                <button class="page-btn" onclick="changePage('marks', -1)">Previous</button>
+                <span class="page-info" id="page-info-marks">Page 1</span>
+                <button class="page-btn" onclick="changePage('marks', 1)">Next</button>
+            </div>
+        </div>
+        
         <button class="btn btn-save" id="sBtn" onclick="saveTeacherData()">💾 Save All Changes</button><div style="height:60px;"></div>
     </div>
 
     <!-- 3. SUBMISSIONS -->
     <div id="tab-subs" class="section">
         <div class="card">
-            <h3 style="margin-top:0; color:#0f766e;">Pending Submissions</h3>
+            <h3>Pending Submissions</h3>
             <div id="subsList"><p style="text-align:center; color:#999;">No pending submissions</p></div>
         </div>
     </div>
@@ -159,7 +195,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, deleteField, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-    // --- CONFIG ---
+    // --- CONFIG (REPLACE WITH YOUR KEYS) ---
     const firebaseConfig = {
       apiKey: "AIzaSyDSEHqUQIegVjhWKpRgpJybdPaVDVroVos",
   authDomain: "islam-portal-muthamin.firebaseapp.com",
@@ -172,6 +208,11 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     let students = []; let materials = []; let notices = []; let examConfig = {}; let mode = 'work'; let selGrade = 'All'; let selClass = 'All'; let parsedData = []; let parsedResData = [];
+    
+    // PAGINATION VARIABLES
+    let currentPageDB = 1;
+    let currentPageMarks = 1;
+    const rowsPerPage = 20;
 
     // --- LOGIN ---
     window.checkLogin = () => { if(document.getElementById('adminPass').value === "123") { document.getElementById('loginOverlay').style.display='none'; document.getElementById('mainContainer').style.display='block'; fetchData(); } else alert("Wrong Password"); };
@@ -186,29 +227,60 @@
         } catch(e) { console.error(e); }
     }
 
-    // --- GRADING SCALE UPDATED ---
+    // --- GRADING SCALE UPDATED (A*=90+, A=80+, B=70+, C=60+) ---
     window.calcGradeHtml = (v, t) => {
         let p = (v / t) * 100;
         let c = 'g-Fail', l = 'F';
-        if (p >= 90) { c = 'g-A'; l = 'A'; }
-        else if (p >= 80) { c = 'g-B'; l = 'B'; }
+        if (p >= 90) { c = 'g-A-star'; l = 'A*'; }
+        else if (p >= 80) { c = 'g-A'; l = 'A'; }
+        else if (p >= 70) { c = 'g-B'; l = 'B'; }
         else if (p >= 60) { c = 'g-C'; l = 'C'; }
         return `<span class="grade-badge ${c}">${l}</span>`;
     };
 
-    // --- RENDER TABLE FIXED ---
+    // --- HELPER: GET PAGINATED LIST ---
+    function getPaginatedList(type) {
+        let list = getFiltered(); // Get filtered sorted list
+        let page = (type === 'db') ? currentPageDB : currentPageMarks;
+        
+        // Update Page Info
+        let totalPages = Math.ceil(list.length / rowsPerPage) || 1;
+        if(page > totalPages) page = 1; // Reset if out of bounds
+        
+        document.getElementById(`page-info-${type}`).innerText = `Page ${page} of ${totalPages}`;
+        
+        // Slice
+        let start = (page - 1) * rowsPerPage;
+        let end = start + rowsPerPage;
+        return list.slice(start, end);
+    }
+
+    window.changePage = (type, dir) => {
+        let list = getFiltered();
+        let totalPages = Math.ceil(list.length / rowsPerPage) || 1;
+        let current = (type === 'db') ? currentPageDB : currentPageMarks;
+        
+        let newPage = current + dir;
+        if(newPage >= 1 && newPage <= totalPages) {
+            if(type === 'db') currentPageDB = newPage;
+            else currentPageMarks = newPage;
+            refreshActiveView();
+        }
+    };
+
+    // --- RENDER TABLE (WITH PAGINATION) ---
+    window.renderStudentTable = () => {
+        const list = getPaginatedList('db');
+        document.querySelector('#studentTable tbody').innerHTML = list.length ? list.map(s => `<tr><td>${s.index}</td><td>${s.name}</td><td>${s.grade}${s.class}</td><td>${s.password||'1234'}</td><td><button class="btn btn-orange" style="padding:6px 12px;width:auto;margin:0" onclick="openEdit('${s.id}')">✏️</button></td></tr>`).join(''):'<tr><td colspan="5">No data</td></tr>';
+    };
+
     window.renderMarksTable = () => {
         const item = document.getElementById('itemSelect').value;
         let tot = examConfig[item] ? parseInt(examConfig[item]) : (mode==='test'?20:100);
-        
-        if(mode !== 'work') {
-            document.getElementById('totalDiv').style.display = 'flex';
-            document.getElementById('totalMarks').value = tot;
-        } else {
-            document.getElementById('totalDiv').style.display = 'none';
-        }
+        if(mode !== 'work') { document.getElementById('totalDiv').style.display='flex'; document.getElementById('totalMarks').value = tot; }
+        else { document.getElementById('totalDiv').style.display='none'; }
 
-        const list = getFiltered();
+        const list = getPaginatedList('marks');
         document.getElementById('marksBody').innerHTML = list.length ? list.map(s => {
             let val = s[item] || "";
             let hasSub = s.submissions && s.submissions[item];
@@ -224,13 +296,7 @@
                 if(val) gradeHtml = calcGradeHtml(val, tot);
             }
 
-            return `<tr>
-                <td>${s.index}</td>
-                <td><div style="font-size:13px;line-height:1.2;white-space:normal;max-width:100px;margin:0 auto;">${s.name}</div></td>
-                <td><div style="display:flex; align-items:center; justify-content:center; gap:5px;">${subIcon} ${input} <div id="g-${s.id}">${gradeHtml}</div></div></td>
-                <td>${msgBtn}</td>
-                <td><button class="btn" style="width:auto;padding:5px;margin:0;font-size:16px;" onclick="saveSingle('${s.id}')">💾</button></td>
-            </tr>`;
+            return `<tr><td>${s.index}</td><td><div style="font-size:13px;line-height:1.2;white-space:normal;max-width:100px;margin:0 auto;">${s.name}</div></td><td><div style="display:flex; align-items:center; justify-content:center; gap:5px;">${subIcon} ${input} <div id="g-${s.id}">${gradeHtml}</div></div></td><td>${msgBtn}</td><td><button class="btn" style="width:auto;padding:5px;margin:0;font-size:16px;" onclick="saveSingle('${s.id}')">💾</button></td></tr>`;
         }).join('') : '<tr><td colspan="5">No data</td></tr>';
     };
 
@@ -239,13 +305,13 @@
     // --- OTHER LOGIC ---
     window.switchTab = (id) => { document.querySelectorAll('.section').forEach(d => d.classList.remove('active')); document.getElementById('tab-'+id).classList.add('active'); document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); event.target.classList.add('active'); refreshActiveView(); };
     function refreshActiveView() { if(document.getElementById('tab-db').classList.contains('active')) renderStudentTable(); if(document.getElementById('tab-marks').classList.contains('active')) renderMarksTable(); if(document.getElementById('tab-subs').classList.contains('active')) renderSubmissions(); if(document.getElementById('tab-notice').classList.contains('active')) {renderNotices(); renderMaterials();} }
-    window.setGradeFilter=(g)=>{selGrade=g;selClass='All';updateFilters();refreshActiveView();}; window.setClassFilter=(c)=>{selClass=c;updateFilters();refreshActiveView();};
+    window.setGradeFilter=(g)=>{selGrade=g;selClass='All';currentPageDB=1;currentPageMarks=1;updateFilters();refreshActiveView();}; window.setClassFilter=(c)=>{selClass=c;currentPageDB=1;currentPageMarks=1;updateFilters();refreshActiveView();};
     function updateFilters(){const gs=[...new Set(students.map(s=>s.grade))].filter(Boolean).sort(); document.getElementById('gradeFilter').innerHTML=`<button style="padding:6px 12px;border:1px solid #b2dfdb;background:${selGrade=='All'?'#0d9488':'#fff'};color:${selGrade=='All'?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setGradeFilter('All')">All</button>`+gs.map(g=>`<button style="padding:6px 12px;border:1px solid #b2dfdb;background:${selGrade==g?'#0d9488':'#fff'};color:${selGrade==g?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setGradeFilter('${g}')">${g}</button>`).join(''); if(selGrade!=='All'){const cs=[...new Set(students.filter(s=>s.grade==selGrade).map(s=>s.class))].filter(Boolean).sort(); document.getElementById('classFilter').innerHTML=`<button style="padding:6px 12px;border:1px solid #b2dfdb;background:${selClass=='All'?'#0d9488':'#fff'};color:${selClass=='All'?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setClassFilter('All')">All</button>`+cs.map(c=>`<button style="padding:6px 12px;border:1px solid #b2dfdb;background:${selClass==c?'#0d9488':'#fff'};color:${selClass==c?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setClassFilter('${c}')">${c}</button>`).join('');}else document.getElementById('classFilter').innerHTML="";}
     function getFiltered(){let l=students;if(selGrade!=='All')l=l.filter(s=>String(s.grade)==String(selGrade));if(selClass!=='All')l=l.filter(s=>String(s.class)==String(selClass));return l.sort((a,b)=>(parseInt(a.index)||0)-(parseInt(b.index)||0));}
-    window.renderStudentTable=()=>{const l=getFiltered();document.querySelector('#studentTable tbody').innerHTML=l.length?l.map(s=>`<tr><td>${s.index}</td><td>${s.name}</td><td>${s.grade}${s.class}</td><td>${s.password||'1234'}</td><td><button class="btn btn-orange" style="padding:6px 12px;width:auto;margin:0" onclick="openEdit('${s.id}')">✏️</button></td></tr>`).join(''):'<tr><td colspan="5">No data</td></tr>';};
+    
     window.saveTotalMark=async()=>{const i=document.getElementById('itemSelect').value,v=document.getElementById('totalMarks').value;if(i&&v){await setDoc(doc(db,"settings","examConfig"),{[i]:v},{merge:true});examConfig[i]=v;showToast("Saved");renderMarksTable();}};
     window.saveTeacherData=async()=>{const i=document.getElementById('itemSelect').value,inputs=document.querySelectorAll('.v-in');let p=[];document.getElementById('sBtn').innerText="Saving...";inputs.forEach(n=>{if(n.value!==n.dataset.orig)p.push(updateDoc(doc(db,"students",n.dataset.id),{[i]:n.value}));});await Promise.all(p);document.getElementById('sBtn').innerText="💾 Save All Changes";fetchData();showToast("Saved");};
-    window.setMode=(m)=>{mode=m;let s=document.getElementById('itemSelect');s.innerHTML="";if(m=='work'){for(let i=1;i<=45;i++)s.innerHTML+=`<option value="Week${i}">Week ${i}</option>`;document.getElementById('totalDiv').style.display='none';}else{document.getElementById('totalDiv').style.display='flex';let p=m=='test'?'UnitTest':'CA',c=m=='test'?10:4;for(let i=1;i<=c;i++)s.innerHTML+=`<option value="${p}${i}">${m=='test'?'Unit Test':'CA'} ${i}</option>`;}renderMarksTable();};
+    window.setMode=(m)=>{mode=m;currentPageMarks=1;let s=document.getElementById('itemSelect');s.innerHTML="";if(m=='work'){for(let i=1;i<=45;i++)s.innerHTML+=`<option value="Week${i}">Week ${i}</option>`;document.getElementById('totalDiv').style.display='none';}else{document.getElementById('totalDiv').style.display='flex';let p=m=='test'?'UnitTest':'CA',c=m=='test'?10:4;for(let i=1;i<=c;i++)s.innerHTML+=`<option value="${p}${i}">${m=='test'?'Unit Test':'CA'} ${i}</option>`;}renderMarksTable();};
     window.saveSingle=async(id)=>{const i=document.getElementById('itemSelect').value,v=document.querySelector(`.v-in[data-id="${id}"]`).value;await updateDoc(doc(db,"students",id),{[i]:v});showToast("Saved");};
     window.addMaterial=async()=>{await addDoc(collection(db,"materials"),{title:document.getElementById('matTitle').value,link:document.getElementById('matLink').value});fetchData();};
     window.closeModal=(i)=>document.getElementById(i).style.display='none';
@@ -256,7 +322,7 @@
 
     // Submissions & Notices
     function updateSubCount() { let count = 0; students.forEach(s => { if(s.submissions) count += Object.keys(s.submissions).length; }); const badge = document.getElementById('subCount'); badge.innerText = count; badge.style.display = count > 0 ? 'inline-block' : 'none'; }
-    window.renderSubmissions = () => { const list = document.getElementById('subsList'); let html = ''; let hasData = false; students.forEach(s => { if(s.submissions) { Object.keys(s.submissions).forEach(week => { hasData = true; const sub = s.submissions[week]; let imgData = sub.images ? sub.images : (sub.image ? [sub.image] : []); let countText = imgData.length > 1 ? `(${imgData.length} Photos)` : ''; let thumb = imgData.length > 0 ? imgData[0] : ''; html += `<div class="sub-card"><div style="display:flex;gap:10px;align-items:center;"><img src="${thumb}" class="sub-img" onclick="showSubmissionGallery('${s.id}', '${week}')"><div style="text-align:left;"><strong>${s.name}</strong> (${s.index}) <span style="font-size:10px;color:#0d9488;font-weight:bold;">${countText}</span><br><span style="font-size:12px;color:#666;">${week} - ${sub.date}</span></div></div><button class="btn" style="width:auto;padding:5px 15px;" onclick="acceptSubmission('${s.id}','${week}')">✅ Accept</button></div>`; }); } }); list.innerHTML = hasData ? html : `<p style="text-align:center; color:#999;">No pending submissions</p>`; };
+    window.renderSubmissions = () => { const list = document.getElementById('subsList'); let html = ''; let hasData = false; students.forEach(s => { if(s.submissions) { Object.keys(s.submissions).forEach(week => { hasData = true; const sub = s.submissions[week]; let imgData = sub.images ? sub.images : (sub.image ? [sub.image] : []); let countText = imgData.length > 1 ? `(${imgData.length} Photos)` : ''; let thumb = imgData.length > 0 ? imgData[0] : ''; html += `<div class="sub-card"><div style="display:flex;gap:10px;align-items:center;"><img src="${thumb}" class="sub-img" onclick="showSubmissionGallery('${s.id}', '${week}')"><div style="text-align:left;"><strong>${s.name}</strong> (${s.index}) <span style="font-size:10px;color:#0d9488;font-weight:bold;">${countText}</span><br><span style="font-size:12px;color:#666;">${week} - ${sub.date}</span></div></div><button class="btn" style="width:auto;padding:5px 15px;" onclick="acceptSubmission('${s.id}','${week}')">✅ Accept</button></div>`; }); } }); list.innerHTML = hasData ? html : `<p style="text-align:center; color:#999; margin-top:20px;">No pending submissions</p>`; };
     window.showSubmissionGallery = (sid, week) => { const s = students.find(x => x.id === sid); if (!s || !s.submissions || !s.submissions[week]) return; const sub = s.submissions[week]; const images = sub.images ? sub.images : (sub.image ? [sub.image] : []); document.getElementById('galleryContainer').innerHTML = images.map(src => `<img src="${src}">`).join(''); document.getElementById('modalImg').style.display = 'block'; };
     window.acceptSubmission = async (sid, week) => { if(confirm("Mark as Done and remove?")) { try { await updateDoc(doc(db, "students", sid), { [week]: 'ނިމިފައި', [`submissions.${week}`]: deleteField() }); showToast("Accepted!"); fetchData(); } catch(e) { console.error(e); alert("Error"); } } };
 
