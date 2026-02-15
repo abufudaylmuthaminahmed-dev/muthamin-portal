@@ -6,6 +6,7 @@
     <title>Teacher Admin</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
+        /* (Previous styles kept for consistency) */
         @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
         * { box-sizing: border-box; font-family: "Faruma", sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #f0fdfa; margin: 0; padding: 15px; text-align: right; color: #333; font-size: 16px; }
@@ -47,6 +48,10 @@
         .modal-gallery { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
         .modal-gallery img { max-width: 100%; max-height: 80vh; border-radius: 8px; border: 2px solid #333; margin-bottom: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .notice-item { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px; border-radius: 8px; margin-bottom: 10px; display:flex; justify-content:space-between; align-items:flex-start; text-align:left; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
+        
+        /* Updated Grade Badges in Admin */
+        .grade-badge { padding: 3px 8px; border-radius: 4px; color: white; font-size: 12px; font-weight: bold; margin-right: 5px; }
+        .g-A { background: #10b981; } .g-B { background: #3b82f6; } .g-C { background: #f97316; } .g-Fail { background: #ef4444; }
 
         @keyframes fadeIn { from {opacity:0; transform: translateY(5px);} to {opacity:1; transform: translateY(0);} }
         #toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: #334155; color: white; padding: 10px 20px; border-radius: 30px; opacity: 0; pointer-events: none; z-index: 2000; transition: 0.3s; font-size: 13px; }
@@ -155,7 +160,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, deleteField, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-    // --- CONFIG (REPLACE WITH YOUR KEYS) ---
+    // --- CONFIG ---
     const firebaseConfig = {
       apiKey: "AIzaSyDSEHqUQIegVjhWKpRgpJybdPaVDVroVos",
   authDomain: "islam-portal-muthamin.firebaseapp.com",
@@ -172,92 +177,27 @@
     // --- LOGIN ---
     window.checkLogin = () => { if(document.getElementById('adminPass').value === "123") { document.getElementById('loginOverlay').style.display='none'; document.getElementById('mainContainer').style.display='block'; fetchData(); } else alert("Wrong Password"); };
 
-    // --- DATA FETCHING ---
     async function fetchData() {
         try {
-            const sSnap = await getDocs(collection(db, "students")); students = []; sSnap.forEach(d => students.push({id: d.id, ...d.data()}));
-            const mSnap = await getDocs(collection(db, "materials")); materials = []; mSnap.forEach(d => materials.push({id: d.id, ...d.data()}));
+            const sSnap = await getDocs(collection(db, "students")); students = []; sSnap.forEach((doc) => students.push({ id: doc.id, ...doc.data() }));
+            const mSnap = await getDocs(collection(db, "materials")); materials = []; mSnap.forEach((doc) => materials.push({ id: doc.id, ...doc.data() }));
             const nSnap = await getDocs(collection(db, "notices")); notices = []; nSnap.forEach(d => notices.push({id: d.id, ...d.data()}));
-            
             try { const c = await getDoc(doc(db, "settings", "examConfig")); if(c.exists()) examConfig = c.data(); } catch(e){}
             updateFilters(); refreshActiveView(); updateSubCount();
         } catch(e) { console.error(e); }
     }
 
-    // --- NOTICE BOARD FUNCTIONS ---
-    window.saveNotice = async () => {
-        const id = document.getElementById('noticeId').value;
-        const txt = document.getElementById('adminNoticeText').value;
-        const type = document.getElementById('noticeType').value;
-
-        if(!txt.trim()) return alert("Write something");
-        const btn = document.getElementById('btnSaveNotice'); btn.innerText = "Saving...";
-
-        try {
-            if(id) {
-                await updateDoc(doc(db, "notices", id), { text: txt, type: type, date: new Date().toLocaleDateString('dv-MV') });
-                showToast("Updated!");
-            } else {
-                await addDoc(collection(db, "notices"), { text: txt, type: type, date: new Date().toLocaleDateString('dv-MV'), timestamp: Date.now() });
-                showToast("Published!");
-            }
-            cancelNoticeEdit();
-            fetchData();
-        } catch(e) { console.error(e); alert("Error"); }
-        btn.innerText = "Publish Notice";
+    // --- GRADING SCALE (Updated) ---
+    window.calcGradeHtml = (v, t) => {
+        let p = (v / t) * 100;
+        let c = 'g-Fail', l = 'F';
+        if (p >= 90) { c = 'g-A'; l = 'A'; }
+        else if (p >= 80) { c = 'g-B'; l = 'B'; }
+        else if (p >= 60) { c = 'g-C'; l = 'C'; }
+        return `<span class="grade-badge ${c}">${l}</span>`;
     };
 
-    window.editNotice = (id, text, type) => {
-        document.getElementById('noticeId').value = id;
-        document.getElementById('adminNoticeText').value = text;
-        document.getElementById('noticeType').value = type;
-        document.getElementById('btnSaveNotice').innerText = "Update Notice";
-        document.getElementById('btnSaveNotice').style.background = "#f97316";
-        document.getElementById('btnCancelNotice').style.display = "block";
-        document.getElementById('tab-notice').scrollIntoView({behavior:'smooth'});
-    };
-
-    window.cancelNoticeEdit = () => {
-        document.getElementById('noticeId').value = "";
-        document.getElementById('adminNoticeText').value = "";
-        document.getElementById('noticeType').value = "normal";
-        document.getElementById('btnSaveNotice').innerText = "Publish Notice";
-        document.getElementById('btnSaveNotice').style.background = "#0d9488";
-        document.getElementById('btnCancelNotice').style.display = "none";
-    };
-
-    window.deleteNotice = async (id) => {
-        if(confirm("Delete Notice?")) {
-            await deleteDoc(doc(db, "notices", id));
-            showToast("Deleted");
-            fetchData();
-        }
-    };
-
-    function renderNotices() {
-        notices.sort((a,b) => b.timestamp - a.timestamp);
-        const list = document.getElementById('activeNoticesList');
-        if(!list) return;
-        list.innerHTML = notices.length ? notices.map(n => `
-            <div class="notice-item" style="border-left-color:${getColorByType(n.type)}">
-                <div style="flex:1;">
-                    <div style="font-size:12px;font-weight:bold;color:${getColorByType(n.type)};margin-bottom:4px;">
-                        ${getIconByType(n.type)} ${n.type.toUpperCase()} <span style="color:#999;font-weight:normal;">- ${n.date}</span>
-                    </div>
-                    <div style="font-size:13px;line-height:1.4;white-space:pre-wrap;">${n.text}</div>
-                </div>
-                <div style="display:flex;flex-direction:column;gap:5px;margin-left:10px;">
-                    <button class="btn btn-orange" style="width:auto;padding:5px 10px;margin:0;font-size:12px;" onclick='editNotice("${n.id}", ${JSON.stringify(n.text)}, "${n.type}")'>✏️</button>
-                    <button class="btn btn-red" style="width:auto;padding:5px 10px;margin:0;font-size:12px;" onclick="deleteNotice('${n.id}')">🗑️</button>
-                </div>
-            </div>
-        `).join('') : '<p style="text-align:center;color:#999">No active notices</p>';
-    }
-
-    function getColorByType(t) { return t=='urgent'?'#ef4444':(t=='event'?'#9333ea':(t=='quote'?'#22c55e':'#0d9488')); }
-    function getIconByType(t) { return t=='urgent'?'🚨':(t=='event'?'🎉':(t=='quote'?'💡':'📢')); }
-
-    // --- RENDER TABLE (UPDATED WITH PHOTO ICON) ---
+    // --- RENDER TABLE ---
     window.renderMarksTable = () => {
         const item = document.getElementById('itemSelect').value;
         let tot = examConfig[item] ? parseInt(examConfig[item]) : (mode==='test'?20:100);
@@ -266,51 +206,52 @@
         const list = getFiltered();
         document.getElementById('marksBody').innerHTML = list.length ? list.map(s => {
             let val = s[item] || "";
-            
-            // CHECK FOR SUBMISSION IN THIS ITEM
             let hasSub = s.submissions && s.submissions[item];
             let subIcon = hasSub ? `<button onclick="showSubmissionGallery('${s.id}', '${item}')" style="background:#e0f2f1; border:1px solid #009688; border-radius:5px; cursor:pointer; margin-right:5px; padding:5px; font-size:14px;" title="View Work">📷</button>` : "";
-
             let hasMsg = s.parentMessages && s.parentMessages.length > 0;
             let msgBtn = hasMsg ? `<button onclick='viewMessages(${JSON.stringify(s.parentMessages)})' style="border:none;background:#ffeb3b;border-radius:50%;width:25px;height:25px;cursor:pointer">📩</button>` : `-`;
             
             let input = mode === 'work' ? 
-                `<select class="v-in" data-id="${s.id}" data-orig="${val}">
-                    <option value="">-</option>
-                    <option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option>
-                    <option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option>
-                    <option value="ފުރިހަމައެއް ނުވޭ" ${val=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމައެއް ނުވޭ</option>
-                 </select>` : 
+                `<select class="v-in" data-id="${s.id}" data-orig="${val}"><option value="">-</option><option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމައެއް ނުވޭ" ${val=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމައެއް ނުވޭ</option></select>` : 
                 `<input type="number" class="v-in" data-id="${s.id}" data-orig="${val}" value="${val}" placeholder="0" oninput="updRow(this,${tot})">`;
+            
+            let gh=mode!=='work'&&v?calcGradeHtml(v,tot):''; 
 
             return `<tr>
                 <td>${s.index}</td>
                 <td><div style="font-size:13px;line-height:1.2;white-space:normal;max-width:100px;margin:0 auto;">${s.name}</div></td>
-                <td><div style="display:flex; align-items:center; justify-content:center;">${subIcon} ${input}</div></td>
+                <td><div style="display:flex; align-items:center; justify-content:center;">${subIcon} ${input} ${gh}</div></td>
                 <td>${msgBtn}</td>
                 <td><button class="btn" style="width:auto;padding:5px;margin:0;font-size:16px;" onclick="saveSingle('${s.id}')">💾</button></td>
             </tr>`;
         }).join('') : '<tr><td colspan="5">No data</td></tr>';
     };
 
-    // --- OTHER LOGIC ---
+    window.updRow=(e,t)=>{e.nextElementSibling.innerHTML=calcGradeHtml(e.value,t);}; // Fix for grade not showing immediately
+
+    // --- OTHER LOGIC (Standard) ---
     window.switchTab = (id) => { document.querySelectorAll('.section').forEach(d => d.classList.remove('active')); document.getElementById('tab-'+id).classList.add('active'); document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); event.target.classList.add('active'); refreshActiveView(); };
     function refreshActiveView() { if(document.getElementById('tab-db').classList.contains('active')) renderStudentTable(); if(document.getElementById('tab-marks').classList.contains('active')) renderMarksTable(); if(document.getElementById('tab-subs').classList.contains('active')) renderSubmissions(); if(document.getElementById('tab-notice').classList.contains('active')) {renderNotices(); renderMaterials();} }
-    
-    // (Filters, Submissions, Excel - Same as before)
     window.setGradeFilter=(g)=>{selGrade=g;selClass='All';updateFilters();refreshActiveView();}; window.setClassFilter=(c)=>{selClass=c;updateFilters();refreshActiveView();};
     function updateFilters(){const gs=[...new Set(students.map(s=>s.grade))].filter(Boolean).sort(); document.getElementById('gradeFilter').innerHTML=`<button style="padding:5px 10px;border:1px solid #b2dfdb;background:${selGrade=='All'?'#0d9488':'#fff'};color:${selGrade=='All'?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setGradeFilter('All')">All</button>`+gs.map(g=>`<button style="padding:5px 10px;border:1px solid #b2dfdb;background:${selGrade==g?'#0d9488':'#fff'};color:${selGrade==g?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setGradeFilter('${g}')">${g}</button>`).join(''); if(selGrade!=='All'){const cs=[...new Set(students.filter(s=>s.grade==selGrade).map(s=>s.class))].filter(Boolean).sort(); document.getElementById('classFilter').innerHTML=`<button style="padding:5px 10px;border:1px solid #b2dfdb;background:${selClass=='All'?'#0d9488':'#fff'};color:${selClass=='All'?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setClassFilter('All')">All</button>`+cs.map(c=>`<button style="padding:5px 10px;border:1px solid #b2dfdb;background:${selClass==c?'#0d9488':'#fff'};color:${selClass==c?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setClassFilter('${c}')">${c}</button>`).join('');}else document.getElementById('classFilter').innerHTML="";}
     function getFiltered(){let l=students;if(selGrade!=='All')l=l.filter(s=>String(s.grade)==String(selGrade));if(selClass!=='All')l=l.filter(s=>String(s.class)==String(selClass));return l.sort((a,b)=>(parseInt(a.index)||0)-(parseInt(b.index)||0));}
-    
     window.renderStudentTable=()=>{const l=getFiltered();document.querySelector('#studentTable tbody').innerHTML=l.length?l.map(s=>`<tr><td>${s.index}</td><td>${s.name}</td><td>${s.grade}${s.class}</td><td>${s.password||'1234'}</td><td><button class="btn btn-orange" style="padding:6px 12px;width:auto;margin:0" onclick="openEdit('${s.id}')">✏️</button></td></tr>`).join(''):'<tr><td colspan="5">No data</td></tr>';};
     window.saveTotalMark=async()=>{const i=document.getElementById('itemSelect').value,v=document.getElementById('totalMarks').value;if(i&&v){await setDoc(doc(db,"settings","examConfig"),{[i]:v},{merge:true});examConfig[i]=v;showToast("Saved");renderMarksTable();}};
     window.saveTeacherData=async()=>{const i=document.getElementById('itemSelect').value,inputs=document.querySelectorAll('.v-in');let p=[];document.getElementById('sBtn').innerText="Saving...";inputs.forEach(n=>{if(n.value!==n.dataset.orig)p.push(updateDoc(doc(db,"students",n.dataset.id),{[i]:n.value}));});await Promise.all(p);document.getElementById('sBtn').innerText="💾 Save All Changes";fetchData();showToast("Saved");};
     window.setMode=(m)=>{mode=m;let s=document.getElementById('itemSelect');s.innerHTML="";if(m=='work'){for(let i=1;i<=45;i++)s.innerHTML+=`<option value="Week${i}">Week ${i}</option>`;document.getElementById('totalDiv').style.display='none';}else{document.getElementById('totalDiv').style.display='flex';let p=m=='test'?'UnitTest':'CA',c=m=='test'?10:4;for(let i=1;i<=c;i++)s.innerHTML+=`<option value="${p}${i}">${m=='test'?'Unit Test':'CA'} ${i}</option>`;}renderMarksTable();};
     
     function updateSubCount() { let count = 0; students.forEach(s => { if(s.submissions) count += Object.keys(s.submissions).length; }); const badge = document.getElementById('subCount'); badge.innerText = count; badge.style.display = count > 0 ? 'inline-block' : 'none'; }
-    window.renderSubmissions = () => { const list = document.getElementById('subsList'); let html = ''; let hasData = false; students.forEach(s => { if(s.submissions) { Object.keys(s.submissions).forEach(week => { hasData = true; const sub = s.submissions[week]; let imgData = sub.images ? sub.images : (sub.image ? [sub.image] : []); let countText = imgData.length > 1 ? `(${imgData.length} Photos)` : ''; let thumb = imgData.length > 0 ? imgData[0] : ''; html += `<div class="sub-card"><div style="display:flex;gap:10px;align-items:center;"><img src="${thumb}" class="sub-img" onclick="showSubmissionGallery('${s.id}', '${week}')"><div style="text-align:left;"><strong>${s.name}</strong> (${s.index}) <span style="font-size:10px;color:#0d9488;font-weight:bold;">${countText}</span><br><span style="font-size:12px;color:#666;">${week} - ${sub.date}</span></div></div><button class="btn" style="width:auto;padding:5px 15px;" onclick="acceptSubmission('${s.id}','${week}')">✅ Accept</button></div>`; }); } }); list.innerHTML = hasData ? html : `<p style="text-align:center; color:#999;">No pending submissions</p>`; };
+    window.renderSubmissions = () => { const list = document.getElementById('subsList'); let html = ''; let hasData = false; students.forEach(s => { if(s.submissions) { Object.keys(s.submissions).forEach(week => { hasData = true; const sub = s.submissions[week]; let imgData = sub.images ? sub.images : (sub.image ? [sub.image] : []); let countText = imgData.length > 1 ? `(${imgData.length} Photos)` : ''; let thumb = imgData.length > 0 ? imgData[0] : ''; html += `<div class="sub-card"><div style="display:flex;gap:10px;align-items:center;"><img src="${thumb}" class="sub-img" onclick="showSubmissionGallery('${s.id}', '${week}')"><div style="text-align:left;"><strong>${s.name}</strong> (${s.index}) <span style="font-size:10px;color:#0d9488;font-weight:bold;">${countText}</span><br><span style="font-size:12px;color:#666;">${week} - ${sub.date}</span></div></div><button class="btn" style="width:auto;padding:8px 16px; margin:0;" onclick="acceptSubmission('${s.id}','${week}')">✅ Accept</button></div>`; }); } }); list.innerHTML = hasData ? html : `<p style="text-align:center; color:#999; margin-top:20px;">No pending submissions</p>`; };
     window.showSubmissionGallery = (sid, week) => { const s = students.find(x => x.id === sid); if (!s || !s.submissions || !s.submissions[week]) return; const sub = s.submissions[week]; const images = sub.images ? sub.images : (sub.image ? [sub.image] : []); document.getElementById('galleryContainer').innerHTML = images.map(src => `<img src="${src}">`).join(''); document.getElementById('modalImg').style.display = 'block'; };
     window.acceptSubmission = async (sid, week) => { if(confirm("Mark as Done and remove?")) { try { await updateDoc(doc(db, "students", sid), { [week]: 'ނިމިފައި', [`submissions.${week}`]: deleteField() }); showToast("Accepted!"); fetchData(); } catch(e) { console.error(e); alert("Error"); } } };
+
+    window.saveNotice = async () => { const id = document.getElementById('noticeId').value, txt = document.getElementById('adminNoticeText').value, type = document.getElementById('noticeType').value; if(!txt.trim()) return alert("Write something"); try { if(id) { await updateDoc(doc(db, "notices", id), { text: txt, type: type, date: new Date().toLocaleDateString('dv-MV') }); showToast("Updated!"); } else { await addDoc(collection(db, "notices"), { text: txt, type: type, date: new Date().toLocaleDateString('dv-MV'), timestamp: Date.now() }); showToast("Published!"); } cancelNoticeEdit(); fetchData(); } catch(e) { alert("Error"); } };
+    window.editNotice = (id, text, type) => { document.getElementById('noticeId').value = id; document.getElementById('adminNoticeText').value = text; document.getElementById('noticeType').value = type; document.getElementById('btnSaveNotice').innerText = "Update"; document.getElementById('btnSaveNotice').style.background = "#f97316"; document.getElementById('btnCancelNotice').style.display = "block"; document.getElementById('tab-notice').scrollIntoView({behavior:'smooth'}); };
+    window.cancelNoticeEdit = () => { document.getElementById('noticeId').value = ""; document.getElementById('adminNoticeText').value = ""; document.getElementById('noticeType').value = "normal"; document.getElementById('btnSaveNotice').innerText = "Publish"; document.getElementById('btnSaveNotice').style.background = "#0d9488"; document.getElementById('btnCancelNotice').style.display = "none"; };
+    window.deleteNotice = async (id) => { if(confirm("Delete Notice?")) { await deleteDoc(doc(db, "notices", id)); showToast("Deleted"); fetchData(); } };
+    function renderNotices() { notices.sort((a,b) => b.timestamp - a.timestamp); document.getElementById('activeNoticesList').innerHTML = notices.length ? notices.map(n => `<div class="notice-item" style="border-left-color:${getColorByType(n.type)}"><div style="flex:1;"><div style="font-size:12px;font-weight:bold;color:${getColorByType(n.type)};margin-bottom:4px;">${getIconByType(n.type)} ${n.type.toUpperCase()} <span style="color:#999;font-weight:normal;">- ${n.date}</span></div><div style="font-size:13px;line-height:1.4;white-space:pre-wrap;">${n.text}</div></div><div style="display:flex;flex-direction:column;gap:5px;margin-left:10px;"><button class="btn btn-orange" style="width:auto;padding:5px 10px;margin:0;font-size:12px;" onclick='editNotice("${n.id}", ${JSON.stringify(n.text)}, "${n.type}")'>✏️</button><button class="btn btn-red" style="width:auto;padding:5px 10px;margin:0;font-size:12px;" onclick="deleteNotice('${n.id}')">🗑️</button></div></div>`).join('') : '<p style="text-align:center;color:#999">No active notices</p>'; }
+    function getColorByType(t) { return t=='urgent'?'#ef4444':(t=='event'?'#9333ea':(t=='quote'?'#22c55e':'#0d9488')); }
+    function getIconByType(t) { return t=='urgent'?'🚨':(t=='event'?'🎉':(t=='quote'?'💡':'📢')); }
 
     window.processBulk=async()=>{for(let s of parsedData){if(!students.some(e=>String(e.index)==String(s.index))){await addDoc(collection(db,"students"),{index:String(s.index),name:String(s.name),grade:String(s.grade||''),class:String(s.class||''),password:"1234"});}} closeModal('modalBulk');fetchData();};
     window.processResultBulk=async()=>{let i=document.getElementById('itemSelect').value;for(let r of parsedResData){const s=students.find(x=>String(x.index)==String(r.index));if(s)await updateDoc(doc(db,"students",s.id),{[i]:String(r.mark)});} closeModal('modalResult');fetchData();};
