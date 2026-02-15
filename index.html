@@ -11,15 +11,11 @@
         .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); min-height: 85vh; border-top: 5px solid #10b981; }
         h1 { color: #059669; text-align: center; margin-bottom: 20px; font-size: 1.8rem; border-bottom: 2px dashed #a7f3d0; padding-bottom: 15px; }
         
-        /* NOTICE BOARD */
+        /* Notice Board */
         .notice-board { 
-            padding: 20px; border-radius: 15px; margin-bottom: 25px; display: none; 
+            padding: 20px; border-radius: 15px; margin-bottom: 25px; display: block; 
             position: relative; border-left: 6px solid transparent; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-        .notice-title { font-weight: bold; font-size: 18px; margin: 0; display:flex; align-items:center; gap:10px; }
-        .notice-body { font-size: 15px; line-height: 1.8; white-space: pre-wrap; margin-top:10px; }
-        .notice-date { font-size: 11px; opacity: 0.7; margin-left: auto; background: rgba(255,255,255,0.6); padding: 2px 8px; border-radius: 10px; }
-
         .n-normal { background: #ecfeff; border-color: #06b6d4; color: #155e75; }
         .n-urgent { background: #fef2f2; border-color: #ef4444; color: #991b1b; animation: pulse 2s infinite; }
         .n-event { background: #faf5ff; border-color: #9333ea; color: #6b21a8; }
@@ -41,7 +37,7 @@
         .btn-upload { background: #0891b2; padding: 6px 12px; font-size: 12px; width: auto; margin: 0; border-radius: 6px; color: white; border: none; cursor: pointer; }
         .btn-view { background: #6366f1; padding: 6px 12px; font-size: 12px; width: auto; margin: 0; border-radius: 6px; color: white; border: none; cursor: pointer; }
 
-        /* Results & Status */
+        /* Results Styling */
         .result-header { background: linear-gradient(to right, #065f46, #10b981); color: white; padding: 25px; border-radius: 12px 12px 0 0; text-align: center; }
         .result-section-title { font-size: 18px; font-weight: bold; color: #059669; border-bottom: 2px solid #a7f3d0; margin-bottom: 15px; margin-top: 25px; }
         .result-item { display: flex; justify-content: space-between; align-items: center; background: white; border: 1px solid #e5e7eb; padding: 15px; margin-bottom: 10px; border-radius: 10px; border-right: 5px solid #d1d5db; }
@@ -51,27 +47,29 @@
         .result-item.incomplete { border-right-color: #ef4444; background: #fef2f2; }
         
         .status-badge { font-size: 11px; padding: 4px 8px; border-radius: 20px; display: inline-block; font-weight: bold; }
-        .st-done { background: #dcfce7; color: #166534; } .st-pending { background: #fef9c3; color: #854d0e; } .st-fail { background: #fee2e2; color: #991b1b; } .st-fix { background: #ffedd5; color: #9a3412; }
+        .st-done { background: #dcfce7; color: #166534; }
+        .st-pending { background: #fef9c3; color: #854d0e; }
+        .st-fail { background: #fee2e2; color: #991b1b; }
+        .st-fix { background: #ffedd5; color: #9a3412; }
 
         .score-circle { width: 40px; height: 40px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; }
         
-        /* Updated Grading Colors */
+        /* Updated Grade Badges */
         .grade-badge { padding: 4px 10px; border-radius: 6px; color: white; font-size: 12px; font-weight: bold; }
-        .g-A { background: #10b981; } /* A - Green */
-        .g-B { background: #3b82f6; } /* B - Blue */
-        .g-C { background: #f97316; } /* C - Orange */
-        .g-Fail { background: #ef4444; } /* Fail - Red */
+        .g-A { background: #10b981; } /* 90-100 A */
+        .g-B { background: #3b82f6; } /* 80-89 B */
+        .g-C { background: #f97316; } /* 60-79 C */
+        .g-Fail { background: #ef4444; } /* 0-59 Fail */
         
-        /* Modals */
+        /* Modals & Preview */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
         .modal-content { background-color: #fff; margin: 10% auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 500px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); border-top: 5px solid #10b981; max-height: 85vh; overflow-y: auto; display: flex; flex-direction: column; }
         
         .preview-grid { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 15px; max-height: 250px; overflow-y: auto; }
         .preview-thumb { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; }
         
-        #imgPreview { max-width: 100%; max-height: 250px; width: auto; object-fit: contain; display: none; margin: 10px auto; border-radius: 8px; border: 1px solid #ddd; }
-        #viewSubmissionImg { max-width: 100%; max-height: 400px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #ddd; }
-
+        #imgPreview, #viewSubmissionImg { max-width: 100%; max-height: 250px; width: auto; object-fit: contain; display: none; margin: 10px auto; border-radius: 8px; border: 1px solid #ddd; }
+        
         .mat-link { display: flex; justify-content: space-between; align-items: center; padding: 15px; margin: 10px 0; background: #fff; color: #00695c; text-decoration: none; border-radius: 8px; font-weight: bold; border: 1px solid #b2dfdb; transition: 0.2s; }
         #toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #1f2937; color: white; padding: 12px 24px; border-radius: 50px; font-size: 14px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 2000; }
     </style>
@@ -81,9 +79,10 @@
 <div class="container">
     <h1>🌙 އިސްލާމް ޕޯޓަލް</h1>
 
+    <!-- NOTICE BOARD -->
     <div id="noticeContainer" style="margin-bottom: 25px;"></div>
 
-    <!-- LOGIN -->
+    <!-- 1. LOGIN SECTION -->
     <div id="loginSection">
         <div class="card" style="text-align:center;">
             <h3 style="margin-top:0; color:#1f2937;">ބެލެނިވެރިންގެ ޕޯޓަލް</h3>
@@ -95,7 +94,7 @@
         <p style="text-align:center; font-size:12px; color:#9ca3af;">ފުރަތަމަ ފަހަރު ނަމަ ޕާސްވޯޑް ހުސްކޮށް ބަހައްޓަވާ</p>
     </div>
 
-    <!-- DASHBOARD -->
+    <!-- 2. DASHBOARD SECTION -->
     <div id="dashboardSection" style="display:none;">
         <div id="studentHeader"></div>
 
@@ -133,7 +132,7 @@
 </div>
 
 <!-- View Submission Modal -->
-<div id="viewSubModal" class="modal"><div class="modal-content"><h3 style="color:#6366f1;margin-top:0">ހުށަހެޅި މަސައްކަތް</h3><p id="viewSubDate" style="color:#666;font-size:12px"></p><div style="text-align:center;margin-bottom:15px"><img id="viewSubmissionImg"></div><button class="btn" style="background:#9ca3af" onclick="document.getElementById('viewSubModal').style.display='none'">ލައްޕާލާ</button></div></div>
+<div id="viewSubModal" class="modal"><div class="modal-content"><h3 style="color:#6366f1;margin-top:0">ހުށަހެޅި މަސައްކަތް</h3><p id="viewSubDate" style="color:#666;font-size:12px"></p><div style="text-align:center;margin-bottom:15px"><img id="viewSubmissionImg" style="max-width:100%;max-height:250px;"></div><button class="btn" style="background:#9ca3af" onclick="document.getElementById('viewSubModal').style.display='none'">ލައްޕާލާ</button></div></div>
 
 <!-- Other Modals -->
 <div id="pwdModal" class="modal"><div class="modal-content"><h3 style="color:#3b82f6;">ޕާސްވޯޑް ސެޓްކުރުން</h3><p style="font-size:13px; color:#666;" id="pwdModalMsg">އާ ޕާސްވޯޑެއް ޖައްސަވާ</p><input type="text" id="newParentPass" placeholder="New Password"><button class="btn btn-blue" onclick="saveNewPassword()">💾 Save Password</button><button class="btn" id="btnClosePwd" style="background:#9ca3af; margin-top:10px;" onclick="document.getElementById('pwdModal').style.display='none'">Cancel</button></div></div>
@@ -183,7 +182,7 @@
         } catch(e) { console.error(e); }
     }
 
-    // --- LOGIN LOGIC FIX ---
+    // --- LOGIN LOGIC FIX (UPDATED) ---
     window.loginParent = () => {
         const idx = document.getElementById('pIdx').value; const pass = document.getElementById('pPass').value; 
         if(!idx) return showToast("Index Required");
@@ -195,13 +194,9 @@
             btn.innerHTML = `<span>🔐</span> ލޮގިން`;
             
             if(s) {
-                // Logic: 
-                // 1. If stored password is "1234" (default), allow "1234" OR empty input. Then FORCE change.
-                // 2. If stored password is changed (not "1234"), REQUIRE exact match. Empty input fails.
-                
                 let currentStoredPass = String(s.password || "1234");
 
-                // Case 1: First time user (Default Pass)
+                // Case 1: First time (Default Pass) - Allow empty OR "1234"
                 if (currentStoredPass === "1234") {
                     if (pass === "" || pass === "1234") {
                         currentStudent = s; 
@@ -211,12 +206,7 @@
                     }
                 }
 
-                // Case 2: Regular Login
-                if(pass === "") {
-                    showToast("ޕާސްވޯޑް ޖައްސަވާ!");
-                    return;
-                }
-
+                // Case 2: Regular Login - Must match exactly
                 if (currentStoredPass === String(pass)) { 
                     currentStudent = s; 
                     loadDashboard(s); 
@@ -254,7 +244,7 @@
             } else {
                 if(status === 'ނުނިމޭ') { itemClass='incomplete'; actionArea = `<span class="status-badge st-fail">❌ ނުނިމޭ</span> `; }
                 else if(status === 'ފުރިހަމައެއް ނުވޭ') { itemClass='pending'; actionArea = `<span class="status-badge st-fix">⚠️ އިސްލާޙްކުރޭ</span> `; }
-                actionArea += `<button class="btn-upload" onclick="openUploadModal('Week${i}')">📷 ފޮޓޯ</button>`;
+                actionArea += `<button class="btn-upload" onclick="openUploadModal('Week${i}')">📷 ފޮޓޯލާން</button>`;
             }
 
             if(status || submission || i < 5) {
@@ -360,7 +350,7 @@
         if(p>=90) return {lbl:'A', cls:'g-A'};    // 90-100 A
         if(p>=80) return {lbl:'B', cls:'g-B'};    // 80-89 B
         if(p>=60) return {lbl:'C', cls:'g-C'};    // 60-79 C
-        return {lbl:'Fail', cls:'g-Fail'};        // 0-59 Fail
+        return {lbl:'F', cls:'g-Fail'};        // 0-59 Fail
     }
 
     function showToast(msg) { const t=document.getElementById('toast'); t.innerText=msg; t.style.opacity='1'; t.style.bottom='80px'; setTimeout(()=>t.style.opacity='0', 3000); }
