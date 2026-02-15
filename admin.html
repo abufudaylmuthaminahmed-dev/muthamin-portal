@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Teacher Admin</title>
-    <!-- SheetJS for Excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
@@ -13,7 +12,6 @@
         .container { max-width: 1100px; margin: 0 auto; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); padding-bottom: 80px; }
         h1 { color: #0d9488; text-align: center; border-bottom: 2px solid #e0f2f1; padding-bottom: 10px; margin-top: 0; font-size: 1.4rem; }
         
-        /* Navigation */
         .nav-menu { display: flex; gap: 8px; margin-bottom: 20px; background: #ccfbf1; padding: 8px; border-radius: 12px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
         .nav-btn { flex: 0 0 auto; padding: 10px 20px; border: none; background: rgba(255,255,255,0.8); border-radius: 8px; cursor: pointer; color: #0f766e; font-weight: bold; font-size: 14px; }
         .nav-btn.active { background: #0d9488; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
@@ -23,38 +21,35 @@
         .section.active { display: block; }
         .card { border: 1px solid #f1f5f9; padding: 15px; border-radius: 12px; margin-bottom: 15px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
 
-        /* Tables */
         .table-container { overflow-x: auto; border-radius: 10px; border: 1px solid #e2e8f0; margin-top: 10px; -webkit-overflow-scrolling: touch; }
         table { width: 100%; border-collapse: collapse; min-width: 100%; }
         th { background: #0f766e; color: white; padding: 12px 8px; position: sticky; top: 0; font-size: 14px; white-space: nowrap; z-index: 10; }
         td { padding: 8px; border-bottom: 1px solid #f1f5f9; text-align: center; vertical-align: middle; }
         tr:nth-child(even) { background-color: #f8fafc; }
 
-        /* Inputs */
         input, select, textarea { padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; width: 100%; text-align: center; margin: 0; outline: none; font-size: 14px; height: 40px; background: #fff; }
-        
-        /* Specific input styles */
-        .v-in { min-width: 140px; font-weight: bold; color: #334155; } /* Dropdown needs more width */
-        input.v-in { min-width: 80px; } /* Marks input can be smaller */
+        .v-in { min-width: 140px; font-weight: bold; color: #334155; }
+        input.v-in { min-width: 80px; } 
         .n-in { min-width: 150px; text-align: right; }
 
         .btn { padding: 12px; background: #0d9488; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; font-size: 14px; display:flex; justify-content:center; align-items:center; gap:5px; }
         .btn-orange { background: #f97316; } .btn-red { background: #ef4444; }
         .btn-save { position: fixed; bottom: 20px; right: 20px; left: 20px; width: calc(100% - 40px); z-index: 100; max-width: 1060px; margin: 0 auto; box-shadow: 0 5px 20px rgba(0,0,0,0.3); border-radius: 50px; height: 50px; font-size: 16px; }
 
-        /* Modals & Login */
         #loginOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background: #0f766e; z-index: 5000; display: flex; align-items: center; justify-content: center; }
         .login-box { background: white; padding: 30px; border-radius: 15px; width: 85%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; backdrop-filter: blur(3px); }
-        .modal-content { background:white; margin:5% auto; padding:20px; width:90%; max-width:500px; border-radius: 15px; max-height: 85vh; overflow-y: auto; }
+        .modal-content { background:white; margin:10% auto; padding:20px; width:90%; max-width:500px; border-radius: 15px; max-height: 80vh; overflow-y: auto; }
 
         .sub-card { border: 1px solid #e2e8f0; padding: 12px; border-radius: 10px; margin-bottom: 10px; background: #fff; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
         .sub-img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd; background: #eee; }
-        .modal-gallery img { max-width: 100%; max-height: 80vh; border-radius: 8px; border: 2px solid #333; margin-bottom: 10px; }
-        .notice-item { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px; border-radius: 8px; margin-bottom: 10px; display:flex; justify-content:space-between; align-items:flex-start; text-align:left; }
-
-        /* Grades */
-        .grade-badge { padding: 3px 8px; border-radius: 4px; color: white; font-size: 12px; font-weight: bold; margin-left: 5px; display:inline-block; }
+        
+        .modal-gallery { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        .modal-gallery img { max-width: 100%; max-height: 80vh; border-radius: 8px; border: 2px solid #333; margin-bottom: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .notice-item { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px; border-radius: 8px; margin-bottom: 10px; display:flex; justify-content:space-between; align-items:flex-start; text-align:left; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
+        
+        /* Updated Grade Badges in Admin */
+        .grade-badge { padding: 3px 8px; border-radius: 4px; color: white; font-size: 12px; font-weight: bold; margin-right: 5px; }
         .g-A { background: #10b981; } .g-B { background: #3b82f6; } .g-C { background: #f97316; } .g-Fail { background: #ef4444; }
 
         @keyframes fadeIn { from {opacity:0; transform: translateY(5px);} to {opacity:1; transform: translateY(0);} }
@@ -78,7 +73,7 @@
         <button class="nav-btn" onclick="switchTab('notice')">📢 Notice</button>
     </div>
 
-    <!-- 1. DB (Students) -->
+    <!-- 1. DB -->
     <div id="tab-db" class="section active">
         <div style="display:flex; gap:10px; margin-bottom:10px;">
             <button class="btn" style="flex:1; background:#43a047;" onclick="openStudentModal()">+ Add</button>
@@ -92,7 +87,7 @@
         <div class="table-container"><table id="studentTable"><thead><tr><th>Idx</th><th>Name</th><th>Cls</th><th>Pass</th><th>Act</th></tr></thead><tbody><tr><td colspan="5">Loading...</td></tr></tbody></table></div>
     </div>
 
-    <!-- 2. MARKS (Fixed Input Types) -->
+    <!-- 2. MARKS -->
     <div id="tab-marks" class="section">
         <div class="card" style="background:#f8fafc;">
             <div style="display:flex; gap:5px; overflow-x:auto; margin-bottom:10px; padding-bottom:5px;">
@@ -107,7 +102,7 @@
                     <button class="btn" style="width:auto; margin:0; padding:0 12px; background:#00695c;" onclick="openResultModal()">📤</button>
                 </div>
                 <div id="totalDiv" style="display:none; align-items:center; gap:5px; margin-top:5px;">
-                    <span style="font-size:12px;">Total Marks:</span>
+                    <span style="font-size:12px;">Total:</span>
                     <input type="number" id="totalMarks" value="20" style="padding:5px; width:60px; height:35px;">
                     <button onclick="saveTotalMark()" style="width:auto; padding:5px 10px; margin:0; height:35px;">💾</button>
                 </div>
@@ -164,7 +159,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, deleteField, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-    // --- CONFIG (REPLACE WITH YOUR KEYS) ---
+    // --- CONFIG ---
     const firebaseConfig = {
       apiKey: "AIzaSyDSEHqUQIegVjhWKpRgpJybdPaVDVroVos",
   authDomain: "islam-portal-muthamin.firebaseapp.com",
@@ -181,35 +176,31 @@
     // --- LOGIN ---
     window.checkLogin = () => { if(document.getElementById('adminPass').value === "123") { document.getElementById('loginOverlay').style.display='none'; document.getElementById('mainContainer').style.display='block'; fetchData(); } else alert("Wrong Password"); };
 
-    // --- DATA ---
     async function fetchData() {
         try {
             const sSnap = await getDocs(collection(db, "students")); students = []; sSnap.forEach((doc) => students.push({ id: doc.id, ...doc.data() }));
             const mSnap = await getDocs(collection(db, "materials")); materials = []; mSnap.forEach((doc) => materials.push({ id: doc.id, ...doc.data() }));
             const nSnap = await getDocs(collection(db, "notices")); notices = []; nSnap.forEach(d => notices.push({id: d.id, ...d.data()}));
-            
             try { const c = await getDoc(doc(db, "settings", "examConfig")); if(c.exists()) examConfig = c.data(); } catch(e){}
             updateFilters(); refreshActiveView(); updateSubCount();
         } catch(e) { console.error(e); }
     }
 
-    // --- GRADING SCALE (Corrected) ---
+    // --- GRADING SCALE UPDATED ---
     window.calcGradeHtml = (v, t) => {
         let p = (v / t) * 100;
         let c = 'g-Fail', l = 'F';
-        if (p >= 90) { c = 'g-A'; l = 'A'; }       // 90-100
-        else if (p >= 80) { c = 'g-B'; l = 'B'; }  // 80-89
-        else if (p >= 60) { c = 'g-C'; l = 'C'; }  // 60-79
-        // 0-59 is Fail
+        if (p >= 90) { c = 'g-A'; l = 'A'; }
+        else if (p >= 80) { c = 'g-B'; l = 'B'; }
+        else if (p >= 60) { c = 'g-C'; l = 'C'; }
         return `<span class="grade-badge ${c}">${l}</span>`;
     };
 
-    // --- RENDER TABLE (Fixed Input Type) ---
+    // --- RENDER TABLE FIXED ---
     window.renderMarksTable = () => {
         const item = document.getElementById('itemSelect').value;
         let tot = examConfig[item] ? parseInt(examConfig[item]) : (mode==='test'?20:100);
         
-        // Handle Total Marks Div Visibility
         if(mode !== 'work') {
             document.getElementById('totalDiv').style.display = 'flex';
             document.getElementById('totalMarks').value = tot;
@@ -225,17 +216,9 @@
             let hasMsg = s.parentMessages && s.parentMessages.length > 0;
             let msgBtn = hasMsg ? `<button onclick='viewMessages(${JSON.stringify(s.parentMessages)})' style="border:none;background:#ffeb3b;border-radius:50%;width:25px;height:25px;cursor:pointer">📩</button>` : `-`;
             
-            let input = "";
-            let gradeHtml = "";
-
+            let input = "", gradeHtml = "";
             if (mode === 'work') {
-                input = `
-                <select class="v-in" data-id="${s.id}" data-orig="${val}">
-                    <option value="">-</option>
-                    <option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option>
-                    <option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option>
-                    <option value="ފުރިހަމައެއް ނުވޭ" ${val=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމައެއް ނުވޭ</option>
-                </select>`;
+                input = `<select class="v-in" data-id="${s.id}" data-orig="${val}"><option value="">-</option><option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމައެއް ނުވޭ" ${val=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމައެއް ނުވޭ</option></select>`;
             } else {
                 input = `<input type="number" class="v-in" data-id="${s.id}" data-orig="${val}" value="${val}" placeholder="0" oninput="updRow(this,${tot})">`;
                 if(val) gradeHtml = calcGradeHtml(val, tot);
@@ -253,17 +236,16 @@
 
     window.updRow=(e,t)=>{ document.getElementById('g-'+e.dataset.id).innerHTML = calcGradeHtml(e.value,t); };
 
-    // --- OTHER LOGIC (Standard) ---
+    // --- OTHER LOGIC ---
     window.switchTab = (id) => { document.querySelectorAll('.section').forEach(d => d.classList.remove('active')); document.getElementById('tab-'+id).classList.add('active'); document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); event.target.classList.add('active'); refreshActiveView(); };
     function refreshActiveView() { if(document.getElementById('tab-db').classList.contains('active')) renderStudentTable(); if(document.getElementById('tab-marks').classList.contains('active')) renderMarksTable(); if(document.getElementById('tab-subs').classList.contains('active')) renderSubmissions(); if(document.getElementById('tab-notice').classList.contains('active')) {renderNotices(); renderMaterials();} }
     window.setGradeFilter=(g)=>{selGrade=g;selClass='All';updateFilters();refreshActiveView();}; window.setClassFilter=(c)=>{selClass=c;updateFilters();refreshActiveView();};
     function updateFilters(){const gs=[...new Set(students.map(s=>s.grade))].filter(Boolean).sort(); document.getElementById('gradeFilter').innerHTML=`<button style="padding:6px 12px;border:1px solid #b2dfdb;background:${selGrade=='All'?'#0d9488':'#fff'};color:${selGrade=='All'?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setGradeFilter('All')">All</button>`+gs.map(g=>`<button style="padding:6px 12px;border:1px solid #b2dfdb;background:${selGrade==g?'#0d9488':'#fff'};color:${selGrade==g?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setGradeFilter('${g}')">${g}</button>`).join(''); if(selGrade!=='All'){const cs=[...new Set(students.filter(s=>s.grade==selGrade).map(s=>s.class))].filter(Boolean).sort(); document.getElementById('classFilter').innerHTML=`<button style="padding:6px 12px;border:1px solid #b2dfdb;background:${selClass=='All'?'#0d9488':'#fff'};color:${selClass=='All'?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setClassFilter('All')">All</button>`+cs.map(c=>`<button style="padding:6px 12px;border:1px solid #b2dfdb;background:${selClass==c?'#0d9488':'#fff'};color:${selClass==c?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setClassFilter('${c}')">${c}</button>`).join('');}else document.getElementById('classFilter').innerHTML="";}
     function getFiltered(){let l=students;if(selGrade!=='All')l=l.filter(s=>String(s.grade)==String(selGrade));if(selClass!=='All')l=l.filter(s=>String(s.class)==String(selClass));return l.sort((a,b)=>(parseInt(a.index)||0)-(parseInt(b.index)||0));}
-    
     window.renderStudentTable=()=>{const l=getFiltered();document.querySelector('#studentTable tbody').innerHTML=l.length?l.map(s=>`<tr><td>${s.index}</td><td>${s.name}</td><td>${s.grade}${s.class}</td><td>${s.password||'1234'}</td><td><button class="btn btn-orange" style="padding:6px 12px;width:auto;margin:0" onclick="openEdit('${s.id}')">✏️</button></td></tr>`).join(''):'<tr><td colspan="5">No data</td></tr>';};
     window.saveTotalMark=async()=>{const i=document.getElementById('itemSelect').value,v=document.getElementById('totalMarks').value;if(i&&v){await setDoc(doc(db,"settings","examConfig"),{[i]:v},{merge:true});examConfig[i]=v;showToast("Saved");renderMarksTable();}};
     window.saveTeacherData=async()=>{const i=document.getElementById('itemSelect').value,inputs=document.querySelectorAll('.v-in');let p=[];document.getElementById('sBtn').innerText="Saving...";inputs.forEach(n=>{if(n.value!==n.dataset.orig)p.push(updateDoc(doc(db,"students",n.dataset.id),{[i]:n.value}));});await Promise.all(p);document.getElementById('sBtn').innerText="💾 Save All Changes";fetchData();showToast("Saved");};
-    window.setMode=(m)=>{mode=m;let s=document.getElementById('itemSelect');s.innerHTML="";if(m=='work'){for(let i=1;i<=45;i++)s.innerHTML+=`<option value="Week${i}">Week ${i}</option>`;}else{let p=m=='test'?'UnitTest':'CA',c=m=='test'?10:4;for(let i=1;i<=c;i++)s.innerHTML+=`<option value="${p}${i}">${m=='test'?'Unit Test':'CA'} ${i}</option>`;}renderMarksTable();};
+    window.setMode=(m)=>{mode=m;let s=document.getElementById('itemSelect');s.innerHTML="";if(m=='work'){for(let i=1;i<=45;i++)s.innerHTML+=`<option value="Week${i}">Week ${i}</option>`;document.getElementById('totalDiv').style.display='none';}else{document.getElementById('totalDiv').style.display='flex';let p=m=='test'?'UnitTest':'CA',c=m=='test'?10:4;for(let i=1;i<=c;i++)s.innerHTML+=`<option value="${p}${i}">${m=='test'?'Unit Test':'CA'} ${i}</option>`;}renderMarksTable();};
     window.saveSingle=async(id)=>{const i=document.getElementById('itemSelect').value,v=document.querySelector(`.v-in[data-id="${id}"]`).value;await updateDoc(doc(db,"students",id),{[i]:v});showToast("Saved");};
     window.addMaterial=async()=>{await addDoc(collection(db,"materials"),{title:document.getElementById('matTitle').value,link:document.getElementById('matLink').value});fetchData();};
     window.closeModal=(i)=>document.getElementById(i).style.display='none';
@@ -274,7 +256,7 @@
 
     // Submissions & Notices
     function updateSubCount() { let count = 0; students.forEach(s => { if(s.submissions) count += Object.keys(s.submissions).length; }); const badge = document.getElementById('subCount'); badge.innerText = count; badge.style.display = count > 0 ? 'inline-block' : 'none'; }
-    window.renderSubmissions = () => { const list = document.getElementById('subsList'); let html = ''; let hasData = false; students.forEach(s => { if(s.submissions) { Object.keys(s.submissions).forEach(week => { hasData = true; const sub = s.submissions[week]; let imgData = sub.images ? sub.images : (sub.image ? [sub.image] : []); let countText = imgData.length > 1 ? `(${imgData.length} Photos)` : ''; let thumb = imgData.length > 0 ? imgData[0] : ''; html += `<div class="sub-card"><div style="display:flex;gap:10px;align-items:center;"><img src="${thumb}" class="sub-img" onclick="showSubmissionGallery('${s.id}', '${week}')"><div style="text-align:left;"><strong>${s.name}</strong> (${s.index}) <span style="font-size:10px;color:#0d9488;font-weight:bold;">${countText}</span><br><span style="font-size:12px;color:#666;">${week} - ${sub.date}</span></div></div><button class="btn" style="width:auto;padding:5px 15px;" onclick="acceptSubmission('${s.id}','${week}')">✅ Accept</button></div>`; }); } }); list.innerHTML = hasData ? html : `<p style="text-align:center; color:#999; margin-top:20px;">No pending submissions</p>`; };
+    window.renderSubmissions = () => { const list = document.getElementById('subsList'); let html = ''; let hasData = false; students.forEach(s => { if(s.submissions) { Object.keys(s.submissions).forEach(week => { hasData = true; const sub = s.submissions[week]; let imgData = sub.images ? sub.images : (sub.image ? [sub.image] : []); let countText = imgData.length > 1 ? `(${imgData.length} Photos)` : ''; let thumb = imgData.length > 0 ? imgData[0] : ''; html += `<div class="sub-card"><div style="display:flex;gap:10px;align-items:center;"><img src="${thumb}" class="sub-img" onclick="showSubmissionGallery('${s.id}', '${week}')"><div style="text-align:left;"><strong>${s.name}</strong> (${s.index}) <span style="font-size:10px;color:#0d9488;font-weight:bold;">${countText}</span><br><span style="font-size:12px;color:#666;">${week} - ${sub.date}</span></div></div><button class="btn" style="width:auto;padding:5px 15px;" onclick="acceptSubmission('${s.id}','${week}')">✅ Accept</button></div>`; }); } }); list.innerHTML = hasData ? html : `<p style="text-align:center; color:#999;">No pending submissions</p>`; };
     window.showSubmissionGallery = (sid, week) => { const s = students.find(x => x.id === sid); if (!s || !s.submissions || !s.submissions[week]) return; const sub = s.submissions[week]; const images = sub.images ? sub.images : (sub.image ? [sub.image] : []); document.getElementById('galleryContainer').innerHTML = images.map(src => `<img src="${src}">`).join(''); document.getElementById('modalImg').style.display = 'block'; };
     window.acceptSubmission = async (sid, week) => { if(confirm("Mark as Done and remove?")) { try { await updateDoc(doc(db, "students", sid), { [week]: 'ނިމިފައި', [`submissions.${week}`]: deleteField() }); showToast("Accepted!"); fetchData(); } catch(e) { console.error(e); alert("Error"); } } };
 
@@ -285,6 +267,7 @@
     function renderNotices() { notices.sort((a,b) => b.timestamp - a.timestamp); document.getElementById('activeNoticesList').innerHTML = notices.length ? notices.map(n => `<div class="notice-item" style="border-left-color:${getColorByType(n.type)}"><div style="flex:1;"><div style="font-size:12px;font-weight:bold;color:${getColorByType(n.type)};margin-bottom:4px;">${getIconByType(n.type)} ${n.type.toUpperCase()} <span style="color:#999;font-weight:normal;">- ${n.date}</span></div><div style="font-size:13px;line-height:1.4;white-space:pre-wrap;">${n.text}</div></div><div style="display:flex;flex-direction:column;gap:5px;margin-left:10px;"><button class="btn btn-orange" style="width:auto;padding:5px 10px;margin:0;font-size:12px;" onclick='editNotice("${n.id}", ${JSON.stringify(n.text)}, "${n.type}")'>✏️</button><button class="btn btn-red" style="width:auto;padding:5px 10px;margin:0;font-size:12px;" onclick="deleteNotice('${n.id}')">🗑️</button></div></div>`).join('') : '<p style="text-align:center;color:#999">No active notices</p>'; }
     function getColorByType(t) { return t=='urgent'?'#ef4444':(t=='event'?'#9333ea':(t=='quote'?'#22c55e':'#0d9488')); }
     function getIconByType(t) { return t=='urgent'?'🚨':(t=='event'?'🎉':(t=='quote'?'💡':'📢')); }
+
     window.processBulk=async()=>{for(let s of parsedData){if(!students.some(e=>String(e.index)==String(s.index))){await addDoc(collection(db,"students"),{index:String(s.index),name:String(s.name),grade:String(s.grade||''),class:String(s.class||''),password:"1234"});}} closeModal('modalBulk');fetchData();};
     window.processResultBulk=async()=>{let i=document.getElementById('itemSelect').value;for(let r of parsedResData){const s=students.find(x=>String(x.index)==String(r.index));if(s)await updateDoc(doc(db,"students",s.id),{[i]:String(r.mark)});} closeModal('modalResult');fetchData();};
     document.getElementById('excelFile').addEventListener('change',e=>{const r=new FileReader();r.onload=e=>{const j=XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(e.target.result),{type:'array'}).Sheets[XLSX.read(new Uint8Array(e.target.result),{type:'array'}).SheetNames[0]],{header:1});parsedData=[];let h='<table>';j.forEach((r,i)=>{if(r.length>=2&&row[0]!=='Index'){parsedData.push({index:r[0],name:r[1],grade:r[2],class:r[3]});if(parsedData.length<=5)h+=`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`;}});document.getElementById('bulkPreview').innerHTML=h+"</table>";};r.readAsArrayBuffer(e.target.files[0]);});
