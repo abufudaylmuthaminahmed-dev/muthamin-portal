@@ -8,7 +8,7 @@
         @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
         * { font-family: "Faruma", sans-serif; box-sizing: border-box; }
         body { background-color: #ecfdf5; margin: 0; padding: 10px; text-align: right; color: #1f2937; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); min-height: 85vh; border-top: 5px solid #10b981; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); min-height: 85vh; border-top: 5px solid #10b981; }
         h1 { color: #059669; text-align: center; margin-bottom: 20px; font-size: 1.8rem; border-bottom: 2px dashed #a7f3d0; padding-bottom: 15px; }
         
         /* Notice Board */
@@ -49,8 +49,10 @@
         .result-item.done { border-right-color: #10b981; background: #ecfdf5; }
         .result-item.pending { border-right-color: #f59e0b; background: #fffbeb; }
         .result-item.incomplete { border-right-color: #ef4444; background: #fef2f2; }
+        
         .status-badge { font-size: 10px; padding: 3px 8px; border-radius: 20px; display: inline-block; font-weight: bold; }
         .st-done { background: #dcfce7; color: #166534; } .st-pending { background: #fef9c3; color: #854d0e; } .st-fail { background: #fee2e2; color: #991b1b; } .st-fix { background: #ffedd5; color: #9a3412; }
+        
         .score-circle { width: 35px; height: 35px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; }
         .grade-badge { padding: 3px 8px; border-radius: 6px; color: white; font-size: 11px; font-weight: bold; }
         
@@ -70,9 +72,11 @@
 
 <div class="container">
     <h1>🌙 އިސްލާމް ޕޯޓަލް</h1>
+    
+    <!-- NOTICE BOARD -->
     <div id="noticeContainer" style="margin-bottom: 20px;"></div>
 
-    <!-- LOGIN -->
+    <!-- LOGIN SECTION -->
     <div id="loginSection">
         <div class="card" style="text-align:center;">
             <h3 style="margin-top:0; color:#1f2937;">ބެލެނިވެރިންގެ ޕޯޓަލް</h3>
@@ -84,10 +88,13 @@
         <p style="text-align:center; font-size:12px; color:#9ca3af;">ފުރަތަމަ ފަހަރު ނަމަ ޕާސްވޯޑް ހުސްކޮށް ބަހައްޓަވާ</p>
     </div>
 
-    <!-- DASHBOARD -->
+    <!-- DASHBOARD SECTION -->
     <div id="dashboardSection" style="display:none;">
+        
+        <!-- HEADER -->
         <div id="studentHeader"></div>
         
+        <!-- MATERIALS CARD -->
         <div class="card card-highlight">
             <h3 style="margin-top:0; color:#059669;">ފިލާވަޅުތައް</h3>
             <p style="font-size:13px; color:#555; margin-bottom:15px;">ފޮތްތަކާއި ނޯޓްސް ޑައުންލޯޑް ކުރެއްވުމަށް</p>
@@ -101,8 +108,10 @@
             <button class="tab-btn" onclick="switchTab('ca')">CA / Exam</button>
         </div>
 
-        <!-- RESULTS CONTAINER -->
+        <!-- RESULTS CONTENT -->
         <div class="card" style="padding:15px; min-height: 300px;">
+            
+            <!-- Tab 1: Weekly -->
             <div id="tab-weekly" class="tab-content active">
                 <div id="weeklyList"></div>
                 <!-- Pagination -->
@@ -113,16 +122,26 @@
                 </div>
             </div>
             
-            <div id="tab-tests" class="tab-content"></div>
-            <div id="tab-ca" class="tab-content"></div>
+            <!-- Tab 2: Tests -->
+            <div id="tab-tests" class="tab-content">
+                <div id="testsList"></div>
+            </div>
+            
+            <!-- Tab 3: CA -->
+            <div id="tab-ca" class="tab-content">
+                <div id="caList"></div>
+            </div>
+
         </div>
 
+        <!-- MESSAGE BOX -->
         <div style="margin-top:20px; background:#f0fdf4; padding:15px; border-radius:10px; border:1px solid #bbf7d0;">
             <div style="font-weight:bold; color:#166534; margin-bottom:10px;">މުދައްރިސަށް މެސެޖެއް:</div>
             <textarea id="parentMsgInput" placeholder="ލިޔުއްވާ..." rows="2"></textarea>
             <button class="btn" style="background:#15803d; margin-top:5px;" onclick="sendParentMsg()">ފޮނުއްވާ ➤</button>
         </div>
 
+        <!-- FOOTER BUTTONS -->
         <button class="btn btn-blue" onclick="openPwdModal()">🔑 ޕާސްވޯޑް ބަދަލުކުރަން</button>
         <button class="btn btn-logout" onclick="logout()">🔒 ލޮގްއައުޓް</button>
     </div>
@@ -139,7 +158,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getFirestore, collection, getDocs, doc, updateDoc, getDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-    // --- FIREBASE CONFIG ---
+    // --- PASTE FIREBASE CONFIG HERE ---
     const firebaseConfig = {
       apiKey: "AIzaSyDSEHqUQIegVjhWKpRgpJybdPaVDVroVos",
   authDomain: "islam-portal-muthamin.firebaseapp.com",
@@ -164,6 +183,7 @@
             const nSnap = await getDocs(collection(db, "notices")); notices = []; nSnap.forEach(d => notices.push({id: d.id, ...d.data()}));
             try { const confSnap = await getDoc(doc(db, "settings", "examConfig")); if(confSnap.exists()) examConfig = confSnap.data(); } catch(e) {}
             
+            // Notices
             notices.sort((a,b) => b.timestamp - a.timestamp);
             document.getElementById('noticeContainer').innerHTML = notices.map(n => {
                 let cls='n-normal', icon='📢';
@@ -177,7 +197,7 @@
                 </div>`;
             }).join('');
             
-            // Auto Login Check
+            // Auto Login
             const savedIdx = localStorage.getItem('parentIdx');
             if(savedIdx) {
                 const s = students.find(x => String(x.index) === String(savedIdx));
@@ -191,34 +211,30 @@
     window.loginParent = () => {
         const idx = document.getElementById('pIdx').value; const pass = document.getElementById('pPass').value; 
         if(!idx) return showToast("Index Required");
-        const btn = document.getElementById('pBtn'); btn.innerHTML = `Checking...`;
-        
         const s = students.find(x => String(x.index) === String(idx));
         
-        setTimeout(() => {
-            btn.innerHTML = `<span>🔐</span> ލޮގިން`;
-            if(s) {
-                let currentStoredPass = String(s.password || "1234");
-                if (currentStoredPass === "1234") {
-                    if (pass === "" || pass === "1234") { currentStudent = s; loadDashboard(s); forcePasswordChange(); return; }
-                }
-                if (pass === "") { showToast("ޕާސްވޯޑް ޖައްސަވާ!"); return; }
-                if (currentStoredPass === String(pass)) { 
-                    currentStudent = s; 
-                    localStorage.setItem('parentIdx', idx); 
-                    loadDashboard(s); 
-                } else { showToast("❌ ނުބައި ޕާސްވޯޑެއް!"); }
-            } else { showToast("❌ ދަރިވަރު ނުފެނުނު!"); }
-        }, 500);
+        if(s) {
+            let currentStoredPass = String(s.password || "1234");
+            if (currentStoredPass === "1234") {
+                if (pass === "" || pass === "1234") { currentStudent = s; loadDashboard(s); forcePasswordChange(); return; }
+            }
+            if (pass === "") { showToast("ޕާސްވޯޑް ޖައްސަވާ!"); return; }
+            if (currentStoredPass === String(pass)) { 
+                currentStudent = s; 
+                localStorage.setItem('parentIdx', idx); // Save session
+                loadDashboard(s); 
+            } else { showToast("❌ ނުބައި ޕާސްވޯޑެއް!"); }
+        } else { showToast("❌ ދަރިވަރު ނުފެނުނު!"); }
     };
 
     function forcePasswordChange() { document.getElementById('pwdModal').style.display = 'block'; document.getElementById('pwdModalMsg').innerText = "ފުރަތަމަ ފަހަރު ކަމުން، އާ ޕާސްވޯޑެއް ހަދަންޖެހޭނެއެވެ."; document.getElementById('pwdModalMsg').style.color = "#d97706"; document.getElementById('btnClosePwd').style.display = 'none'; }
 
+    // --- DASHBOARD RENDERING ---
     function loadDashboard(s) {
         document.getElementById('loginSection').style.display = 'none';
         document.getElementById('dashboardSection').style.display = 'block';
         document.getElementById('studentHeader').innerHTML = `<div class="result-header"><h2 style="margin:0;">${s.name}</h2><div style="opacity:0.8; margin-top:5px; font-size:14px;">Index: ${s.index} | Class: ${s.grade}${s.class}</div></div>`;
-        
+
         renderParentWeekly();
         renderParentTests();
         renderParentCA();
@@ -232,14 +248,12 @@
         event.target.classList.add('active');
     };
 
-    // 1. Weekly Work Renderer with Pagination
+    // 1. Weekly Work
     function renderParentWeekly() {
         const listDiv = document.getElementById('weeklyList');
         const s = currentStudent;
         let html = '';
         
-        // Total Weeks = 45. Pages = 5.
-        // Page 1: 45 to 36. Page 2: 35 to 26...
         let start = 45 - ((weeklyPage - 1) * weeksPerPage); 
         let end = start - weeksPerPage + 1;
         if(end < 1) end = 1;
@@ -260,7 +274,7 @@
             }
             html += `<div class="result-item ${itemClass}"><div><span style="font-weight:bold; color:#334155;">Week ${i}</span>${s['Week'+i+'_note'] ? `<div style="font-size:13px; color:#64748b; margin-top:2px;">"${s['Week'+i+'_note']}"</div>`:''}</div><div style="text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:5px;">${actionArea}</div></div>`;
         }
-        list.innerHTML = html;
+        listDiv.innerHTML = html;
     }
 
     window.changePage = (dir) => {
@@ -272,7 +286,7 @@
         }
     };
 
-    // 2. Tests Renderer
+    // 2. Tests
     function renderParentTests() {
         const s = currentStudent;
         let html = '';
@@ -286,10 +300,10 @@
             let v = s['UnitTest'+i]; 
             if(v) html += `<div class="result-item"><span>Unit Test ${i}</span>${getG(v, 'UnitTest'+i, 20)}</div>`; 
         }
-        document.getElementById('tab-tests').innerHTML = html || "<p style='text-align:center;color:#999'>No records</p>";
+        document.getElementById('testsList').innerHTML = html || "<p style='text-align:center;color:#999'>No records</p>";
     }
 
-    // 3. CA Renderer
+    // 3. CA
     function renderParentCA() {
         const s = currentStudent;
         let html = '';
@@ -303,24 +317,23 @@
             let v = s['CA'+i]; 
             if(v) html += `<div class="result-item"><span>CA / Exam ${i}</span>${getG(v, 'CA'+i, 100)}</div>`; 
         }
-        document.getElementById('tab-ca').innerHTML = html || "<p style='text-align:center;color:#999'>No records</p>";
+        document.getElementById('caList').innerHTML = html || "<p style='text-align:center;color:#999'>No records</p>";
     }
 
-    // --- GRADING SCALE UPDATED ---
+    // --- GRADING ---
     function calcGrade(m, t) {
         let p = (m/t)*100;
         if(isNaN(p)) return {lbl:'-', cls:''};
-        if(p>=90) return {lbl:'A*', cls:'g-A-star'}; // 90-100
-        if(p>=80) return {lbl:'A', cls:'g-A'};       // 80-89
-        if(p>=70) return {lbl:'B', cls:'g-B'};       // 70-79
-        if(p>=60) return {lbl:'C', cls:'g-C'};       // 60-69
-        return {lbl:'F', cls:'g-Fail'};           // 0-59
+        if(p>=90) return {lbl:'A*', cls:'g-A-star'};
+        if(p>=80) return {lbl:'A', cls:'g-A'};
+        if(p>=70) return {lbl:'B', cls:'g-B'};
+        if(p>=60) return {lbl:'C', cls:'g-C'};
+        return {lbl:'F', cls:'g-Fail'};
     }
 
-    // --- UPLOAD, VIEW, ETC ---
+    // --- UPLOAD & OTHER ---
     window.openUploadModal = (weekId) => { currentUploadWeek = weekId; document.getElementById('uploadWeekName').innerText = weekId; document.getElementById('imgPreviewContainer').innerHTML = ''; document.getElementById('homeworkFile').value = ''; document.getElementById('fileCount').style.display='none'; document.getElementById('uploadModal').style.display = 'block'; };
     window.previewImages = () => { const input = document.getElementById('homeworkFile'); const container = document.getElementById('imgPreviewContainer'); const countLabel = document.getElementById('fileCount'); container.innerHTML = ''; if(input.files && input.files.length > 0) { countLabel.innerText = `${input.files.length} ފޮޓޯ`; countLabel.style.display = 'block'; Array.from(input.files).forEach(file => { const reader = new FileReader(); reader.onload = (e) => { const img = document.createElement('img'); img.src = e.target.result; img.className = 'preview-thumb'; container.appendChild(img); }; reader.readAsDataURL(file); }); } };
-    
     window.uploadWork = async () => {
         const fileInput = document.getElementById('homeworkFile'); if(fileInput.files.length === 0) return alert("Select image");
         const btn = document.getElementById('btnSendWork'); btn.innerText = "ފޮނުވަނީ..."; btn.disabled = true;
