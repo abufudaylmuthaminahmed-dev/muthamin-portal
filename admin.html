@@ -26,7 +26,7 @@
         th { background: #0f766e; color: white; padding: 12px 8px; position: sticky; top: 0; font-size: 14px; white-space: nowrap; z-index: 10; }
         td { padding: 8px; border-bottom: 1px solid #f1f5f9; text-align: center; vertical-align: middle; }
         tr:nth-child(even) { background-color: #f8fafc; }
-
+        
         .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 15px; padding: 10px; }
         .page-btn { background: #fff; border: 1px solid #ccc; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; color: #555; }
         .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -170,7 +170,7 @@
 <div id="modalAdd" class="modal"><div class="modal-content"><h3>Add Student</h3><input id="newIdx" type="number" placeholder="Index"><input id="newNam" placeholder="Name"><div style="display:flex;gap:5px"><input id="newGrd" placeholder="Grade"><input id="newCls" placeholder="Class"></div><input id="newPwd" value="1234"><button class="btn" onclick="addSingleStudent()">Add</button><button class="btn btn-red" onclick="closeModal('modalAdd')">Cancel</button></div></div>
 <div id="modalEdit" class="modal"><div class="modal-content"><h3>Edit</h3><input type="hidden" id="editId"><input id="editIdx"><input id="editNam"><input id="editPwd"><div style="display:flex;gap:5px"><input id="editGrd"><input id="editCls"></div><button class="btn" onclick="saveEditStudent()">Update</button><hr><button class="btn btn-red" onclick="delStudent()">Delete</button><button class="btn" style="background:#ccc;color:#333" onclick="closeModal('modalEdit')">Close</button></div></div>
 
-<!-- NEW: STUDENT DETAIL MODAL WITH TABS -->
+<!-- STUDENT DETAILS MODAL -->
 <div id="modalStudentDetails" class="modal">
     <div class="modal-content" style="max-width:800px;">
         <h3 style="color:#00796b; margin-top:0;" id="detailName">Student Name</h3>
@@ -182,15 +182,10 @@
             <button class="tab-btn" onclick="switchDetailTab('tests')">Unit Tests</button>
             <button class="tab-btn" onclick="switchDetailTab('ca')">CA / Exams</button>
         </div>
-
         <div id="detail-tab-weekly" class="detail-section active"></div>
         <div id="detail-tab-tests" class="detail-section"></div>
         <div id="detail-tab-ca" class="detail-section"></div>
-        
-        <div style="margin-top:20px;">
-            <button class="btn" onclick="saveStudentDetails()">💾 Save All Details</button>
-            <button class="btn btn-red" onclick="closeModal('modalStudentDetails')" style="margin-top:5px;">Close</button>
-        </div>
+        <div style="margin-top:20px;"><button class="btn" onclick="saveStudentDetails()">💾 Save</button><button class="btn btn-red" onclick="closeModal('modalStudentDetails')" style="margin-top:5px;">Close</button></div>
     </div>
 </div>
 
@@ -223,26 +218,9 @@
     let currentPageDB = 1; let currentPageMarks = 1; const rowsPerPage = 20;
 
     // --- LOGIN ---
-    window.checkLogin = () => { 
-        if(document.getElementById('adminPass').value === "123") { 
-            localStorage.setItem('adminLoggedIn', 'true');
-            initAdmin();
-        } else alert("Wrong Password"); 
-    };
-
-    window.logoutAdmin = () => {
-        localStorage.removeItem('adminLoggedIn');
-        location.reload();
-    };
-
-    function initAdmin() {
-        if(localStorage.getItem('adminLoggedIn') === 'true') {
-            document.getElementById('loginOverlay').style.display='none'; 
-            document.getElementById('mainContainer').style.display='block'; 
-            fetchData();
-        }
-    }
-    // Run init on load
+    window.checkLogin = () => { if(document.getElementById('adminPass').value === "123") { localStorage.setItem('adminLoggedIn', 'true'); initAdmin(); } else alert("Wrong Password"); };
+    window.logoutAdmin = () => { localStorage.removeItem('adminLoggedIn'); location.reload(); };
+    function initAdmin() { if(localStorage.getItem('adminLoggedIn') === 'true') { document.getElementById('loginOverlay').style.display='none'; document.getElementById('mainContainer').style.display='block'; fetchData(); } }
     initAdmin();
 
     async function fetchData() {
@@ -276,7 +254,6 @@
         let start = (page - 1) * rowsPerPage;
         return list.slice(start, start + rowsPerPage);
     }
-
     window.changePage = (type, dir) => {
         let list = getFiltered();
         let totalPages = Math.ceil(list.length / rowsPerPage) || 1;
@@ -314,87 +291,37 @@
     };
     window.updRow=(e,t)=>{ document.getElementById('g-'+e.dataset.id).innerHTML = calcGradeHtml(e.value,t); };
 
-    // --- NEW: STUDENT DETAILS MODAL WITH TABS ---
-    window.switchDetailTab = (tabName) => {
-        document.querySelectorAll('.detail-section').forEach(s => s.classList.remove('active'));
-        document.getElementById(`detail-tab-${tabName}`).classList.add('active');
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
-    };
-
+    // --- STUDENT DETAILS MODAL ---
+    window.switchDetailTab = (tabName) => { document.querySelectorAll('.detail-section').forEach(s => s.classList.remove('active')); document.getElementById(`detail-tab-${tabName}`).classList.add('active'); document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); event.target.classList.add('active'); };
     window.openStudentDetails = (id) => {
-        let s = students.find(x => x.id === id);
-        if(!s) return;
+        let s = students.find(x => x.id === id); if(!s) return;
         document.getElementById('detailName').innerText = s.name;
         document.getElementById('detailInfo').innerText = `Index: ${s.index} | Class: ${s.grade}${s.class}`;
         document.getElementById('detailId').value = s.id;
 
-        // Populate Weeks
-        let wHtml = '';
-        for(let i=1; i<=45; i++) {
-            let v = s['Week'+i] || '';
-            wHtml += `<div class="detail-item"><span class="detail-label">W${i}</span><select class="detail-input" id="det_Week${i}"><option value="">-</option><option value="ނިމިފައި" ${v=='ނިމިފައި'?'selected':''}>✓</option><option value="ނުނިމޭ" ${v=='ނުނިމޭ'?'selected':''}>X</option><option value="ފުރިހަމައެއް ނުވޭ" ${v=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>⚠</option></select></div>`;
-        }
+        let wHtml = ''; for(let i=1; i<=45; i++) { let v = s['Week'+i] || ''; wHtml += `<div class="detail-item"><span class="detail-label">W${i}</span><select class="detail-input" id="det_Week${i}"><option value="">-</option><option value="ނިމިފައި" ${v=='ނިމިފައި'?'selected':''}>✓</option><option value="ނުނިމޭ" ${v=='ނުނިމޭ'?'selected':''}>X</option><option value="ފުރިހަމައެއް ނުވޭ" ${v=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>⚠</option></select></div>`; }
         document.getElementById('detail-tab-weekly').innerHTML = wHtml;
 
-        // Populate Tests
-        let tHtml = '';
-        for(let i=1; i<=10; i++) {
-            let key = 'UnitTest'+i; let v = s[key] || '';
-            let t = examConfig[key] ? parseInt(examConfig[key]) : 20; // Default 20
-            let grade = v ? calcGradeHtml(v, t) : '-';
-            tHtml += `<div class="detail-item"><span class="detail-label">UT${i} (/${t})</span><input type="number" class="detail-input" id="det_${key}" value="${v}"><div>${grade}</div></div>`;
-        }
+        let tHtml = ''; for(let i=1; i<=10; i++) { let key = 'UnitTest'+i; let v = s[key] || ''; let t = examConfig[key] ? parseInt(examConfig[key]) : 20; let grade = v ? calcGradeHtml(v, t) : '-'; tHtml += `<div class="detail-item"><span class="detail-label">UT${i} (/${t})</span><input type="number" class="detail-input" id="det_${key}" value="${v}"><div>${grade}</div></div>`; }
         document.getElementById('detail-tab-tests').innerHTML = tHtml;
 
-        // Populate CA
-        let cHtml = '';
-        for(let i=1; i<=4; i++) {
-            let key = 'CA'+i; let v = s[key] || '';
-            let t = examConfig[key] ? parseInt(examConfig[key]) : 100; // Default 100
-            let grade = v ? calcGradeHtml(v, t) : '-';
-            cHtml += `<div class="detail-item"><span class="detail-label">CA${i} (/${t})</span><input type="number" class="detail-input" id="det_${key}" value="${v}"><div>${grade}</div></div>`;
-        }
+        let cHtml = ''; for(let i=1; i<=4; i++) { let key = 'CA'+i; let v = s[key] || ''; let t = examConfig[key] ? parseInt(examConfig[key]) : 100; let grade = v ? calcGradeHtml(v, t) : '-'; cHtml += `<div class="detail-item"><span class="detail-label">CA${i} (/${t})</span><input type="number" class="detail-input" id="det_${key}" value="${v}"><div>${grade}</div></div>`; }
         document.getElementById('detail-tab-ca').innerHTML = cHtml;
 
-        // Reset to first tab
-        document.querySelectorAll('.detail-section').forEach(s => s.classList.remove('active'));
-        document.getElementById('detail-tab-weekly').classList.add('active');
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelector('.tab-btn').classList.add('active');
-
+        window.switchDetailTab('weekly'); // Reset
         document.getElementById('modalStudentDetails').style.display = 'block';
     };
 
     window.saveStudentDetails = async () => {
         let id = document.getElementById('detailId').value;
         let updates = {};
-        
-        // Collect Weeks
-        for(let i=1; i<=45; i++) {
-            let v = document.getElementById(`det_Week${i}`).value;
-            if(v) updates[`Week${i}`] = v; else updates[`Week${i}`] = deleteField();
-        }
-        // Collect Tests
-        for(let i=1; i<=10; i++) {
-            let v = document.getElementById(`det_UnitTest${i}`).value;
-            if(v) updates[`UnitTest${i}`] = v; else updates[`UnitTest${i}`] = deleteField();
-        }
-        // Collect CA
-        for(let i=1; i<=4; i++) {
-            let v = document.getElementById(`det_CA${i}`).value;
-            if(v) updates[`CA${i}`] = v; else updates[`CA${i}`] = deleteField();
-        }
-
-        try {
-            await updateDoc(doc(db, "students", id), updates);
-            showToast("Details Saved!");
-            closeModal('modalStudentDetails');
-            fetchData();
-        } catch(e) { console.error(e); alert("Error saving details"); }
+        for(let i=1; i<=45; i++) { let v = document.getElementById(`det_Week${i}`).value; if(v) updates[`Week${i}`] = v; else updates[`Week${i}`] = deleteField(); }
+        for(let i=1; i<=10; i++) { let v = document.getElementById(`det_UnitTest${i}`).value; if(v) updates[`UnitTest${i}`] = v; else updates[`UnitTest${i}`] = deleteField(); }
+        for(let i=1; i<=4; i++) { let v = document.getElementById(`det_CA${i}`).value; if(v) updates[`CA${i}`] = v; else updates[`CA${i}`] = deleteField(); }
+        try { await updateDoc(doc(db, "students", id), updates); showToast("Details Saved!"); closeModal('modalStudentDetails'); fetchData(); } catch(e) { alert("Error saving details"); }
     };
 
-    // --- OTHER LOGIC (Standard) ---
+    // --- OTHER LOGIC ---
     window.switchTab = (id) => { document.querySelectorAll('.section').forEach(d => d.classList.remove('active')); document.getElementById('tab-'+id).classList.add('active'); document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); event.target.classList.add('active'); refreshActiveView(); };
     function refreshActiveView() { if(document.getElementById('tab-db').classList.contains('active')) renderStudentTable(); if(document.getElementById('tab-marks').classList.contains('active')) renderMarksTable(); if(document.getElementById('tab-subs').classList.contains('active')) renderSubmissions(); if(document.getElementById('tab-notice').classList.contains('active')) {renderNotices(); renderMaterials();} }
     window.setGradeFilter=(g)=>{selGrade=g;selClass='All';currentPageDB=1;currentPageMarks=1;updateFilters();refreshActiveView();}; window.setClassFilter=(c)=>{selClass=c;currentPageDB=1;currentPageMarks=1;updateFilters();refreshActiveView();};
@@ -404,40 +331,6 @@
     window.saveTotalMark=async()=>{const i=document.getElementById('itemSelect').value,v=document.getElementById('totalMarks').value;if(i&&v){await setDoc(doc(db,"settings","examConfig"),{[i]:v},{merge:true});examConfig[i]=v;showToast("Saved");renderMarksTable();}};
     window.saveTeacherData=async()=>{const i=document.getElementById('itemSelect').value,inputs=document.querySelectorAll('.v-in');let p=[];document.getElementById('sBtn').innerText="Saving...";inputs.forEach(n=>{if(n.value!==n.dataset.orig)p.push(updateDoc(doc(db,"students",n.dataset.id),{[i]:n.value}));});await Promise.all(p);document.getElementById('sBtn').innerText="💾 Save All Changes";fetchData();showToast("Saved");};
     window.setMode=(m)=>{mode=m;currentPageMarks=1;let s=document.getElementById('itemSelect');s.innerHTML="";if(m=='work'){for(let i=1;i<=45;i++)s.innerHTML+=`<option value="Week${i}">Week ${i}</option>`;document.getElementById('totalDiv').style.display='none';}else{document.getElementById('totalDiv').style.display='flex';let p=m=='test'?'UnitTest':'CA',c=m=='test'?10:4;for(let i=1;i<=c;i++)s.innerHTML+=`<option value="${p}${i}">${m=='test'?'Unit Test':'CA'} ${i}</option>`;}renderMarksTable();};
-    window.saveSingle=async(id)=>{const i=document.getElementById('itemSelect').value,v=document.querySelector(`.v-in[data-id="${id}"]`).value;await updateDoc(doc(db,"students",id),{[i]:v});showToast("Saved");};
-    window.addMaterial=async()=>{await addDoc(collection(db,"materials"),{title:document.getElementById('matTitle').value,link:document.getElementById('matLink').value});fetchData();};
-    window.closeModal=(i)=>document.getElementById(i).style.display='none';
-    window.resetBulk=()=>{document.getElementById('excelFile').value='';document.getElementById('bulkPreview').innerHTML='';parsedData=[];};
-    window.resetResBulk=()=>{document.getElementById('resFile').value='';document.getElementById('resPreview').innerHTML='';parsedResData=[];};
-    window.renderMaterials=()=>{document.getElementById('matList').innerHTML = materials.map(m=>`<div class="mat-item"><span>${m.title}</span><button class="btn btn-red" style="width:auto; padding:5px; margin:0;" onclick="delMat('${m.id}')">Del</button></div>`).join('');};
-    window.delMat=async(id)=>{if(confirm("Del?"))await deleteDoc(doc(db,"materials",id));fetchData();};
-
-    // Submissions & Notices
-    function updateSubCount() { let count = 0; students.forEach(s => { if(s.submissions) count += Object.keys(s.submissions).length; }); const badge = document.getElementById('subCount'); badge.innerText = count; badge.style.display = count > 0 ? 'inline-block' : 'none'; }
-    window.renderSubmissions = () => { const list = document.getElementById('subsList'); let html = ''; let hasData = false; students.forEach(s => { if(s.submissions) { Object.keys(s.submissions).forEach(week => { hasData = true; const sub = s.submissions[week]; let imgData = sub.images ? sub.images : (sub.image ? [sub.image] : []); let countText = imgData.length > 1 ? `(${imgData.length} Photos)` : ''; let thumb = imgData.length > 0 ? imgData[0] : ''; html += `<div class="sub-card"><div style="display:flex;gap:10px;align-items:center;"><img src="${thumb}" class="sub-img" onclick="showSubmissionGallery('${s.id}', '${week}')"><div style="text-align:left;"><strong>${s.name}</strong> (${s.index}) <span style="font-size:10px;color:#0d9488;font-weight:bold;">${countText}</span><br><span style="font-size:12px;color:#666;">${week} - ${sub.date}</span></div></div><button class="btn" style="width:auto;padding:5px 15px;" onclick="acceptSubmission('${s.id}','${week}')">✅ Accept</button></div>`; }); } }); list.innerHTML = hasData ? html : `<p style="text-align:center; color:#999; margin-top:20px;">No pending submissions</p>`; };
-    window.showSubmissionGallery = (sid, week) => { const s = students.find(x => x.id === sid); if (!s || !s.submissions || !s.submissions[week]) return; const sub = s.submissions[week]; const images = sub.images ? sub.images : (sub.image ? [sub.image] : []); document.getElementById('galleryContainer').innerHTML = images.map(src => `<img src="${src}">`).join(''); document.getElementById('modalImg').style.display = 'block'; };
-    window.acceptSubmission = async (sid, week) => { if(confirm("Mark as Done and remove?")) { try { await updateDoc(doc(db, "students", sid), { [week]: 'ނިމިފައި', [`submissions.${week}`]: deleteField() }); showToast("Accepted!"); fetchData(); } catch(e) { console.error(e); alert("Error"); } } };
-
-    window.saveNotice = async () => { const id = document.getElementById('noticeId').value, txt = document.getElementById('adminNoticeText').value, type = document.getElementById('noticeType').value; if(!txt.trim()) return alert("Write something"); try { if(id) { await updateDoc(doc(db, "notices", id), { text: txt, type: type, date: new Date().toLocaleDateString('dv-MV') }); showToast("Updated!"); } else { await addDoc(collection(db, "notices"), { text: txt, type: type, date: new Date().toLocaleDateString('dv-MV'), timestamp: Date.now() }); showToast("Published!"); } cancelNoticeEdit(); fetchData(); } catch(e) { alert("Error"); } };
-    window.editNotice = (id, text, type) => { document.getElementById('noticeId').value = id; document.getElementById('adminNoticeText').value = text; document.getElementById('noticeType').value = type; document.getElementById('btnSaveNotice').innerText = "Update"; document.getElementById('btnSaveNotice').style.background = "#f97316"; document.getElementById('btnCancelNotice').style.display = "block"; document.getElementById('tab-notice').scrollIntoView({behavior:'smooth'}); };
-    window.cancelNoticeEdit = () => { document.getElementById('noticeId').value = ""; document.getElementById('adminNoticeText').value = ""; document.getElementById('noticeType').value = "normal"; document.getElementById('btnSaveNotice').innerText = "Publish"; document.getElementById('btnSaveNotice').style.background = "#0d9488"; document.getElementById('btnCancelNotice').style.display = "none"; };
-    window.deleteNotice = async (id) => { if(confirm("Delete Notice?")) { await deleteDoc(doc(db, "notices", id)); showToast("Deleted"); fetchData(); } };
-    function renderNotices() { notices.sort((a,b) => b.timestamp - a.timestamp); document.getElementById('activeNoticesList').innerHTML = notices.length ? notices.map(n => `<div class="notice-item" style="border-left-color:${getColorByType(n.type)}"><div style="flex:1;"><div style="font-size:12px;font-weight:bold;color:${getColorByType(n.type)};margin-bottom:4px;">${getIconByType(n.type)} ${n.type.toUpperCase()} <span style="color:#999;font-weight:normal;">- ${n.date}</span></div><div style="font-size:13px;line-height:1.4;white-space:pre-wrap;">${n.text}</div></div><div style="display:flex;flex-direction:column;gap:5px;margin-left:10px;"><button class="btn btn-orange" style="width:auto;padding:5px 10px;margin:0;font-size:12px;" onclick='editNotice("${n.id}", ${JSON.stringify(n.text)}, "${n.type}")'>✏️</button><button class="btn btn-red" style="width:auto;padding:5px 10px;margin:0;font-size:12px;" onclick="deleteNotice('${n.id}')">🗑️</button></div></div>`).join('') : '<p style="text-align:center;color:#999">No active notices</p>'; }
-    function getColorByType(t) { return t=='urgent'?'#ef4444':(t=='event'?'#9333ea':(t=='quote'?'#22c55e':'#0d9488')); }
-    function getIconByType(t) { return t=='urgent'?'🚨':(t=='event'?'🎉':(t=='quote'?'💡':'📢')); }
-
-    window.processBulk=async()=>{for(let s of parsedData){if(!students.some(e=>String(e.index)==String(s.index))){await addDoc(collection(db,"students"),{index:String(s.index),name:String(s.name),grade:String(s.grade||''),class:String(s.class||''),password:"1234"});}} closeModal('modalBulk');fetchData();};
-    window.processResultBulk=async()=>{let i=document.getElementById('itemSelect').value;for(let r of parsedResData){const s=students.find(x=>String(x.index)==String(r.index));if(s)await updateDoc(doc(db,"students",s.id),{[i]:String(r.mark)});} closeModal('modalResult');fetchData();};
-    document.getElementById('excelFile').addEventListener('change',e=>{const r=new FileReader();r.onload=e=>{const j=XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(e.target.result),{type:'array'}).Sheets[XLSX.read(new Uint8Array(e.target.result),{type:'array'}).SheetNames[0]],{header:1});parsedData=[];let h='<table>';j.forEach((r,i)=>{if(r.length>=2&&row[0]!=='Index'){parsedData.push({index:r[0],name:r[1],grade:r[2],class:r[3]});if(parsedData.length<=5)h+=`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`;}});document.getElementById('bulkPreview').innerHTML=h+"</table>";};r.readAsArrayBuffer(e.target.files[0]);});
-    document.getElementById('resFile').addEventListener('change',e=>{const r=new FileReader();r.onload=e=>{const j=XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(e.target.result),{type:'array'}).Sheets[XLSX.read(new Uint8Array(e.target.result),{type:'array'}).SheetNames[0]],{header:1});parsedResData=[];let h='<table>';j.forEach((r,i)=>{if(r.length>=2){parsedResData.push({index:r[0],mark:r[1]});if(parsedResData.length<=5)h+=`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`;}});document.getElementById('resPreview').innerHTML=h+"</table>";};r.readAsArrayBuffer(e.target.files[0]);});
-    
-    function showToast(m){let t=document.getElementById('toast');t.innerText=m;t.style.opacity=1;t.style.bottom='80px';setTimeout(()=>t.style.opacity=0,3000);}
-    window.viewMessages=(m)=>{if(!m||!m.length)return;let l=m[m.length-1];document.getElementById('msgContent').innerHTML=`<small>${l.date}</small><br><p>"${l.text}"</p>`;document.getElementById('msgModal').style.display='block';};
-    window.openStudentModal=()=>document.getElementById('modalAdd').style.display='block'; window.openBulkModal=()=>document.getElementById('modalBulk').style.display='block'; window.openResultModal=()=>document.getElementById('modalResult').style.display='block';
-    window.openEdit=(id)=>{let s=students.find(x=>x.id==id);if(s){document.getElementById('editId').value=s.id;document.getElementById('editIdx').value=s.index;document.getElementById('editNam').value=s.name;document.getElementById('editPwd').value=s.password;document.getElementById('editGrd').value=s.grade;document.getElementById('editCls').value=s.class;document.getElementById('modalEdit').style.display='block';}};
-    window.saveEditStudent=async()=>{let id=document.getElementById('editId').value;await updateDoc(doc(db,"students",id),{index:document.getElementById('editIdx').value,name:document.getElementById('editNam').value,password:document.getElementById('editPwd').value,grade:document.getElementById('editGrd').value,class:document.getElementById('editCls').value});closeModal('modalEdit');fetchData();};
-    window.delStudent=async()=>{if(confirm("Delete?"))await deleteDoc(doc(db,"students",document.getElementById('editId').value));closeModal('modalEdit');fetchData();};
-    window.addSingleStudent=async()=>{let i=document.getElementById('newIdx').value;if(students.some(s=>s.index==i))return alert("Index exists");await addDoc(collection(db,"students"),{index:i,name:document.getElementById('newNam').value,grade:document.getElementById('newGrd').value,class:document.getElementById('newCls').value,password:document.getElementById('newPwd').value||"1234"});closeModal('modalAdd');fetchData();};
     window.saveSingle=async(id)=>{const i=document.getElementById('itemSelect').value,v=document.querySelector(`.v-in[data-id="${id}"]`).value;await updateDoc(doc(db,"students",id),{[i]:v});showToast("Saved");};
     window.addMaterial=async()=>{await addDoc(collection(db,"materials"),{title:document.getElementById('matTitle').value,link:document.getElementById('matLink').value});fetchData();};
     window.closeModal=(i)=>document.getElementById(i).style.display='none';
