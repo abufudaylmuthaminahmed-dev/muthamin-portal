@@ -12,7 +12,10 @@
         h1 { color: #059669; text-align: center; margin-bottom: 20px; font-size: 1.8rem; border-bottom: 2px dashed #a7f3d0; padding-bottom: 15px; }
         
         /* Notice Board */
-        .notice-board { padding: 20px; border-radius: 15px; margin-bottom: 25px; display: block; position: relative; border-left: 6px solid transparent; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .notice-board { 
+            padding: 20px; border-radius: 15px; margin-bottom: 25px; display: block; 
+            position: relative; border-left: 6px solid transparent; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
         .n-normal { background: #ecfeff; border-color: #06b6d4; color: #155e75; }
         .n-urgent { background: #fef2f2; border-color: #ef4444; color: #991b1b; animation: pulse 2s infinite; }
         .n-event { background: #faf5ff; border-color: #9333ea; color: #6b21a8; }
@@ -22,35 +25,49 @@
         /* UI Elements */
         .card { background: #fff; padding: 25px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .card-highlight { background: linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%); border: 1px solid #10b981; text-align: center; }
+        
         input, textarea { width: 100%; padding: 12px 15px; margin: 8px 0; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 16px; text-align: center; outline: none; transition: 0.3s; background: #f9fafb; }
         input:focus { border-color: #10b981; background: #fff; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
+        
         .btn { width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; margin-top: 10px; transition: 0.2s; display: flex; justify-content: center; gap: 8px; align-items: center; }
-        .btn-mat { background: linear-gradient(45deg, #f59e0b, #d97706); } .btn-blue { background: #3b82f6; } .btn-logout { background: #ef4444; margin-top: 15px; }
+        .btn:hover { background: #059669; transform: translateY(-1px); }
+        .btn-mat { background: linear-gradient(45deg, #f59e0b, #d97706); }
+        .btn-blue { background: #3b82f6; } 
+        .btn-logout { background: #ef4444; margin-top: 15px; }
         .btn-upload { background: #0891b2; padding: 6px 12px; font-size: 12px; width: auto; margin: 0; border-radius: 6px; color: white; border: none; cursor: pointer; }
         .btn-view { background: #6366f1; padding: 6px 12px; font-size: 12px; width: auto; margin: 0; border-radius: 6px; color: white; border: none; cursor: pointer; }
 
-        /* Results */
+        /* Results Styling */
+        .result-header { background: linear-gradient(to right, #065f46, #10b981); color: white; padding: 25px; border-radius: 12px 12px 0 0; text-align: center; }
         .result-section-title { font-size: 18px; font-weight: bold; color: #059669; border-bottom: 2px solid #a7f3d0; margin-bottom: 15px; margin-top: 25px; }
         .result-item { display: flex; justify-content: space-between; align-items: center; background: white; border: 1px solid #e5e7eb; padding: 15px; margin-bottom: 10px; border-radius: 10px; border-right: 5px solid #d1d5db; }
+        
         .result-item.done { border-right-color: #10b981; background: #ecfdf5; }
         .result-item.pending { border-right-color: #f59e0b; background: #fffbeb; }
         .result-item.incomplete { border-right-color: #ef4444; background: #fef2f2; }
+        
         .status-badge { font-size: 11px; padding: 4px 8px; border-radius: 20px; display: inline-block; font-weight: bold; }
         .st-done { background: #dcfce7; color: #166534; } .st-pending { background: #fef9c3; color: #854d0e; } .st-fail { background: #fee2e2; color: #991b1b; } .st-fix { background: #ffedd5; color: #9a3412; }
 
         .score-circle { width: 40px; height: 40px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; }
-        .grade-badge { padding: 4px 10px; border-radius: 6px; color: white; font-size: 12px; font-weight: bold; }
         
-        /* Updated Grade Colors */
-        .g-A { background: #10b981; } /* 90-100 */
-        .g-B { background: #3b82f6; } /* 80-89 */
-        .g-C { background: #f97316; } /* 60-79 */
-        .g-Fail { background: #ef4444; } /* 0-59 */
-
+        /* Updated Grade Badges */
+        .grade-badge { padding: 4px 10px; border-radius: 6px; color: white; font-size: 12px; font-weight: bold; }
+        .g-A-star { background: #f59e0b; color:black; } /* A* */
+        .g-A { background: #10b981; color:white; } /* A */
+        .g-B { background: #3b82f6; color:white; } /* B */
+        .g-C { background: #f97316; color:white; } /* C */
+        .g-Fail { background: #ef4444; color:white; } /* Fail */
+        
+        /* Modals & Preview */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
         .modal-content { background-color: #fff; margin: 10% auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 500px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); border-top: 5px solid #10b981; max-height: 85vh; overflow-y: auto; display: flex; flex-direction: column; }
+        
         .preview-grid { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 15px; max-height: 250px; overflow-y: auto; }
         .preview-thumb { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; }
+        
+        #imgPreview, #viewSubmissionImg { max-width: 100%; max-height: 250px; width: auto; object-fit: contain; display: none; margin: 10px auto; border-radius: 8px; border: 1px solid #ddd; }
+        
         .mat-link { display: flex; justify-content: space-between; align-items: center; padding: 15px; margin: 10px 0; background: #fff; color: #00695c; text-decoration: none; border-radius: 8px; font-weight: bold; border: 1px solid #b2dfdb; transition: 0.2s; }
         #toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #1f2937; color: white; padding: 12px 24px; border-radius: 50px; font-size: 14px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 2000; }
     </style>
@@ -109,7 +126,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, doc, updateDoc, getDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, deleteField, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
     // --- PASTE FIREBASE CONFIG HERE ---
     const firebaseConfig = {
@@ -121,9 +138,11 @@
   appId: "1:842342714257:web:c5daa61eee6524e7936830"
     };
 
-    let db; let students = []; let materials = []; let notices = []; let examConfig = {}; let currentStudent = null; let currentUploadWeek = null;
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    let students = []; let materials = []; let notices = []; let examConfig = {}; let currentStudent = null; let currentUploadWeek = null;
 
-    try { const app = initializeApp(firebaseConfig); db = getFirestore(app); fetchData(); } catch(e) { console.error(e); }
+    try { fetchData(); } catch(e) { console.error(e); }
 
     async function fetchData() {
         if(!db) return;
@@ -131,7 +150,7 @@
             const sSnap = await getDocs(collection(db, "students")); students = []; sSnap.forEach((doc) => students.push({ id: doc.id, ...doc.data() }));
             const mSnap = await getDocs(collection(db, "materials")); materials = []; mSnap.forEach((doc) => materials.push({ id: doc.id, ...doc.data() }));
             const nSnap = await getDocs(collection(db, "notices")); notices = []; nSnap.forEach(d => notices.push({id: d.id, ...d.data()}));
-            try { const confSnap = await getDoc(doc(db, "settings", "examConfig")); if(confSnap.exists()) examConfig = confSnap.data(); } catch(e) {}
+            try { const c = await getDoc(doc(db, "settings", "examConfig")); if(c.exists()) examConfig = c.data(); } catch(e){}
             
             notices.sort((a,b) => b.timestamp - a.timestamp);
             document.getElementById('noticeContainer').innerHTML = notices.map(n => {
@@ -148,7 +167,7 @@
         } catch(e) { console.error(e); }
     }
 
-    // --- LOGIN LOGIC FIXED ---
+    // --- LOGIN LOGIC ---
     window.loginParent = () => {
         const idx = document.getElementById('pIdx').value; const pass = document.getElementById('pPass').value; 
         if(!idx) return showToast("Index Required");
@@ -158,15 +177,21 @@
         
         setTimeout(() => {
             btn.innerHTML = `<span>🔐</span> ލޮގިން`;
+            
             if(s) {
-                let stored = String(s.password || "1234");
-                // Case 1: First time (Force change)
-                if (stored === "1234") {
-                    // Accept empty or 1234
-                    if (pass === "" || pass === "1234") { currentStudent = s; loadDashboard(s); forcePasswordChange(); return; }
+                let currentStoredPass = String(s.password || "1234");
+
+                // Case 1: First time (Default Pass)
+                if (currentStoredPass === "1234") {
+                    if (pass === "" || pass === "1234") {
+                        currentStudent = s; loadDashboard(s); forcePasswordChange(); return;
+                    }
                 }
-                // Case 2: Normal Login
-                if (stored === String(pass) && pass !== "") { currentStudent = s; loadDashboard(s); }
+
+                // Case 2: Regular Login
+                if(pass === "") { showToast("ޕާސްވޯޑް ޖައްސަވާ!"); return; }
+
+                if (currentStoredPass === String(pass)) { currentStudent = s; loadDashboard(s); } 
                 else { showToast("❌ ނުބައި ޕާސްވޯޑެއް!"); }
             } else { showToast("❌ ދަރިވަރު ނުފެނުނު!"); }
         }, 500);
@@ -192,8 +217,8 @@
             else if(submission) { itemClass = 'pending'; actionArea = `<span class="status-badge st-pending">⏳ ޗެކްކުރަނީ</span> <button class="btn-view" onclick="viewWork('Week${i}')">👁️</button>`; } 
             else {
                 if(status === 'ނުނިމޭ') { itemClass='incomplete'; actionArea = `<span class="status-badge st-fail">❌ ނުނިމޭ</span> `; }
-                else if(status === 'ފުރިހަމައެއް ނުވޭ') { itemClass='pending'; actionArea = `<span class="status-badge st-fix">⚠️ އިސްލާޙް</span> `; }
-                actionArea += `<button class="btn-upload" onclick="openUploadModal('Week${i}')">📷 ފޮޓޯ</button>`;
+                else if(status === 'ފުރިހަމައެއް ނުވޭ') { itemClass='pending'; actionArea = `<span class="status-badge st-fix">⚠️ އިސްލާޙްކުރޭ</span> `; }
+                actionArea += `<button class="btn-upload" onclick="openUploadModal('Week${i}')">📷 ފޮޓޯލާން</button>`;
             }
             if(status || submission || i < 5) {
                  html += `<div class="result-item ${itemClass}"><div><span style="font-weight:bold; color:#334155;">Week ${i}</span>${s['Week'+i+'_note'] ? `<div style="font-size:13px; color:#64748b; margin-top:2px;">"${s['Week'+i+'_note']}"</div>`:''}</div><div style="text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:5px;">${actionArea}</div></div>`;
@@ -214,14 +239,15 @@
         document.getElementById('resultsArea').innerHTML = html;
     }
 
-    // --- GRADING SCALE UPDATED (A=90-100, B=80-89, C=60-79, Fail=0-59) ---
+    // --- GRADING SCALE UPDATED ---
     function calcGrade(m, t) {
         let p = (m/t)*100;
         if(isNaN(p)) return {lbl:'-', cls:''};
-        if(p>=90) return {lbl:'A', cls:'g-A'};
-        if(p>=80) return {lbl:'B', cls:'g-B'};
-        if(p>=60) return {lbl:'C', cls:'g-C'};
-        return {lbl:'F', cls:'g-Fail'};
+        if(p>=90) return {lbl:'A*', cls:'g-A-star'}; // 90-100
+        if(p>=80) return {lbl:'A', cls:'g-A'};       // 80-89
+        if(p>=70) return {lbl:'B', cls:'g-B'};       // 70-79 (Was 60-79) -> Now Corrected
+        if(p>=60) return {lbl:'C', cls:'g-C'};       // 60-69
+        return {lbl:'Fail', cls:'g-Fail'};           // 0-59
     }
 
     // --- UPLOAD, VIEW, ETC ---
