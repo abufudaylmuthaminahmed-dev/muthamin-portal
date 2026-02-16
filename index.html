@@ -12,7 +12,7 @@
         h1 { color: #059669; text-align: center; margin-bottom: 20px; font-size: 1.8rem; border-bottom: 2px dashed #a7f3d0; padding-bottom: 15px; }
         
         /* Notice Board */
-        .notice-board { padding: 15px; border-radius: 12px; margin-bottom: 20px; display: block; position: relative; border-left: 5px solid transparent; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .notice-board { padding: 20px; border-radius: 15px; margin-bottom: 25px; display: block; position: relative; border-left: 6px solid transparent; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .n-normal { background: #ecfeff; border-color: #06b6d4; color: #155e75; }
         .n-urgent { background: #fef2f2; border-color: #ef4444; color: #991b1b; animation: pulse 2s infinite; }
         .n-event { background: #faf5ff; border-color: #9333ea; color: #6b21a8; }
@@ -20,15 +20,19 @@
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); } 70% { box-shadow: 0 0 0 5px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
 
         /* UI Elements */
-        .card { background: #fff; padding: 20px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .card { background: #fff; padding: 25px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .card-highlight { background: linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%); border: 1px solid #10b981; text-align: center; }
+        
         input, textarea { width: 100%; padding: 12px 15px; margin: 8px 0; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 16px; text-align: center; outline: none; transition: 0.3s; background: #f9fafb; }
         input:focus { border-color: #10b981; background: #fff; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
+        
         .btn { width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; margin-top: 10px; transition: 0.2s; display: flex; justify-content: center; gap: 8px; align-items: center; }
         .btn:hover { background: #059669; transform: translateY(-1px); }
-        .btn-mat { background: linear-gradient(45deg, #f59e0b, #d97706); } .btn-blue { background: #3b82f6; } .btn-logout { background: #ef4444; margin-top: 15px; }
-        .btn-upload, .btn-view { padding: 6px 12px; font-size: 12px; width: auto; margin: 0; border-radius: 6px; color: white; border: none; cursor: pointer; }
-        .btn-upload { background: #0891b2; } .btn-view { background: #6366f1; }
+        .btn-mat { background: linear-gradient(45deg, #f59e0b, #d97706); }
+        .btn-blue { background: #3b82f6; } 
+        .btn-logout { background: #ef4444; margin-top: 15px; }
+        .btn-upload { background: #0891b2; padding: 6px 12px; font-size: 12px; width: auto; margin: 0; border-radius: 6px; color: white; border: none; cursor: pointer; }
+        .btn-view { background: #6366f1; padding: 6px 12px; font-size: 12px; width: auto; margin: 0; border-radius: 6px; color: white; border: none; cursor: pointer; }
 
         /* Tabs */
         .tabs { display: flex; gap: 5px; margin-bottom: 15px; background: #f0fdf4; padding: 5px; border-radius: 10px; }
@@ -111,7 +115,7 @@
         <!-- RESULTS CONTENT -->
         <div class="card" style="padding:15px; min-height: 300px;">
             
-            <!-- Tab 1: Weekly -->
+            <!-- Tab 1: Weekly (Updated Sort) -->
             <div id="tab-weekly" class="tab-content active">
                 <div id="weeklyList"></div>
                 <!-- Pagination -->
@@ -183,7 +187,6 @@
             const nSnap = await getDocs(collection(db, "notices")); notices = []; nSnap.forEach(d => notices.push({id: d.id, ...d.data()}));
             try { const confSnap = await getDoc(doc(db, "settings", "examConfig")); if(confSnap.exists()) examConfig = confSnap.data(); } catch(e) {}
             
-            // Notices
             notices.sort((a,b) => b.timestamp - a.timestamp);
             document.getElementById('noticeContainer').innerHTML = notices.map(n => {
                 let cls='n-normal', icon='📢';
@@ -197,7 +200,6 @@
                 </div>`;
             }).join('');
             
-            // Auto Login
             const savedIdx = localStorage.getItem('parentIdx');
             if(savedIdx) {
                 const s = students.find(x => String(x.index) === String(savedIdx));
@@ -211,25 +213,29 @@
     window.loginParent = () => {
         const idx = document.getElementById('pIdx').value; const pass = document.getElementById('pPass').value; 
         if(!idx) return showToast("Index Required");
+        const btn = document.getElementById('pBtn'); btn.innerHTML = `Checking...`;
+        
         const s = students.find(x => String(x.index) === String(idx));
         
-        if(s) {
-            let currentStoredPass = String(s.password || "1234");
-            if (currentStoredPass === "1234") {
-                if (pass === "" || pass === "1234") { currentStudent = s; loadDashboard(s); forcePasswordChange(); return; }
-            }
-            if (pass === "") { showToast("ޕާސްވޯޑް ޖައްސަވާ!"); return; }
-            if (currentStoredPass === String(pass)) { 
-                currentStudent = s; 
-                localStorage.setItem('parentIdx', idx); // Save session
-                loadDashboard(s); 
-            } else { showToast("❌ ނުބައި ޕާސްވޯޑެއް!"); }
-        } else { showToast("❌ ދަރިވަރު ނުފެނުނު!"); }
+        setTimeout(() => {
+            btn.innerHTML = `<span>🔐</span> ލޮގިން`;
+            if(s) {
+                let currentStoredPass = String(s.password || "1234");
+                if (currentStoredPass === "1234") {
+                    if (pass === "" || pass === "1234") { currentStudent = s; loadDashboard(s); forcePasswordChange(); return; }
+                }
+                if (pass === "") { showToast("ޕާސްވޯޑް ޖައްސަވާ!"); return; }
+                if (currentStoredPass === String(pass)) { 
+                    currentStudent = s; 
+                    localStorage.setItem('parentIdx', idx); 
+                    loadDashboard(s); 
+                } else { showToast("❌ ނުބައި ޕާސްވޯޑެއް!"); }
+            } else { showToast("❌ ދަރިވަރު ނުފެނުނު!"); }
+        }, 500);
     };
 
     function forcePasswordChange() { document.getElementById('pwdModal').style.display = 'block'; document.getElementById('pwdModalMsg').innerText = "ފުރަތަމަ ފަހަރު ކަމުން، އާ ޕާސްވޯޑެއް ހަދަންޖެހޭނެއެވެ."; document.getElementById('pwdModalMsg').style.color = "#d97706"; document.getElementById('btnClosePwd').style.display = 'none'; }
 
-    // --- DASHBOARD RENDERING ---
     function loadDashboard(s) {
         document.getElementById('loginSection').style.display = 'none';
         document.getElementById('dashboardSection').style.display = 'block';
@@ -248,19 +254,19 @@
         event.target.classList.add('active');
     };
 
-    // 1. Weekly Work
+    // 1. Weekly Work (Ascending Order 1->45 with Pagination)
     function renderParentWeekly() {
         const listDiv = document.getElementById('weeklyList');
         const s = currentStudent;
         let html = '';
         
-        let start = 45 - ((weeklyPage - 1) * weeksPerPage); 
-        let end = start - weeksPerPage + 1;
-        if(end < 1) end = 1;
+        let start = (weeklyPage - 1) * weeksPerPage + 1;
+        let end = start + weeksPerPage - 1;
+        if(end > 45) end = 45;
 
         document.getElementById('pageInfo').innerText = `Page ${weeklyPage} of ${Math.ceil(45/weeksPerPage)}`;
 
-        for(let i=start; i>=end; i--) { 
+        for(let i=start; i<=end; i++) { 
             let submission = s.submissions && s.submissions['Week'+i];
             let status = s['Week'+i];
             let actionArea = '', itemClass = '';
@@ -320,20 +326,21 @@
         document.getElementById('caList').innerHTML = html || "<p style='text-align:center;color:#999'>No records</p>";
     }
 
-    // --- GRADING ---
+    // --- GRADING SCALE UPDATED ---
     function calcGrade(m, t) {
         let p = (m/t)*100;
         if(isNaN(p)) return {lbl:'-', cls:''};
-        if(p>=90) return {lbl:'A*', cls:'g-A-star'};
-        if(p>=80) return {lbl:'A', cls:'g-A'};
-        if(p>=70) return {lbl:'B', cls:'g-B'};
-        if(p>=60) return {lbl:'C', cls:'g-C'};
-        return {lbl:'F', cls:'g-Fail'};
+        if(p>=90) return {lbl:'A*', cls:'g-A-star'}; // 90-100
+        if(p>=80) return {lbl:'A', cls:'g-A'};       // 80-89
+        if(p>=70) return {lbl:'B', cls:'g-B'};       // 70-79
+        if(p>=60) return {lbl:'C', cls:'g-C'};       // 60-69
+        return {lbl:'F', cls:'g-Fail'};           // 0-59
     }
 
-    // --- UPLOAD & OTHER ---
+    // --- UPLOAD, VIEW, ETC ---
     window.openUploadModal = (weekId) => { currentUploadWeek = weekId; document.getElementById('uploadWeekName').innerText = weekId; document.getElementById('imgPreviewContainer').innerHTML = ''; document.getElementById('homeworkFile').value = ''; document.getElementById('fileCount').style.display='none'; document.getElementById('uploadModal').style.display = 'block'; };
     window.previewImages = () => { const input = document.getElementById('homeworkFile'); const container = document.getElementById('imgPreviewContainer'); const countLabel = document.getElementById('fileCount'); container.innerHTML = ''; if(input.files && input.files.length > 0) { countLabel.innerText = `${input.files.length} ފޮޓޯ`; countLabel.style.display = 'block'; Array.from(input.files).forEach(file => { const reader = new FileReader(); reader.onload = (e) => { const img = document.createElement('img'); img.src = e.target.result; img.className = 'preview-thumb'; container.appendChild(img); }; reader.readAsDataURL(file); }); } };
+    
     window.uploadWork = async () => {
         const fileInput = document.getElementById('homeworkFile'); if(fileInput.files.length === 0) return alert("Select image");
         const btn = document.getElementById('btnSendWork'); btn.innerText = "ފޮނުވަނީ..."; btn.disabled = true;
