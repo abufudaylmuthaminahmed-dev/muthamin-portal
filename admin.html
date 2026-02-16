@@ -21,12 +21,12 @@
         .section.active { display: block; }
         .card { border: 1px solid #f1f5f9; padding: 15px; border-radius: 12px; margin-bottom: 15px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
 
-        /* Tables & Pagination */
         .table-container { overflow-x: auto; border-radius: 10px; border: 1px solid #e2e8f0; margin-top: 10px; -webkit-overflow-scrolling: touch; }
         table { width: 100%; border-collapse: collapse; min-width: 100%; }
         th { background: #0f766e; color: white; padding: 12px 8px; position: sticky; top: 0; font-size: 14px; white-space: nowrap; z-index: 10; }
         td { padding: 8px; border-bottom: 1px solid #f1f5f9; text-align: center; vertical-align: middle; }
         tr:nth-child(even) { background-color: #f8fafc; }
+
         .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 15px; padding: 10px; }
         .page-btn { background: #fff; border: 1px solid #ccc; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; color: #555; }
         .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -45,21 +45,25 @@
         .login-box { background: white; padding: 30px; border-radius: 15px; width: 85%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; backdrop-filter: blur(3px); }
         .modal-content { background:white; margin:5% auto; padding:20px; width:90%; max-width:500px; border-radius: 15px; max-height: 85vh; overflow-y: auto; }
+
+        /* STUDENT DETAIL MODAL TABS */
+        .detail-tabs { display: flex; gap: 5px; margin-bottom: 15px; background: #f0f9ff; padding: 5px; border-radius: 8px; }
+        .tab-btn { flex: 1; padding: 8px; border: none; background: transparent; cursor: pointer; font-weight: bold; color: #555; border-radius: 6px; }
+        .tab-btn.active { background: #0d9488; color: white; }
+        .detail-section { display: none; }
+        .detail-section.active { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; }
         
+        .detail-item { background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0; text-align: center; }
+        .detail-label { font-size: 10px; color: #64748b; font-weight: bold; display: block; margin-bottom: 3px; }
+        .detail-input { width: 100%; padding: 5px; font-size: 13px; height: 30px; border: 1px solid #ccc; }
+
         .sub-card { border: 1px solid #e2e8f0; padding: 12px; border-radius: 10px; margin-bottom: 10px; background: #fff; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
         .sub-img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd; background: #eee; }
         .modal-gallery img { max-width: 100%; max-height: 80vh; border-radius: 8px; border: 2px solid #333; margin-bottom: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .notice-item { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px; border-radius: 8px; margin-bottom: 10px; display:flex; justify-content:space-between; align-items:flex-start; text-align:left; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
         
-        /* Badges */
         .grade-badge { padding: 3px 8px; border-radius: 4px; color: white; font-size: 12px; font-weight: bold; margin-right: 5px; }
         .g-A-star { background: #f59e0b; color:black; } .g-A { background: #10b981; } .g-B { background: #3b82f6; } .g-C { background: #f97316; } .g-Fail { background: #ef4444; }
-        
-        /* STUDENT DETAIL MODAL STYLES */
-        .detail-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; margin-bottom: 20px; }
-        .detail-item { background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0; text-align: center; }
-        .detail-label { font-size: 10px; color: #64748b; font-weight: bold; display: block; margin-bottom: 3px; }
-        .detail-input { width: 100%; padding: 5px; font-size: 13px; height: 30px; border: 1px solid #ccc; }
 
         @keyframes fadeIn { from {opacity:0; transform: translateY(5px);} to {opacity:1; transform: translateY(0);} }
         #toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: #334155; color: white; padding: 10px 20px; border-radius: 30px; opacity: 0; pointer-events: none; z-index: 2000; transition: 0.3s; font-size: 13px; }
@@ -72,7 +76,7 @@
 <div class="container" id="mainContainer" style="display:none;">
     <div style="display:flex; justify-content:space-between; align-items:center; padding: 0 5px;">
         <h1 style="border:none; margin:0; font-size: 1.2rem;">Admin Dashboard</h1>
-        <button onclick="location.reload()" style="background:none; border:none; color:#ef4444; font-weight:bold; cursor:pointer; font-size: 14px;">🔒 Logout</button>
+        <button onclick="logoutAdmin()" style="background:none; border:none; color:#ef4444; font-weight:bold; cursor:pointer; font-size: 14px;">🔒 Logout</button>
     </div>
     
     <div class="nav-menu">
@@ -166,26 +170,27 @@
 <div id="modalAdd" class="modal"><div class="modal-content"><h3>Add Student</h3><input id="newIdx" type="number" placeholder="Index"><input id="newNam" placeholder="Name"><div style="display:flex;gap:5px"><input id="newGrd" placeholder="Grade"><input id="newCls" placeholder="Class"></div><input id="newPwd" value="1234"><button class="btn" onclick="addSingleStudent()">Add</button><button class="btn btn-red" onclick="closeModal('modalAdd')">Cancel</button></div></div>
 <div id="modalEdit" class="modal"><div class="modal-content"><h3>Edit</h3><input type="hidden" id="editId"><input id="editIdx"><input id="editNam"><input id="editPwd"><div style="display:flex;gap:5px"><input id="editGrd"><input id="editCls"></div><button class="btn" onclick="saveEditStudent()">Update</button><hr><button class="btn btn-red" onclick="delStudent()">Delete</button><button class="btn" style="background:#ccc;color:#333" onclick="closeModal('modalEdit')">Close</button></div></div>
 
-<!-- NEW: STUDENT DETAIL MODAL -->
+<!-- NEW: STUDENT DETAIL MODAL WITH TABS -->
 <div id="modalStudentDetails" class="modal">
     <div class="modal-content" style="max-width:800px;">
         <h3 style="color:#00796b; margin-top:0;" id="detailName">Student Name</h3>
         <p id="detailInfo" style="font-size:13px; color:#666;"></p>
         <input type="hidden" id="detailId">
         
-        <div style="text-align:left; margin-top:15px;">
-            <h4 style="margin:5px 0; color:#f97316;">Weekly Work</h4>
-            <div class="detail-grid" id="detailWeekly"></div>
-            
-            <h4 style="margin:5px 0; color:#3b82f6;">Unit Tests</h4>
-            <div class="detail-grid" id="detailTests"></div>
-            
-            <h4 style="margin:5px 0; color:#10b981;">CA / Exams</h4>
-            <div class="detail-grid" id="detailCA"></div>
+        <div class="detail-tabs">
+            <button class="tab-btn active" onclick="switchDetailTab('weekly')">Weekly Work</button>
+            <button class="tab-btn" onclick="switchDetailTab('tests')">Unit Tests</button>
+            <button class="tab-btn" onclick="switchDetailTab('ca')">CA / Exams</button>
         </div>
+
+        <div id="detail-tab-weekly" class="detail-section active"></div>
+        <div id="detail-tab-tests" class="detail-section"></div>
+        <div id="detail-tab-ca" class="detail-section"></div>
         
-        <button class="btn" onclick="saveStudentDetails()">💾 Save All Details</button>
-        <button class="btn btn-red" onclick="closeModal('modalStudentDetails')">Close</button>
+        <div style="margin-top:20px;">
+            <button class="btn" onclick="saveStudentDetails()">💾 Save All Details</button>
+            <button class="btn btn-red" onclick="closeModal('modalStudentDetails')" style="margin-top:5px;">Close</button>
+        </div>
     </div>
 </div>
 
@@ -200,7 +205,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, deleteField, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-    // --- CONFIG (REPLACE WITH YOUR KEYS) ---
+    // --- CONFIG ---
     const firebaseConfig = {
       apiKey: "AIzaSyDSEHqUQIegVjhWKpRgpJybdPaVDVroVos",
   authDomain: "islam-portal-muthamin.firebaseapp.com",
@@ -218,7 +223,27 @@
     let currentPageDB = 1; let currentPageMarks = 1; const rowsPerPage = 20;
 
     // --- LOGIN ---
-    window.checkLogin = () => { if(document.getElementById('adminPass').value === "123") { document.getElementById('loginOverlay').style.display='none'; document.getElementById('mainContainer').style.display='block'; fetchData(); } else alert("Wrong Password"); };
+    window.checkLogin = () => { 
+        if(document.getElementById('adminPass').value === "123") { 
+            localStorage.setItem('adminLoggedIn', 'true');
+            initAdmin();
+        } else alert("Wrong Password"); 
+    };
+
+    window.logoutAdmin = () => {
+        localStorage.removeItem('adminLoggedIn');
+        location.reload();
+    };
+
+    function initAdmin() {
+        if(localStorage.getItem('adminLoggedIn') === 'true') {
+            document.getElementById('loginOverlay').style.display='none'; 
+            document.getElementById('mainContainer').style.display='block'; 
+            fetchData();
+        }
+    }
+    // Run init on load
+    initAdmin();
 
     async function fetchData() {
         try {
@@ -230,7 +255,7 @@
         } catch(e) { console.error(e); }
     }
 
-    // --- GRADING SCALE UPDATED (A*=90+, A=80+, B=70+, C=60+) ---
+    // --- GRADING SCALE UPDATED (A*=90+, A=80-89, B=70-79, C=60-69) ---
     window.calcGradeHtml = (v, t) => {
         let p = (v / t) * 100;
         let c = 'g-Fail', l = 'F';
@@ -289,7 +314,14 @@
     };
     window.updRow=(e,t)=>{ document.getElementById('g-'+e.dataset.id).innerHTML = calcGradeHtml(e.value,t); };
 
-    // --- NEW: STUDENT DETAILS MODAL ---
+    // --- NEW: STUDENT DETAILS MODAL WITH TABS ---
+    window.switchDetailTab = (tabName) => {
+        document.querySelectorAll('.detail-section').forEach(s => s.classList.remove('active'));
+        document.getElementById(`detail-tab-${tabName}`).classList.add('active');
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+    };
+
     window.openStudentDetails = (id) => {
         let s = students.find(x => x.id === id);
         if(!s) return;
@@ -303,27 +335,33 @@
             let v = s['Week'+i] || '';
             wHtml += `<div class="detail-item"><span class="detail-label">W${i}</span><select class="detail-input" id="det_Week${i}"><option value="">-</option><option value="ނިމިފައި" ${v=='ނިމިފައި'?'selected':''}>✓</option><option value="ނުނިމޭ" ${v=='ނުނިމޭ'?'selected':''}>X</option><option value="ފުރިހަމައެއް ނުވޭ" ${v=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>⚠</option></select></div>`;
         }
-        document.getElementById('detailWeekly').innerHTML = wHtml;
+        document.getElementById('detail-tab-weekly').innerHTML = wHtml;
 
-        // Populate Tests (Fixed Grade Calculation Logic)
+        // Populate Tests
         let tHtml = '';
         for(let i=1; i<=10; i++) {
             let key = 'UnitTest'+i; let v = s[key] || '';
-            let t = examConfig[key] ? parseInt(examConfig[key]) : 20; // Default 20 for UT
+            let t = examConfig[key] ? parseInt(examConfig[key]) : 20; // Default 20
             let grade = v ? calcGradeHtml(v, t) : '-';
             tHtml += `<div class="detail-item"><span class="detail-label">UT${i} (/${t})</span><input type="number" class="detail-input" id="det_${key}" value="${v}"><div>${grade}</div></div>`;
         }
-        document.getElementById('detailTests').innerHTML = tHtml;
+        document.getElementById('detail-tab-tests').innerHTML = tHtml;
 
-        // Populate CA (Fixed Grade Calculation Logic)
+        // Populate CA
         let cHtml = '';
         for(let i=1; i<=4; i++) {
             let key = 'CA'+i; let v = s[key] || '';
-            let t = examConfig[key] ? parseInt(examConfig[key]) : 100; // Default 100 for CA
+            let t = examConfig[key] ? parseInt(examConfig[key]) : 100; // Default 100
             let grade = v ? calcGradeHtml(v, t) : '-';
             cHtml += `<div class="detail-item"><span class="detail-label">CA${i} (/${t})</span><input type="number" class="detail-input" id="det_${key}" value="${v}"><div>${grade}</div></div>`;
         }
-        document.getElementById('detailCA').innerHTML = cHtml;
+        document.getElementById('detail-tab-ca').innerHTML = cHtml;
+
+        // Reset to first tab
+        document.querySelectorAll('.detail-section').forEach(s => s.classList.remove('active'));
+        document.getElementById('detail-tab-weekly').classList.add('active');
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector('.tab-btn').classList.add('active');
 
         document.getElementById('modalStudentDetails').style.display = 'block';
     };
@@ -335,8 +373,7 @@
         // Collect Weeks
         for(let i=1; i<=45; i++) {
             let v = document.getElementById(`det_Week${i}`).value;
-            if(v) updates[`Week${i}`] = v; 
-            else updates[`Week${i}`] = deleteField(); // Use deleteField if cleared
+            if(v) updates[`Week${i}`] = v; else updates[`Week${i}`] = deleteField();
         }
         // Collect Tests
         for(let i=1; i<=10; i++) {
