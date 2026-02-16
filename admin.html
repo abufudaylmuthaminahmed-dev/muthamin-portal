@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Teacher Admin</title>
-    <!-- SheetJS for Excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
@@ -13,7 +12,6 @@
         .container { max-width: 1100px; margin: 0 auto; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); padding-bottom: 80px; }
         h1 { color: #0d9488; text-align: center; border-bottom: 2px solid #e0f2f1; padding-bottom: 10px; margin-top: 0; font-size: 1.4rem; }
         
-        /* Navigation */
         .nav-menu { display: flex; gap: 8px; margin-bottom: 20px; background: #ccfbf1; padding: 8px; border-radius: 12px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
         .nav-btn { flex: 0 0 auto; padding: 10px 20px; border: none; background: rgba(255,255,255,0.8); border-radius: 8px; cursor: pointer; color: #0f766e; font-weight: bold; font-size: 14px; }
         .nav-btn.active { background: #0d9488; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
@@ -23,47 +21,45 @@
         .section.active { display: block; }
         .card { border: 1px solid #f1f5f9; padding: 15px; border-radius: 12px; margin-bottom: 15px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
 
-        /* Tables */
+        /* Tables & Pagination */
         .table-container { overflow-x: auto; border-radius: 10px; border: 1px solid #e2e8f0; margin-top: 10px; -webkit-overflow-scrolling: touch; }
         table { width: 100%; border-collapse: collapse; min-width: 100%; }
         th { background: #0f766e; color: white; padding: 12px 8px; position: sticky; top: 0; font-size: 14px; white-space: nowrap; z-index: 10; }
         td { padding: 8px; border-bottom: 1px solid #f1f5f9; text-align: center; vertical-align: middle; }
         tr:nth-child(even) { background-color: #f8fafc; }
-
-        /* Pagination Controls */
         .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 15px; padding: 10px; }
         .page-btn { background: #fff; border: 1px solid #ccc; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; color: #555; }
         .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .page-info { font-size: 14px; color: #0d9488; font-weight: bold; }
 
-        /* Inputs & Buttons */
         input, select, textarea { padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; width: 100%; text-align: center; margin: 0; outline: none; font-size: 14px; height: 40px; background: #fff; }
         .v-in { min-width: 140px; font-weight: bold; color: #334155; }
         input.v-in { min-width: 80px; } 
         .n-in { min-width: 150px; text-align: right; }
 
         .btn { padding: 12px; background: #0d9488; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; font-size: 14px; display:flex; justify-content:center; align-items:center; gap:5px; }
-        .btn-orange { background: #f97316; } .btn-red { background: #ef4444; }
+        .btn-orange { background: #f97316; } .btn-red { background: #ef4444; } .btn-blue { background: #3b82f6; }
         .btn-save { position: fixed; bottom: 20px; right: 20px; left: 20px; width: calc(100% - 40px); z-index: 100; max-width: 1060px; margin: 0 auto; box-shadow: 0 5px 20px rgba(0,0,0,0.3); border-radius: 50px; height: 50px; font-size: 16px; }
 
         #loginOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background: #0f766e; z-index: 5000; display: flex; align-items: center; justify-content: center; }
         .login-box { background: white; padding: 30px; border-radius: 15px; width: 85%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; backdrop-filter: blur(3px); }
-        .modal-content { background:white; margin:10% auto; padding:20px; width:90%; max-width:500px; border-radius: 15px; max-height: 80vh; overflow-y: auto; }
+        .modal-content { background:white; margin:5% auto; padding:20px; width:90%; max-width:500px; border-radius: 15px; max-height: 85vh; overflow-y: auto; }
         
-        /* Badges */
-        .grade-badge { padding: 3px 8px; border-radius: 4px; color: white; font-size: 12px; font-weight: bold; margin-right: 5px; }
-        .g-A-star { background: #f59e0b; color: #000; } /* Gold */
-        .g-A { background: #10b981; } /* Green */
-        .g-B { background: #3b82f6; } /* Blue */
-        .g-C { background: #f97316; } /* Orange */
-        .g-Fail { background: #ef4444; } /* Red */
-
-        /* Submissions & Gallery */
         .sub-card { border: 1px solid #e2e8f0; padding: 12px; border-radius: 10px; margin-bottom: 10px; background: #fff; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
         .sub-img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd; background: #eee; }
         .modal-gallery img { max-width: 100%; max-height: 80vh; border-radius: 8px; border: 2px solid #333; margin-bottom: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .notice-item { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px; border-radius: 8px; margin-bottom: 10px; display:flex; justify-content:space-between; align-items:flex-start; text-align:left; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
+        
+        /* Badges */
+        .grade-badge { padding: 3px 8px; border-radius: 4px; color: white; font-size: 12px; font-weight: bold; margin-right: 5px; }
+        .g-A-star { background: #f59e0b; color:black; } .g-A { background: #10b981; } .g-B { background: #3b82f6; } .g-C { background: #f97316; } .g-Fail { background: #ef4444; }
+        
+        /* STUDENT DETAIL MODAL STYLES */
+        .detail-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; margin-bottom: 20px; }
+        .detail-item { background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0; text-align: center; }
+        .detail-label { font-size: 10px; color: #64748b; font-weight: bold; display: block; margin-bottom: 3px; }
+        .detail-input { width: 100%; padding: 5px; font-size: 13px; height: 30px; border: 1px solid #ccc; }
 
         @keyframes fadeIn { from {opacity:0; transform: translateY(5px);} to {opacity:1; transform: translateY(0);} }
         #toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: #334155; color: white; padding: 10px 20px; border-radius: 30px; opacity: 0; pointer-events: none; z-index: 2000; transition: 0.3s; font-size: 13px; }
@@ -93,22 +89,17 @@
         <div id="classFilter" style="display:flex; gap:5px; flex-wrap:wrap;"></div>
     </div>
 
-    <!-- 1. DB (Student List) -->
+    <!-- 1. DB -->
     <div id="tab-db" class="section active">
-        <div style="display:flex; gap:10px; margin-bottom:15px;">
-            <button class="btn" style="flex:1; background:#43a047;" onclick="openStudentModal()">+ Add Student</button>
-            <button class="btn btn-orange" style="flex:1;" onclick="openBulkModal()">📗 Excel Import</button>
+        <div style="display:flex; gap:10px; margin-bottom:10px;">
+            <button class="btn" style="flex:1; background:#43a047;" onclick="openStudentModal()">+ Add</button>
+            <button class="btn btn-orange" style="flex:1;" onclick="openBulkModal()">📗 Excel</button>
         </div>
         <div class="card" style="padding:0; overflow:hidden;">
             <div style="overflow-x:auto;">
-                <table id="studentTable"><thead><tr><th>Index</th><th>Name</th><th>Grade</th><th>Password</th><th>Action</th></tr></thead><tbody><tr><td colspan="5">Loading...</td></tr></tbody></table>
+                <table id="studentTable"><thead><tr><th>Index</th><th>Name</th><th>Grade</th><th>Password</th><th>Profile</th><th>Edit</th></tr></thead><tbody><tr><td colspan="6">Loading...</td></tr></tbody></table>
             </div>
-            <!-- Pagination Controls -->
-            <div class="pagination" id="pag-db">
-                <button class="page-btn" onclick="changePage('db', -1)">Previous</button>
-                <span class="page-info" id="page-info-db">Page 1</span>
-                <button class="page-btn" onclick="changePage('db', 1)">Next</button>
-            </div>
+            <div class="pagination" id="pag-db"><button class="page-btn" onclick="changePage('db', -1)">Prev</button><span class="page-info" id="page-info-db">Page 1</span><button class="page-btn" onclick="changePage('db', 1)">Next</button></div>
         </div>
     </div>
 
@@ -133,25 +124,15 @@
                 </div>
             </div>
         </div>
-        <div class="card" style="padding:0; overflow:hidden;">
-            <div style="overflow-x:auto;">
-                <table id="marksTable"><thead><tr><th>Idx</th><th>Name</th><th>Mark/Status</th><th>Msg</th><th>Save</th></tr></thead><tbody id="marksBody"></tbody></table>
-            </div>
-            <!-- Pagination Controls -->
-            <div class="pagination" id="pag-marks">
-                <button class="page-btn" onclick="changePage('marks', -1)">Previous</button>
-                <span class="page-info" id="page-info-marks">Page 1</span>
-                <button class="page-btn" onclick="changePage('marks', 1)">Next</button>
-            </div>
-        </div>
-        
+        <div class="table-container"><table id="marksTable"><thead><tr><th>Idx</th><th>Name</th><th>Mark/Status</th><th>Msg</th><th>Save</th></tr></thead><tbody id="marksBody"></tbody></table></div>
+        <div class="pagination" id="pag-marks"><button class="page-btn" onclick="changePage('marks', -1)">Prev</button><span class="page-info" id="page-info-marks">Page 1</span><button class="page-btn" onclick="changePage('marks', 1)">Next</button></div>
         <button class="btn btn-save" id="sBtn" onclick="saveTeacherData()">💾 Save All Changes</button><div style="height:60px;"></div>
     </div>
 
     <!-- 3. SUBMISSIONS -->
     <div id="tab-subs" class="section">
         <div class="card">
-            <h3>Pending Submissions</h3>
+            <h3 style="margin-top:0; color:#0f766e;">Pending Submissions</h3>
             <div id="subsList"><p style="text-align:center; color:#999;">No pending submissions</p></div>
         </div>
     </div>
@@ -184,6 +165,30 @@
 <!-- MODALS -->
 <div id="modalAdd" class="modal"><div class="modal-content"><h3>Add Student</h3><input id="newIdx" type="number" placeholder="Index"><input id="newNam" placeholder="Name"><div style="display:flex;gap:5px"><input id="newGrd" placeholder="Grade"><input id="newCls" placeholder="Class"></div><input id="newPwd" value="1234"><button class="btn" onclick="addSingleStudent()">Add</button><button class="btn btn-red" onclick="closeModal('modalAdd')">Cancel</button></div></div>
 <div id="modalEdit" class="modal"><div class="modal-content"><h3>Edit</h3><input type="hidden" id="editId"><input id="editIdx"><input id="editNam"><input id="editPwd"><div style="display:flex;gap:5px"><input id="editGrd"><input id="editCls"></div><button class="btn" onclick="saveEditStudent()">Update</button><hr><button class="btn btn-red" onclick="delStudent()">Delete</button><button class="btn" style="background:#ccc;color:#333" onclick="closeModal('modalEdit')">Close</button></div></div>
+
+<!-- NEW: STUDENT DETAIL MODAL -->
+<div id="modalStudentDetails" class="modal">
+    <div class="modal-content" style="max-width:800px;">
+        <h3 style="color:#00796b; margin-top:0;" id="detailName">Student Name</h3>
+        <p id="detailInfo" style="font-size:13px; color:#666;"></p>
+        <input type="hidden" id="detailId">
+        
+        <div style="text-align:left; margin-top:15px;">
+            <h4 style="margin:5px 0; color:#f97316;">Weekly Work</h4>
+            <div class="detail-grid" id="detailWeekly"></div>
+            
+            <h4 style="margin:5px 0; color:#3b82f6;">Unit Tests</h4>
+            <div class="detail-grid" id="detailTests"></div>
+            
+            <h4 style="margin:5px 0; color:#10b981;">CA / Exams</h4>
+            <div class="detail-grid" id="detailCA"></div>
+        </div>
+        
+        <button class="btn" onclick="saveStudentDetails()">💾 Save All Details</button>
+        <button class="btn btn-red" onclick="closeModal('modalStudentDetails')">Close</button>
+    </div>
+</div>
+
 <div id="modalBulk" class="modal"><div class="modal-content"><h3>Excel Import</h3><input type="file" id="excelFile"><div id="bulkPreview" style="height:100px;overflow:auto;"></div><button class="btn" onclick="processBulk()">Confirm</button><button class="btn btn-red" onclick="closeModal('modalBulk')">Cancel</button></div></div>
 <div id="modalResult" class="modal"><div class="modal-content"><h3>Marks Excel</h3><p id="resTarget"></p><input type="file" id="resFile"><div id="resPreview" style="height:100px;overflow:auto;"></div><button class="btn" onclick="processResultBulk()">Upload</button><button class="btn btn-red" onclick="closeModal('modalResult')">Cancel</button></div></div>
 <div id="modalImg" class="modal"><div class="modal-content" style="max-width:800px;"><h3>Submitted Work</h3><div id="galleryContainer" class="modal-gallery"></div><button class="btn" style="background:#333;margin-top:15px;" onclick="document.getElementById('modalImg').style.display='none'">Close</button></div></div>
@@ -209,10 +214,8 @@
     const db = getFirestore(app);
     let students = []; let materials = []; let notices = []; let examConfig = {}; let mode = 'work'; let selGrade = 'All'; let selClass = 'All'; let parsedData = []; let parsedResData = [];
     
-    // PAGINATION VARIABLES
-    let currentPageDB = 1;
-    let currentPageMarks = 1;
-    const rowsPerPage = 20;
+    // Pagination
+    let currentPageDB = 1; let currentPageMarks = 1; const rowsPerPage = 20;
 
     // --- LOGIN ---
     window.checkLogin = () => { if(document.getElementById('adminPass').value === "123") { document.getElementById('loginOverlay').style.display='none'; document.getElementById('mainContainer').style.display='block'; fetchData(); } else alert("Wrong Password"); };
@@ -238,40 +241,32 @@
         return `<span class="grade-badge ${c}">${l}</span>`;
     };
 
-    // --- HELPER: GET PAGINATED LIST ---
+    // --- PAGINATION HELPERS ---
     function getPaginatedList(type) {
-        let list = getFiltered(); // Get filtered sorted list
+        let list = getFiltered();
         let page = (type === 'db') ? currentPageDB : currentPageMarks;
-        
-        // Update Page Info
         let totalPages = Math.ceil(list.length / rowsPerPage) || 1;
-        if(page > totalPages) page = 1; // Reset if out of bounds
-        
+        if(page > totalPages) page = 1; 
         document.getElementById(`page-info-${type}`).innerText = `Page ${page} of ${totalPages}`;
-        
-        // Slice
         let start = (page - 1) * rowsPerPage;
-        let end = start + rowsPerPage;
-        return list.slice(start, end);
+        return list.slice(start, start + rowsPerPage);
     }
 
     window.changePage = (type, dir) => {
         let list = getFiltered();
         let totalPages = Math.ceil(list.length / rowsPerPage) || 1;
         let current = (type === 'db') ? currentPageDB : currentPageMarks;
-        
         let newPage = current + dir;
         if(newPage >= 1 && newPage <= totalPages) {
-            if(type === 'db') currentPageDB = newPage;
-            else currentPageMarks = newPage;
+            if(type === 'db') currentPageDB = newPage; else currentPageMarks = newPage;
             refreshActiveView();
         }
     };
 
-    // --- RENDER TABLE (WITH PAGINATION) ---
+    // --- RENDER TABLE ---
     window.renderStudentTable = () => {
         const list = getPaginatedList('db');
-        document.querySelector('#studentTable tbody').innerHTML = list.length ? list.map(s => `<tr><td>${s.index}</td><td>${s.name}</td><td>${s.grade}${s.class}</td><td>${s.password||'1234'}</td><td><button class="btn btn-orange" style="padding:6px 12px;width:auto;margin:0" onclick="openEdit('${s.id}')">✏️</button></td></tr>`).join(''):'<tr><td colspan="5">No data</td></tr>';
+        document.querySelector('#studentTable tbody').innerHTML = list.length ? list.map(s => `<tr><td>${s.index}</td><td>${s.name}</td><td>${s.grade}${s.class}</td><td>${s.password||'1234'}</td><td><button class="btn btn-blue" style="padding:5px;width:auto;margin:0" onclick="openStudentDetails('${s.id}')">👤 Profile</button></td><td><button class="btn btn-orange" style="padding:5px;width:auto;margin:0" onclick="openEdit('${s.id}')">✏️</button></td></tr>`).join(''):'<tr><td colspan="6">No data</td></tr>';
     };
 
     window.renderMarksTable = () => {
@@ -287,22 +282,82 @@
             let subIcon = hasSub ? `<button onclick="showSubmissionGallery('${s.id}', '${item}')" style="background:#e0f2f1; border:1px solid #009688; border-radius:5px; cursor:pointer; margin-right:5px; padding:5px; font-size:14px;" title="View Work">📷</button>` : "";
             let hasMsg = s.parentMessages && s.parentMessages.length > 0;
             let msgBtn = hasMsg ? `<button onclick='viewMessages(${JSON.stringify(s.parentMessages)})' style="border:none;background:#ffeb3b;border-radius:50%;width:25px;height:25px;cursor:pointer">📩</button>` : `-`;
-            
-            let input = "", gradeHtml = "";
-            if (mode === 'work') {
-                input = `<select class="v-in" data-id="${s.id}" data-orig="${val}"><option value="">-</option><option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމައެއް ނުވޭ" ${val=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމައެއް ނުވޭ</option></select>`;
-            } else {
-                input = `<input type="number" class="v-in" data-id="${s.id}" data-orig="${val}" value="${val}" placeholder="0" oninput="updRow(this,${tot})">`;
-                if(val) gradeHtml = calcGradeHtml(val, tot);
-            }
-
-            return `<tr><td>${s.index}</td><td><div style="font-size:13px;line-height:1.2;white-space:normal;max-width:100px;margin:0 auto;">${s.name}</div></td><td><div style="display:flex; align-items:center; justify-content:center; gap:5px;">${subIcon} ${input} <div id="g-${s.id}">${gradeHtml}</div></div></td><td>${msgBtn}</td><td><button class="btn" style="width:auto;padding:5px;margin:0;font-size:16px;" onclick="saveSingle('${s.id}')">💾</button></td></tr>`;
+            let input = mode === 'work' ? `<select class="v-in" data-id="${s.id}" data-orig="${val}"><option value="">-</option><option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމައެއް ނުވޭ" ${val=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމައެއް ނުވޭ</option></select>` : `<input type="number" class="v-in" data-id="${s.id}" data-orig="${val}" value="${val}" placeholder="0" oninput="updRow(this,${tot})">`;
+            let gh = mode !== 'work' && val ? calcGradeHtml(val, tot) : '';
+            return `<tr><td>${s.index}</td><td><div style="font-size:13px;line-height:1.2;white-space:normal;max-width:100px;margin:0 auto;">${s.name}</div></td><td><div style="display:flex; align-items:center; justify-content:center; gap:5px;">${subIcon} ${input} <div id="g-${s.id}">${gh}</div></div></td><td>${msgBtn}</td><td><button class="btn" style="width:auto;padding:5px;margin:0;font-size:16px;" onclick="saveSingle('${s.id}')">💾</button></td></tr>`;
         }).join('') : '<tr><td colspan="5">No data</td></tr>';
     };
-
     window.updRow=(e,t)=>{ document.getElementById('g-'+e.dataset.id).innerHTML = calcGradeHtml(e.value,t); };
 
-    // --- OTHER LOGIC ---
+    // --- NEW: STUDENT DETAILS MODAL ---
+    window.openStudentDetails = (id) => {
+        let s = students.find(x => x.id === id);
+        if(!s) return;
+        document.getElementById('detailName').innerText = s.name;
+        document.getElementById('detailInfo').innerText = `Index: ${s.index} | Class: ${s.grade}${s.class}`;
+        document.getElementById('detailId').value = s.id;
+
+        // Populate Weeks
+        let wHtml = '';
+        for(let i=1; i<=45; i++) {
+            let v = s['Week'+i] || '';
+            wHtml += `<div class="detail-item"><span class="detail-label">W${i}</span><select class="detail-input" id="det_Week${i}"><option value="">-</option><option value="ނިމިފައި" ${v=='ނިމިފައި'?'selected':''}>✓</option><option value="ނުނިމޭ" ${v=='ނުނިމޭ'?'selected':''}>X</option><option value="ފުރިހަމައެއް ނުވޭ" ${v=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>⚠</option></select></div>`;
+        }
+        document.getElementById('detailWeekly').innerHTML = wHtml;
+
+        // Populate Tests (Fixed Grade Calculation Logic)
+        let tHtml = '';
+        for(let i=1; i<=10; i++) {
+            let key = 'UnitTest'+i; let v = s[key] || '';
+            let t = examConfig[key] ? parseInt(examConfig[key]) : 20; // Default 20 for UT
+            let grade = v ? calcGradeHtml(v, t) : '-';
+            tHtml += `<div class="detail-item"><span class="detail-label">UT${i} (/${t})</span><input type="number" class="detail-input" id="det_${key}" value="${v}"><div>${grade}</div></div>`;
+        }
+        document.getElementById('detailTests').innerHTML = tHtml;
+
+        // Populate CA (Fixed Grade Calculation Logic)
+        let cHtml = '';
+        for(let i=1; i<=4; i++) {
+            let key = 'CA'+i; let v = s[key] || '';
+            let t = examConfig[key] ? parseInt(examConfig[key]) : 100; // Default 100 for CA
+            let grade = v ? calcGradeHtml(v, t) : '-';
+            cHtml += `<div class="detail-item"><span class="detail-label">CA${i} (/${t})</span><input type="number" class="detail-input" id="det_${key}" value="${v}"><div>${grade}</div></div>`;
+        }
+        document.getElementById('detailCA').innerHTML = cHtml;
+
+        document.getElementById('modalStudentDetails').style.display = 'block';
+    };
+
+    window.saveStudentDetails = async () => {
+        let id = document.getElementById('detailId').value;
+        let updates = {};
+        
+        // Collect Weeks
+        for(let i=1; i<=45; i++) {
+            let v = document.getElementById(`det_Week${i}`).value;
+            if(v) updates[`Week${i}`] = v; 
+            else updates[`Week${i}`] = deleteField(); // Use deleteField if cleared
+        }
+        // Collect Tests
+        for(let i=1; i<=10; i++) {
+            let v = document.getElementById(`det_UnitTest${i}`).value;
+            if(v) updates[`UnitTest${i}`] = v; else updates[`UnitTest${i}`] = deleteField();
+        }
+        // Collect CA
+        for(let i=1; i<=4; i++) {
+            let v = document.getElementById(`det_CA${i}`).value;
+            if(v) updates[`CA${i}`] = v; else updates[`CA${i}`] = deleteField();
+        }
+
+        try {
+            await updateDoc(doc(db, "students", id), updates);
+            showToast("Details Saved!");
+            closeModal('modalStudentDetails');
+            fetchData();
+        } catch(e) { console.error(e); alert("Error saving details"); }
+    };
+
+    // --- OTHER LOGIC (Standard) ---
     window.switchTab = (id) => { document.querySelectorAll('.section').forEach(d => d.classList.remove('active')); document.getElementById('tab-'+id).classList.add('active'); document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); event.target.classList.add('active'); refreshActiveView(); };
     function refreshActiveView() { if(document.getElementById('tab-db').classList.contains('active')) renderStudentTable(); if(document.getElementById('tab-marks').classList.contains('active')) renderMarksTable(); if(document.getElementById('tab-subs').classList.contains('active')) renderSubmissions(); if(document.getElementById('tab-notice').classList.contains('active')) {renderNotices(); renderMaterials();} }
     window.setGradeFilter=(g)=>{selGrade=g;selClass='All';currentPageDB=1;currentPageMarks=1;updateFilters();refreshActiveView();}; window.setClassFilter=(c)=>{selClass=c;currentPageDB=1;currentPageMarks=1;updateFilters();refreshActiveView();};
