@@ -3,51 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>އިސްލާމް ޕޯޓަލް</title>
+    <title>Students Portal</title>
     <style>
         @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
-        * { font-family: "Faruma", sans-serif; box-sizing: border-box; }
-        body { background-color: #ecfdf5; margin: 0; padding: 10px; text-align: right; color: #1f2937; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); min-height: 85vh; border-top: 5px solid #10b981; }
-        h1 { color: #059669; text-align: center; margin-bottom: 20px; font-size: 1.8rem; border-bottom: 2px dashed #a7f3d0; padding-bottom: 15px; }
-        
+        * { box-sizing: border-box; font-family: "Faruma", sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #ecfdf5; margin: 0; padding: 15px; text-align: right; color: #334155; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 25px; border-radius: 24px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); min-height: 90vh; border-top: 6px solid #10b981; }
+        h1 { color: #047857; text-align: center; margin-bottom: 25px; font-size: 1.8rem; border-bottom: 2px dashed #a7f3d0; padding-bottom: 15px; }
+
         /* NOTICE */
-        .notice-board { padding: 15px; border-radius: 12px; margin-bottom: 20px; display: block; border-left: 5px solid transparent; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .notice-board { padding: 15px; border-radius: 16px; margin-bottom: 20px; display: block; position: relative; border-left: 5px solid transparent; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         .n-normal { background: #ecfeff; border-color: #06b6d4; color: #155e75; }
-        .n-urgent { background: #fef2f2; border-color: #ef4444; color: #991b1b; }
-        
-        /* CARDS & TABS */
-        .card { background: #fff; padding: 20px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .tabs { display: flex; gap: 5px; margin-bottom: 15px; background: #f0fdf4; padding: 5px; border-radius: 10px; }
-        .tab-btn { flex: 1; padding: 10px; border: none; background: transparent; border-radius: 8px; font-weight: bold; color: #065f46; cursor: pointer; font-size: 13px; }
-        .tab-btn.active { background: #10b981; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+        .n-urgent { background: #fef2f2; border-color: #ef4444; color: #991b1b; animation: pulse 2s infinite; }
+        .n-event { background: #faf5ff; border-color: #9333ea; color: #6b21a8; }
+        .n-quote { background: #f0fdf4; border-color: #22c55e; color: #166534; font-style: italic; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); } 70% { box-shadow: 0 0 0 5px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
+
+        /* CARDS & MENU GRID */
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .menu-card { 
+            background: linear-gradient(145deg, #ffffff, #f0fdfa); border: 1px solid #e2e8f0; border-radius: 20px; padding: 25px 10px; 
+            text-align: center; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+        }
+        .menu-card:hover { transform: translateY(-5px); border-color: #10b981; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.15); }
+        .menu-icon { font-size: 35px; width: 60px; height: 60px; background: #ccfbf1; color: #0f766e; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 5px; }
+        .menu-title { font-weight: bold; font-size: 15px; color: #334155; }
+        .menu-card.full { grid-column: span 2; }
+
+        /* SECTIONS */
+        .content-section { display: none; animation: fadeIn 0.3s; }
+        .card { background: #fff; padding: 20px; border-radius: 16px; margin-bottom: 15px; border: 1px solid #e2e8f0; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
         
         /* ITEMS */
-        .result-item { display: flex; justify-content: space-between; align-items: center; background: white; border: 1px solid #e5e7eb; padding: 12px; margin-bottom: 8px; border-radius: 10px; border-right: 5px solid #d1d5db; }
+        .result-item { display: flex; justify-content: space-between; align-items: center; background: white; border: 1px solid #e2e8f0; padding: 15px; margin-bottom: 10px; border-radius: 12px; border-right: 5px solid #cbd5e1; }
         .result-item.done { border-right-color: #10b981; background: #ecfdf5; }
         .result-item.pending { border-right-color: #f59e0b; background: #fffbeb; }
         .result-item.incomplete { border-right-color: #ef4444; background: #fef2f2; }
         
         /* BADGES */
-        .grade-badge { padding: 3px 8px; border-radius: 6px; color: white; font-size: 11px; font-weight: bold; }
-        .g-A-star { background: #f59e0b; color:black; } .g-A { background: #10b981; color:white; } .g-B { background: #3b82f6; color:white; } .g-C { background: #f97316; color:white; } .g-Fail { background: #ef4444; color:white; }
-        .status-badge { font-size: 10px; padding: 3px 8px; border-radius: 20px; font-weight: bold; }
-        .st-done { background: #dcfce7; color: #166534; } .st-pending { background: #fef9c3; color: #854d0e; } .st-fail { background: #fee2e2; color: #991b1b; }
-        
-        /* BUTTONS */
-        .btn { width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        .btn-upload { background: #0891b2; padding: 6px 12px; font-size: 12px; width: auto; margin: 0; border-radius: 6px; color: white; border: none; }
-        
-        /* MODALS */
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
-        .modal-content { background: #fff; margin: 10% auto; padding: 25px; border-radius: 20px; width: 90%; max-width: 500px; text-align: center; }
-        .preview-thumb { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; margin: 5px; }
+        .grade-badge { padding: 4px 10px; border-radius: 6px; color: white; font-size: 12px; font-weight: bold; }
+        .g-A-star { background: #f59e0b; color:black; } .g-A { background: #10b981; } .g-B { background: #3b82f6; } .g-C { background: #f97316; } .g-Fail { background: #ef4444; }
+        .status-badge { font-size: 11px; padding: 4px 8px; border-radius: 20px; display: inline-block; font-weight: bold; }
+        .st-done { background: #dcfce7; color: #166534; } .st-pending { background: #fef9c3; color: #854d0e; } .st-fail { background: #fee2e2; color: #991b1b; } .st-fix { background: #ffedd5; color: #9a3412; }
+        .score-circle { width: 40px; height: 40px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 2px solid #e5e7eb; border-radius: 8px; text-align: center; }
-        @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
-        #toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #1f2937; color: white; padding: 12px 24px; border-radius: 50px; opacity: 0; z-index: 2000; }
+        /* BUTTONS & INPUTS */
+        input, textarea { width: 100%; padding: 12px 15px; margin: 8px 0; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 16px; text-align: center; outline: none; transition: 0.3s; background: #f8fafc; }
+        input:focus { border-color: #10b981; background: #fff; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
+        .btn { width: 100%; padding: 14px; background: #10b981; color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 15px; margin-top: 10px; display:flex; justify-content:center; align-items:center; gap:5px; transition:0.2s; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2); }
+        .btn:active { transform: scale(0.98); }
+        .btn-mat { background: #fff; color: #334155; border: 1px solid #cbd5e1; box-shadow: none; margin-bottom: 15px; }
+        .btn-blue { background: #3b82f6; box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2); } 
+        .btn-logout { background: #ef4444; margin-top: 20px; box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.2); }
+        .btn-upload { background: #0891b2; padding: 6px 12px; font-size: 12px; width: auto; margin: 0; border-radius: 8px; color: white; border: none; cursor: pointer; }
+        .btn-view { background: #6366f1; padding: 6px 12px; font-size: 12px; width: auto; margin: 0; border-radius: 8px; color: white; border: none; cursor: pointer; }
+
+        /* MODALS */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
+        .modal-content { background: #fff; margin: 10% auto; padding: 25px; border-radius: 20px; width: 90%; max-width: 500px; text-align: center; max-height: 85vh; overflow-y: auto; display: flex; flex-direction: column; }
+        .preview-grid { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 15px; }
+        .preview-thumb { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; }
+        #imgPreview, #viewSubmissionImg { max-width: 100%; max-height: 300px; width: auto; object-fit: contain; display: none; margin: 10px auto; border-radius: 12px; border: 1px solid #ddd; }
+        .mat-link { display: flex; justify-content: space-between; align-items: center; padding: 15px; margin: 10px 0; background: #f8fafc; color: #334155; text-decoration: none; border-radius: 10px; font-weight: bold; border: 1px solid #e2e8f0; transition: 0.2s; }
+        
+        /* Pagination */
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 20px; padding-bottom: 10px; }
+        .page-btn { background: #fff; border: 1px solid #cbd5e1; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight:bold; color: #555; }
+
+        @keyframes fadeIn { from {opacity:0; transform: translateY(10px);} to {opacity:1; transform: translateY(0);} }
+        #toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 12px 24px; border-radius: 50px; font-size: 14px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 2000; }
     </style>
 </head>
 <body>
@@ -57,41 +82,90 @@
     <div id="noticeContainer"></div>
 
     <!-- LOGIN -->
-    <div id="loginSection" style="text-align:center;">
-        <h3>ބެލެނިވެރިންގެ ޕޯޓަލް</h3>
-        <input type="number" id="pIdx" placeholder="Index Number" inputmode="numeric">
-        <input type="password" id="pPass" placeholder="Password">
-        <button class="btn" onclick="loginParent()">🔐 ލޮގިން</button>
+    <div id="loginSection">
+        <div class="card" style="text-align:center;">
+            <h3 style="margin-top:0;">ބެލެނިވެރިންގެ ޕޯޓަލް</h3>
+            <p style="font-size:13px; color:#64748b; margin-bottom:20px;">ކުއްޖާގެ އިންޑެކްސް އަދި ޕާސްވޯޑް ޖައްސަވާ</p>
+            <input type="number" id="pIdx" placeholder="Index Number" inputmode="numeric">
+            <input type="password" id="pPass" placeholder="Password">
+            <button class="btn" id="pBtn" onclick="loginParent()"><span>🔐</span> ލޮގިން</button>
+        </div>
+        <p style="text-align:center; font-size:12px; color:#94a3b8;">ފުރަތަމަ ފަހަރު ނަމަ ޕާސްވޯޑް ހުސްކޮށް ބަހައްޓަވާ</p>
     </div>
 
     <!-- DASHBOARD -->
     <div id="dashboardSection" style="display:none;">
-        <div id="studentHeader" style="text-align:center; margin-bottom:20px; color:#059669; font-weight:bold;"></div>
+        <div id="studentHeader" style="text-align:center; background:linear-gradient(to right, #0d9488, #115e59); color:white; padding:20px; border-radius:20px; margin-bottom:20px;"></div>
         
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('weekly')">ހަފްތާ</button>
-            <button class="tab-btn" onclick="switchTab('tests')">ޓެސްޓް</button>
-            <button class="tab-btn" onclick="switchTab('ca')">CA</button>
+        <!-- MAIN MENU GRID (2 Columns) -->
+        <div class="menu-grid" id="mainMenu">
+            <div class="menu-card" onclick="showSection('weekly')">
+                <div class="menu-icon">📅</div>
+                <div class="menu-title">ހަފްތާގެ މަސައްކަތް</div>
+            </div>
+            <div class="menu-card" onclick="showSection('tests')">
+                <div class="menu-icon">📑</div>
+                <div class="menu-title">ޔުނިޓް ޓެސްޓް</div>
+            </div>
+            <div class="menu-card" onclick="showSection('ca')">
+                <div class="menu-icon">📊</div>
+                <div class="menu-title">ކްލާސް އެސެސްމެންޓް</div>
+            </div>
+            <div class="menu-card" onclick="openMaterials()">
+                <div class="menu-icon">📥</div>
+                <div class="menu-title">ފިލާވަޅުތައް</div>
+            </div>
         </div>
 
-        <div id="tab-weekly" class="tab-content active"><div id="weeklyList"></div></div>
-        <div id="tab-tests" class="tab-content"><div id="testsList"></div></div>
-        <div id="tab-ca" class="tab-content"><div id="caList"></div></div>
+        <!-- SECTIONS -->
+        <div id="section-weekly" class="content-section">
+            <button class="btn btn-mat" onclick="closeSections()">⬅ އެނބުރި</button>
+            <div class="result-section-title">ހަފްތާގެ މަސައްކަތް</div>
+            <div id="weeklyList"></div>
+            <!-- Pagination Controls -->
+            <div class="pagination">
+                <button class="page-btn" onclick="changePage(-1)">ކުރި</button>
+                <span class="page-info" id="pageInfo">Page 1</span>
+                <button class="page-btn" onclick="changePage(1)">ފަސް</button>
+            </div>
+        </div>
 
-        <button class="btn" style="background:#3b82f6;" onclick="openPwdModal()">🔑 ޕާސްވޯޑް ਬަދަލުކުރަން</button>
-        <button class="btn" style="background:#ef4444;" onclick="location.reload()">🔒 ލޮގްއައުޓް</button>
+        <div id="section-tests" class="content-section">
+            <button class="btn btn-mat" onclick="closeSections()">⬅ އެނބުރި</button>
+            <div class="result-section-title">ޔުނިޓް ޓެސްޓް</div>
+            <div id="testsList"></div>
+        </div>
+
+        <div id="section-ca" class="content-section">
+            <button class="btn btn-mat" onclick="closeSections()">⬅ އެނބުރި</button>
+            <div class="result-section-title">ކްލާސް އެސެސްމެންޓް</div>
+            <div id="caList"></div>
+        </div>
+
+        <!-- FOOTER ACTIONS -->
+        <div style="margin-top:30px;">
+            <div class="card" style="border:1px solid #bbf7d0; background:#f0fdf4;">
+                <div style="font-weight:bold; color:#166534; margin-bottom:10px;">މުދައްރިސަށް މެސެޖެއް:</div>
+                <textarea id="parentMsgInput" placeholder="މިތަނުގައި ލިޔުއްވާ..." rows="2"></textarea>
+                <button class="btn" style="background:#16a34a; margin-top:5px;" onclick="sendParentMsg()">ފޮނުއްވާ ➤</button>
+            </div>
+            
+            <button class="btn btn-blue" onclick="openPwdModal()">🔑 ޕާސްވޯޑް ބަދަލުކުރަން</button>
+            <button class="btn btn-logout" onclick="logout()">🔒 ލޮގްއައުޓް</button>
+        </div>
     </div>
 </div>
 
-<!-- Upload Modal -->
-<div id="uploadModal" class="modal"><div class="modal-content"><h3>📷 ފޮޓޯލާން</h3><p id="uploadWeekName"></p><input type="file" id="homeworkFile" accept="image/*" multiple style="display:none" onchange="previewImages()"><button class="btn" onclick="document.getElementById('homeworkFile').click()" style="background:#eee;color:#333">Select Photos</button><div id="imgPreviewContainer" style="margin-top:10px;"></div><button class="btn" id="btnSend" onclick="uploadWork()">🚀 ފޮނުވާ</button><button class="btn" onclick="document.getElementById('uploadModal').style.display='none'" style="background:#ccc;color:#333">Cancel</button></div></div>
-<!-- Password Modal -->
-<div id="pwdModal" class="modal"><div class="modal-content"><h3>ޕާސްވޯޑް</h3><input id="newParentPass" placeholder="New Password"><button class="btn" onclick="saveNewPassword()">Save</button><button class="btn" style="background:#ccc;color:#333" onclick="document.getElementById('pwdModal').style.display='none'">Cancel</button></div></div>
+<!-- MODALS -->
+<div id="uploadModal" class="modal"><div class="modal-content"><h3>📷 މަސައްކަތް ހުށަހެޅުން</h3><p id="uploadWeekName" style="color:#64748b; font-weight:bold;"></p><div style="border:2px dashed #cbd5e1; padding:15px; border-radius:12px; margin-bottom:15px; background:#f8fafc;"><input type="file" id="homeworkFile" accept="image/*" multiple style="display:none" onchange="previewImages()"><button class="btn" style="background:#fff; color:#333; border:1px solid #ccc; width:auto; font-size:12px;" onclick="document.getElementById('homeworkFile').click()">ފޮޓޯ ނެގުން / ގެލެރީން ނެގުން</button><div id="imgPreviewContainer" class="preview-grid"></div><p id="fileCount" style="font-size:11px; color:#666; margin-top:5px; display:none;"></p></div><button class="btn" id="btnSendWork" onclick="uploadWork()">🚀 ފޮނުއްވާ</button><button class="btn" style="background:#cbd5e1; color:#333; margin-top:10px;" onclick="document.getElementById('uploadModal').style.display='none'">ކެންސަލް</button></div></div>
+<div id="viewSubModal" class="modal"><div class="modal-content"><h3>ހުށަހެޅި މަސައްކަތް</h3><p id="viewSubDate" style="color:#64748b; font-size:12px"></p><img id="viewSubmissionImg"><button class="btn" style="background:#cbd5e1; color:#333; margin-top:10px;" onclick="document.getElementById('viewSubModal').style.display='none'">ލައްޕާލާ</button></div></div>
+<div id="pwdModal" class="modal"><div class="modal-content"><h3 style="color:#3b82f6;">ޕާސްވޯޑް ބަދަލުކުރުން</h3><p style="font-size:13px; color:#64748b;" id="pwdModalMsg">އާ ޕާސްވޯޑެއް ޖައްސަވާ</p><input type="text" id="newParentPass" placeholder="New Password"><button class="btn btn-blue" onclick="saveNewPassword()">💾 Save Password</button><button class="btn" id="btnClosePwd" style="background:#cbd5e1; color:#333; margin-top:10px;" onclick="document.getElementById('pwdModal').style.display='none'">Cancel</button></div></div>
+<div id="matModal" class="modal"><div class="modal-content"><h2 style="color:#0d9488;">📚 ފިލާވަޅުތައް</h2><div id="matListParent" style="min-height:100px;">Loading...</div><button class="btn" style="background:#cbd5e1; color:#333; margin-top:15px;" onclick="document.getElementById('matModal').style.display='none'">Close</button></div></div>
 <div id="toast"></div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, doc, updateDoc, getDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
     const firebaseConfig = { apiKey: "AIzaSyDSEHqUQIegVjhWKpRgpJybdPaVDVroVos",
   authDomain: "islam-portal-muthamin.firebaseapp.com",
@@ -100,88 +174,116 @@
   messagingSenderId: "842342714257",
   appId: "1:842342714257:web:c5daa61eee6524e7936830" };
     const app = initializeApp(firebaseConfig); const db = getFirestore(app);
-    let students=[], notices=[], examConfig={}, currentStudent=null, currentUploadWeek=null;
+    let students=[], materials=[], notices=[], examConfig={}, currentStudent=null, currentUploadWeek=null;
+    let weeklyPage=1; const weeksPerPage=10;
 
-    try {
-        const sSnap = await getDocs(collection(db, "students")); sSnap.forEach(d=>students.push({id:d.id,...d.data()}));
-        const nSnap = await getDocs(collection(db, "notices")); nSnap.forEach(d=>notices.push(d.data()));
-        try { const c = await getDoc(doc(db, "settings", "examConfig")); if(c.exists()) examConfig=c.data(); } catch(e){}
-        
-        // Render Notice
-        if(notices.length) {
-            let n = notices.sort((a,b)=>b.timestamp-a.timestamp)[0];
-            document.getElementById('noticeContainer').innerHTML = `<div class="notice-board ${n.type=='urgent'?'n-urgent':'n-normal'}"><b>📢 ${n.text}</b><br><small>${n.date}</small></div>`;
-        }
-    } catch(e) {}
+    try { fetchData(); } catch(e) { console.error(e); }
 
-    window.loginParent = () => {
-        let idx = document.getElementById('pIdx').value, pass = document.getElementById('pPass').value;
-        let s = students.find(x => String(x.index) === idx);
-        if(s && (s.password === pass || (!s.password && pass==='1234'))) {
-            currentStudent = s;
-            document.getElementById('loginSection').style.display='none';
-            document.getElementById('dashboardSection').style.display='block';
-            document.getElementById('studentHeader').innerHTML = `<h2>${s.name}</h2><p>${s.index} | ${s.grade}${s.class}</p>`;
-            renderLists();
-        } else { alert("Invalid"); }
-    };
-
-    function renderLists() {
-        const s = currentStudent;
-        
-        // Weekly
-        let wHtml = '';
-        for(let i=45; i>=1; i--) {
-            let st = s['Week'+i], sub = s.submissions && s.submissions['Week'+i];
-            if(st || sub || i<5) {
-                let badge = st=='ނިމިފައި' ? '<span class="status-badge st-done">✅ Done</span>' : (sub ? '<span class="status-badge st-pending">⏳ Checking</span>' : `<button class="btn-upload" onclick="openUploadModal('Week${i}')">📷 Upload</button>`);
-                wHtml += `<div class="result-item ${st=='ނިމިފައި'?'done':'incomplete'}"><span>Week ${i}</span><div>${badge}</div></div>`;
-            }
-        }
-        document.getElementById('weeklyList').innerHTML = wHtml;
-
-        // Tests & CA
-        const getG = (v,k,def) => { if(!v)return''; let t=examConfig[k]?parseInt(examConfig[k]):def; let p=(v/t)*100, c='g-Fail',l='F'; if(p>=90){c='g-A-star';l='A*'}else if(p>=80){c='g-A';l='A'}else if(p>=70){c='g-B';l='B'}else if(p>=60){c='g-C';l='C'} return `<span class="grade-badge ${c}">${l}</span> <b>${v}</b>`; };
-
-        let tHtml=''; for(let i=1;i<=10;i++) if(s['UnitTest'+i]) tHtml+=`<div class="result-item"><span>Unit Test ${i}</span><div>${getG(s['UnitTest'+i], 'UnitTest'+i, 20)}</div></div>`;
-        document.getElementById('testsList').innerHTML = tHtml || '<p style="text-align:center">No records</p>';
-
-        let cHtml=''; for(let i=1;i<=4;i++) if(s['CA'+i]) cHtml+=`<div class="result-item"><span>CA ${i}</span><div>${getG(s['CA'+i], 'CA'+i, 100)}</div></div>`;
-        document.getElementById('caList').innerHTML = cHtml || '<p style="text-align:center">No records</p>';
+    async function fetchData() {
+        if(!db) return;
+        try {
+            const sSnap = await getDocs(collection(db, "students")); students=[]; sSnap.forEach(d=>students.push({id:d.id,...d.data()}));
+            const mSnap = await getDocs(collection(db, "materials")); materials=[]; mSnap.forEach(d=>materials.push({id:d.id,...d.data()}));
+            const nSnap = await getDocs(collection(db, "notices")); notices=[]; nSnap.forEach(d=>notices.push({id:d.id,...d.data()}));
+            try { const c = await getDoc(doc(db, "settings", "examConfig")); if(c.exists()) examConfig=c.data(); } catch(e){}
+            renderNotices();
+            
+            const savedIdx = localStorage.getItem('parentIdx');
+            if(savedIdx) { const s = students.find(x => String(x.index) === String(savedIdx)); if(s) { currentStudent = s; loadDashboard(s); } }
+        } catch(e) { console.error(e); }
     }
 
-    window.switchTab = (t) => {
-        document.querySelectorAll('.tab-content').forEach(e=>e.classList.remove('active'));
-        document.getElementById('tab-'+t).classList.add('active');
-        document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-        event.target.classList.add('active');
+    window.loginParent = () => {
+        const idx = document.getElementById('pIdx').value, pass = document.getElementById('pPass').value; 
+        if(!idx) return showToast("Index Required");
+        const s = students.find(x => String(x.index) === String(idx));
+        if(s) {
+            let stored = String(s.password || "1234");
+            if (stored === "1234" && (pass === "" || pass === "1234")) { currentStudent = s; loadDashboard(s); forcePasswordChange(); return; }
+            if (stored === String(pass) && pass !== "") { currentStudent = s; localStorage.setItem('parentIdx', idx); loadDashboard(s); } else { showToast("❌ ނުބައި ޕާސްވޯޑެއް!"); }
+        } else { showToast("❌ ދަރިވަރު ނުފެނުނު!"); }
     };
 
-    window.openUploadModal = (w) => { currentUploadWeek=w; document.getElementById('uploadWeekName').innerText=w; document.getElementById('uploadModal').style.display='block'; };
-    window.previewImages = () => {
-        const fs = document.getElementById('homeworkFile').files; const c = document.getElementById('imgPreviewContainer'); c.innerHTML='';
-        Array.from(fs).forEach(f=>{ let r=new FileReader(); r.onload=e=>{let i=document.createElement('img');i.src=e.target.result;i.className='preview-thumb';c.appendChild(i);}; r.readAsDataURL(f); });
+    function forcePasswordChange() { document.getElementById('pwdModal').style.display='block'; document.getElementById('pwdModalMsg').innerText="ފުރަތަމަ ފަހަރު ކަމުން ޕާސްވޯޑް ބަދަލުކުރައްވާ"; document.getElementById('pwdModalMsg').style.color="#f97316"; document.getElementById('btnClosePwd').style.display='none'; }
+
+    function loadDashboard(s) {
+        document.getElementById('loginSection').style.display='none'; document.getElementById('dashboardSection').style.display='block';
+        document.getElementById('studentHeader').innerHTML = `<h2 style="margin:0;">${s.name}</h2><div style="opacity:0.9;font-size:14px;">${s.index} | ${s.grade}${s.class}</div>`;
+        renderParentWeekly(); renderParentTests(); renderParentCA();
+    }
+
+    // --- NAVIGATION ---
+    window.showSection = (id) => {
+        document.getElementById('mainMenu').style.display='none';
+        document.querySelectorAll('.content-section').forEach(d=>d.style.display='none');
+        document.getElementById('section-'+id).style.display='block';
     };
-    window.uploadWork = async () => {
-        const fs = document.getElementById('homeworkFile').files; if(!fs.length)return;
-        document.getElementById('btnSend').innerText="Sending...";
-        let imgs = [];
-        for(let f of fs) {
-            let p = await new Promise(r=>{ let rd=new FileReader(); rd.onload=e=>{ let i=new Image(); i.onload=()=>{let c=document.createElement('canvas');c.width=700;c.height=i.height*(700/i.width);c.getContext('2d').drawImage(i,0,0,c.width,c.height);r(c.toDataURL('image/jpeg',0.6));}; i.src=e.target.result; }; rd.readAsDataURL(f); });
-            imgs.push(p);
+    window.closeSections = () => {
+        document.querySelectorAll('.content-section').forEach(d=>d.style.display='none');
+        document.getElementById('mainMenu').style.display='grid';
+    };
+
+    // --- RENDERERS ---
+    function renderParentWeekly() {
+        const listDiv = document.getElementById('weeklyList'); const s = currentStudent; let html = '';
+        let start = (weeklyPage - 1) * weeksPerPage + 1; let end = start + weeksPerPage - 1; if(end > 45) end = 45;
+        document.getElementById('pageInfo').innerText = `Page ${weeklyPage} of ${Math.ceil(45/weeksPerPage)}`;
+
+        for(let i=start; i<=end; i++) { 
+            let submission = s.submissions && s.submissions['Week'+i];
+            let status = s['Week'+i];
+            let actionArea = '', itemClass = '';
+
+            if(status === 'ނިމިފައި') { itemClass = 'done'; actionArea = `<span class="status-badge st-done">✅ ނިމިއްޖެ</span>`; if(submission) actionArea += ` <button class="btn-view" onclick="viewWork('Week${i}')">👁️</button>`; } 
+            else if(submission) { itemClass = 'pending'; actionArea = `<span class="status-badge st-pending">⏳ ޗެކްކުރަނީ</span> <button class="btn-view" onclick="viewWork('Week${i}')">👁️</button>`; } 
+            else {
+                if(status === 'ނުނިމޭ') { itemClass='incomplete'; actionArea = `<span class="status-badge st-fail">❌ ނުނިމޭ</span> `; }
+                else if(status === 'ފުރިހަމައެއް ނުވޭ') { itemClass='pending'; actionArea = `<span class="status-badge st-fix">⚠️ އިސްލާޙް</span> `; }
+                actionArea += `<button class="btn-upload" onclick="openUploadModal('Week${i}')">📷 ފޮޓޯލާން</button>`;
+            }
+            html += `<div class="result-item ${itemClass}"><div><span style="font-weight:bold; color:#334155;">Week ${i}</span>${s['Week'+i+'_note'] ? `<div style="font-size:13px; color:#64748b; margin-top:2px;">"${s['Week'+i+'_note']}"</div>`:''}</div><div style="text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:5px;">${actionArea}</div></div>`;
         }
-        await updateDoc(doc(db,"students",currentStudent.id),{[`submissions.${currentUploadWeek}`]:{images:imgs, date:new Date().toLocaleDateString()}});
-        alert("Uploaded!"); location.reload();
-    };
+        listDiv.innerHTML = html;
+    }
+    window.changePage = (dir) => { let max = Math.ceil(45/weeksPerPage); let next = weeklyPage + dir; if(next >= 1 && next <= max) { weeklyPage = next; renderParentWeekly(); } };
+
+    function renderParentTests() {
+        const s = currentStudent; let html = '';
+        const getG = (v,k,def) => { if(!v)return''; let t=examConfig[k]?parseInt(examConfig[k]):def; let g=calcGrade(v,t); return `<div style="display:flex;align-items:center;gap:8px;"><span class="grade-badge ${g.cls}">${g.lbl}</span><div class="score-circle">${v}</div></div>`; };
+        for(let i=1; i<=10; i++) { let v = s['UnitTest'+i]; if(v) html += `<div class="result-item"><span>Unit Test ${i}</span>${getG(v, 'UnitTest'+i, 20)}</div>`; }
+        document.getElementById('testsList').innerHTML = html || "<p style='text-align:center;color:#94a3b8'>No records</p>";
+    }
+    function renderParentCA() {
+        const s = currentStudent; let html = '';
+        const getG = (v,k,def) => { if(!v)return''; let t=examConfig[k]?parseInt(examConfig[k]):def; let g=calcGrade(v,t); return `<div style="display:flex;align-items:center;gap:8px;"><span class="grade-badge ${g.cls}">${g.lbl}</span><div class="score-circle" style="background:#e0f7fa;color:#0e7490">${v}</div></div>`; };
+        for(let i=1; i<=4; i++) { let v = s['CA'+i]; if(v) html += `<div class="result-item"><span>CA / Exam ${i}</span>${getG(v, 'CA'+i, 100)}</div>`; }
+        document.getElementById('caList').innerHTML = html || "<p style='text-align:center;color:#94a3b8'>No records</p>";
+    }
+
+    // --- UTILS ---
+    function calcGrade(m,t){ let p=(m/t)*100; if(isNaN(p))return{lbl:'-',cls:''}; if(p>=90)return{lbl:'A*',cls:'g-A-star'}; if(p>=80)return{lbl:'A',cls:'g-A'}; if(p>=70)return{lbl:'B',cls:'g-B'}; if(p>=60)return{lbl:'C',cls:'g-C'}; return{lbl:'F',cls:'g-Fail'}; }
+    function renderNotices() { notices.sort((a,b)=>b.timestamp-a.timestamp); document.getElementById('noticeContainer').innerHTML = notices.map(n=>{ let c='n-normal',i='📢'; if(n.type=='urgent'){c='n-urgent';i='🚨'}else if(n.type=='event'){c='n-event';i='🎉'}else if(n.type=='quote'){c='n-quote';i='💡'} return `<div class="notice-board ${c}"><div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:20px;">${i}</span><span style="font-size:10px;opacity:0.7;">${n.date}</span></div><div style="font-size:14px;line-height:1.6;white-space:pre-wrap;">${n.text}</div></div>`; }).join(''); }
     
-    window.openPwdModal = () => document.getElementById('pwdModal').style.display='block';
-    window.saveNewPassword = async () => {
-        let p = document.getElementById('newParentPass').value;
-        if(p.length>2) { await updateDoc(doc(db,"students",currentStudent.id),{password:p}); alert("Updated"); location.reload(); }
+    // --- UPLOAD ---
+    window.openUploadModal=(w)=>{ currentUploadWeek=w; document.getElementById('uploadWeekName').innerText=w; document.getElementById('imgPreviewContainer').innerHTML=''; document.getElementById('homeworkFile').value=''; document.getElementById('fileCount').style.display='none'; document.getElementById('uploadModal').style.display='block'; };
+    window.previewImages=()=>{ const f=document.getElementById('homeworkFile').files; const c=document.getElementById('imgPreviewContainer'); c.innerHTML=''; if(f.length){ document.getElementById('fileCount').innerText=`${f.length} Photos`; document.getElementById('fileCount').style.display='block'; Array.from(f).forEach(file=>{let r=new FileReader();r.onload=e=>{let i=document.createElement('img');i.src=e.target.result;i.className='preview-thumb';c.appendChild(i)};r.readAsDataURL(file)}); }};
+    window.uploadWork=async()=>{ const fs=document.getElementById('homeworkFile').files; if(!fs.length)return alert("Select Photo"); document.getElementById('btnSendWork').innerText="Sending..."; let imgs=[];
+        for(let f of fs){ let p=await new Promise(r=>{let rd=new FileReader();rd.onload=e=>{let i=new Image();i.src=e.target.result;i.onload=()=>{let c=document.createElement('canvas');c.width=700;c.height=i.height*(700/i.width);c.getContext('2d').drawImage(i,0,0,c.width,c.height);r(c.toDataURL('image/jpeg',0.85));}};rd.readAsDataURL(f);}); imgs.push(p); }
+        await updateDoc(doc(db,"students",currentStudent.id),{[`submissions.${currentUploadWeek}`]:{images:imgs,date:new Date().toLocaleDateString('en-GB')}});
+        showToast("✅ Submitted!"); document.getElementById('uploadModal').style.display='none';
+        const s=await getDoc(doc(db,"students",currentStudent.id)); currentStudent={id:s.id,...s.data()}; renderParentWeekly(); document.getElementById('btnSendWork').innerText="🚀 ފޮނުއްވާ";
     };
-    
-    // Exports
-    window.loginParent=loginParent; window.switchTab=switchTab; window.openUploadModal=openUploadModal; window.previewImages=previewImages; window.uploadWork=uploadWork; window.openPwdModal=openPwdModal; window.saveNewPassword=saveNewPassword;
+    window.viewWork=(w)=>{ let sub=currentStudent.submissions[w]; let img=sub.images?sub.images[0]:sub.image; document.getElementById('viewSubmissionImg').src=img; document.getElementById('viewSubDate').innerText="Uploaded: "+sub.date; document.getElementById('viewSubModal').style.display='block'; };
+
+    // --- MISC ---
+    window.sendParentMsg=async()=>{if(!currentStudent)return;const t=document.getElementById('parentMsgInput').value;if(!t.trim())return;await updateDoc(doc(db,"students",currentStudent.id),{parentMessages:arrayUnion({text:t,date:new Date().toISOString().split('T')[0]})});alert("Sent!");document.getElementById('parentMsgInput').value="";};
+    window.openPwdModal=()=>{document.getElementById('pwdModal').style.display='block';document.getElementById('btnClosePwd').style.display='block';};
+    window.saveNewPassword=async()=>{const p=document.getElementById('newParentPass').value;if(p.length<3)return alert("Too short");await updateDoc(doc(db,"students",currentStudent.id),{password:p});alert("Updated");location.reload();};
+    window.logout=()=>{localStorage.removeItem('parentIdx');location.reload();};
+    window.openMaterials=()=>{document.getElementById('matModal').style.display='block';document.getElementById('matListParent').innerHTML=materials.length?materials.map(m=>`<a href="${m.link}" target="_blank" class="mat-link"><span>${m.title}</span><span>📥</span></a>`).join(''):"<p style='text-align:center;color:#999'>No materials</p>";};
+    function showToast(m){let t=document.getElementById('toast');t.innerText=m;t.style.opacity=1;t.style.bottom='80px';setTimeout(()=>t.style.opacity=0,3000);}
+
+    window.loginParent=loginParent; window.switchTab=switchTab; window.showSection=showSection; window.closeSections=closeSections; window.changePage=changePage; window.openUploadModal=openUploadModal; window.previewImages=previewImages; window.uploadWork=uploadWork; window.viewWork=viewWork; window.openMaterials=openMaterials; window.sendParentMsg=sendParentMsg; window.openPwdModal=openPwdModal; window.saveNewPassword=saveNewPassword; window.logout=logout;
 </script>
 </body>
 </html>
