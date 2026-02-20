@@ -9,29 +9,42 @@
         @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
         * { box-sizing: border-box; font-family: "Faruma", sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #f0fdfa; margin: 0; padding: 15px; text-align: right; color: #333; font-size: 16px; }
-        .container { max-width: 1100px; margin: 0 auto; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); padding-bottom: 80px; }
-        h1 { color: #0d9488; text-align: center; border-bottom: 2px solid #e0f2f1; padding-bottom: 10px; margin-top: 0; font-size: 1.4rem; }
+        .container { max-width: 1100px; margin: 0 auto; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); padding-bottom: 80px; min-height: 90vh; }
         
+        /* HEADER & NAV */
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e0f2f1; padding-bottom: 10px; margin-bottom: 20px; }
+        h1 { color: #0d9488; margin: 0; font-size: 1.3rem; }
+        .back-btn { background: #e0f2f1; color: #0d9488; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; display: none; font-size: 14px; }
+        
+        /* NAVIGATION BAR */
         .nav-menu { display: flex; gap: 8px; margin-bottom: 20px; background: #ccfbf1; padding: 8px; border-radius: 12px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
         .nav-btn { flex: 0 0 auto; padding: 10px 20px; border: none; background: rgba(255,255,255,0.8); border-radius: 8px; cursor: pointer; color: #0f766e; font-weight: bold; font-size: 14px; }
         .nav-btn.active { background: #0d9488; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .badge-count { background: #ef4444; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; position: absolute; top: 0; right: 0; display: none; }
 
+        /* DASHBOARD GRID */
+        .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; animation: fadeIn 0.4s; }
+        .dash-card { 
+            background: #fff; border: 1px solid #e2e8f0; border-radius: 15px; padding: 25px 15px; 
+            text-align: center; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+        }
+        .dash-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.08); border-color: #0d9488; }
+        .dash-icon { font-size: 32px; }
+        .dash-title { font-weight: bold; font-size: 14px; color: #334155; }
+
         .section { display: none; animation: fadeIn 0.3s; }
         .section.active { display: block; }
         .card { border: 1px solid #f1f5f9; padding: 15px; border-radius: 12px; margin-bottom: 15px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
 
+        /* Tables */
         .table-container { overflow-x: auto; border-radius: 10px; border: 1px solid #e2e8f0; margin-top: 10px; -webkit-overflow-scrolling: touch; }
         table { width: 100%; border-collapse: collapse; min-width: 100%; }
         th { background: #0f766e; color: white; padding: 12px 8px; position: sticky; top: 0; font-size: 14px; white-space: nowrap; z-index: 10; }
         td { padding: 8px; border-bottom: 1px solid #f1f5f9; text-align: center; vertical-align: middle; }
         tr:nth-child(even) { background-color: #f8fafc; }
-        
-        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 15px; padding: 10px; }
-        .page-btn { background: #fff; border: 1px solid #ccc; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; color: #555; }
-        .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .page-info { font-size: 14px; color: #0d9488; font-weight: bold; }
 
+        /* Inputs & Buttons */
         input, select, textarea { padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; width: 100%; text-align: center; margin: 0; outline: none; font-size: 14px; height: 40px; background: #fff; }
         .v-in { min-width: 140px; font-weight: bold; color: #334155; }
         input.v-in { min-width: 80px; } 
@@ -41,18 +54,24 @@
         .btn-orange { background: #f97316; } .btn-red { background: #ef4444; } .btn-blue { background: #3b82f6; }
         .btn-save { position: fixed; bottom: 20px; right: 20px; left: 20px; width: calc(100% - 40px); z-index: 100; max-width: 1060px; margin: 0 auto; box-shadow: 0 5px 20px rgba(0,0,0,0.3); border-radius: 50px; height: 50px; font-size: 16px; }
 
+        /* Modals & Login */
         #loginOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background: #0f766e; z-index: 5000; display: flex; align-items: center; justify-content: center; }
         .login-box { background: white; padding: 30px; border-radius: 15px; width: 85%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; backdrop-filter: blur(3px); }
         .modal-content { background:white; margin:5% auto; padding:20px; width:90%; max-width:500px; border-radius: 15px; max-height: 85vh; overflow-y: auto; }
 
+        /* Others */
+        .grade-badge { padding: 3px 8px; border-radius: 4px; color: white; font-size: 12px; font-weight: bold; margin-right: 5px; }
+        .g-A-star { background: #f59e0b; color:black; } .g-A { background: #10b981; } .g-B { background: #3b82f6; } .g-C { background: #f97316; } .g-Fail { background: #ef4444; }
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 15px; padding: 10px; }
+        .page-btn { background: #fff; border: 1px solid #ccc; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; color: #555; }
+        
         /* STUDENT DETAIL MODAL TABS */
         .detail-tabs { display: flex; gap: 5px; margin-bottom: 15px; background: #f0f9ff; padding: 5px; border-radius: 8px; }
         .tab-btn { flex: 1; padding: 8px; border: none; background: transparent; cursor: pointer; font-weight: bold; color: #555; border-radius: 6px; }
         .tab-btn.active { background: #0d9488; color: white; }
         .detail-section { display: none; }
         .detail-section.active { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; }
-        
         .detail-item { background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0; text-align: center; }
         .detail-label { font-size: 10px; color: #64748b; font-weight: bold; display: block; margin-bottom: 3px; }
         .detail-input { width: 100%; padding: 5px; font-size: 13px; height: 30px; border: 1px solid #ccc; }
@@ -61,9 +80,6 @@
         .sub-img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd; background: #eee; }
         .modal-gallery img { max-width: 100%; max-height: 80vh; border-radius: 8px; border: 2px solid #333; margin-bottom: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .notice-item { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px; border-radius: 8px; margin-bottom: 10px; display:flex; justify-content:space-between; align-items:flex-start; text-align:left; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
-        
-        .grade-badge { padding: 3px 8px; border-radius: 4px; color: white; font-size: 12px; font-weight: bold; margin-right: 5px; }
-        .g-A-star { background: #f59e0b; color:black; } .g-A { background: #10b981; } .g-B { background: #3b82f6; } .g-C { background: #f97316; } .g-Fail { background: #ef4444; }
 
         @keyframes fadeIn { from {opacity:0; transform: translateY(5px);} to {opacity:1; transform: translateY(0);} }
         #toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: #334155; color: white; padding: 10px 20px; border-radius: 30px; opacity: 0; pointer-events: none; z-index: 2000; transition: 0.3s; font-size: 13px; }
@@ -74,133 +90,151 @@
 <div id="loginOverlay"><div class="login-box"><h2 style="color:#0d9488;">Admin Login</h2><input type="password" id="adminPass" placeholder="Password"><button onclick="checkLogin()" class="btn">Login</button></div></div>
 
 <div class="container" id="mainContainer" style="display:none;">
-    <div style="display:flex; justify-content:space-between; align-items:center; padding: 0 5px;">
-        <h1 style="border:none; margin:0; font-size: 1.2rem;">Admin Dashboard</h1>
-        <button onclick="logoutAdmin()" style="background:none; border:none; color:#ef4444; font-weight:bold; cursor:pointer; font-size: 14px;">🔒 Logout</button>
+    
+    <!-- HEADER -->
+    <div class="header">
+        <button id="backBtn" class="back-btn" onclick="goBack()">⬅ Back</button>
+        <h1 id="pageTitle">Admin Dashboard</h1>
+        <button onclick="logoutAdmin()" style="background:none; border:none; color:#ef4444; font-weight:bold; cursor:pointer; font-size: 14px;">🔒</button>
     </div>
     
-    <div class="nav-menu">
-        <button class="nav-btn active" onclick="switchTab('db')">📁 Students</button>
-        <button class="nav-btn" onclick="switchTab('marks')">📝 Marks</button>
-        <button class="nav-btn" onclick="switchTab('subs')" id="btnSubs" style="position:relative">🔔 Subs <span class="badge-count" id="subCount">0</span></button>
-        <button class="nav-btn" onclick="switchTab('notice')">📢 Notice</button>
-    </div>
-
-    <!-- FILTER -->
-    <div class="filter-section" style="background:#f0fdfa; padding:15px; border-radius:10px; border:1px dashed #0d9488; margin-bottom:20px;">
-        <small style="color:#0f766e; font-weight:bold;">Filter Results:</small>
-        <div id="gradeFilter" style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:5px;"></div>
-        <div id="classFilter" style="display:flex; gap:5px; flex-wrap:wrap;"></div>
-    </div>
-
-    <!-- 1. DB -->
-    <div id="tab-db" class="section active">
-        <div style="display:flex; gap:10px; margin-bottom:10px;">
-            <button class="btn" style="flex:1; background:#43a047;" onclick="openStudentModal()">+ Add</button>
-            <button class="btn btn-orange" style="flex:1;" onclick="openBulkModal()">📗 Excel</button>
+    <!-- MAIN DASHBOARD (HOME) -->
+    <div id="dashboardView" class="dash-grid">
+        <div class="dash-card" onclick="switchTab('db')">
+            <div class="dash-icon">👨‍🎓</div>
+            <div class="dash-title">Students</div>
         </div>
-        <div class="card" style="padding:0; overflow:hidden;">
-            <div style="overflow-x:auto;">
-                <table id="studentTable"><thead><tr><th>Index</th><th>Name</th><th>Grade</th><th>Password</th><th>Profile</th><th>Edit</th></tr></thead><tbody><tr><td colspan="6">Loading...</td></tr></tbody></table>
-            </div>
-            <div class="pagination" id="pag-db"><button class="page-btn" onclick="changePage('db', -1)">Prev</button><span class="page-info" id="page-info-db">Page 1</span><button class="page-btn" onclick="changePage('db', 1)">Next</button></div>
+        <div class="dash-card" onclick="openMarksSubMenu()">
+            <div class="dash-icon">📝</div>
+            <div class="dash-title">Marks & Status</div>
+        </div>
+        <div class="dash-card" onclick="switchTab('subs')">
+            <div class="dash-icon">🔔</div>
+            <div class="dash-title">Submissions</div>
+            <span class="badge-count" id="dashSubCount">0</span>
+        </div>
+        <div class="dash-card" onclick="switchTab('notice')">
+            <div class="dash-icon">📢</div>
+            <div class="dash-title">Notice Board</div>
         </div>
     </div>
 
-    <!-- 2. MARKS -->
-    <div id="tab-marks" class="section">
-        <div class="card" style="background:#f8fafc;">
-            <div style="display:flex; gap:5px; overflow-x:auto; margin-bottom:10px; padding-bottom:5px;">
-                <button class="btn" style="width:auto; padding:8px 15px; font-size:12px; margin:0;" onclick="setMode('work')">Weekly</button>
-                <button class="btn" style="width:auto; padding:8px 15px; font-size:12px; margin:0;" onclick="setMode('test')">Tests</button>
-                <button class="btn" style="width:auto; padding:8px 15px; font-size:12px; margin:0;" onclick="setMode('ca')">CA</button>
+    <!-- MARKS SUB-DASHBOARD (NEW LAYER) -->
+    <div id="marksDashboardView" class="dash-grid" style="display:none;">
+        <div class="dash-card" onclick="enterMarkingMode('work')">
+            <div class="dash-icon">📅</div>
+            <div class="dash-title">Weekly Tasks</div>
+        </div>
+        <div class="dash-card" onclick="enterMarkingMode('test')">
+            <div class="dash-icon">📑</div>
+            <div class="dash-title">Unit Tests</div>
+        </div>
+        <div class="dash-card" onclick="enterMarkingMode('ca')">
+            <div class="dash-icon">📊</div>
+            <div class="dash-title">Skills Assessment</div>
+        </div>
+    </div>
+
+    <!-- CONTENT SECTIONS -->
+    <div id="contentView" style="display:none;">
+        
+        <!-- 1. STUDENT DB -->
+        <div id="tab-db" class="section">
+            <div style="display:flex; gap:10px; margin-bottom:10px;">
+                <button class="btn" style="flex:1; background:#43a047;" onclick="openStudentModal()">+ Add</button>
+                <button class="btn btn-orange" style="flex:1;" onclick="openBulkModal()">📗 Excel</button>
             </div>
-            <div style="display:flex; flex-direction:column; gap:5px;">
-                <label style="font-size:12px; font-weight:bold; color:#64748b;">Select Item:</label>
+            
+            <div style="background:#f1f5f9; padding:10px; border-radius:10px; margin-bottom:15px;">
+                <small style="color:#64748b; font-weight:bold;">Filter:</small>
+                <div id="gradeFilter" style="display:flex; gap:5px; flex-wrap:wrap;"></div>
+                <div id="classFilter" style="display:flex; gap:5px; flex-wrap:wrap; margin-top:5px;"></div>
+            </div>
+
+            <div class="card" style="padding:0; overflow:hidden;">
+                <div style="overflow-x:auto;">
+                    <table id="studentTable"><thead><tr><th>Index</th><th>Name</th><th>Grade</th><th>Pass</th><th>Profile</th><th>Edit</th></tr></thead><tbody><tr><td colspan="6">Loading...</td></tr></tbody></table>
+                </div>
+                <div class="pagination"><button class="page-btn" onclick="changePage('db', -1)">Prev</button><span class="page-info" id="page-info-db">Page 1</span><button class="page-btn" onclick="changePage('db', 1)">Next</button></div>
+            </div>
+        </div>
+
+        <!-- 2. MARKS ENTRY (Actual Table) -->
+        <div id="tab-marks" class="section">
+            <div class="card" style="background:#f8fafc;">
+                <!-- Filter inside Marks -->
+                <div style="background:#fff; padding:10px; border-radius:10px; border:1px dashed #cbd5e1; margin-bottom:10px;">
+                     <div id="gradeFilterM" style="display:flex; gap:5px; flex-wrap:wrap;"></div>
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap:5px;">
+                    <label style="font-size:12px; font-weight:bold; color:#64748b;">Select Item:</label>
+                    <div style="display:flex; gap:5px;">
+                        <select id="itemSelect" onchange="renderMarksTable()" style="flex:1;"></select>
+                        <button class="btn" style="width:auto; margin:0; padding:0 12px; background:#00695c;" onclick="openResultModal()">📤</button>
+                    </div>
+                    <div id="totalDiv" style="display:none; align-items:center; gap:5px; margin-top:5px;">
+                        <span style="font-size:12px;">Total:</span>
+                        <input type="number" id="totalMarks" value="20" style="padding:5px; width:60px; height:35px;">
+                        <button onclick="saveTotalMark()" style="width:auto; padding:5px 10px; margin:0; height:35px;">💾</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="table-container"><table id="marksTable"><thead><tr><th>Idx</th><th>Name</th><th>Result</th><th>Msg</th><th>Save</th></tr></thead><tbody id="marksBody"></tbody></table></div>
+            <div class="pagination"><button class="page-btn" onclick="changePage('marks', -1)">Prev</button><span class="page-info" id="page-info-marks">Page 1</span><button class="page-btn" onclick="changePage('marks', 1)">Next</button></div>
+            <button class="btn btn-save" id="sBtn" onclick="saveTeacherData()">💾 Save All</button><div style="height:60px;"></div>
+        </div>
+
+        <!-- 3. SUBMISSIONS -->
+        <div id="tab-subs" class="section">
+            <div class="card">
+                <h3 style="margin-top:0; color:#0f766e;">Pending Submissions</h3>
+                <div id="subsList"><p style="text-align:center; color:#999;">No pending submissions</p></div>
+            </div>
+        </div>
+
+        <!-- 4. NOTICE -->
+        <div id="tab-notice" class="section">
+            <div class="card">
+                <h3 style="margin-top:0;">Post Notice</h3>
+                <input type="hidden" id="noticeId">
+                <select id="noticeType" style="margin-bottom:5px; font-weight:bold;">
+                    <option value="normal">📢 Normal</option>
+                    <option value="urgent">🚨 Urgent</option>
+                    <option value="event">🎉 Event</option>
+                    <option value="quote">💡 Quote</option>
+                </select>
+                <textarea id="adminNoticeText" rows="4" placeholder="Write notice here..."></textarea>
                 <div style="display:flex; gap:5px;">
-                    <select id="itemSelect" onchange="renderMarksTable()" style="flex:1;"></select>
-                    <button class="btn" style="width:auto; margin:0; padding:0 12px; background:#00695c;" onclick="openResultModal()">📤</button>
-                </div>
-                <div id="totalDiv" style="display:none; align-items:center; gap:5px; margin-top:5px;">
-                    <span style="font-size:12px;">Total:</span>
-                    <input type="number" id="totalMarks" value="20" style="padding:5px; width:60px; height:35px;">
-                    <button onclick="saveTotalMark()" style="width:auto; padding:5px 10px; margin:0; height:35px;">💾</button>
+                    <button class="btn" id="btnSaveNotice" onclick="saveNotice()">Publish</button>
+                    <button class="btn btn-red" id="btnCancelNotice" onclick="cancelNoticeEdit()" style="display:none;">Cancel</button>
                 </div>
             </div>
-        </div>
-        <div class="table-container"><table id="marksTable"><thead><tr><th>Idx</th><th>Name</th><th>Mark/Status</th><th>Msg</th><th>Save</th></tr></thead><tbody id="marksBody"></tbody></table></div>
-        <div class="pagination" id="pag-marks"><button class="page-btn" onclick="changePage('marks', -1)">Prev</button><span class="page-info" id="page-info-marks">Page 1</span><button class="page-btn" onclick="changePage('marks', 1)">Next</button></div>
-        <button class="btn btn-save" id="sBtn" onclick="saveTeacherData()">💾 Save All Changes</button><div style="height:60px;"></div>
-    </div>
-
-    <!-- 3. SUBMISSIONS -->
-    <div id="tab-subs" class="section">
-        <div class="card">
-            <h3 style="margin-top:0; color:#0f766e;">Pending Submissions</h3>
-            <div id="subsList"><p style="text-align:center; color:#999;">No pending submissions</p></div>
-        </div>
-    </div>
-
-    <!-- 4. NOTICE -->
-    <div id="tab-notice" class="section">
-        <div class="card">
-            <h3 style="margin-top:0;">Post Notice</h3>
-            <input type="hidden" id="noticeId">
-            <select id="noticeType" style="margin-bottom:5px; font-weight:bold;">
-                <option value="normal">📢 Normal</option>
-                <option value="urgent">🚨 Urgent</option>
-                <option value="event">🎉 Event</option>
-                <option value="quote">💡 Quote</option>
-            </select>
-            <textarea id="adminNoticeText" rows="4" placeholder="Write notice here..."></textarea>
-            <div style="display:flex; gap:5px;">
-                <button class="btn" id="btnSaveNotice" onclick="saveNotice()">Publish</button>
-                <button class="btn btn-red" id="btnCancelNotice" onclick="cancelNoticeEdit()" style="display:none;">Cancel</button>
+            <div class="card">
+                <h3 style="margin-top:0;">Active Notices</h3>
+                <div id="activeNoticesList">Loading...</div>
             </div>
+            <div class="card"><h3 style="margin-top:0;">Materials</h3><div style="display:flex; gap:5px;"><input id="matTitle" placeholder="Title"><input id="matLink" placeholder="Link"></div><button class="btn" onclick="addMaterial()">+ Add</button><hr><div id="matList"></div></div>
         </div>
-        <div class="card">
-            <h3 style="margin-top:0;">Active Notices</h3>
-            <div id="activeNoticesList">Loading...</div>
-        </div>
-        <div class="card"><h3 style="margin-top:0;">Materials</h3><div style="display:flex; gap:5px;"><input id="matTitle" placeholder="Title"><input id="matLink" placeholder="Link"></div><button class="btn" onclick="addMaterial()">+ Add</button><hr><div id="matList"></div></div>
     </div>
 </div>
 
-<!-- MODALS -->
+<!-- MODALS (SAME AS BEFORE) -->
 <div id="modalAdd" class="modal"><div class="modal-content"><h3>Add Student</h3><input id="newIdx" type="number" placeholder="Index"><input id="newNam" placeholder="Name"><div style="display:flex;gap:5px"><input id="newGrd" placeholder="Grade"><input id="newCls" placeholder="Class"></div><input id="newPwd" value="1234"><button class="btn" onclick="addSingleStudent()">Add</button><button class="btn btn-red" onclick="closeModal('modalAdd')">Cancel</button></div></div>
 <div id="modalEdit" class="modal"><div class="modal-content"><h3>Edit</h3><input type="hidden" id="editId"><input id="editIdx"><input id="editNam"><input id="editPwd"><div style="display:flex;gap:5px"><input id="editGrd"><input id="editCls"></div><button class="btn" onclick="saveEditStudent()">Update</button><hr><button class="btn btn-red" onclick="delStudent()">Delete</button><button class="btn" style="background:#ccc;color:#333" onclick="closeModal('modalEdit')">Close</button></div></div>
-
-<!-- STUDENT DETAILS MODAL -->
-<div id="modalStudentDetails" class="modal">
-    <div class="modal-content" style="max-width:800px;">
-        <h3 style="color:#00796b; margin-top:0;" id="detailName">Student Name</h3>
-        <p id="detailInfo" style="font-size:13px; color:#666;"></p>
-        <input type="hidden" id="detailId">
-        
-        <div class="detail-tabs">
-            <button class="tab-btn active" onclick="switchDetailTab('weekly')">Weekly Work</button>
-            <button class="tab-btn" onclick="switchDetailTab('tests')">Unit Tests</button>
-            <button class="tab-btn" onclick="switchDetailTab('ca')">CA / Exams</button>
-        </div>
-        <div id="detail-tab-weekly" class="detail-section active"></div>
-        <div id="detail-tab-tests" class="detail-section"></div>
-        <div id="detail-tab-ca" class="detail-section"></div>
-        <div style="margin-top:20px;"><button class="btn" onclick="saveStudentDetails()">💾 Save</button><button class="btn btn-red" onclick="closeModal('modalStudentDetails')" style="margin-top:5px;">Close</button></div>
-    </div>
-</div>
-
+<div id="modalStudentDetails" class="modal"><div class="modal-content" style="max-width:800px;"><h3 style="color:#00796b; margin-top:0;" id="detailName"></h3><p id="detailInfo" style="font-size:13px; color:#666;"></p><input type="hidden" id="detailId"><div class="detail-tabs"><button class="tab-btn active" onclick="switchDetailTab('weekly')">Weekly</button><button class="tab-btn" onclick="switchDetailTab('tests')">Tests</button><button class="tab-btn" onclick="switchDetailTab('ca')">CA</button></div><div id="detail-tab-weekly" class="detail-section active"></div><div id="detail-tab-tests" class="detail-section"></div><div id="detail-tab-ca" class="detail-section"></div><div style="margin-top:20px;"><button class="btn" onclick="saveStudentDetails()">💾 Save</button><button class="btn btn-red" onclick="closeModal('modalStudentDetails')" style="margin-top:5px;">Close</button></div></div></div>
 <div id="modalBulk" class="modal"><div class="modal-content"><h3>Excel Import</h3><input type="file" id="excelFile"><div id="bulkPreview" style="height:100px;overflow:auto;"></div><button class="btn" onclick="processBulk()">Confirm</button><button class="btn btn-red" onclick="closeModal('modalBulk')">Cancel</button></div></div>
 <div id="modalResult" class="modal"><div class="modal-content"><h3>Marks Excel</h3><p id="resTarget"></p><input type="file" id="resFile"><div id="resPreview" style="height:100px;overflow:auto;"></div><button class="btn" onclick="processResultBulk()">Upload</button><button class="btn btn-red" onclick="closeModal('modalResult')">Cancel</button></div></div>
 <div id="modalImg" class="modal"><div class="modal-content" style="max-width:800px;"><h3>Submitted Work</h3><div id="galleryContainer" class="modal-gallery"></div><button class="btn" style="background:#333;margin-top:15px;" onclick="document.getElementById('modalImg').style.display='none'">Close</button></div></div>
 <div id="msgModal" class="modal"><div class="modal-content"><h3>Message</h3><div id="msgContent" style="text-align:right;background:#f1f8e9;padding:10px;border-radius:8px;"></div><button class="btn" style="background:#ccc;color:#333" onclick="closeModal('msgModal')">Close</button></div></div>
-
 <div id="toast"></div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, deleteField, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-    // --- CONFIG (REPLACE WITH YOUR KEYS) ---
+    // --- CONFIG ---
     const firebaseConfig = {
       apiKey: "AIzaSyDSEHqUQIegVjhWKpRgpJybdPaVDVroVos",
   authDomain: "islam-portal-muthamin.firebaseapp.com",
@@ -213,11 +247,8 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     let students = []; let materials = []; let notices = []; let examConfig = {}; let mode = 'work'; let selGrade = 'All'; let selClass = 'All'; let parsedData = []; let parsedResData = [];
-    
-    // Pagination
     let currentPageDB = 1; let currentPageMarks = 1; const rowsPerPage = 20;
 
-    // --- LOGIN ---
     window.checkLogin = () => { if(document.getElementById('adminPass').value === "123") { localStorage.setItem('adminLoggedIn', 'true'); initAdmin(); } else alert("Wrong Password"); };
     window.logoutAdmin = () => { localStorage.removeItem('adminLoggedIn'); location.reload(); };
     function initAdmin() { if(localStorage.getItem('adminLoggedIn') === 'true') { document.getElementById('loginOverlay').style.display='none'; document.getElementById('mainContainer').style.display='block'; fetchData(); } }
@@ -229,18 +260,83 @@
             const mSnap = await getDocs(collection(db, "materials")); materials = []; mSnap.forEach((doc) => materials.push({ id: doc.id, ...doc.data() }));
             const nSnap = await getDocs(collection(db, "notices")); notices = []; nSnap.forEach(d => notices.push({id: d.id, ...d.data()}));
             try { const c = await getDoc(doc(db, "settings", "examConfig")); if(c.exists()) examConfig = c.data(); } catch(e){}
-            updateFilters(); refreshActiveView(); updateSubCount();
+            updateFilters(); updateSubCount();
         } catch(e) { console.error(e); }
+    }
+
+    // --- NAVIGATION ---
+    window.goBack = () => {
+        // If in Marks Dashboard, go to Home
+        if(document.getElementById('marksDashboardView').style.display === 'grid') {
+            document.getElementById('marksDashboardView').style.display = 'none';
+            document.getElementById('dashboardView').style.display = 'grid';
+            document.getElementById('homeBtn').style.display = 'none';
+            document.getElementById('pageTitle').innerText = "Dashboard";
+            return;
+        }
+        
+        // If in Content (Table View), logic depends on where we came from
+        // Simplification: Always go to Home/Marks Dash based on active tab
+        if(document.getElementById('tab-marks').classList.contains('active')) {
+             document.getElementById('contentView').style.display = 'none';
+             document.getElementById('marksDashboardView').style.display = 'grid';
+             document.getElementById('pageTitle').innerText = "Marks & Status";
+             document.getElementById('sBtn').style.display = 'none';
+        } else {
+             // For Students/Subs/Notice, go to Home
+             document.getElementById('contentView').style.display = 'none';
+             document.getElementById('dashboardView').style.display = 'grid';
+             document.getElementById('homeBtn').style.display = 'none';
+             document.getElementById('pageTitle').innerText = "Dashboard";
+             document.getElementById('sBtn').style.display = 'none';
+        }
+    };
+
+    window.openMarksSubMenu = () => {
+        document.getElementById('dashboardView').style.display = 'none';
+        document.getElementById('marksDashboardView').style.display = 'grid';
+        document.getElementById('homeBtn').style.display = 'block';
+        document.getElementById('pageTitle').innerText = "Marks & Status";
+    };
+
+    window.enterMarkingMode = (selectedMode) => {
+        document.getElementById('marksDashboardView').style.display = 'none';
+        document.getElementById('contentView').style.display = 'block';
+        document.getElementById('homeBtn').style.display = 'block';
+        document.querySelectorAll('.section').forEach(d => d.classList.remove('active'));
+        document.getElementById('tab-marks').classList.add('active');
+        
+        let titles = { 'work': 'Weekly Work', 'test': 'Unit Tests', 'ca': 'Skills Assessment' };
+        document.getElementById('pageTitle').innerText = titles[selectedMode];
+        
+        document.getElementById('sBtn').style.display = 'block';
+        setMode(selectedMode);
+    };
+
+    window.switchTab = (id) => {
+        document.getElementById('dashboardView').style.display = 'none';
+        document.getElementById('contentView').style.display = 'block';
+        document.getElementById('homeBtn').style.display = 'block';
+        
+        document.querySelectorAll('.section').forEach(d => d.classList.remove('active'));
+        document.getElementById('tab-'+id).classList.add('active');
+        
+        let titles = { 'db': 'Student Database', 'subs': 'Submissions', 'notice': 'Notice & Materials' };
+        document.getElementById('pageTitle').innerText = titles[id];
+        document.getElementById('sBtn').style.display = 'none';
+        refreshActiveView();
+    };
+
+    function refreshActiveView() {
+        if(document.getElementById('tab-db').classList.contains('active')) renderStudentTable();
+        if(document.getElementById('tab-subs').classList.contains('active')) renderSubmissions();
+        if(document.getElementById('tab-notice').classList.contains('active')) { renderNotices(); renderMaterials(); }
     }
 
     // --- GRADING ---
     window.calcGradeHtml = (v, t) => {
-        let p = (v / t) * 100;
-        let c = 'g-Fail', l = 'F';
-        if (p >= 90) { c = 'g-A-star'; l = 'A*'; }
-        else if (p >= 80) { c = 'g-A'; l = 'A'; }
-        else if (p >= 70) { c = 'g-B'; l = 'B'; }
-        else if (p >= 60) { c = 'g-C'; l = 'C'; }
+        let p = (v / t) * 100; let c = 'g-Fail', l = 'F';
+        if (p >= 90) { c = 'g-A-star'; l = 'A*'; } else if (p >= 80) { c = 'g-A'; l = 'A'; } else if (p >= 70) { c = 'g-B'; l = 'B'; } else if (p >= 60) { c = 'g-C'; l = 'C'; }
         return `<span class="grade-badge ${c}">${l}</span>`;
     };
 
@@ -255,27 +351,22 @@
         return list.slice(start, start + rowsPerPage);
     }
     window.changePage = (type, dir) => {
-        let list = getFiltered();
-        let totalPages = Math.ceil(list.length / rowsPerPage) || 1;
+        let list = getFiltered(); let totalPages = Math.ceil(list.length / rowsPerPage) || 1;
         let current = (type === 'db') ? currentPageDB : currentPageMarks;
         let newPage = current + dir;
-        if(newPage >= 1 && newPage <= totalPages) {
-            if(type === 'db') currentPageDB = newPage; else currentPageMarks = newPage;
-            refreshActiveView();
-        }
+        if(newPage >= 1 && newPage <= totalPages) { if(type === 'db') currentPageDB = newPage; else currentPageMarks = newPage; if(type=='db') renderStudentTable(); else renderMarksTable(); }
     };
 
     // --- RENDERERS ---
     window.renderStudentTable = () => {
         const list = getPaginatedList('db');
-        document.querySelector('#studentTable tbody').innerHTML = list.length ? list.map(s => `<tr><td>${s.index}</td><td>${s.name}</td><td>${s.grade}${s.class}</td><td>${s.password||'1234'}</td><td><button class="btn btn-blue" style="padding:5px;width:auto;margin:0" onclick="openStudentDetails('${s.id}')">👤 Profile</button></td><td><button class="btn btn-orange" style="padding:5px;width:auto;margin:0" onclick="openEdit('${s.id}')">✏️</button></td></tr>`).join(''):'<tr><td colspan="6">No data</td></tr>';
+        document.querySelector('#studentTable tbody').innerHTML = list.length ? list.map(s => `<tr><td>${s.index}</td><td>${s.name}</td><td>${s.grade}${s.class}</td><td>${s.password||'1234'}</td><td><button class="btn btn-blue" style="padding:5px;width:auto;margin:0" onclick="openStudentDetails('${s.id}')">👤</button></td><td><button class="btn btn-orange" style="padding:5px;width:auto;margin:0" onclick="openEdit('${s.id}')">✏️</button></td></tr>`).join(''):'<tr><td colspan="6">No data</td></tr>';
     };
 
     window.renderMarksTable = () => {
         const item = document.getElementById('itemSelect').value;
         let tot = examConfig[item] ? parseInt(examConfig[item]) : (mode==='test'?20:100);
-        if(mode !== 'work') { document.getElementById('totalDiv').style.display='flex'; document.getElementById('totalMarks').value = tot; }
-        else { document.getElementById('totalDiv').style.display='none'; }
+        if(mode !== 'work') { document.getElementById('totalDiv').style.display='flex'; document.getElementById('totalMarks').value = tot; } else { document.getElementById('totalDiv').style.display='none'; }
 
         const list = getPaginatedList('marks');
         document.getElementById('marksBody').innerHTML = list.length ? list.map(s => {
@@ -291,67 +382,44 @@
     };
     window.updRow=(e,t)=>{ document.getElementById('g-'+e.dataset.id).innerHTML = calcGradeHtml(e.value,t); };
 
-    // --- STUDENT DETAILS & SAVING (FIXED) ---
+    // --- STUDENT DETAILS ---
     window.switchDetailTab = (tabName) => { document.querySelectorAll('.detail-section').forEach(s => s.classList.remove('active')); document.getElementById(`detail-tab-${tabName}`).classList.add('active'); document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); event.target.classList.add('active'); };
-    
     window.openStudentDetails = (id) => {
         let s = students.find(x => x.id === id); if(!s) return;
-        document.getElementById('detailName').innerText = s.name;
-        document.getElementById('detailInfo').innerText = `Index: ${s.index} | Class: ${s.grade}${s.class}`;
-        document.getElementById('detailId').value = s.id;
-
-        let wHtml = ''; for(let i=1; i<=45; i++) { let v = s['Week'+i] || ''; wHtml += `<div class="detail-item"><span class="detail-label">W${i}</span><select class="detail-input" id="det_Week${i}"><option value="">-</option><option value="ނިމިފައި" ${v=='ނިމިފައި'?'selected':''}>✓</option><option value="ނުނިމޭ" ${v=='ނުނިމޭ'?'selected':''}>X</option><option value="ފުރިހަމައެއް ނުވޭ" ${v=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>⚠</option></select></div>`; }
-        document.getElementById('detail-tab-weekly').innerHTML = wHtml;
-
-        let tHtml = ''; for(let i=1; i<=10; i++) { let key = 'UnitTest'+i; let v = s[key] || ''; let t = examConfig[key] ? parseInt(examConfig[key]) : 20; let grade = v ? calcGradeHtml(v, t) : '-'; tHtml += `<div class="detail-item"><span class="detail-label">UT${i} (/${t})</span><input type="number" class="detail-input" id="det_${key}" value="${v}"><div>${grade}</div></div>`; }
-        document.getElementById('detail-tab-tests').innerHTML = tHtml;
-
-        let cHtml = ''; for(let i=1; i<=4; i++) { let key = 'CA'+i; let v = s[key] || ''; let t = examConfig[key] ? parseInt(examConfig[key]) : 100; let grade = v ? calcGradeHtml(v, t) : '-'; cHtml += `<div class="detail-item"><span class="detail-label">CA${i} (/${t})</span><input type="number" class="detail-input" id="det_${key}" value="${v}"><div>${grade}</div></div>`; }
-        document.getElementById('detail-tab-ca').innerHTML = cHtml;
-
-        window.switchDetailTab('weekly'); 
-        document.getElementById('modalStudentDetails').style.display = 'block';
+        document.getElementById('detailName').innerText = s.name; document.getElementById('detailInfo').innerText = `Index: ${s.index} | Class: ${s.grade}${s.class}`; document.getElementById('detailId').value = s.id;
+        let wHtml = ''; for(let i=1; i<=45; i++) { let v = s['Week'+i] || ''; wHtml += `<div class="detail-item"><span class="detail-label">W${i}</span><select class="detail-input" id="det_Week${i}"><option value="">-</option><option value="ނިމިފައި" ${v=='ނިމިފައި'?'selected':''}>✓</option><option value="ނުނިމޭ" ${v=='ނުނިމޭ'?'selected':''}>X</option><option value="ފުރިހަމައެއް ނުވޭ" ${v=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>⚠</option></select></div>`; } document.getElementById('detail-tab-weekly').innerHTML = wHtml;
+        let tHtml = ''; for(let i=1; i<=10; i++) { let key = 'UnitTest'+i; let v = s[key] || ''; let t = examConfig[key] ? parseInt(examConfig[key]) : 20; let grade = v ? calcGradeHtml(v, t) : '-'; tHtml += `<div class="detail-item"><span class="detail-label">UT${i} (/${t})</span><input type="number" class="detail-input" id="det_${key}" value="${v}"><div>${grade}</div></div>`; } document.getElementById('detail-tab-tests').innerHTML = tHtml;
+        let cHtml = ''; for(let i=1; i<=4; i++) { let key = 'CA'+i; let v = s[key] || ''; let t = examConfig[key] ? parseInt(examConfig[key]) : 100; let grade = v ? calcGradeHtml(v, t) : '-'; cHtml += `<div class="detail-item"><span class="detail-label">CA${i} (/${t})</span><input type="number" class="detail-input" id="det_${key}" value="${v}"><div>${grade}</div></div>`; } document.getElementById('detail-tab-ca').innerHTML = cHtml;
+        window.switchDetailTab('weekly'); document.getElementById('modalStudentDetails').style.display = 'block';
     };
-
     window.saveStudentDetails = async () => {
         let id = document.getElementById('detailId').value;
-        if(!id) return alert("Error: ID missing");
-        
+        if(!id) return alert("Error");
         let updates = {};
-        // Use empty string if value is empty to avoid deleteField issues
         for(let i=1; i<=45; i++) { let v = document.getElementById(`det_Week${i}`).value; updates[`Week${i}`] = v || ""; }
         for(let i=1; i<=10; i++) { let v = document.getElementById(`det_UnitTest${i}`).value; updates[`UnitTest${i}`] = v || ""; }
         for(let i=1; i<=4; i++) { let v = document.getElementById(`det_CA${i}`).value; updates[`CA${i}`] = v || ""; }
-
-        try {
-            await updateDoc(doc(db, "students", id), updates);
-            showToast("✅ Details Saved!");
-            closeModal('modalStudentDetails');
-            fetchData();
-        } catch(e) { console.error(e); alert("Error saving: " + e.message); }
+        try { await updateDoc(doc(db, "students", id), updates); showToast("Details Saved!"); closeModal('modalStudentDetails'); fetchData(); } catch(e) { alert("Error saving details"); }
     };
 
-    // --- OTHER LOGIC ---
-    window.switchTab = (id) => { document.querySelectorAll('.section').forEach(d => d.classList.remove('active')); document.getElementById('tab-'+id).classList.add('active'); document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); event.target.classList.add('active'); refreshActiveView(); };
-    function refreshActiveView() { if(document.getElementById('tab-db').classList.contains('active')) renderStudentTable(); if(document.getElementById('tab-marks').classList.contains('active')) renderMarksTable(); if(document.getElementById('tab-subs').classList.contains('active')) renderSubmissions(); if(document.getElementById('tab-notice').classList.contains('active')) {renderNotices(); renderMaterials();} }
-    window.setGradeFilter=(g)=>{selGrade=g;selClass='All';currentPageDB=1;currentPageMarks=1;updateFilters();refreshActiveView();}; window.setClassFilter=(c)=>{selClass=c;currentPageDB=1;currentPageMarks=1;updateFilters();refreshActiveView();};
-    function updateFilters(){const gs=[...new Set(students.map(s=>s.grade))].filter(Boolean).sort(); document.getElementById('gradeFilter').innerHTML=`<button style="padding:6px 12px;border:1px solid #b2dfdb;background:${selGrade=='All'?'#0d9488':'#fff'};color:${selGrade=='All'?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setGradeFilter('All')">All</button>`+gs.map(g=>`<button style="padding:6px 12px;border:1px solid #b2dfdb;background:${selGrade==g?'#0d9488':'#fff'};color:${selGrade==g?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setGradeFilter('${g}')">${g}</button>`).join(''); if(selGrade!=='All'){const cs=[...new Set(students.filter(s=>s.grade==selGrade).map(s=>s.class))].filter(Boolean).sort(); document.getElementById('classFilter').innerHTML=`<button style="padding:6px 12px;border:1px solid #b2dfdb;background:${selClass=='All'?'#0d9488':'#fff'};color:${selClass=='All'?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setClassFilter('All')">All</button>`+cs.map(c=>`<button style="padding:6px 12px;border:1px solid #b2dfdb;background:${selClass==c?'#0d9488':'#fff'};color:${selClass==c?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setClassFilter('${c}')">${c}</button>`).join('');}else document.getElementById('classFilter').innerHTML="";}
+    // --- FILTERS & MODES ---
+    window.setGradeFilter=(g)=>{selGrade=g;selClass='All';currentPageDB=1;currentPageMarks=1;updateFilters();if(document.getElementById('tab-marks').classList.contains('active')) renderMarksTable(); else renderStudentTable();};
+    window.setClassFilter=(c)=>{selClass=c;currentPageDB=1;currentPageMarks=1;updateFilters();if(document.getElementById('tab-marks').classList.contains('active')) renderMarksTable(); else renderStudentTable();};
+    function updateFilters(){const gs=[...new Set(students.map(s=>s.grade))].filter(Boolean).sort(); 
+        let html = `<button style="padding:6px 12px;border:1px solid #b2dfdb;background:${selGrade=='All'?'#0d9488':'#fff'};color:${selGrade=='All'?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setGradeFilter('All')">All</button>`+gs.map(g=>`<button style="padding:6px 12px;border:1px solid #b2dfdb;background:${selGrade==g?'#0d9488':'#fff'};color:${selGrade==g?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setGradeFilter('${g}')">${g}</button>`).join('');
+        document.getElementById('gradeFilter').innerHTML=html; document.getElementById('gradeFilterM').innerHTML=html; // Update both filters
+        if(selGrade!=='All'){const cs=[...new Set(students.filter(s=>s.grade==selGrade).map(s=>s.class))].filter(Boolean).sort(); document.getElementById('classFilter').innerHTML=`<button style="padding:6px 12px;border:1px solid #b2dfdb;background:${selClass=='All'?'#0d9488':'#fff'};color:${selClass=='All'?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setClassFilter('All')">All</button>`+cs.map(c=>`<button style="padding:6px 12px;border:1px solid #b2dfdb;background:${selClass==c?'#0d9488':'#fff'};color:${selClass==c?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setClassFilter('${c}')">${c}</button>`).join('');}else document.getElementById('classFilter').innerHTML="";
+    }
     function getFiltered(){let l=students;if(selGrade!=='All')l=l.filter(s=>String(s.grade)==String(selGrade));if(selClass!=='All')l=l.filter(s=>String(s.class)==String(selClass));return l.sort((a,b)=>(parseInt(a.index)||0)-(parseInt(b.index)||0));}
     
+    window.setMode=(m)=>{mode=m;currentPageMarks=1;let s=document.getElementById('itemSelect');s.innerHTML="";if(m=='work'){for(let i=1;i<=45;i++)s.innerHTML+=`<option value="Week${i}">Week ${i}</option>`;}else{let p=m=='test'?'UnitTest':'CA',c=m=='test'?10:4;for(let i=1;i<=c;i++)s.innerHTML+=`<option value="${p}${i}">${m=='test'?'Unit Test':'CA'} ${i}</option>`;}renderMarksTable();};
     window.saveTotalMark=async()=>{const i=document.getElementById('itemSelect').value,v=document.getElementById('totalMarks').value;if(i&&v){await setDoc(doc(db,"settings","examConfig"),{[i]:v},{merge:true});examConfig[i]=v;showToast("Saved");renderMarksTable();}};
     window.saveTeacherData=async()=>{const i=document.getElementById('itemSelect').value,inputs=document.querySelectorAll('.v-in');let p=[];document.getElementById('sBtn').innerText="Saving...";inputs.forEach(n=>{if(n.value!==n.dataset.orig)p.push(updateDoc(doc(db,"students",n.dataset.id),{[i]:n.value}));});await Promise.all(p);document.getElementById('sBtn').innerText="💾 Save All Changes";fetchData();showToast("Saved");};
-    window.setMode=(m)=>{mode=m;currentPageMarks=1;let s=document.getElementById('itemSelect');s.innerHTML="";if(m=='work'){for(let i=1;i<=45;i++)s.innerHTML+=`<option value="Week${i}">Week ${i}</option>`;document.getElementById('totalDiv').style.display='none';}else{document.getElementById('totalDiv').style.display='flex';let p=m=='test'?'UnitTest':'CA',c=m=='test'?10:4;for(let i=1;i<=c;i++)s.innerHTML+=`<option value="${p}${i}">${m=='test'?'Unit Test':'CA'} ${i}</option>`;}renderMarksTable();};
     window.saveSingle=async(id)=>{const i=document.getElementById('itemSelect').value,v=document.querySelector(`.v-in[data-id="${id}"]`).value;await updateDoc(doc(db,"students",id),{[i]:v});showToast("Saved");};
-    window.addMaterial=async()=>{await addDoc(collection(db,"materials"),{title:document.getElementById('matTitle').value,link:document.getElementById('matLink').value});fetchData();};
-    window.closeModal=(i)=>document.getElementById(i).style.display='none';
-    window.resetBulk=()=>{document.getElementById('excelFile').value='';document.getElementById('bulkPreview').innerHTML='';parsedData=[];};
-    window.resetResBulk=()=>{document.getElementById('resFile').value='';document.getElementById('resPreview').innerHTML='';parsedResData=[];};
-    window.renderMaterials=()=>{document.getElementById('matList').innerHTML = materials.map(m=>`<div class="mat-item"><span>${m.title}</span><button class="btn btn-red" style="width:auto; padding:5px; margin:0;" onclick="delMat('${m.id}')">Del</button></div>`).join('');};
-    window.delMat=async(id)=>{if(confirm("Del?"))await deleteDoc(doc(db,"materials",id));fetchData();};
 
     // Submissions, Notices, Excel
-    function updateSubCount() { let count = 0; students.forEach(s => { if(s.submissions) count += Object.keys(s.submissions).length; }); const badge = document.getElementById('subCount'); badge.innerText = count; badge.style.display = count > 0 ? 'inline-block' : 'none'; }
-    window.renderSubmissions = () => { const list = document.getElementById('subsList'); let html = ''; let hasData = false; students.forEach(s => { if(s.submissions) { Object.keys(s.submissions).forEach(week => { hasData = true; const sub = s.submissions[week]; let imgData = sub.images ? sub.images : (sub.image ? [sub.image] : []); let countText = imgData.length > 1 ? `(${imgData.length} Photos)` : ''; let thumb = imgData.length > 0 ? imgData[0] : ''; html += `<div class="sub-card"><div style="display:flex;gap:10px;align-items:center;"><img src="${thumb}" class="sub-img" onclick="showSubmissionGallery('${s.id}', '${week}')"><div style="text-align:left;"><strong>${s.name}</strong> (${s.index}) <span style="font-size:10px;color:#0d9488;font-weight:bold;">${countText}</span><br><span style="font-size:12px;color:#666;">${week} - ${sub.date}</span></div></div><button class="btn" style="width:auto;padding:5px 15px;" onclick="acceptSubmission('${s.id}','${week}')">✅ Accept</button></div>`; }); } }); list.innerHTML = hasData ? html : `<p style="text-align:center; color:#999; margin-top:20px;">No pending submissions</p>`; };
+    function updateSubCount() { let count = 0; students.forEach(s => { if(s.submissions) count += Object.keys(s.submissions).length; }); const badge = document.getElementById('dashSubCount'); badge.innerText = count; badge.style.display = count > 0 ? 'block' : 'none'; document.getElementById('subCount').innerText = count; document.getElementById('subCount').style.display = count>0?'block':'none';}
+    window.renderSubmissions = () => { const list = document.getElementById('subsList'); let html = ''; let hasData = false; students.forEach(s => { if(s.submissions) { Object.keys(s.submissions).forEach(week => { hasData = true; const sub = s.submissions[week]; let imgData = sub.images ? sub.images : (sub.image ? [sub.image] : []); let countText = imgData.length > 1 ? `(${imgData.length} Photos)` : ''; let thumb = imgData.length > 0 ? imgData[0] : ''; html += `<div class="sub-card"><div style="display:flex;gap:10px;align-items:center;"><img src="${thumb}" class="sub-img" onclick="showSubmissionGallery('${s.id}', '${week}')"><div style="text-align:left;"><strong>${s.name}</strong> (${s.index}) <span style="font-size:10px;color:#0d9488;font-weight:bold;">${countText}</span><br><span style="font-size:12px;color:#666;">${week} - ${sub.date}</span></div></div><button class="btn" style="width:auto;padding:5px 15px;" onclick="acceptSubmission('${s.id}','${week}')">✅ Accept</button></div>`; }); } }); list.innerHTML = hasData ? html : `<p style="text-align:center; color:#999;">No pending submissions</p>`; };
     window.showSubmissionGallery = (sid, week) => { const s = students.find(x => x.id === sid); if (!s || !s.submissions || !s.submissions[week]) return; const sub = s.submissions[week]; const images = sub.images ? sub.images : (sub.image ? [sub.image] : []); document.getElementById('galleryContainer').innerHTML = images.map(src => `<img src="${src}">`).join(''); document.getElementById('modalImg').style.display = 'block'; };
     window.acceptSubmission = async (sid, week) => { if(confirm("Mark as Done and remove?")) { try { await updateDoc(doc(db, "students", sid), { [week]: 'ނިމިފައި', [`submissions.${week}`]: deleteField() }); showToast("Accepted!"); fetchData(); } catch(e) { console.error(e); alert("Error"); } } };
 
@@ -362,6 +430,7 @@
     function renderNotices() { notices.sort((a,b) => b.timestamp - a.timestamp); document.getElementById('activeNoticesList').innerHTML = notices.length ? notices.map(n => `<div class="notice-item" style="border-left-color:${getColorByType(n.type)}"><div style="flex:1;"><div style="font-size:12px;font-weight:bold;color:${getColorByType(n.type)};margin-bottom:4px;">${getIconByType(n.type)} ${n.type.toUpperCase()} <span style="color:#999;font-weight:normal;">- ${n.date}</span></div><div style="font-size:13px;line-height:1.4;white-space:pre-wrap;">${n.text}</div></div><div style="display:flex;flex-direction:column;gap:5px;margin-left:10px;"><button class="btn btn-orange" style="width:auto;padding:5px 10px;margin:0;font-size:12px;" onclick='editNotice("${n.id}", ${JSON.stringify(n.text)}, "${n.type}")'>✏️</button><button class="btn btn-red" style="width:auto;padding:5px 10px;margin:0;font-size:12px;" onclick="deleteNotice('${n.id}')">🗑️</button></div></div>`).join('') : '<p style="text-align:center;color:#999">No active notices</p>'; }
     function getColorByType(t) { return t=='urgent'?'#ef4444':(t=='event'?'#9333ea':(t=='quote'?'#22c55e':'#0d9488')); }
     function getIconByType(t) { return t=='urgent'?'🚨':(t=='event'?'🎉':(t=='quote'?'💡':'📢')); }
+
     window.processBulk=async()=>{for(let s of parsedData){if(!students.some(e=>String(e.index)==String(s.index))){await addDoc(collection(db,"students"),{index:String(s.index),name:String(s.name),grade:String(s.grade||''),class:String(s.class||''),password:"1234"});}} closeModal('modalBulk');fetchData();};
     window.processResultBulk=async()=>{let i=document.getElementById('itemSelect').value;for(let r of parsedResData){const s=students.find(x=>String(x.index)==String(r.index));if(s)await updateDoc(doc(db,"students",s.id),{[i]:String(r.mark)});} closeModal('modalResult');fetchData();};
     document.getElementById('excelFile').addEventListener('change',e=>{const r=new FileReader();r.onload=e=>{const j=XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(e.target.result),{type:'array'}).Sheets[XLSX.read(new Uint8Array(e.target.result),{type:'array'}).SheetNames[0]],{header:1});parsedData=[];let h='<table>';j.forEach((r,i)=>{if(r.length>=2&&row[0]!=='Index'){parsedData.push({index:r[0],name:r[1],grade:r[2],class:r[3]});if(parsedData.length<=5)h+=`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`;}});document.getElementById('bulkPreview').innerHTML=h+"</table>";};r.readAsArrayBuffer(e.target.files[0]);});
@@ -374,7 +443,6 @@
     window.saveEditStudent=async()=>{let id=document.getElementById('editId').value;await updateDoc(doc(db,"students",id),{index:document.getElementById('editIdx').value,name:document.getElementById('editNam').value,password:document.getElementById('editPwd').value,grade:document.getElementById('editGrd').value,class:document.getElementById('editCls').value});closeModal('modalEdit');fetchData();};
     window.delStudent=async()=>{if(confirm("Delete?"))await deleteDoc(doc(db,"students",document.getElementById('editId').value));closeModal('modalEdit');fetchData();};
     window.addSingleStudent=async()=>{let i=document.getElementById('newIdx').value;if(students.some(s=>s.index==i))return alert("Index exists");await addDoc(collection(db,"students"),{index:i,name:document.getElementById('newNam').value,grade:document.getElementById('newGrd').value,class:document.getElementById('newCls').value,password:document.getElementById('newPwd').value||"1234"});closeModal('modalAdd');fetchData();};
-    window.saveSingle=async(id)=>{const i=document.getElementById('itemSelect').value,v=document.querySelector(`.v-in[data-id="${id}"]`).value;await updateDoc(doc(db,"students",id),{[i]:v});showToast("Saved");};
     window.addMaterial=async()=>{await addDoc(collection(db,"materials"),{title:document.getElementById('matTitle').value,link:document.getElementById('matLink').value});fetchData();};
     window.closeModal=(i)=>document.getElementById(i).style.display='none';
     window.resetBulk=()=>{document.getElementById('excelFile').value='';document.getElementById('bulkPreview').innerHTML='';parsedData=[];};
