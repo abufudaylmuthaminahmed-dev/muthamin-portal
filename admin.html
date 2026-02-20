@@ -11,40 +11,78 @@
         body { background-color: #f0fdfa; margin: 0; padding: 15px; text-align: right; color: #333; font-size: 16px; }
         .container { max-width: 1100px; margin: 0 auto; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); padding-bottom: 80px; min-height: 90vh; }
         
-        /* HEADER & NAV */
+        /* HEADER */
         .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e0f2f1; padding-bottom: 10px; margin-bottom: 20px; }
-        h1 { color: #0d9488; margin: 0; font-size: 1.3rem; }
-        .back-btn { background: #e0f2f1; color: #0d9488; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; display: none; font-size: 14px; }
+        h1 { color: #0d9488; margin: 0; font-size: 1.4rem; }
         
-        /* NAVIGATION BAR */
-        .nav-menu { display: flex; gap: 8px; margin-bottom: 20px; background: #ccfbf1; padding: 8px; border-radius: 12px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+        /* BACK BUTTON */
+        .back-btn { 
+            background: #e0f2f1; color: #00796b; border: 1px solid #b2dfdb; 
+            padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; 
+            display: none; /* Hidden on dashboard */
+            font-size: 14px;
+        }
+        .back-btn:hover { background: #b2dfdb; }
+
+        /* DASHBOARD GRID (CENTERED & 2 COLUMNS ON PC) */
+        .dash-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 60vh;
+        }
+        .dash-grid { 
+            display: grid; 
+            grid-template-columns: 1fr; /* Mobile: 1 Column */
+            gap: 20px; 
+            width: 100%;
+            max-width: 400px; /* Limit width on mobile */
+            animation: fadeIn 0.4s; 
+        }
+        
+        /* PC View adjustments */
+        @media (min-width: 768px) {
+            .dash-grid {
+                grid-template-columns: 1fr 1fr; /* PC: 2 Columns */
+                max-width: 700px; /* Wider on PC */
+                gap: 30px;
+            }
+            .dash-card {
+                padding: 40px 20px; /* Bigger cards on PC */
+            }
+            .dash-icon { font-size: 40px; }
+            .dash-title { font-size: 18px; }
+        }
+
+        .dash-card { 
+            background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 25px 20px; 
+            text-align: center; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+            position: relative;
+        }
+        .dash-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); border-color: #0d9488; }
+        .dash-icon { font-size: 32px; }
+        .dash-title { font-weight: bold; font-size: 16px; color: #334155; }
+
+        /* NAV MENU (Inside Sections) */
+        .nav-menu { display: none; gap: 8px; margin-bottom: 20px; background: #ccfbf1; padding: 8px; border-radius: 12px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
         .nav-btn { flex: 0 0 auto; padding: 10px 20px; border: none; background: rgba(255,255,255,0.8); border-radius: 8px; cursor: pointer; color: #0f766e; font-weight: bold; font-size: 14px; }
         .nav-btn.active { background: #0d9488; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .badge-count { background: #ef4444; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; position: absolute; top: 0; right: 0; display: none; }
+        .badge-count { background: #ef4444; color: white; border-radius: 50%; padding: 4px 8px; font-size: 11px; position: absolute; top: -8px; right: -8px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 
-        /* DASHBOARD GRID */
-        .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; animation: fadeIn 0.4s; }
-        .dash-card { 
-            background: #fff; border: 1px solid #e2e8f0; border-radius: 15px; padding: 25px 15px; 
-            text-align: center; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
-        }
-        .dash-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.08); border-color: #0d9488; }
-        .dash-icon { font-size: 32px; }
-        .dash-title { font-weight: bold; font-size: 14px; color: #334155; }
-
+        /* SECTIONS */
         .section { display: none; animation: fadeIn 0.3s; }
         .section.active { display: block; }
         .card { border: 1px solid #f1f5f9; padding: 15px; border-radius: 12px; margin-bottom: 15px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
 
-        /* Tables */
+        /* TABLES */
         .table-container { overflow-x: auto; border-radius: 10px; border: 1px solid #e2e8f0; margin-top: 10px; -webkit-overflow-scrolling: touch; }
         table { width: 100%; border-collapse: collapse; min-width: 100%; }
         th { background: #0f766e; color: white; padding: 12px 8px; position: sticky; top: 0; font-size: 14px; white-space: nowrap; z-index: 10; }
         td { padding: 8px; border-bottom: 1px solid #f1f5f9; text-align: center; vertical-align: middle; }
         tr:nth-child(even) { background-color: #f8fafc; }
 
-        /* Inputs & Buttons */
+        /* INPUTS & BUTTONS */
         input, select, textarea { padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; width: 100%; text-align: center; margin: 0; outline: none; font-size: 14px; height: 40px; background: #fff; }
         .v-in { min-width: 140px; font-weight: bold; color: #334155; }
         input.v-in { min-width: 80px; } 
@@ -54,19 +92,13 @@
         .btn-orange { background: #f97316; } .btn-red { background: #ef4444; } .btn-blue { background: #3b82f6; }
         .btn-save { position: fixed; bottom: 20px; right: 20px; left: 20px; width: calc(100% - 40px); z-index: 100; max-width: 1060px; margin: 0 auto; box-shadow: 0 5px 20px rgba(0,0,0,0.3); border-radius: 50px; height: 50px; font-size: 16px; }
 
-        /* Modals & Login */
+        /* Login & Modals */
         #loginOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background: #0f766e; z-index: 5000; display: flex; align-items: center; justify-content: center; }
         .login-box { background: white; padding: 30px; border-radius: 15px; width: 85%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; backdrop-filter: blur(3px); }
         .modal-content { background:white; margin:5% auto; padding:20px; width:90%; max-width:500px; border-radius: 15px; max-height: 85vh; overflow-y: auto; }
-
-        /* Others */
-        .grade-badge { padding: 3px 8px; border-radius: 4px; color: white; font-size: 12px; font-weight: bold; margin-right: 5px; }
-        .g-A-star { background: #f59e0b; color:black; } .g-A { background: #10b981; } .g-B { background: #3b82f6; } .g-C { background: #f97316; } .g-Fail { background: #ef4444; }
-        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 15px; padding: 10px; }
-        .page-btn { background: #fff; border: 1px solid #ccc; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; color: #555; }
         
-        /* STUDENT DETAIL MODAL TABS */
+        /* Student Detail Modal Tabs */
         .detail-tabs { display: flex; gap: 5px; margin-bottom: 15px; background: #f0f9ff; padding: 5px; border-radius: 8px; }
         .tab-btn { flex: 1; padding: 8px; border: none; background: transparent; cursor: pointer; font-weight: bold; color: #555; border-radius: 6px; }
         .tab-btn.active { background: #0d9488; color: white; }
@@ -76,10 +108,20 @@
         .detail-label { font-size: 10px; color: #64748b; font-weight: bold; display: block; margin-bottom: 3px; }
         .detail-input { width: 100%; padding: 5px; font-size: 13px; height: 30px; border: 1px solid #ccc; }
 
+        /* Others */
         .sub-card { border: 1px solid #e2e8f0; padding: 12px; border-radius: 10px; margin-bottom: 10px; background: #fff; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
         .sub-img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd; background: #eee; }
-        .modal-gallery img { max-width: 100%; max-height: 80vh; border-radius: 8px; border: 2px solid #333; margin-bottom: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .notice-item { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px; border-radius: 8px; margin-bottom: 10px; display:flex; justify-content:space-between; align-items:flex-start; text-align:left; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
+        
+        .grade-badge { padding: 3px 8px; border-radius: 4px; color: white; font-size: 12px; font-weight: bold; margin-right: 5px; }
+        .g-A-star { background: #f59e0b; color:black; } .g-A { background: #10b981; } .g-B { background: #3b82f6; } .g-C { background: #f97316; } .g-Fail { background: #ef4444; }
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 15px; padding: 10px; }
+        .page-btn { background: #fff; border: 1px solid #ccc; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; color: #555; }
+        
+        .filter-section { background:#f0fdfa; padding:15px; border-radius:10px; border:1px dashed #0d9488; margin-bottom:20px; }
+        .pills { display: flex; gap: 8px; overflow-x: auto; padding: 5px 0; }
+        .pill { padding: 6px 14px; background: white; border: 1px solid #ddd; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 12px; font-weight: bold; color: #555; }
+        .pill.active { background: #0d9488; color: white; border-color: #0d9488; }
 
         @keyframes fadeIn { from {opacity:0; transform: translateY(5px);} to {opacity:1; transform: translateY(0);} }
         #toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: #334155; color: white; padding: 10px 20px; border-radius: 30px; opacity: 0; pointer-events: none; z-index: 2000; transition: 0.3s; font-size: 13px; }
@@ -93,80 +135,74 @@
     
     <!-- HEADER -->
     <div class="header">
-        <button id="backBtn" class="back-btn" onclick="goBack()">⬅ Back</button>
-        <h1 id="pageTitle">Admin Dashboard</h1>
+        <button id="homeBtn" class="back-btn" onclick="goHome()">⬅ Home</button>
+        <h1 id="pageTitle">Dashboard</h1>
         <button onclick="logoutAdmin()" style="background:none; border:none; color:#ef4444; font-weight:bold; cursor:pointer; font-size: 14px;">🔒</button>
     </div>
     
     <!-- MAIN DASHBOARD (HOME) -->
-    <div id="dashboardView" class="dash-grid">
-        <div class="dash-card" onclick="switchTab('db')">
-            <div class="dash-icon">👨‍🎓</div>
-            <div class="dash-title">Students</div>
-        </div>
-        <div class="dash-card" onclick="openMarksSubMenu()">
-            <div class="dash-icon">📝</div>
-            <div class="dash-title">Marks & Status</div>
-        </div>
-        <div class="dash-card" onclick="switchTab('subs')">
-            <div class="dash-icon">🔔</div>
-            <div class="dash-title">Submissions</div>
-            <span class="badge-count" id="dashSubCount">0</span>
-        </div>
-        <div class="dash-card" onclick="switchTab('notice')">
-            <div class="dash-icon">📢</div>
-            <div class="dash-title">Notice Board</div>
-        </div>
-    </div>
-
-    <!-- MARKS SUB-DASHBOARD (NEW LAYER) -->
-    <div id="marksDashboardView" class="dash-grid" style="display:none;">
-        <div class="dash-card" onclick="enterMarkingMode('work')">
-            <div class="dash-icon">📅</div>
-            <div class="dash-title">Weekly Tasks</div>
-        </div>
-        <div class="dash-card" onclick="enterMarkingMode('test')">
-            <div class="dash-icon">📑</div>
-            <div class="dash-title">Unit Tests</div>
-        </div>
-        <div class="dash-card" onclick="enterMarkingMode('ca')">
-            <div class="dash-icon">📊</div>
-            <div class="dash-title">Skills Assessment</div>
+    <div id="dashboardView" class="dash-container">
+        <div class="dash-grid">
+            <div class="dash-card" onclick="switchTab('db')">
+                <div class="dash-icon">👨‍🎓</div>
+                <div class="dash-title">Students</div>
+            </div>
+            <div class="dash-card" onclick="switchTab('marks')">
+                <div class="dash-icon">📝</div>
+                <div class="dash-title">Marks</div>
+            </div>
+            <div class="dash-card" onclick="switchTab('subs')">
+                <div class="dash-icon">🔔</div>
+                <div class="dash-title">Submissions</div>
+                <span class="badge-count" id="dashSubCount">0</span>
+            </div>
+            <div class="dash-card" onclick="switchTab('notice')">
+                <div class="dash-icon">📢</div>
+                <div class="dash-title">Notice Board</div>
+            </div>
         </div>
     </div>
 
-    <!-- CONTENT SECTIONS -->
+    <!-- SECTIONS CONTAINER -->
     <div id="contentView" style="display:none;">
         
+        <!-- Navigation Menu Inside Sections (Optional quick switch) -->
+        <div class="nav-menu" style="display:none;">
+            <button class="nav-btn" onclick="switchTab('db')">Students</button>
+            <button class="nav-btn" onclick="switchTab('marks')">Marks</button>
+            <button class="nav-btn" onclick="switchTab('subs')">Subs</button>
+            <button class="nav-btn" onclick="switchTab('notice')">Notice</button>
+        </div>
+
         <!-- 1. STUDENT DB -->
         <div id="tab-db" class="section">
-            <div style="display:flex; gap:10px; margin-bottom:10px;">
+            <div style="display:flex; gap:10px; margin-bottom:15px;">
                 <button class="btn" style="flex:1; background:#43a047;" onclick="openStudentModal()">+ Add</button>
                 <button class="btn btn-orange" style="flex:1;" onclick="openBulkModal()">📗 Excel</button>
             </div>
             
-            <div style="background:#f1f5f9; padding:10px; border-radius:10px; margin-bottom:15px;">
-                <small style="color:#64748b; font-weight:bold;">Filter:</small>
-                <div id="gradeFilter" style="display:flex; gap:5px; flex-wrap:wrap;"></div>
-                <div id="classFilter" style="display:flex; gap:5px; flex-wrap:wrap; margin-top:5px;"></div>
+            <div class="filter-section">
+                <small style="color:#0f766e; font-weight:bold;">Filter Results:</small>
+                <div id="gradeFilter" class="pills" style="margin-bottom:5px;"></div>
+                <div id="classFilter" class="pills"></div>
             </div>
 
             <div class="card" style="padding:0; overflow:hidden;">
                 <div style="overflow-x:auto;">
                     <table id="studentTable"><thead><tr><th>Index</th><th>Name</th><th>Grade</th><th>Pass</th><th>Profile</th><th>Edit</th></tr></thead><tbody><tr><td colspan="6">Loading...</td></tr></tbody></table>
                 </div>
-                <div class="pagination"><button class="page-btn" onclick="changePage('db', -1)">Prev</button><span class="page-info" id="page-info-db">Page 1</span><button class="page-btn" onclick="changePage('db', 1)">Next</button></div>
+                <div class="pagination" id="pag-db"><button class="page-btn" onclick="changePage('db', -1)">Prev</button><span class="page-info" id="page-info-db">Page 1</span><button class="page-btn" onclick="changePage('db', 1)">Next</button></div>
             </div>
         </div>
 
-        <!-- 2. MARKS ENTRY (Actual Table) -->
+        <!-- 2. MARKS -->
         <div id="tab-marks" class="section">
             <div class="card" style="background:#f8fafc;">
-                <!-- Filter inside Marks -->
-                <div style="background:#fff; padding:10px; border-radius:10px; border:1px dashed #cbd5e1; margin-bottom:10px;">
-                     <div id="gradeFilterM" style="display:flex; gap:5px; flex-wrap:wrap;"></div>
+                <div style="display:flex; gap:5px; overflow-x:auto; margin-bottom:10px; padding-bottom:5px;">
+                    <button class="btn" style="width:auto; padding:8px 15px; font-size:12px; margin:0;" onclick="setMode('work')">Weekly</button>
+                    <button class="btn" style="width:auto; padding:8px 15px; font-size:12px; margin:0;" onclick="setMode('test')">Tests</button>
+                    <button class="btn" style="width:auto; padding:8px 15px; font-size:12px; margin:0;" onclick="setMode('ca')">CA</button>
                 </div>
-
                 <div style="display:flex; flex-direction:column; gap:5px;">
                     <label style="font-size:12px; font-weight:bold; color:#64748b;">Select Item:</label>
                     <div style="display:flex; gap:5px;">
@@ -179,10 +215,15 @@
                         <button onclick="saveTotalMark()" style="width:auto; padding:5px 10px; margin:0; height:35px;">💾</button>
                     </div>
                 </div>
+                
+                <!-- Filter inside Marks -->
+                <div class="filter-section" style="margin-top:15px; padding:8px;">
+                     <div id="gradeFilterM" class="pills"></div>
+                </div>
             </div>
             
             <div class="table-container"><table id="marksTable"><thead><tr><th>Idx</th><th>Name</th><th>Result</th><th>Msg</th><th>Save</th></tr></thead><tbody id="marksBody"></tbody></table></div>
-            <div class="pagination"><button class="page-btn" onclick="changePage('marks', -1)">Prev</button><span class="page-info" id="page-info-marks">Page 1</span><button class="page-btn" onclick="changePage('marks', 1)">Next</button></div>
+            <div class="pagination" id="pag-marks"><button class="page-btn" onclick="changePage('marks', -1)">Prev</button><span class="page-info" id="page-info-marks">Page 1</span><button class="page-btn" onclick="changePage('marks', 1)">Next</button></div>
             <button class="btn btn-save" id="sBtn" onclick="saveTeacherData()">💾 Save All</button><div style="height:60px;"></div>
         </div>
 
@@ -220,7 +261,7 @@
     </div>
 </div>
 
-<!-- MODALS (SAME AS BEFORE) -->
+<!-- MODALS -->
 <div id="modalAdd" class="modal"><div class="modal-content"><h3>Add Student</h3><input id="newIdx" type="number" placeholder="Index"><input id="newNam" placeholder="Name"><div style="display:flex;gap:5px"><input id="newGrd" placeholder="Grade"><input id="newCls" placeholder="Class"></div><input id="newPwd" value="1234"><button class="btn" onclick="addSingleStudent()">Add</button><button class="btn btn-red" onclick="closeModal('modalAdd')">Cancel</button></div></div>
 <div id="modalEdit" class="modal"><div class="modal-content"><h3>Edit</h3><input type="hidden" id="editId"><input id="editIdx"><input id="editNam"><input id="editPwd"><div style="display:flex;gap:5px"><input id="editGrd"><input id="editCls"></div><button class="btn" onclick="saveEditStudent()">Update</button><hr><button class="btn btn-red" onclick="delStudent()">Delete</button><button class="btn" style="background:#ccc;color:#333" onclick="closeModal('modalEdit')">Close</button></div></div>
 <div id="modalStudentDetails" class="modal"><div class="modal-content" style="max-width:800px;"><h3 style="color:#00796b; margin-top:0;" id="detailName"></h3><p id="detailInfo" style="font-size:13px; color:#666;"></p><input type="hidden" id="detailId"><div class="detail-tabs"><button class="tab-btn active" onclick="switchDetailTab('weekly')">Weekly</button><button class="tab-btn" onclick="switchDetailTab('tests')">Tests</button><button class="tab-btn" onclick="switchDetailTab('ca')">CA</button></div><div id="detail-tab-weekly" class="detail-section active"></div><div id="detail-tab-tests" class="detail-section"></div><div id="detail-tab-ca" class="detail-section"></div><div style="margin-top:20px;"><button class="btn" onclick="saveStudentDetails()">💾 Save</button><button class="btn btn-red" onclick="closeModal('modalStudentDetails')" style="margin-top:5px;">Close</button></div></div></div>
@@ -234,7 +275,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, deleteField, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-    // --- CONFIG ---
+    // --- FIREBASE CONFIG (REPLACE WITH YOUR KEYS) ---
     const firebaseConfig = {
       apiKey: "AIzaSyDSEHqUQIegVjhWKpRgpJybdPaVDVroVos",
   authDomain: "islam-portal-muthamin.firebaseapp.com",
@@ -247,8 +288,11 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     let students = []; let materials = []; let notices = []; let examConfig = {}; let mode = 'work'; let selGrade = 'All'; let selClass = 'All'; let parsedData = []; let parsedResData = [];
+    
+    // Pagination
     let currentPageDB = 1; let currentPageMarks = 1; const rowsPerPage = 20;
 
+    // --- LOGIN ---
     window.checkLogin = () => { if(document.getElementById('adminPass').value === "123") { localStorage.setItem('adminLoggedIn', 'true'); initAdmin(); } else alert("Wrong Password"); };
     window.logoutAdmin = () => { localStorage.removeItem('adminLoggedIn'); location.reload(); };
     function initAdmin() { if(localStorage.getItem('adminLoggedIn') === 'true') { document.getElementById('loginOverlay').style.display='none'; document.getElementById('mainContainer').style.display='block'; fetchData(); } }
@@ -260,57 +304,17 @@
             const mSnap = await getDocs(collection(db, "materials")); materials = []; mSnap.forEach((doc) => materials.push({ id: doc.id, ...doc.data() }));
             const nSnap = await getDocs(collection(db, "notices")); notices = []; nSnap.forEach(d => notices.push({id: d.id, ...d.data()}));
             try { const c = await getDoc(doc(db, "settings", "examConfig")); if(c.exists()) examConfig = c.data(); } catch(e){}
-            updateFilters(); updateSubCount();
+            updateFilters(); updateSubCount(); 
         } catch(e) { console.error(e); }
     }
 
     // --- NAVIGATION ---
-    window.goBack = () => {
-        // If in Marks Dashboard, go to Home
-        if(document.getElementById('marksDashboardView').style.display === 'grid') {
-            document.getElementById('marksDashboardView').style.display = 'none';
-            document.getElementById('dashboardView').style.display = 'grid';
-            document.getElementById('homeBtn').style.display = 'none';
-            document.getElementById('pageTitle').innerText = "Dashboard";
-            return;
-        }
-        
-        // If in Content (Table View), logic depends on where we came from
-        // Simplification: Always go to Home/Marks Dash based on active tab
-        if(document.getElementById('tab-marks').classList.contains('active')) {
-             document.getElementById('contentView').style.display = 'none';
-             document.getElementById('marksDashboardView').style.display = 'grid';
-             document.getElementById('pageTitle').innerText = "Marks & Status";
-             document.getElementById('sBtn').style.display = 'none';
-        } else {
-             // For Students/Subs/Notice, go to Home
-             document.getElementById('contentView').style.display = 'none';
-             document.getElementById('dashboardView').style.display = 'grid';
-             document.getElementById('homeBtn').style.display = 'none';
-             document.getElementById('pageTitle').innerText = "Dashboard";
-             document.getElementById('sBtn').style.display = 'none';
-        }
-    };
-
-    window.openMarksSubMenu = () => {
-        document.getElementById('dashboardView').style.display = 'none';
-        document.getElementById('marksDashboardView').style.display = 'grid';
-        document.getElementById('homeBtn').style.display = 'block';
-        document.getElementById('pageTitle').innerText = "Marks & Status";
-    };
-
-    window.enterMarkingMode = (selectedMode) => {
-        document.getElementById('marksDashboardView').style.display = 'none';
-        document.getElementById('contentView').style.display = 'block';
-        document.getElementById('homeBtn').style.display = 'block';
-        document.querySelectorAll('.section').forEach(d => d.classList.remove('active'));
-        document.getElementById('tab-marks').classList.add('active');
-        
-        let titles = { 'work': 'Weekly Work', 'test': 'Unit Tests', 'ca': 'Skills Assessment' };
-        document.getElementById('pageTitle').innerText = titles[selectedMode];
-        
-        document.getElementById('sBtn').style.display = 'block';
-        setMode(selectedMode);
+    window.goHome = () => {
+        document.getElementById('dashboardView').style.display = 'flex';
+        document.getElementById('contentView').style.display = 'none';
+        document.getElementById('homeBtn').style.display = 'none';
+        document.getElementById('pageTitle').innerText = "Dashboard";
+        document.getElementById('sBtn').style.display = 'none';
     };
 
     window.switchTab = (id) => {
@@ -321,14 +325,16 @@
         document.querySelectorAll('.section').forEach(d => d.classList.remove('active'));
         document.getElementById('tab-'+id).classList.add('active');
         
-        let titles = { 'db': 'Student Database', 'subs': 'Submissions', 'notice': 'Notice & Materials' };
+        let titles = { 'db': 'Student Database', 'marks': 'Marks Entry', 'subs': 'Submissions', 'notice': 'Notice & Materials' };
         document.getElementById('pageTitle').innerText = titles[id];
-        document.getElementById('sBtn').style.display = 'none';
+        document.getElementById('sBtn').style.display = (id === 'marks') ? 'block' : 'none';
+        
         refreshActiveView();
     };
 
     function refreshActiveView() {
         if(document.getElementById('tab-db').classList.contains('active')) renderStudentTable();
+        if(document.getElementById('tab-marks').classList.contains('active')) renderMarksTable();
         if(document.getElementById('tab-subs').classList.contains('active')) renderSubmissions();
         if(document.getElementById('tab-notice').classList.contains('active')) { renderNotices(); renderMaterials(); }
     }
@@ -340,13 +346,17 @@
         return `<span class="grade-badge ${c}">${l}</span>`;
     };
 
-    // --- PAGINATION ---
+    // --- PAGINATION HELPERS ---
     function getPaginatedList(type) {
         let list = getFiltered();
         let page = (type === 'db') ? currentPageDB : currentPageMarks;
         let totalPages = Math.ceil(list.length / rowsPerPage) || 1;
         if(page > totalPages) page = 1; 
-        document.getElementById(`page-info-${type}`).innerText = `Page ${page} of ${totalPages}`;
+        
+        // Update Info Text
+        const infoEl = document.getElementById(`page-info-${type}`);
+        if(infoEl) infoEl.innerText = `Page ${page} of ${totalPages}`;
+
         let start = (page - 1) * rowsPerPage;
         return list.slice(start, start + rowsPerPage);
     }
@@ -354,10 +364,13 @@
         let list = getFiltered(); let totalPages = Math.ceil(list.length / rowsPerPage) || 1;
         let current = (type === 'db') ? currentPageDB : currentPageMarks;
         let newPage = current + dir;
-        if(newPage >= 1 && newPage <= totalPages) { if(type === 'db') currentPageDB = newPage; else currentPageMarks = newPage; if(type=='db') renderStudentTable(); else renderMarksTable(); }
+        if(newPage >= 1 && newPage <= totalPages) { 
+            if(type === 'db') currentPageDB = newPage; else currentPageMarks = newPage; 
+            refreshActiveView(); 
+        }
     };
 
-    // --- RENDERERS ---
+    // --- RENDER TABLE ---
     window.renderStudentTable = () => {
         const list = getPaginatedList('db');
         document.querySelector('#studentTable tbody').innerHTML = list.length ? list.map(s => `<tr><td>${s.index}</td><td>${s.name}</td><td>${s.grade}${s.class}</td><td>${s.password||'1234'}</td><td><button class="btn btn-blue" style="padding:5px;width:auto;margin:0" onclick="openStudentDetails('${s.id}')">👤</button></td><td><button class="btn btn-orange" style="padding:5px;width:auto;margin:0" onclick="openEdit('${s.id}')">✏️</button></td></tr>`).join(''):'<tr><td colspan="6">No data</td></tr>';
@@ -366,7 +379,8 @@
     window.renderMarksTable = () => {
         const item = document.getElementById('itemSelect').value;
         let tot = examConfig[item] ? parseInt(examConfig[item]) : (mode==='test'?20:100);
-        if(mode !== 'work') { document.getElementById('totalDiv').style.display='flex'; document.getElementById('totalMarks').value = tot; } else { document.getElementById('totalDiv').style.display='none'; }
+        if(mode !== 'work') { document.getElementById('totalDiv').style.display='flex'; document.getElementById('totalMarks').value = tot; }
+        else { document.getElementById('totalDiv').style.display='none'; }
 
         const list = getPaginatedList('marks');
         document.getElementById('marksBody').innerHTML = list.length ? list.map(s => {
@@ -392,33 +406,39 @@
         let cHtml = ''; for(let i=1; i<=4; i++) { let key = 'CA'+i; let v = s[key] || ''; let t = examConfig[key] ? parseInt(examConfig[key]) : 100; let grade = v ? calcGradeHtml(v, t) : '-'; cHtml += `<div class="detail-item"><span class="detail-label">CA${i} (/${t})</span><input type="number" class="detail-input" id="det_${key}" value="${v}"><div>${grade}</div></div>`; } document.getElementById('detail-tab-ca').innerHTML = cHtml;
         window.switchDetailTab('weekly'); document.getElementById('modalStudentDetails').style.display = 'block';
     };
+
     window.saveStudentDetails = async () => {
         let id = document.getElementById('detailId').value;
-        if(!id) return alert("Error");
+        if(!id) return alert("Error: ID missing");
         let updates = {};
-        for(let i=1; i<=45; i++) { let v = document.getElementById(`det_Week${i}`).value; updates[`Week${i}`] = v || ""; }
-        for(let i=1; i<=10; i++) { let v = document.getElementById(`det_UnitTest${i}`).value; updates[`UnitTest${i}`] = v || ""; }
-        for(let i=1; i<=4; i++) { let v = document.getElementById(`det_CA${i}`).value; updates[`CA${i}`] = v || ""; }
-        try { await updateDoc(doc(db, "students", id), updates); showToast("Details Saved!"); closeModal('modalStudentDetails'); fetchData(); } catch(e) { alert("Error saving details"); }
+        for(let i=1; i<=45; i++) { let el = document.getElementById(`det_Week${i}`); if(el) updates[`Week${i}`] = el.value || ""; }
+        for(let i=1; i<=10; i++) { let el = document.getElementById(`det_UnitTest${i}`); if(el) updates[`UnitTest${i}`] = el.value || ""; }
+        for(let i=1; i<=4; i++) { let el = document.getElementById(`det_CA${i}`); if(el) updates[`CA${i}`] = el.value || ""; }
+        try { await updateDoc(doc(db, "students", id), updates); showToast("✅ Saved!"); closeModal('modalStudentDetails'); fetchData(); } catch(e) { console.error(e); alert("Error saving"); }
     };
 
-    // --- FILTERS & MODES ---
-    window.setGradeFilter=(g)=>{selGrade=g;selClass='All';currentPageDB=1;currentPageMarks=1;updateFilters();if(document.getElementById('tab-marks').classList.contains('active')) renderMarksTable(); else renderStudentTable();};
-    window.setClassFilter=(c)=>{selClass=c;currentPageDB=1;currentPageMarks=1;updateFilters();if(document.getElementById('tab-marks').classList.contains('active')) renderMarksTable(); else renderStudentTable();};
+    // --- OTHER LOGIC ---
+    window.setGradeFilter=(g)=>{selGrade=g;selClass='All';currentPageDB=1;currentPageMarks=1;updateFilters();refreshActiveView();}; window.setClassFilter=(c)=>{selClass=c;currentPageDB=1;currentPageMarks=1;updateFilters();refreshActiveView();};
     function updateFilters(){const gs=[...new Set(students.map(s=>s.grade))].filter(Boolean).sort(); 
         let html = `<button style="padding:6px 12px;border:1px solid #b2dfdb;background:${selGrade=='All'?'#0d9488':'#fff'};color:${selGrade=='All'?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setGradeFilter('All')">All</button>`+gs.map(g=>`<button style="padding:6px 12px;border:1px solid #b2dfdb;background:${selGrade==g?'#0d9488':'#fff'};color:${selGrade==g?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setGradeFilter('${g}')">${g}</button>`).join('');
-        document.getElementById('gradeFilter').innerHTML=html; document.getElementById('gradeFilterM').innerHTML=html; // Update both filters
+        document.getElementById('gradeFilter').innerHTML=html; document.getElementById('gradeFilterM').innerHTML=html; // Update marks filter too
         if(selGrade!=='All'){const cs=[...new Set(students.filter(s=>s.grade==selGrade).map(s=>s.class))].filter(Boolean).sort(); document.getElementById('classFilter').innerHTML=`<button style="padding:6px 12px;border:1px solid #b2dfdb;background:${selClass=='All'?'#0d9488':'#fff'};color:${selClass=='All'?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setClassFilter('All')">All</button>`+cs.map(c=>`<button style="padding:6px 12px;border:1px solid #b2dfdb;background:${selClass==c?'#0d9488':'#fff'};color:${selClass==c?'#fff':'#333'};border-radius:15px;cursor:pointer;font-size:12px;" onclick="setClassFilter('${c}')">${c}</button>`).join('');}else document.getElementById('classFilter').innerHTML="";
     }
     function getFiltered(){let l=students;if(selGrade!=='All')l=l.filter(s=>String(s.grade)==String(selGrade));if(selClass!=='All')l=l.filter(s=>String(s.class)==String(selClass));return l.sort((a,b)=>(parseInt(a.index)||0)-(parseInt(b.index)||0));}
     
-    window.setMode=(m)=>{mode=m;currentPageMarks=1;let s=document.getElementById('itemSelect');s.innerHTML="";if(m=='work'){for(let i=1;i<=45;i++)s.innerHTML+=`<option value="Week${i}">Week ${i}</option>`;}else{let p=m=='test'?'UnitTest':'CA',c=m=='test'?10:4;for(let i=1;i<=c;i++)s.innerHTML+=`<option value="${p}${i}">${m=='test'?'Unit Test':'CA'} ${i}</option>`;}renderMarksTable();};
     window.saveTotalMark=async()=>{const i=document.getElementById('itemSelect').value,v=document.getElementById('totalMarks').value;if(i&&v){await setDoc(doc(db,"settings","examConfig"),{[i]:v},{merge:true});examConfig[i]=v;showToast("Saved");renderMarksTable();}};
     window.saveTeacherData=async()=>{const i=document.getElementById('itemSelect').value,inputs=document.querySelectorAll('.v-in');let p=[];document.getElementById('sBtn').innerText="Saving...";inputs.forEach(n=>{if(n.value!==n.dataset.orig)p.push(updateDoc(doc(db,"students",n.dataset.id),{[i]:n.value}));});await Promise.all(p);document.getElementById('sBtn').innerText="💾 Save All Changes";fetchData();showToast("Saved");};
+    window.setMode=(m)=>{mode=m;currentPageMarks=1;let s=document.getElementById('itemSelect');s.innerHTML="";if(m=='work'){for(let i=1;i<=45;i++)s.innerHTML+=`<option value="Week${i}">Week ${i}</option>`;document.getElementById('totalDiv').style.display='none';}else{document.getElementById('totalDiv').style.display='flex';let p=m=='test'?'UnitTest':'CA',c=m=='test'?10:4;for(let i=1;i<=c;i++)s.innerHTML+=`<option value="${p}${i}">${m=='test'?'Unit Test':'CA'} ${i}</option>`;}renderMarksTable();};
     window.saveSingle=async(id)=>{const i=document.getElementById('itemSelect').value,v=document.querySelector(`.v-in[data-id="${id}"]`).value;await updateDoc(doc(db,"students",id),{[i]:v});showToast("Saved");};
+    window.addMaterial=async()=>{await addDoc(collection(db,"materials"),{title:document.getElementById('matTitle').value,link:document.getElementById('matLink').value});fetchData();};
+    window.closeModal=(i)=>document.getElementById(i).style.display='none';
+    window.resetBulk=()=>{document.getElementById('excelFile').value='';document.getElementById('bulkPreview').innerHTML='';parsedData=[];};
+    window.resetResBulk=()=>{document.getElementById('resFile').value='';document.getElementById('resPreview').innerHTML='';parsedResData=[];};
+    window.renderMaterials=()=>{document.getElementById('matList').innerHTML = materials.map(m=>`<div class="mat-item"><span>${m.title}</span><button class="btn btn-red" style="width:auto; padding:5px; margin:0;" onclick="delMat('${m.id}')">Del</button></div>`).join('');};
+    window.delMat=async(id)=>{if(confirm("Del?"))await deleteDoc(doc(db,"materials",id));fetchData();};
 
-    // Submissions, Notices, Excel
-    function updateSubCount() { let count = 0; students.forEach(s => { if(s.submissions) count += Object.keys(s.submissions).length; }); const badge = document.getElementById('dashSubCount'); badge.innerText = count; badge.style.display = count > 0 ? 'block' : 'none'; document.getElementById('subCount').innerText = count; document.getElementById('subCount').style.display = count>0?'block':'none';}
+    // Submissions & Notices
+    function updateSubCount() { let count = 0; students.forEach(s => { if(s.submissions) count += Object.keys(s.submissions).length; }); const badge = document.getElementById('subCount'); badge.innerText = count; badge.style.display = count > 0 ? 'inline-block' : 'none'; document.getElementById('dashSubCount').innerText = count; document.getElementById('dashSubCount').style.display = count>0?'block':'none';}
     window.renderSubmissions = () => { const list = document.getElementById('subsList'); let html = ''; let hasData = false; students.forEach(s => { if(s.submissions) { Object.keys(s.submissions).forEach(week => { hasData = true; const sub = s.submissions[week]; let imgData = sub.images ? sub.images : (sub.image ? [sub.image] : []); let countText = imgData.length > 1 ? `(${imgData.length} Photos)` : ''; let thumb = imgData.length > 0 ? imgData[0] : ''; html += `<div class="sub-card"><div style="display:flex;gap:10px;align-items:center;"><img src="${thumb}" class="sub-img" onclick="showSubmissionGallery('${s.id}', '${week}')"><div style="text-align:left;"><strong>${s.name}</strong> (${s.index}) <span style="font-size:10px;color:#0d9488;font-weight:bold;">${countText}</span><br><span style="font-size:12px;color:#666;">${week} - ${sub.date}</span></div></div><button class="btn" style="width:auto;padding:5px 15px;" onclick="acceptSubmission('${s.id}','${week}')">✅ Accept</button></div>`; }); } }); list.innerHTML = hasData ? html : `<p style="text-align:center; color:#999;">No pending submissions</p>`; };
     window.showSubmissionGallery = (sid, week) => { const s = students.find(x => x.id === sid); if (!s || !s.submissions || !s.submissions[week]) return; const sub = s.submissions[week]; const images = sub.images ? sub.images : (sub.image ? [sub.image] : []); document.getElementById('galleryContainer').innerHTML = images.map(src => `<img src="${src}">`).join(''); document.getElementById('modalImg').style.display = 'block'; };
     window.acceptSubmission = async (sid, week) => { if(confirm("Mark as Done and remove?")) { try { await updateDoc(doc(db, "students", sid), { [week]: 'ނިމިފައި', [`submissions.${week}`]: deleteField() }); showToast("Accepted!"); fetchData(); } catch(e) { console.error(e); alert("Error"); } } };
@@ -443,6 +463,7 @@
     window.saveEditStudent=async()=>{let id=document.getElementById('editId').value;await updateDoc(doc(db,"students",id),{index:document.getElementById('editIdx').value,name:document.getElementById('editNam').value,password:document.getElementById('editPwd').value,grade:document.getElementById('editGrd').value,class:document.getElementById('editCls').value});closeModal('modalEdit');fetchData();};
     window.delStudent=async()=>{if(confirm("Delete?"))await deleteDoc(doc(db,"students",document.getElementById('editId').value));closeModal('modalEdit');fetchData();};
     window.addSingleStudent=async()=>{let i=document.getElementById('newIdx').value;if(students.some(s=>s.index==i))return alert("Index exists");await addDoc(collection(db,"students"),{index:i,name:document.getElementById('newNam').value,grade:document.getElementById('newGrd').value,class:document.getElementById('newCls').value,password:document.getElementById('newPwd').value||"1234"});closeModal('modalAdd');fetchData();};
+    window.saveSingle=async(id)=>{const i=document.getElementById('itemSelect').value,v=document.querySelector(`.v-in[data-id="${id}"]`).value;await updateDoc(doc(db,"students",id),{[i]:v});showToast("Saved");};
     window.addMaterial=async()=>{await addDoc(collection(db,"materials"),{title:document.getElementById('matTitle').value,link:document.getElementById('matLink').value});fetchData();};
     window.closeModal=(i)=>document.getElementById(i).style.display='none';
     window.resetBulk=()=>{document.getElementById('excelFile').value='';document.getElementById('bulkPreview').innerHTML='';parsedData=[];};
