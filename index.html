@@ -5,6 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Students Portal</title>
     <style>
+                /* FONTS SETUP */
+        @font-face {
+            font-family: 'Faruma';
+            /* fonts/ ބައި ނަގާފައި ސީދާ ފައިލް ނަން ޖެހީ */
+            src: url('faruma.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'MV Waheed';
+            /* fonts/ ބައި ނަގާފައި ސީދާ ފައިލް ނަން ޖެހީ */
+            src: url('mvwaheed.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+        
+        /* APPLY FONTS */
+        * { box-sizing: border-box; font-family: "Faruma", sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        /* HEADINGS IN MV WAHEED */
+        h1, h2, h3, h4, .dash-title, .result-section-title, .modal-content h3, .notice-title {
+            font-family: "MV Waheed", "Faruma", sans-serif;
+            letter-spacing: 1px;
+        }
+
+        /* ... ދެން ހުރި CSS ތައް އޭގެ ތިރިއަށް ... */
         @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
         * { box-sizing: border-box; font-family: "Faruma", sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #ecfdf5; margin: 0; padding: 15px; text-align: right; color: #334155; }
