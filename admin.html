@@ -9,24 +9,35 @@
         @font-face { font-family: 'Faruma'; src: local('Faruma'), url('https://fonts.cdnfonts.com/s/73114/Faruma.woff') format('woff'); }
         * { box-sizing: border-box; font-family: "Faruma", sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #f0fdfa; margin: 0; padding: 15px; text-align: right; color: #333; font-size: 16px; }
-        .container { max-width: 1100px; margin: 0 auto; background: white; padding: 15px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding-bottom: 80px; min-height: 90vh; }
+        .container { max-width: 1100px; margin: 0 auto; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); padding-bottom: 80px; min-height: 90vh; }
         
         .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e0f2f1; padding-bottom: 10px; margin-bottom: 20px; }
         h1 { color: #0d9488; margin: 0; font-size: 1.4rem; }
         .back-btn { background: #e0f2f1; color: #0d9488; border: none; padding: 8px 15px; border-radius: 12px; font-weight: bold; cursor: pointer; display: none; font-size: 14px; }
         
-        /* 2-COLUMN CENTERED DASHBOARD */
+        /* DASHBOARD GRID */
         .dash-container { display: flex; justify-content: center; align-items: center; min-height: 60vh; }
-        .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; max-width: 500px; }
-        
+        .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; width: 100%; max-width: 600px; }
         .dash-card { 
-            background: linear-gradient(145deg, #ffffff, #f0fdfa); border: 1px solid #cbd5e1; border-radius: 20px; padding: 30px 15px; 
-            text-align: center; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; position: relative;
+            background: linear-gradient(145deg, #ffffff, #f0fdfa); border: 1px solid #cbd5e1; border-radius: 16px; padding: 30px 15px; 
+            text-align: center; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            display: flex; flex-direction: column; align-items: center; gap: 10px; position: relative;
         }
-        .dash-card:hover { transform: translateY(-5px); border-color: #0d9488; box-shadow: 0 10px 20px rgba(13, 148, 136, 0.15); }
-        .dash-icon { font-size: 40px; background: #ccfbf1; width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #0f766e; }
+        .dash-card:hover { transform: translateY(-5px); border-color: #0d9488; box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+        .dash-icon { font-size: 35px; background: #ccfbf1; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #0f766e; }
         .dash-title { font-weight: bold; font-size: 16px; color: #1e293b; }
+
+        /* SELECTION FLOW GRIDS */
+        .flow-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 10px; }
+        .flow-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px 10px; text-align: center; cursor: pointer; color: #0f766e; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: 0.2s; }
+        .flow-card:hover { background: #0f766e; color: white; transform: translateY(-3px); box-shadow: 0 5px 10px rgba(13, 148, 136, 0.2); }
+
+        /* SUB-MENU GRID */
+        .sub-menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        .sub-menu-card { 
+            background: #f0fdfa; border: 1px solid #99f6e4; border-radius: 12px; padding: 15px; 
+            text-align: center; cursor: pointer; color: #0f766e; font-weight: bold; 
+        }
 
         .section { display: none; animation: fadeIn 0.3s; }
         .section.active { display: block; }
@@ -38,8 +49,8 @@
         th { background: #0f766e; color: white; padding: 12px 8px; position: sticky; top: 0; font-size: 14px; white-space: nowrap; z-index: 10; }
         td { padding: 10px 8px; border-bottom: 1px solid #f1f5f9; text-align: center; vertical-align: middle; }
         tr:nth-child(even) { background-color: #f8fafc; }
-        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 15px; padding: 10px; }
-        .page-btn { background: #fff; border: 1px solid #ccc; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; color: #555; }
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 20px; padding-bottom: 20px; }
+        .page-btn { background: #fff; border: 1px solid #ccc; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; color: #555; }
         .page-info { font-size: 14px; color: #0d9488; font-weight: bold; }
 
         /* Inputs & Buttons */
@@ -55,33 +66,38 @@
 
         /* Modals & Login */
         #loginOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background: #0f766e; z-index: 5000; display: flex; align-items: center; justify-content: center; }
-        .login-box { background: white; padding: 40px; border-radius: 20px; width: 85%; max-width: 350px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .login-box { background: white; padding: 40px; border-radius: 20px; width: 85%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; backdrop-filter: blur(4px); }
         .modal-content { background:white; margin:5% auto; padding:25px; width:90%; max-width:600px; border-radius: 20px; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         
-        /* Pills & Grids */
-        .flow-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 15px; }
-        .flow-card { background: #fff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 20px 10px; text-align: center; cursor: pointer; color: #0f766e; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: 0.2s; }
-        .flow-card:hover { background: #0f766e; color: white; transform: translateY(-3px); }
-        .pills { display: flex; gap: 8px; overflow-x: auto; padding: 5px 0; justify-content: center; }
-        .pill { padding: 6px 14px; background: white; border: 1px solid #cbd5e1; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 12px; font-weight: bold; color: #555; }
-        .pill.active { background: #0d9488; color: white; border-color: #0d9488; }
-        
-        /* Others */
-        .grade-badge { padding: 3px 10px; border-radius: 6px; color: white; font-size: 12px; font-weight: bold; margin-right: 5px; }
-        .g-A-star { background: #f59e0b; color:black; } .g-A { background: #10b981; } .g-B { background: #3b82f6; } .g-C { background: #f97316; } .g-Fail { background: #ef4444; }
+        /* STUDENT DETAIL MODAL TABS */
         .detail-tabs { display: flex; gap: 8px; margin-bottom: 15px; background: #f1f5f9; padding: 5px; border-radius: 12px; }
         .tab-btn { flex: 1; padding: 10px; border: none; background: transparent; cursor: pointer; font-weight: bold; color: #64748b; border-radius: 8px; }
-        .tab-btn.active { background: #fff; color: #0d9488; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .tab-btn.active { background: #fff; color: #0d9488; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .detail-section { display: none; }
         .detail-section.active { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
         .detail-item { background: #f8fafc; padding: 10px; border-radius: 10px; border: 1px solid #e2e8f0; text-align: center; }
-        .sub-card { border: 1px solid #e2e8f0; padding: 15px; border-radius: 12px; margin-bottom: 10px; background: #fff; display: flex; align-items: center; justify-content: space-between; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-        .sub-img { width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; background: #eee; }
-        .notice-item { background: #fffbeb; border-left: 5px solid #f59e0b; padding: 15px; border-radius: 10px; margin-bottom: 10px; display:flex; justify-content:space-between; align-items:flex-start; text-align:left; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
+        .detail-label { font-size: 11px; color: #64748b; font-weight: bold; display: block; margin-bottom: 5px; }
+        .detail-input { width: 100%; padding: 5px; font-size: 13px; height: 35px; border: 1px solid #ccc; }
 
-        @keyframes fadeIn { from {opacity:0; transform: translateY(10px);} to {opacity:1; transform: translateY(0);} }
-        #toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 12px 24px; border-radius: 50px; opacity: 0; pointer-events: none; z-index: 2000; transition: 0.3s; font-size: 13px; }
+        /* Others */
+        .sub-card { border: 1px solid #e2e8f0; padding: 12px; border-radius: 10px; margin-bottom: 10px; background: #fff; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .sub-img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd; background: #eee; }
+        .modal-gallery img { max-width: 100%; max-height: 80vh; border-radius: 8px; border: 2px solid #333; margin-bottom: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .notice-item { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px; border-radius: 8px; margin-bottom: 10px; display:flex; justify-content:space-between; align-items:flex-start; text-align:left; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
+        
+        .grade-badge { padding: 3px 8px; border-radius: 4px; color: white; font-size: 12px; font-weight: bold; margin-right: 5px; }
+        .g-A-star { background: #f59e0b; color:black; } .g-A { background: #10b981; } .g-B { background: #3b82f6; } .g-C { background: #f97316; } .g-Fail { background: #ef4444; }
+        .badge-count { background: #ef4444; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; position: absolute; top: 0; right: 0; display: none; }
+        .click-name { color: #0d9488; font-weight: bold; cursor: pointer; text-decoration: underline; }
+
+        /* Filter Pills */
+        .pills { display: flex; gap: 8px; overflow-x: auto; padding: 5px 0; }
+        .pill { padding: 8px 16px; background: white; border: 1px solid #e2e8f0; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 13px; font-weight: bold; color: #64748b; transition:0.2s; }
+        .pill.active { background: #0d9488; color: white; border-color: #0d9488; box-shadow: 0 4px 6px rgba(13, 148, 136, 0.2); }
+
+        @keyframes fadeIn { from {opacity:0; transform: translateY(5px);} to {opacity:1; transform: translateY(0);} }
+        #toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: #334155; color: white; padding: 10px 20px; border-radius: 30px; opacity: 0; pointer-events: none; z-index: 2000; transition: 0.3s; font-size: 13px; }
     </style>
 </head>
 <body>
@@ -89,13 +105,15 @@
 <div id="loginOverlay"><div class="login-box"><h2 style="color:#0d9488;">Admin Login</h2><input type="password" id="adminPass" placeholder="Password"><button onclick="checkLogin()" class="btn">Login</button></div></div>
 
 <div class="container" id="mainContainer" style="display:none;">
+    
+    <!-- HEADER -->
     <div class="header">
         <button id="backBtn" class="back-btn" onclick="goBack()">⬅ Home</button>
         <h1 id="pageTitle">Dashboard</h1>
         <button onclick="logoutAdmin()" style="background:none; border:none; color:#ef4444; font-weight:bold; cursor:pointer; font-size: 18px;">🔒</button>
     </div>
     
-    <!-- DASHBOARD VIEW -->
+    <!-- 1. DASHBOARD VIEW (HOME) -->
     <div id="dashboardView" class="dash-container">
         <div class="dash-grid">
             <div class="dash-card" onclick="goToStudentsMenu()">
@@ -118,25 +136,25 @@
         </div>
     </div>
 
-    <!-- STUDENT MENU VIEW -->
+    <!-- 2. STUDENT MENU VIEW -->
     <div id="studentMenuView" class="dash-container" style="display:none; min-height:auto; align-items:flex-start;">
-        <div class="dash-grid">
-            <div class="dash-card" onclick="openStudentModal()">
-                <div class="dash-icon">➕</div>
-                <div class="dash-title">Add Student</div>
+        <div class="dash-grid" style="grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));">
+            <div class="dash-card" onclick="openStudentModal()" style="padding: 20px 10px;">
+                <div class="dash-icon" style="font-size:24px; width:50px; height:50px;">➕</div>
+                <div class="dash-title" style="font-size:14px;">Add Student</div>
             </div>
-            <div class="dash-card" onclick="openBulkModal()">
-                <div class="dash-icon">📗</div>
-                <div class="dash-title">Excel Upload</div>
+            <div class="dash-card" onclick="openBulkModal()" style="padding: 20px 10px;">
+                <div class="dash-icon" style="font-size:24px; width:50px; height:50px;">📗</div>
+                <div class="dash-title" style="font-size:14px;">Excel Upload</div>
             </div>
-            <div class="dash-card" onclick="goToStudentDB()">
-                <div class="dash-icon">🏫</div>
-                <div class="dash-title">Grades & Classes</div>
+            <div class="dash-card" onclick="goToStudentDB()" style="padding: 20px 10px;">
+                <div class="dash-icon" style="font-size:24px; width:50px; height:50px;">🏫</div>
+                <div class="dash-title" style="font-size:14px;">Grades & Classes</div>
             </div>
         </div>
     </div>
 
-    <!-- MARKS MENU VIEW -->
+    <!-- 3. MARKS MENU VIEW -->
     <div id="marksMenuView" class="dash-container" style="display:none; min-height:auto; align-items:flex-start;">
         <div class="dash-grid">
             <div class="dash-card" onclick="startMarkingFlow('work')">
@@ -154,12 +172,13 @@
         </div>
     </div>
 
-    <!-- CLASS SELECTOR -->
+    <!-- 4. GRADE/CLASS SELECTOR (Generic) -->
     <div id="classSelectorView" class="section">
-        <h3 style="color:#64748b; margin-bottom:10px; text-align:center;" id="gradeSelectTitle">Select Grade:</h3>
+        <h3 style="color:#64748b; margin-bottom:15px; text-align:center;" id="gradeSelectTitle">Select Grade:</h3>
         <div id="gradeGrid" class="flow-grid"></div>
+
         <div id="classSection" style="display:none; margin-top:30px;">
-            <h3 style="color:#64748b; margin-bottom:10px; text-align:center;">Select Class: <span id="selGradeDisplay" style="color:#0d9488"></span></h3>
+            <h3 style="color:#64748b; margin-bottom:15px; text-align:center;">Select Class: <span id="selGradeDisplay" style="color:#0d9488"></span></h3>
             <div id="classGrid" class="flow-grid"></div>
         </div>
     </div>
@@ -167,7 +186,7 @@
     <!-- CONTENT SECTIONS -->
     <div id="contentView" style="display:none;">
         
-        <!-- STUDENT LIST -->
+        <!-- STUDENT LIST (From DB) -->
         <div id="tab-db" class="section">
             <div style="background:#f8fafc; padding:15px; border-radius:12px; margin-bottom:15px; text-align:center; border:1px dashed #cbd5e1;">
                 <small style="color:#64748b; font-weight:bold;">Filter Results:</small>
@@ -176,24 +195,27 @@
             </div>
             <div class="card" style="padding:0; overflow:hidden;">
                 <div style="overflow-x:auto;">
+                    <!-- REMOVED INDIVIDUAL SAVE BUTTON COLUMN & PROFILE BUTTON COLUMN -->
                     <table id="studentTable"><thead><tr><th>Index</th><th>Name</th><th>Grade</th><th>Pass</th><th>Edit</th></tr></thead><tbody><tr><td colspan="5">Loading...</td></tr></tbody></table>
                 </div>
                 <div class="pagination"><button class="page-btn" onclick="changePage('db', -1)">Prev</button><span class="page-info" id="page-info-db">Page 1</span><button class="page-btn" onclick="changePage('db', 1)">Next</button></div>
             </div>
         </div>
 
-        <!-- MARKS TABLE -->
+        <!-- MARKS ENTRY TABLE -->
         <div id="tab-marks" class="section">
             <div class="card" style="background:#f8fafc;">
+                <!-- Statistics Button -->
                 <button class="btn btn-blue" style="width:100%; margin-bottom:15px;" onclick="openStatistics()">📊 View Statistics</button>
+
                 <div style="display:flex; flex-direction:column; gap:10px;">
-                    <label style="font-size:13px; font-weight:bold; color:#64748b;">Select Item:</label>
+                    <label style="font-size:13px; font-weight:bold; color:#64748b;">Select Item to Mark:</label>
                     <div style="display:flex; gap:10px;">
                         <select id="itemSelect" onchange="renderMarksTable()" style="flex:1;"></select>
                         <button class="btn" style="width:auto; margin:0; padding:0 15px; background:#00695c;" onclick="openResultModal()">📤</button>
                     </div>
                     <div id="totalDiv" style="display:none; align-items:center; gap:8px; margin-top:5px; justify-content:center;">
-                        <span style="font-size:13px;">Total:</span>
+                        <span style="font-size:13px;">Total Marks:</span>
                         <input type="number" id="totalMarks" value="20" style="padding:8px; width:70px;">
                         <button onclick="saveTotalMark()" style="width:auto; padding:8px 15px; margin:0;">💾</button>
                     </div>
@@ -203,9 +225,16 @@
                      <div id="classFilterM" class="pills" style="justify-content:center;"></div>
                 </div>
             </div>
-            <div class="table-container"><table id="marksTable"><thead><tr><th>Idx</th><th>Name</th><th>Result</th><th>Msg</th><th>Save</th></tr></thead><tbody id="marksBody"></tbody></table></div>
+            
+            <div class="table-container">
+                <!-- REMOVED INDIVIDUAL SAVE BUTTON COLUMN HERE TOO -->
+                <table id="marksTable"><thead><tr><th>Idx</th><th>Name</th><th>Result</th><th>Msg</th></tr></thead><tbody id="marksBody"></tbody></table>
+            </div>
             <div class="pagination"><button class="page-btn" onclick="changePage('marks', -1)">Prev</button><span class="page-info" id="page-info-marks">Page 1</span><button class="page-btn" onclick="changePage('marks', 1)">Next</button></div>
-            <button class="btn btn-save" id="sBtn" onclick="saveTeacherData()">💾 Save All</button><div style="height:70px;"></div>
+            
+            <!-- GLOBAL SAVE BUTTON -->
+            <button class="btn btn-save" id="sBtn" onclick="saveTeacherData()">💾 Save All Changes</button>
+            <div style="height:70px;"></div>
         </div>
 
         <!-- SUBMISSIONS -->
@@ -244,20 +273,45 @@
 
 <!-- MODALS -->
 <div id="modalAdd" class="modal"><div class="modal-content"><h3>Add Student</h3><input id="newIdx" placeholder="Index"><input id="newNam" placeholder="Name"><div style="display:flex;gap:10px"><input id="newGrd" placeholder="Grade"><input id="newCls" placeholder="Class"></div><input id="newPwd" value="1234"><button class="btn" onclick="addSingleStudent()">Save</button><button class="btn btn-red" onclick="closeModal('modalAdd')">Cancel</button></div></div>
-<div id="modalEdit" class="modal"><div class="modal-content"><h3>Edit</h3><input type="hidden" id="editId"><input id="editIdx"><input id="editNam"><input id="editPwd"><div style="display:flex;gap:10px"><input id="editGrd"><input id="editCls"></div><button class="btn" onclick="saveEditStudent()">Update</button><hr><button class="btn btn-red" onclick="delStudent()">Delete</button><button class="btn" style="background:#cbd5e1;color:#333;margin-top:10px" onclick="closeModal('modalEdit')">Close</button></div></div>
-<div id="modalStudentDetails" class="modal"><div class="modal-content" style="max-width:800px;"><div style="display:flex;justify-content:space-between;align-items:center;"><h3 style="color:#00796b;margin:0;" id="detailName"></h3><button class="btn btn-orange" style="width:auto;padding:5px 15px;font-size:12px;margin:0;" onclick="openEditFromProfile()">✏️ Edit Info</button></div><p id="detailInfo" style="font-size:13px;color:#666;margin-bottom:15px;"></p><input type="hidden" id="detailId"><div class="detail-tabs"><button class="tab-btn active" onclick="switchDetailTab('weekly')">Weekly</button><button class="tab-btn" onclick="switchDetailTab('tests')">Tests</button><button class="tab-btn" onclick="switchDetailTab('ca')">CA</button></div><div id="detail-tab-weekly" class="detail-section active"></div><div id="detail-tab-tests" class="detail-section"></div><div id="detail-tab-ca" class="detail-section"></div><div style="margin-top:20px;"><button class="btn" onclick="saveStudentDetails()">💾 Save</button><button class="btn btn-red" onclick="closeModal('modalStudentDetails')" style="margin-top:10px;">Close</button></div></div></div>
-<div id="modalStats" class="modal"><div class="modal-content"><h3 style="color:#00796b;">📊 Statistics</h3><p id="statContext" style="font-weight:bold;color:#555;font-size:14px;margin-bottom:15px;"></p><div id="statsContent"></div><button class="btn btn-red" style="margin-top:15px;" onclick="closeModal('modalStats')">Close</button></div></div>
+<div id="modalEdit" class="modal"><div class="modal-content"><h3>Edit</h3><input type="hidden" id="editId"><input id="editIdx"><input id="editNam"><input id="editPwd"><div style="display:flex;gap:10px"><input id="editGrd"><input id="editCls"></div><button class="btn" onclick="saveEditStudent()">Update</button><hr><button class="btn btn-red" onclick="delStudent()">Delete</button><button class="btn" style="background:#ccc;color:#333" onclick="closeModal('modalEdit')">Close</button></div></div>
+
+<!-- STUDENT DETAILS MODAL -->
+<div id="modalStudentDetails" class="modal">
+    <div class="modal-content" style="max-width:800px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h3 style="color:#00796b; margin:0;" id="detailName"></h3>
+            <button class="btn btn-orange" style="width:auto; padding:5px 15px; font-size:12px; margin:0;" onclick="openEditFromProfile()">✏️ Edit Info</button>
+        </div>
+        <p id="detailInfo" style="font-size:13px; color:#666; margin-bottom:15px;"></p>
+        <input type="hidden" id="detailId">
+        
+        <div class="detail-tabs">
+            <button class="tab-btn active" onclick="switchDetailTab('weekly')">Weekly</button>
+            <button class="tab-btn" onclick="switchDetailTab('tests')">Tests</button>
+            <button class="tab-btn" onclick="switchDetailTab('ca')">CA</button>
+        </div>
+        <div id="detail-tab-weekly" class="detail-section active"></div>
+        <div id="detail-tab-tests" class="detail-section"></div>
+        <div id="detail-tab-ca" class="detail-section"></div>
+        <div style="margin-top:20px;">
+            <button class="btn" onclick="saveStudentDetails()">💾 Save Changes</button>
+            <button class="btn btn-red" onclick="closeModal('modalStudentDetails')" style="margin-top:10px;">Close</button>
+        </div>
+    </div>
+</div>
+
+<div id="modalStats" class="modal"><div class="modal-content"><h3 style="color:#00796b;">📊 Statistics</h3><p id="statContext" style="font-weight:bold; color:#555; font-size:14px; margin-bottom:15px;"></p><div id="statsContent"></div><button class="btn btn-red" style="margin-top:15px;" onclick="closeModal('modalStats')">Close</button></div></div>
 <div id="modalBulk" class="modal"><div class="modal-content"><h3>Excel Import</h3><input type="file" id="excelFile"><div id="bulkPreview" style="height:100px;overflow:auto;"></div><button class="btn" onclick="processBulk()">Confirm</button><button class="btn btn-red" onclick="closeModal('modalBulk')">Cancel</button></div></div>
 <div id="modalResult" class="modal"><div class="modal-content"><h3>Marks Excel</h3><p id="resTarget"></p><input type="file" id="resFile"><div id="resPreview" style="height:100px;overflow:auto;"></div><button class="btn" onclick="processResultBulk()">Upload</button><button class="btn btn-red" onclick="closeModal('modalResult')">Cancel</button></div></div>
 <div id="modalImg" class="modal"><div class="modal-content" style="max-width:800px;"><h3>Submitted Work</h3><div id="galleryContainer" class="modal-gallery"></div><button class="btn" style="background:#333;margin-top:15px;" onclick="document.getElementById('modalImg').style.display='none'">Close</button></div></div>
-<div id="msgModal" class="modal"><div class="modal-content"><h3>Message</h3><div id="msgContent" style="text-align:right;background:#f8fafc;padding:15px;border-radius:10px;"></div><button class="btn" style="background:#cbd5e1;color:#333" onclick="closeModal('msgModal')">Close</button></div></div>
+<div id="msgModal" class="modal"><div class="modal-content"><h3>Message</h3><div id="msgContent" style="text-align:right;background:#f1f8e9;padding:10px;border-radius:8px;"></div><button class="btn" style="background:#ccc;color:#333" onclick="closeModal('msgModal')">Close</button></div></div>
 <div id="toast"></div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc, deleteField, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-    // --- PASTE FIREBASE CONFIG HERE ---
+    // --- CONFIG ---
     const firebaseConfig = {
       apiKey: "AIzaSyDSEHqUQIegVjhWKpRgpJybdPaVDVroVos",
   authDomain: "islam-portal-muthamin.firebaseapp.com",
@@ -273,9 +327,12 @@
     let mode = 'work'; let selGrade = 'All'; let selClass = 'All'; 
     let parsedData = []; let parsedResData = [];
     let currentPageDB = 1; let currentPageMarks = 1; const rowsPerPage = 20;
+    
+    // State management
     let markState = { type: null, grade: null, class: null };
     let studentDBState = { grade: null, class: null };
 
+    // --- LOGIN ---
     window.checkLogin = () => { if(document.getElementById('adminPass').value === "123") { localStorage.setItem('adminLoggedIn', 'true'); initAdmin(); } else alert("Wrong Password"); };
     window.logoutAdmin = () => { localStorage.removeItem('adminLoggedIn'); location.reload(); };
     function initAdmin() { if(localStorage.getItem('adminLoggedIn') === 'true') { document.getElementById('loginOverlay').style.display='none'; document.getElementById('mainContainer').style.display='block'; fetchData(); } }
@@ -311,13 +368,15 @@
         } else goHome();
     };
 
-    window.goToStudentsMenu = () => { hideAll(); document.getElementById('studentMenuView').style.display = 'grid'; document.getElementById('backBtn').style.display = 'block'; document.getElementById('pageTitle').innerText = "Student Management"; };
+    window.goToStudentsMenu = () => { hideAll(); document.getElementById('studentMenuView').style.display = 'flex'; document.getElementById('backBtn').style.display = 'block'; document.getElementById('pageTitle').innerText = "Student Management"; };
     window.goToMarksMenu = () => { hideAll(); document.getElementById('marksMenuView').style.display = 'grid'; document.getElementById('backBtn').style.display = 'block'; document.getElementById('pageTitle').innerText = "Marks & Status"; };
     
-    // Flows
+    // DB FLOW
     window.goToStudentDB = () => { studentDBState = { grade: null, class: null }; markState = { type: null }; showGradeSelector("Select Grade"); };
     window.selectDBGrade = (g) => { studentDBState.grade = g; showClassSelector(g, 'selectDBClass'); };
     window.selectDBClass = (c) => { studentDBState.class = c; showContentView('tab-db', `${studentDBState.grade}${studentDBState.class} Students`); selGrade=studentDBState.grade; selClass=studentDBState.class; renderStudentTable(); };
+    
+    // MARKING FLOW
     window.startMarkingFlow = (type) => { markState.type = type; studentDBState = { grade: null, class: null }; showGradeSelector({'work':'Weekly Tasks','test':'Unit Tests','ca':'Class Assessment'}[type]); };
     window.selectMarkingGrade = (g) => { markState.grade = g; showClassSelector(g, 'selectMarkingClass'); };
     window.selectMarkingClass = (c) => { markState.class = c; showContentView('tab-marks', `${markState.grade}${markState.class} Marks`); document.getElementById('sBtn').style.display = 'block'; selGrade=markState.grade; selClass=markState.class; setMode(markState.type); };
@@ -343,50 +402,23 @@
     function hideAll() { ['dashboardView', 'studentMenuView', 'marksMenuView', 'contentView', 'classSelectorView'].forEach(id => document.getElementById(id).style.display = 'none'); document.getElementById('sBtn').style.display = 'none'; }
     window.switchTab = (id) => { showContentView('tab-'+id, id.toUpperCase()); document.getElementById('backBtn').style.display = 'block'; if(id==='subs') renderSubmissions(); if(id==='notice') {renderNotices(); renderMaterials();} };
 
-    // --- GRADING & STATS ---
+    // --- GRADING ---
     window.calcGradeHtml = (v, t) => {
         let p = (v / t) * 100; let c = 'g-Fail', l = 'F';
         if (p >= 90) { c = 'g-A-star'; l = 'A*'; } else if (p >= 80) { c = 'g-A'; l = 'A'; } else if (p >= 70) { c = 'g-B'; l = 'B'; } else if (p >= 60) { c = 'g-C'; l = 'C'; }
         return `<span class="grade-badge ${c}">${l}</span>`;
     };
-    window.openStatistics = () => {
-        const item = document.getElementById('itemSelect').value;
-        document.getElementById('statContext').innerText = `${markState.grade}${markState.class} - ${item}`;
-        const listClass = students.filter(s => s.grade == markState.grade && s.class == markState.class);
-        const listGrade = students.filter(s => s.grade == markState.grade);
-        let html = "";
-        if (markState.type === 'work') {
-            html += renderStatBlock(`${markState.grade}${markState.class}`, listClass, item, true);
-            html += renderStatBlock(`Grade ${markState.grade}`, listGrade, item, true);
-        } else {
-            let tot = document.getElementById('totalMarks').value;
-            html += renderStatBlock(`${markState.grade}${markState.class}`, listClass, item, false, tot);
-            html += renderStatBlock(`Grade ${markState.grade}`, listGrade, item, false, tot);
-        }
-        document.getElementById('statsContent').innerHTML = html;
-        document.getElementById('modalStats').style.display = 'block';
-    };
-    function renderStatBlock(title, list, item, isWork, total) {
-        let content = "";
-        if(isWork) {
-            let done=0, not=0, inc=0; list.forEach(s => { if(s[item]=='ނިމިފައި') done++; else if(s[item]=='ނުނިމޭ') not++; else if(s[item]=='ފުރިހަމައެއް ނުވޭ') inc++; });
-            content = `<div style="display:flex; justify-content:space-around; font-size:13px; padding:5px;"><span>✅ ${done}</span><span>❌ ${not}</span><span>⚠️ ${inc}</span></div>`;
-        } else {
-            let aS=0, a=0, b=0, c=0, f=0; list.forEach(s => { if(s[item]){ let p=(s[item]/total)*100; if(p>=90)aS++; else if(p>=80)a++; else if(p>=70)b++; else if(p>=60)c++; else f++; } });
-            content = `<div style="display:flex; justify-content:space-around; flex-wrap:wrap; font-size:13px; padding:5px;"><span>A* ${aS}</span><span>A ${a}</span><span>B ${b}</span><span>C ${c}</span><span>F ${f}</span></div>`;
-        }
-        return `<div style="background:#f9fafb; padding:10px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:10px;"><div style="font-weight:bold; color:#0f766e; border-bottom:1px solid #e2e8f0; margin-bottom:5px;">${title} (${list.length})</div>${content}</div>`;
-    }
 
-    // --- TABLES ---
+    // --- PAGINATION ---
     function getPaginatedList(type) {
         let list = getFiltered();
         let page = (type === 'db') ? currentPageDB : currentPageMarks;
         let totalPages = Math.ceil(list.length / rowsPerPage) || 1;
         if(page > totalPages) page = 1; 
-        let infoId = type==='db'?'page-info-db':'page-info-marks';
+        let infoId = (type === 'db') ? 'page-info-db' : 'page-info-marks';
         if(document.getElementById(infoId)) document.getElementById(infoId).innerText = `Page ${page} of ${totalPages}`;
-        let start = (page - 1) * rowsPerPage; return list.slice(start, start + rowsPerPage);
+        let start = (page - 1) * rowsPerPage;
+        return list.slice(start, start + rowsPerPage);
     }
     window.changePage = (type, dir) => {
         let list = getFiltered(); let total = Math.ceil(list.length / rowsPerPage) || 1;
@@ -396,15 +428,18 @@
     };
     function getFiltered(){let l=students;if(selGrade!=='All')l=l.filter(s=>String(s.grade)==String(selGrade));if(selClass!=='All')l=l.filter(s=>String(s.class)==String(selClass));return l.sort((a,b)=>(parseInt(a.index)||0)-(parseInt(b.index)||0));}
 
+    // --- RENDER TABLE ---
     window.renderStudentTable = () => {
         const list = getPaginatedList('db');
-        document.querySelector('#studentTable tbody').innerHTML = list.length ? list.map(s => `<tr><td>${s.index}</td><td><span class="click-name" style="color:#0d9488;font-weight:bold;cursor:pointer;" onclick="openStudentDetails('${s.id}')">${s.name}</span></td><td>${s.grade}${s.class}</td><td>${s.password||'1234'}</td><td><button class="btn btn-orange" style="padding:5px;" onclick="openEdit('${s.id}')">✏️</button></td></tr>`).join(''):'<tr><td colspan="6">No data</td></tr>';
+        document.querySelector('#studentTable tbody').innerHTML = list.length ? list.map(s => `<tr><td>${s.index}</td><td><span class="click-name" onclick="openStudentDetails('${s.id}')">${s.name}</span></td><td>${s.grade}${s.class}</td><td>${s.password||'1234'}</td><td><button class="btn btn-orange" style="padding:5px;width:auto;margin:0" onclick="openEdit('${s.id}')">✏️</button></td></tr>`).join(''):'<tr><td colspan="5">No data</td></tr>';
     };
 
     window.renderMarksTable = () => {
         const item = document.getElementById('itemSelect').value;
         let tot = examConfig[item] ? parseInt(examConfig[item]) : (mode==='test'?20:100);
-        if(mode !== 'work') { document.getElementById('totalDiv').style.display='flex'; document.getElementById('totalMarks').value = tot; } else { document.getElementById('totalDiv').style.display='none'; }
+        if(mode !== 'work') { document.getElementById('totalDiv').style.display='flex'; document.getElementById('totalMarks').value = tot; }
+        else { document.getElementById('totalDiv').style.display='none'; }
+
         const list = getPaginatedList('marks');
         document.getElementById('marksBody').innerHTML = list.length ? list.map(s => {
             let val = s[item] || "";
@@ -414,8 +449,8 @@
             let msgBtn = hasMsg ? `<button onclick='viewMessages(${JSON.stringify(s.parentMessages)})' style="border:none;background:#ffeb3b;border-radius:50%;width:25px;height:25px;cursor:pointer">📩</button>` : `-`;
             let input = mode === 'work' ? `<select class="v-in" data-id="${s.id}" data-orig="${val}"><option value="">-</option><option value="ނިމިފައި" ${val=='ނިމިފައި'?'selected':''}>ނިމިފައި</option><option value="ނުނިމޭ" ${val=='ނުނިމޭ'?'selected':''}>ނުނިމޭ</option><option value="ފުރިހަމައެއް ނުވޭ" ${val=='ފުރިހަމައެއް ނުވޭ'?'selected':''}>ފުރިހަމައެއް ނުވޭ</option></select>` : `<input type="number" class="v-in" data-id="${s.id}" data-orig="${val}" value="${val}" placeholder="0" oninput="updRow(this,${tot})">`;
             let gh = mode !== 'work' && val ? calcGradeHtml(val, tot) : '';
-            return `<tr><td>${s.index}</td><td><div style="font-size:13px;line-height:1.2;white-space:normal;max-width:100px;margin:0 auto;">${s.name}</div></td><td><div style="display:flex; align-items:center; justify-content:center; gap:5px;">${subIcon} ${input} <div id="g-${s.id}">${gh}</div></div></td><td>${msgBtn}</td><td><button class="btn" style="width:auto;padding:5px;margin:0;font-size:16px;" onclick="saveSingle('${s.id}')">💾</button></td></tr>`;
-        }).join('') : '<tr><td colspan="5">No data</td></tr>';
+            return `<tr><td>${s.index}</td><td><div style="font-size:13px;line-height:1.2;white-space:normal;max-width:100px;margin:0 auto;">${s.name}</div></td><td><div style="display:flex; align-items:center; justify-content:center; gap:5px;">${subIcon} ${input} <div id="g-${s.id}">${gh}</div></div></td><td>${msgBtn}</td></tr>`;
+        }).join('') : '<tr><td colspan="4">No data</td></tr>';
     };
     window.updRow=(e,t)=>{ document.getElementById('g-'+e.dataset.id).innerHTML = calcGradeHtml(e.value,t); };
 
@@ -431,12 +466,13 @@
     };
     window.openEditFromProfile = () => { let id = document.getElementById('detailId').value; closeModal('modalStudentDetails'); openEdit(id); };
     window.saveStudentDetails = async () => {
-        let id = document.getElementById('detailId').value; if(!id) return alert("ID missing");
+        let id = document.getElementById('detailId').value;
+        if(!id) return alert("Error: ID missing");
         let updates = {};
-        for(let i=1; i<=45; i++) { let el = document.getElementById(`det_Week${i}`); if(el) updates[`Week${i}`] = el.value || ""; }
-        for(let i=1; i<=10; i++) { let el = document.getElementById(`det_UnitTest${i}`); if(el) updates[`UnitTest${i}`] = el.value || ""; }
-        for(let i=1; i<=4; i++) { let el = document.getElementById(`det_CA${i}`); if(el) updates[`CA${i}`] = el.value || ""; }
-        try { await updateDoc(doc(db, "students", id), updates); showToast("✅ Saved!"); closeModal('modalStudentDetails'); fetchData(); } catch(e) { alert("Error"); }
+        for(let i=1; i<=45; i++) { let el = document.getElementById(`det_Week${i}`); updates[`Week${i}`] = el.value || ""; }
+        for(let i=1; i<=10; i++) { let el = document.getElementById(`det_UnitTest${i}`); updates[`UnitTest${i}`] = el.value || ""; }
+        for(let i=1; i<=4; i++) { let el = document.getElementById(`det_CA${i}`); updates[`CA${i}`] = el.value || ""; }
+        try { await updateDoc(doc(db, "students", id), updates); showToast("✅ Details Saved!"); closeModal('modalStudentDetails'); fetchData(); } catch(e) { console.error(e); alert("Error saving details"); }
     };
 
     // --- OTHER LOGIC ---
@@ -457,7 +493,7 @@
 
     // Submissions, Notices, Excel
     function updateSubCount() { let count = 0; students.forEach(s => { if(s.submissions) count += Object.keys(s.submissions).length; }); const badge = document.getElementById('dashSubCount'); badge.innerText = count; badge.style.display = count > 0 ? 'block' : 'none'; document.getElementById('subCount').innerText = count; document.getElementById('subCount').style.display = count>0?'block':'none';}
-    window.renderSubmissions = () => { const list = document.getElementById('subsList'); let html = ''; let hasData = false; students.forEach(s => { if(s.submissions) { Object.keys(s.submissions).forEach(week => { hasData = true; const sub = s.submissions[week]; let imgData = sub.images ? sub.images : (sub.image ? [sub.image] : []); let countText = imgData.length > 1 ? `(${imgData.length} Photos)` : ''; let thumb = imgData.length > 0 ? imgData[0] : ''; html += `<div class="sub-card"><div style="display:flex;gap:10px;align-items:center;"><img src="${thumb}" class="sub-img" onclick="showSubmissionGallery('${s.id}', '${week}')"><div style="text-align:left;"><strong>${s.name}</strong> (${s.index}) <span style="font-size:10px;color:#0d9488;font-weight:bold;">${countText}</span><br><span style="font-size:12px;color:#666;">${week} - ${sub.date}</span></div></div><button class="btn" style="width:auto;padding:5px 15px;" onclick="acceptSubmission('${s.id}','${week}')">✅ Accept</button></div>`; }); } }); list.innerHTML = hasData ? html : `<p style="text-align:center; color:#999;">No pending submissions</p>`; };
+    window.renderSubmissions = () => { const list = document.getElementById('subsList'); let html = ''; let hasData = false; students.forEach(s => { if(s.submissions) { Object.keys(s.submissions).forEach(week => { hasData = true; const sub = s.submissions[week]; let imgData = sub.images ? sub.images : (sub.image ? [sub.image] : []); let countText = imgData.length > 1 ? `(${imgData.length} Photos)` : ''; let thumb = imgData.length > 0 ? imgData[0] : ''; html += `<div class="sub-card"><div style="display:flex;gap:10px;align-items:center;"><img src="${thumb}" class="sub-img" onclick="showSubmissionGallery('${s.id}', '${week}')"><div style="text-align:left;"><strong>${s.name}</strong> (${s.index}) <span style="font-size:10px;color:#0d9488;font-weight:bold;">${countText}</span><br><span style="font-size:12px;color:#666;">${week} - ${sub.date}</span></div></div><button class="btn" style="width:auto;padding:5px 15px;" onclick="acceptSubmission('${s.id}','${week}')">✅ Accept</button></div>`; }); } }); list.innerHTML = hasData ? html : `<p style="text-align:center; color:#999; margin-top:20px;">No pending submissions</p>`; };
     window.showSubmissionGallery = (sid, week) => { const s = students.find(x => x.id === sid); if (!s || !s.submissions || !s.submissions[week]) return; const sub = s.submissions[week]; const images = sub.images ? sub.images : (sub.image ? [sub.image] : []); document.getElementById('galleryContainer').innerHTML = images.map(src => `<img src="${src}">`).join(''); document.getElementById('modalImg').style.display = 'block'; };
     window.acceptSubmission = async (sid, week) => { if(confirm("Accept?")) { try { await updateDoc(doc(db, "students", sid), { [week]: 'ނިމިފައި', [`submissions.${week}`]: deleteField() }); showToast("Accepted!"); fetchData(); } catch(e) { console.error(e); } } };
 
@@ -492,6 +528,41 @@
     // EXPORT
     window.saveNotice = saveNotice; window.deleteNotice = deleteNotice; window.editNotice = editNotice; window.cancelNoticeEdit = cancelNoticeEdit; 
     window.showSubmissionGallery = showSubmissionGallery; window.acceptSubmission = acceptSubmission;
+    
+    // STATISTICS
+    window.openStatistics = () => {
+        const item = document.getElementById('itemSelect').value;
+        document.getElementById('statContext').innerText = `${markState.grade}${markState.class} - ${item}`;
+        const listClass = students.filter(s => s.grade == markState.grade && s.class == markState.class);
+        const listGrade = students.filter(s => s.grade == markState.grade);
+        
+        let html = "";
+        if (markState.type === 'work') {
+            html += renderStatBlock(`${markState.grade}${markState.class}`, listClass, item, true);
+            html += renderStatBlock(`Grade ${markState.grade}`, listGrade, item, true);
+        } else {
+            let tot = document.getElementById('totalMarks').value;
+            html += renderStatBlock(`${markState.grade}${markState.class}`, listClass, item, false, tot);
+            html += renderStatBlock(`Grade ${markState.grade}`, listGrade, item, false, tot);
+        }
+        document.getElementById('statsContent').innerHTML = html;
+        document.getElementById('modalStats').style.display = 'block';
+    };
+
+    function renderStatBlock(title, list, item, isWork, total) {
+        let content = "";
+        if(isWork) {
+            let done=0, notDone=0, fix=0, pending=0;
+            list.forEach(s => { if(s[item] === 'ނިމިފައި') done++; else if(s[item] === 'ނުނިމޭ') notDone++; else if(s[item] === 'ފުރިހަމައެއް ނުވޭ') fix++; else pending++; });
+            content = `<div style="display:flex; justify-content:space-around; font-size:13px; padding:5px;"><span>✅ ${done}</span><span>❌ ${notDone}</span><span>⚠️ ${fix}</span></div>`;
+        } else {
+            let aS=0, a=0, b=0, c=0, f=0;
+            list.forEach(s => { let v = s[item]; if(v) { let p = (v/total)*100; if(p>=90) aS++; else if(p>=80) a++; else if(p>=70) b++; else if(p>=60) c++; else f++; } });
+            content = `<div style="display:flex; justify-content:space-around; flex-wrap:wrap; font-size:13px; padding:5px;"><span>A* ${aS}</span><span>A ${a}</span><span>B ${b}</span><span>C ${c}</span><span>F ${f}</span></div>`;
+        }
+        return `<div style="background:#f9fafb; padding:10px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:10px;"><div style="font-weight:bold; color:#0f766e; border-bottom:1px solid #e2e8f0; margin-bottom:5px;">${title} (${list.length})</div>${content}</div>`;
+    }
+    window.openStatistics = openStatistics;
 </script>
 </body>
 </html>
